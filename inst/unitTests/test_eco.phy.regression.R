@@ -1,0 +1,44 @@
+#I'm not thoroughly testing the output of the quantile, mantel, etc. methods, because those are maintained by other people
+#Setup
+require(testthat)
+data(phylocom)
+data <- comparative.comm(phylocom$phy, phylocom$sample, warn=FALSE)
+
+context("eco.phy.regression")
+
+test_that("quantile", {
+  set.seed(123)
+  basic.quantile <<- eco.phy.regression(data)
+  set.seed(123)
+  expect_that(basic.quantile$method, equals("quantile"))
+  expect_that(basic.quantile$method, equals(eco.phy.regression(data, method="quantile")$method))
+  expect_that(names(basic.quantile), equals(c("observed", "randomisations", "obs.slope", "rnd.slopes", "method", "permute", "randomisation", "data")))
+  expect_that(basic.quantile$permute, equals(0))
+  expect_that(basic.quantile$method, equals("quantile"))
+  expect_that(basic.quantile$randomisations, equals(list()))
+  expect_that(basic.quantile$obs.slope, is_equivalent_to(0.00893394615123583))
+  expect_that(basic.quantile$data, equals(data))
+})
+
+test_that("mantel", {
+  set.seed(123)
+  basic.mantel <<- eco.phy.regression(data, method="mantel")
+  expect_that(names(basic.mantel), equals(names(basic.quantile)))
+  expect_that(basic.mantel$permute, equals(basic.quantile$permute))
+  expect_that(basic.mantel$method, equals("mantel"))
+  expect_that(basic.mantel$randomisations, equals(basic.quantile$randomisations))
+  expect_that(basic.mantel$obs.slope, equals(0.161663829782999))
+  expect_that(basic.mantel$data, equals(data))
+})
+
+test_that("lm", {
+  set.seed(123)
+  basic.lm <<- eco.phy.regression(data, method="lm")
+  set.seed(123)
+  expect_that(names(basic.lm), equals(names(basic.quantile)))
+  expect_that(basic.lm$permute, equals(basic.quantile$permute))
+  expect_that(basic.lm$method, equals("lm"))
+  expect_that(basic.lm$randomisations, equals(basic.lm$randomisations))
+  expect_that(basic.lm$obs.slope, is_equivalent_to(0.00621718355659297))
+  expect_that(basic.lm$data, equals(data))
+})

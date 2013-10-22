@@ -1,0 +1,47 @@
+\name{comparative.comm}
+\alias{comparative.comm}
+\alias{print.comparative.comm}
+\title{Make a comparative community ecology object}
+\usage{
+  comparative.comm(phy, comm, traits = NULL, env = NULL,
+    warn = TRUE, vcv = TRUE)
+
+  \method{print}{comparative.comm} (x, ...)
+}
+\arguments{
+  \item{phy}{phylogeny (in ape::phylo format) of species}
+
+  \item{comm}{a community matrix (as used in vegan) with
+  species as columns and rows as community samples}
+
+  \item{traits}{a data.frame of species traits (with row
+  names matching those of 'comm')}
+
+  \item{env}{a data.frame of environmental data (all
+  continuous variables) with row names matching those of
+  'comm'}
+}
+\value{
+  comparative.comm object
+}
+\description{
+  \code{comparative.comm} creates a community comparative
+  ecology object
+}
+\details{
+  Basic checking of whether the input data match up is
+  performed; you need only supply 'comm' and 'phy', nothing
+  else is mandatory. Subsetting according to communities
+  (rows) and species (columns) is possible - see 'examples'
+  for details.
+}
+\examples{
+\dontrun{
+data(phylocom)
+data <- comparative.comm(phylocom$phy, phylocom$sample)
+data <- comparative.comm(phylocom$phy, phylocom$sample, traits=phylocom$traits)
+data[1:3,]
+data[,1:3]
+}
+}
+

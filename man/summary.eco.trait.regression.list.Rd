@@ -1,0 +1,10 @@
+\name{summary.eco.trait.regression.list}
+\alias{summary.eco.trait.regression.list}
+\title{Summarise an eco.trait.regression regression}
+\usage{
+  \method{summary}{eco.trait.regression.list} (x, ...)
+}
+\description{
+  Summarise an eco.trait.regression regression
+}
+

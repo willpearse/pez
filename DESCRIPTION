@@ -1,0 +1,45 @@
+Package: EcoPhyl
+Type: Package
+Title: Eco-Phylognetic Analysis (in R)
+Version: 0.1
+Date: 2013-04-15
+Author: Will Pearse, Jeannine Cavender-Bares
+Maintainer: Will Pearse <wdpearse@umn.edu>
+Description: Eco-phylogenetic analysis; regressions of community co-existence
+    against phylogenetic dissimilarity and niche overlap
+License: GPL-2
+Imports:
+    caper,
+    picante,
+    quantreg,
+    mvtnorm,
+    vegan,
+    ecoPD,
+    PVR,
+    ade4,
+    spacodiR,
+    ape,
+    apTreeshape,
+    phylobase
+Collate:
+    'comparative.comm.R'
+    'D.c.R'
+    'dispersion.r'
+    'dissimilarity.r'
+    'dist.matrix.R'
+    'eco.env.regression.R'
+    'eco.phy.regression.R'
+    'eco.trait.regression.R'
+    'evenness.R'
+    'pae.r'
+    'PCD.r'
+    'pglm.r'
+    'shape.r'
+    'utility.R'
+    'EcoPhyl-package.R'
+    'jcb.regression.R'
+    'phy.signal.R'
+    'barplot.R'
+    'dot.plot.R'
+    'mirror.plot.R'
+    'plotting.R'

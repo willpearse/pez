@@ -1,0 +1,74 @@
+#I'm not thoroughly testing the output of the quantile, mantel, etc. methods, because those are maintained by other people
+#This needs proper examples, because at the moment the second column of environmental data are a nonsense (doesn't affect tests, but you will need decent examples!)
+#Setup
+require(testthat)
+data(phylocom)
+dummy.env <- data.frame(letters=letters[1:6], repeated=rep("A", 6), row.names=rownames(phylocom$sample))
+data <- comparative.comm(phylocom$phy, phylocom$sample, phylocom$traits, dummy.env, warn=FALSE)
+
+context("eco.env.regression")
+
+test_that("quantile", {
+  set.seed(123)
+  basic.quantile <<- eco.env.regression(data)
+  set.seed(123)
+  expect_that(basic.quantile$method, equals("quantile"))
+  expect_that(basic.quantile$method, equals(eco.env.regression(data, method="quantile")$method))
+  expect_that(names(basic.quantile), equals(c("observed", "randomisations", "obs.slope", "rnd.slopes", "method", "permute", "randomisation", "altogether", "data")))
+  expect_that(basic.quantile$permute, equals(0))
+  expect_that(basic.quantile$altogether, equals(TRUE))
+  expect_that(basic.quantile$method, equals("quantile"))
+  expect_that(basic.quantile$randomisations, equals(list()))
+  expect_that(basic.quantile$obs.slope, is_equivalent_to(-2.82842712474619))
+  expect_that(basic.quantile$data, equals(data))
+  
+  #Aaaarg. The example data are singular when you don't fit them altogether...
+})
+
+test_that("mantel", {
+  set.seed(123)
+  basic.mantel <<- eco.env.regression(data, method="mantel")
+  expect_that(names(basic.mantel), equals(names(basic.quantile)))
+  expect_that(basic.mantel$permute, equals(basic.quantile$permute))
+  expect_that(basic.mantel$altogether, equals(basic.quantile$altogether))
+  expect_that(basic.mantel$method, equals("mantel"))
+  expect_that(basic.mantel$randomisations, equals(basic.quantile$randomisations))
+  expect_that(basic.mantel$obs.slope, equals(-0.944913601878444))
+  expect_that(basic.mantel$data, equals(data))
+  
+  set.seed(123)
+  complex.mantel <<- eco.env.regression(data, method="mantel", randomisation="frequency", permute=10, altogether=FALSE)
+  expect_that(names(complex.mantel), equals(c("", "", "altogether", "data", "permute", "method")))
+  expect_that(complex.mantel$permute, equals(10))
+  expect_that(complex.mantel$altogether, equals(FALSE))
+  expect_that(complex.mantel$method, equals("mantel"))
+  expect_that(complex.mantel$data, equals(data))
+  expect_that(names(complex.mantel[[1]]), equals(c("observed", "randomisations", "obs.slope", "rnd.slopes", "method", "permute", "randomisation", "altogether")))
+  expect_that(complex.mantel[[1]]$observed$statistic, equals(-0.944913601878444))
+  expect_that(complex.mantel[[1]]$randomisations[[8]], equals(NULL))#invalid randomisation
+  expect_that(complex.mantel[[1]]$randomisations[[10]]$statistic, equals(-0.00979693508062342))
+})
+
+test_that("lm", {
+  set.seed(123)
+  basic.lm <<- eco.env.regression(data, method="lm")
+  set.seed(123)
+  expect_that(names(basic.lm), equals(names(basic.quantile)))
+  expect_that(basic.lm$permute, equals(basic.quantile$permute))
+  expect_that(basic.lm$altogether, equals(basic.quantile$altogether))
+  expect_that(basic.lm$method, equals("lm"))
+  expect_that(basic.lm$randomisations, equals(basic.lm$randomisations))
+  expect_that(basic.lm$obs.slope, is_equivalent_to(-2.6730982833216))
+  expect_that(basic.lm$data, equals(data))
+  
+  set.seed(123)
+  complex.lm <- eco.env.regression(data, method="lm", randomisation="independentswap", permute=10, altogether=FALSE)
+  expect_that(coef(complex.lm[[1]]$observed), is_equivalent_to(c(0.992569598197743, -1.33654914166082)))
+  expect_that(names(complex.lm), equals(names(complex.mantel)))
+  expect_that(complex.lm$permute, equals(complex.mantel$permute))
+  expect_that(complex.lm$altogether, equals(complex.mantel$altogether))
+  expect_that(complex.lm$method, equals("lm"))
+  expect_that(complex.lm$data, equals(data))
+  expect_that(names(complex.lm[[1]]), equals(c("observed", "randomisations", "obs.slope", "rnd.slopes", "method", "permute", "randomisation", "altogether")))
+  expect_that(coef(complex.lm[[1]]$randomisations[[5]]), is_equivalent_to(c(0.845593626265815, -0.17437011303608)))
+})
