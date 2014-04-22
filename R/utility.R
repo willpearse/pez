@@ -54,56 +54,98 @@
   
   output <- list(observed=observed, randomisations=randomisations, obs.slope=obs.slope, rnd.slopes=rnd.slopes,
                  method=method, permute=permute, randomisation=randomisations)
-  if(!is.null(class)) class(output) <- class
+  if(!is.null(class)) output$type <- class
+  class(output) <- "ecophyl.regression"
   return(output)
 }
 
 #Printing summaries of regressions
-.summary.regression <- function(x, header){
-  cat("\n", header, "\n", sep="")
-  cat("Method: ", x$method, "\n")
-  if(x$permute > 0)
-    cat("Randomisation: ", x$method, "; Permutations: ", x$permute, "\n") else cat("Randomisation: NONE\n")
-  if(x$method == "quantile" && length(x$obs.slope)>1)
-    cat("Observed slopes (at specified taus): ", paste(round(x$obs.slope,2), collapse=","), "\n") else cat("Observed slope: ", round(x$obs.slope,2), "\n")
-  if(x$permute > 0 ){
-    if(x$method == "quantile" && length(x$obs.slope)>1){
-      cat("Random slope means (at specified taus) +/- SD:\n")
-      for(i in seq(nrow(x$rnd.slopes)))
-        cat(round(mean(x$rnd.slopes[i,]),2), " +/- ", round(sd(x$rnd.slopes[i,]),4), "\n")
-    } else cat("Random slope mean +/-SD: ", round(mean(x$rnd.slopes),2), " +/- ", round(sd(x$rnd.slopes),4), "\n")
-  }
-  cat("Observed model summary:\n")
-  if(x$method == "mantel")
-    print(x$observed) else print(summary(x$observed))
-  cat("\n")
+#' @method summary ecophyl.regression
+#' @S3method summary ecophyl.regression
+#' @export
+summary.ecophyl.regression <- function(x, ...){
+    cat("\n", x$type, "\n", sep="")
+    cat("Method: ", x$method, "\n")
+    if(x$permute > 0)
+        cat("Randomisation: ", x$method, "; Permutations: ", x$permute, "\n") else cat("Randomisation: NONE\n")
+    if(x$method == "quantile" && length(x$obs.slope)>1)
+        cat("Observed slopes (at specified taus): ", paste(round(x$obs.slope,2), collapse=","), "\n") else cat("Observed slope: ", round(x$obs.slope,2), "\n")
+    if(x$permute > 0 ){
+        if(x$method == "quantile" && length(x$obs.slope)>1){
+            cat("Random slope means (at specified taus) +/- SD:\n")
+            for(i in seq(nrow(x$rnd.slopes)))
+                cat(round(mean(x$rnd.slopes[i,]),2), " +/- ", round(sd(x$rnd.slopes[i,]),4), "\n")
+        } else cat("Random slope mean +/-SD: ", round(mean(x$rnd.slopes),2), " +/- ", round(sd(x$rnd.slopes),4), "\n")
+    }
+    cat("Observed model summary:\n")
+    if(x$method == "mantel")
+        print(x$observed) else print(summary(x$observed))
+    cat("\n")
+}
+#' @method print ecophyl.regression
+#' @S3method print ecophyl.regression
+#' @export
+print.ecophyl.regression <- function(x, ...){
+    summary(x, ...)
 }
 
-#Plotting summaries of regressions
-.plot.regression <- function(x, y, observed, randomisations, method=c("quantile", "lm", "mantel"), permute=0, ...){
-  method <- match.arg(method)
-  plot(y ~ x, ...)
-  if(method == "lm"){
-    abline(observed, lwd=3)
-    #Easiest way to silence lapply...
-    if(permute>0 && method=="lm")
-      silent<-lapply(randomisations, abline, col="red")
-  }
-  if(method == "quantile"){
-    #Check to see if we've got more than one tau value and plot accordingly
-    if(is.null(dim(coef(observed)))){
-      abline(coef(observed), lwd=3)
-      for(j in seq(from=1,length.out=permute))
-        abline(coef(randomisations[[j]]), col="red")
-    } else {
-      for(j in seq(ncol(coef(observed)))){
-        abline(coef(observed)[,j], lwd=3)
-        for(k in seq_along(randomisations))
-          abline(coef(randomisations[[k]])[,j], col="red")
-      }
+#' @method plot ecophyl.regression
+#' @S3method plot ecophyl.regression
+#' @export
+plot.ecophyl.regression <- function(x, ...){
+    .plot.regression <- function(x, y, observed, randomisations, method=c("quantile", "lm", "mantel"), permute=0, ...){
+        method <- match.arg(method)
+        plot(y ~ x, ...)
+        if(method == "lm"){
+            abline(observed, lwd=3)
+                                        #Easiest way to silence lapply...
+            if(permute>0 && method=="lm")
+                silent<-lapply(randomisations, abline, col="red")
+        }
+        if(method == "quantile"){
+                                        #Check to see if we've got more than one tau value and plot accordingly
+            if(is.null(dim(coef(observed)))){
+                abline(coef(observed), lwd=3)
+                for(j in seq(from=1,length.out=permute))
+                    abline(coef(randomisations[[j]]), col="red")
+            } else {
+                for(j in seq(ncol(coef(observed)))){
+                    abline(coef(observed)[,j], lwd=3)
+                    for(k in seq_along(randomisations))
+                        abline(coef(randomisations[[k]])[,j], col="red")
+                }
+            }
+        }
     }
-  }
+    
+    if(x$type == "eco.env.regression"){
+        #Beware calling without knowing which environmental distance matrix we should be using
+        if(!x$altogether) stop("Cannot call 'plot' on an element of an eco.env.regression.list - uses plot(list, no.trait) instead")
+        eco.matrix <- as.numeric(comm.dist(x$data$comm))
+        env.matrix <- as.numeric(pianka.dist(x$data, TRUE))
+        .plot.regression(env.matrix, eco.matrix, x$observed, x$randomisations, x$method, x$permute,
+                         xlab="Pianka's Distance", ylab="Ecological Co-existnce", ...)
+    }
+    
+    if(x$type == "eco.trait.regression"){
+        #Beware calling without knowing which environmental distance matrix we should be using
+        if(!x$altogether) stop("Cannot call 'plot' on an element of an eco.trait.regression.list - uses plot(list, no.trait) instead")
+        eco.matrix <- as.numeric(comm.dist(x$data$comm))
+        trait.matrix <- as.numeric(traits.dist(x$data, TRUE))
+        .plot.regression(trait.matrix, eco.matrix, x$observed, x$randomisations, x$method, x$permute,
+                         xlab="Trait Distance", ylab="Ecological Co-existnce", ...)
+    }
+
+    if(x$type == "eco.phy.regression"){
+        eco.matrix <- as.numeric(comm.dist(x$data$comm))
+        phy.matrix <- as.numeric(as.dist(cophenetic(x$data$phy)))
+        .plot.regression(phy.matrix, eco.matrix, x$observed, x$randomisations, x$method, x$permute,
+                         xlab="Phylogenetic Distance", ylab="Ecological Co-existnce", ...)
+    }
 }
+
+
+  
 
 #Trim a phylogeny (ape work-around)
 #' @export

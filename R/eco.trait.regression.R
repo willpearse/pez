@@ -100,35 +100,6 @@ eco.trait.regression <- function(data,
   return(model)
 }
 
-#\code{print.eco.trait.regression} prints an eco.trait.regression regression (...by summarising it...))
-#' @method print eco.trait.regression
-#' @S3method print eco.trait.regression
-#' @export
-print.eco.trait.regression <- function(x, ...){
-  summary(x)
-}
-
-#' \code{summary.eco.trait.regression} summarises an eco.trait.regression regression
-#' @method summary eco.trait.regression
-#' @S3method summary eco.trait.regression
-#' @export
-summary.eco.trait.regression <- function(object, ...){
-  .summary.regression(object, "eco.trait.regression regression")
-}
-
-#' \code{plot.eco.trait.regression} plots an eco.trait.regression regression
-#' @method plot eco.trait.regression
-#' @S3method plot eco.trait.regression
-#' @export
-plot.eco.trait.regression <- function(x, ...){
-  #Beware calling without knowing which environmental distance matrix we should be using
-  if(!x$altogether) stop("Cannot call 'plot' on an element of an eco.trait.regression.list - uses plot(list, no.trait) instead")
-  eco.matrix <- as.numeric(comm.dist(x$data$comm))
-  trait.matrix <- as.numeric(traits.dist(x$data, TRUE))
-  .plot.regression(trait.matrix, eco.matrix, x$observed, x$randomisations, x$method, x$permute,
-                   xlab="Trait Distance", ylab="Ecological Co-existnce", ...)
-}
-
 #' Print basic information about a list of eco.trait.regressions
 #' @method print eco.trait.regression.list
 #' @S3method print eco.trait.regression.list

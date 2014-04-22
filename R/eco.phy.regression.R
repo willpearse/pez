@@ -66,29 +66,3 @@ eco.phy.regression <- function(data,
 	
   return(model)
 }
-
-#' Prints an eco.phy.regression object (...by summarising it...)
-#' @method print eco.phy.regression
-#' @S3method print eco.phy.regression
-#' @export
-print.eco.phy.regression <- function(x, ...){
-  summary(x, ...)
-}
-
-
-#' @method summary eco.phy.regression
-#' @S3method summary eco.phy.regression
-#' @export
-summary.eco.phy.regression <- function(object, ...){
-  .summary.regression(object, "eco.phy.regression regression")
-}
-
-#' @method plot eco.phy.regression
-#' @S3method plot eco.phy.regression
-#' @export
-plot.eco.phy.regression <- function(x, ...){
-  eco.matrix <- as.numeric(comm.dist(x$data$comm))
-  phy.matrix <- as.numeric(as.dist(cophenetic(x$data$phy)))
-  .plot.regression(phy.matrix, eco.matrix, x$observed, x$randomisations, x$method, x$permute,
-        xlab="Phylogenetic Distance", ylab="Ecological Co-existnce", ...)
-}

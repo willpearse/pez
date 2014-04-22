@@ -28,7 +28,6 @@
 
 shape <- function(data, metric=c("all", "psv", "psr", "mpd", "pd", "colless", "gamma", "taxon", "eigen.sum", "cadotte.pd"), which.eigen=1)  #vecnums chooses the eigenvector to calculate sumvar in Diniz-Filho J.A.F., Cianciaruso M.V., Rangel T.F. & Bini L.M. (2011). Eigenvector estimation of phylogenetic and functional diversity. Functional Ecology, 25, 735-744.
 {
-  #require(phylobase)
   #Assertions and argument handling
   if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
   metric <- match.arg(metric)
@@ -73,15 +72,15 @@ shape <- function(data, metric=c("all", "psv", "psr", "mpd", "pd", "colless", "g
   if(metric == "taxon" | metric == "all")
     output$taxon <- taxondive(pa, data$vcv)
   
-  if(metric == "eigen.sum" | metric == "all"){
-    evc <- PVRdecomp(data$phy)@Eigen$vectors  
-    output$eigen.sum <- apply(pa, 1, 
-                        function(x, evc, vecnums) if(sum(x>0)) return(sum(apply(as.matrix(evc[x>0,vecnums]),2,var))) else return(NA), 
-                        evc,which.eigen)
-  }
+#  if(metric == "eigen.sum" | metric == "all"){
+#    evc <- PVRdecomp(data$phy)@Eigen$vectors  
+#    output$eigen.sum <- apply(pa, 1, 
+#                        function(x, evc, vecnums) if(sum(x>0)) return(sum(apply(as.matrix(evc[x>0,vecnums]),2,var))) else return(NA), 
+#                        evc,which.eigen)
+#  }
   
   if(metric == "cadotte.pd" | metric == "all"){
-    require(phylobase)
+    #require(phylobase)
     .pa <- pa[rowSums(pa>0)>1,]
     .tree <- phylo4d(data$phy, t(.pa))
     temp <- data.frame(Eed=eed(.tree), Hed=hed(.tree))

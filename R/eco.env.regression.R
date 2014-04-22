@@ -111,33 +111,6 @@ eco.env.regression <- function(data,
   return(model)
 }
 
-#' @method print eco.env.regression
-#' @S3method print eco.env.regression
-#' @export
-print.eco.env.regression <- function(x, ...){
-  summary(x, ...)
-}
-
-#' Summarise an eco.env.regression regression
-#' @method summary eco.env.regression
-#' @S3method summary eco.env.regression
-#' @export
-summary.eco.env.regression <- function(object, ...){
-  .summary.regression(object, "eco.env.regression regression")
-}
-
-#' @method plot eco.env.regression.list
-#' @S3method plot eco.env.regression.list
-#' @export
-plot.eco.env.regression <- function(x, ...){
-  #Beware calling without knowing which environmental distance matrix we should be using
-  if(!x$altogether) stop("Cannot call 'plot' on an element of an eco.env.regression.list - uses plot(list, no.trait) instead")
-  eco.matrix <- as.numeric(comm.dist(x$data$comm))
-  env.matrix <- as.numeric(pianka.dist(x$data, TRUE))
-  .plot.regression(env.matrix, eco.matrix, x$observed, x$randomisations, x$method, x$permute,
-                   xlab="Pianka's Distance", ylab="Ecological Co-existnce", ...)
-}
-
 #' Print basic information about a list of eco.env.regressions
 #' @method print eco.env.regression.list
 #' @S3method print eco.env.regression.list
