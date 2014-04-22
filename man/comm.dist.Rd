@@ -2,9 +2,9 @@
 \alias{comm.dist}
 \title{Make ecological co-existence matrices}
 \usage{
-  comm.dist(x)
+comm.dist(x)
 }
 \description{
-  Make ecological co-existence matrices
+Make ecological co-existence matrices
 }
 

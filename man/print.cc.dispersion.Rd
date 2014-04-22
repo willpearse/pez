@@ -2,9 +2,9 @@
 \alias{print.cc.dispersion}
 \title{Print a dispersion object (...by summarising it...)}
 \usage{
-  \method{print}{cc.dispersion} (x, ...)
+\method{print}{cc.dispersion}(x, ...)
 }
 \description{
-  Print a dispersion object (...by summarising it...)
+Print a dispersion object (...by summarising it...)
 }
 

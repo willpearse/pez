@@ -2,9 +2,9 @@
 \alias{traits.dist}
 \title{Make trait distance matrices}
 \usage{
-  traits.dist(x, ...)
+traits.dist(x, ...)
 }
 \description{
-  Make trait distance matrices
+Make trait distance matrices
 }
 

@@ -11,7 +11,7 @@ PCD <- function(samp, tree, PSVmncd=NULL, PSVpool=NULL, reps=10^4)
   {
     if (is.null(tree$edge.length)) {tree <- compute.brlen(tree, 1)}    #If phylo has no given branch lengths
     tree <- prune.sample(samp, tree)
-    V <- vcv.phylo(tree, cor = TRUE)
+    V <- vcv.phylo(tree, corr = TRUE)
     samp <- samp[, tree$tip.label]
   } else {
     V <- tree

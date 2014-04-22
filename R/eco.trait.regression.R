@@ -112,8 +112,8 @@ print.eco.trait.regression <- function(x, ...){
 #' @method summary eco.trait.regression
 #' @S3method summary eco.trait.regression
 #' @export
-summary.eco.trait.regression <- function(x, ...){
-  .summary.regression(x, "eco.trait.regression regression")
+summary.eco.trait.regression <- function(object, ...){
+  .summary.regression(object, "eco.trait.regression regression")
 }
 
 #' \code{plot.eco.trait.regression} plots an eco.trait.regression regression
@@ -144,10 +144,10 @@ print.eco.trait.regression.list <- function(x, ...){
 #' Summarise an eco.trait.regression regression
 #' @method summary eco.trait.regression.list
 #' @export
-summary.eco.trait.regression.list <- function(x, ...){
+summary.eco.trait.regression.list <- function(object, ...){
   cat("\neco.trait.regression list:\n")
-  for(i in seq(ncol(x$data$traits))){
-    cat("\n\n**", names(x$data$traits)[i], "**\n")
+  for(i in seq(ncol(object$data$traits))){
+    cat("\n\n**", names(object$data$traits)[i], "**\n")
     summary(x[[i]], ...)
   }
 }

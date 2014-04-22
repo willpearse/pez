@@ -122,8 +122,8 @@ print.eco.env.regression <- function(x, ...){
 #' @method summary eco.env.regression
 #' @S3method summary eco.env.regression
 #' @export
-summary.eco.env.regression <- function(x, ...){
-  .summary.regression(x, "eco.env.regression regression")
+summary.eco.env.regression <- function(object, ...){
+  .summary.regression(object, "eco.env.regression regression")
 }
 
 #' @method plot eco.env.regression.list
@@ -154,11 +154,11 @@ print.eco.env.regression.list <- function(x, ...){
 #' @method summary eco.env.regression.list
 #' @S3method summary eco.env.regression.list
 #' @export
-summary.eco.env.regression.list <- function(x, ...){
+summary.eco.env.regression.list <- function(object, ...){
   cat("\neco.env.regression list:\n")
-  for(i in seq(ncol(x$data$env))){
-    cat("\n\n**", names(x$data$env)[i], "**\n")
-    summary(x[[i]], ...)
+  for(i in seq(ncol(object$data$env))){
+    cat("\n\n**", names(object$data$env)[i], "**\n")
+    summary(object[[i]], ...)
   }
 }
 

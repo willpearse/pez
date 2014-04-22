@@ -79,8 +79,8 @@ print.eco.phy.regression <- function(x, ...){
 #' @method summary eco.phy.regression
 #' @S3method summary eco.phy.regression
 #' @export
-summary.eco.phy.regression <- function(x, ...){
-  .summary.regression(x, "eco.phy.regression regression")
+summary.eco.phy.regression <- function(object, ...){
+  .summary.regression(object, "eco.phy.regression regression")
 }
 
 #' @method plot eco.phy.regression

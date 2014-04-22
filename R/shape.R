@@ -105,37 +105,37 @@ print.cc.shape <- function(x, ...){
 #' @method summary cc.shape
 #' @S3method summary cc.shape
 #' @export
-summary.cc.shape <- function(x, ...){
+summary.cc.shape <- function(object, ...){
   cat("\nShape metrics in this object:\n")
-  if(!is.null(x$psv)){
+  if(!is.null(object$psv)){
     cat("\tPSV (psv)\n")
   }
-  if(!is.null(x$psr)){
+  if(!is.null(object$psr)){
     cat("\tPSR (psr)\n")
   }
-  if(!is.null(x$mpd)){
+  if(!is.null(object$mpd)){
     cat("\tMean Phylogenetic Distance (mpd)\n")
   }
   
-  if(!is.null(x$pd)){
+  if(!is.null(object$pd)){
     cat("\tPhylogenetic Distance (pd)\n")
   }
-  if(!is.null(x$pd.ivs)){
+  if(!is.null(object$pd.ivs)){
     cat("\tPhylogenetic Distance stanardised according to number of species in sample (pd.ivs)\n")
   }
-  if(!is.null(x$colless)){
+  if(!is.null(object$colless)){
     cat("\tColless' index (colless)\n")
   }
-  if(!is.null(x$gamma)){
+  if(!is.null(object$gamma)){
     cat("\tGamma (gamma)\n")
   }
-  if(!is.null(x$taxon)){
+  if(!is.null(object$taxon)){
     cat("\tTaxonomic diversity (taxon)\n")
   }
-  if(!is.null(x$eigen.sum)){
+  if(!is.null(object$eigen.sum)){
     cat("\tSum of dominant eigenvector (eigen.sum)\n")
   }
-  if(!is.null(x$cadotte.pd)){
+  if(!is.null(object$cadotte.pd)){
     cat("\tCadotte's expected phylogenetic diversity (cadotte.pd)\n")
   }
   cat("Use something like 'output$psv' to work with each measure\n")

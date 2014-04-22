@@ -2,9 +2,9 @@
 \alias{summary.cc.dispersion}
 \title{Summarise a dispersion object}
 \usage{
-  \method{summary}{cc.dispersion} (x, ...)
+\method{summary}{cc.dispersion}(object, ...)
 }
 \description{
-  Summarise a dispersion object
+Summarise a dispersion object
 }
 

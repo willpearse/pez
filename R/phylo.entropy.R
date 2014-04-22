@@ -1,17 +1,27 @@
-#To-DO:
-# optimise (? and if can be bothered)
-# mis-match between proportions and partial.tree$edge.length - not introduced by the changes below
-require(ade4)
-
+#' \code{phylo.entropy} calculate phylogenetic entropy across a comparative.comm object
+#' 
+#' @param data comparative.comm object
+#' @details Something and a description of what it does with a reference!
+#' @return named vector of entropy values for each community in the input data
+#' @examples \dontrun{
+#' data(pez)
+#' data <- comparative.comm(phy.only$phy, phy.only$sample)
+#' phylo.entropy(data)
+#' }
+#' @import ape
+#' @import ade4
+#' @export
 phylo.entropy <- function(data)
 {
   #Assertions and argument handling
   if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
   
   #Setup
+  data$phy$node.label <- NULL
   tree.phylog <- newick2phylog(write.tree(data$phy))
   species <- colnames(data$comm)
   hp.sites <- numeric(nrow(data$comm))
+  names(hp.sites) <- rownames(data$comm)
 
   ## beginning of the sites iteration
   for (i in seq(nrow(data$comm)))
@@ -35,12 +45,6 @@ phylo.entropy <- function(data)
     } else {
       if(length(site.species) == 1) {other.species<-c(other.species,site.species)}
       partial.tree <- drop.tip(data$phy, other.species)
-      if (all(partial.tree$edge.length[1] == partial.tree$edge.length) | length(site.species) == 2)
-      {
-        #SOMETHING WRONG HERE
-        hp.sites[rownames(data$comm)[i]] <- abs(sum(proportions * log(proportions) * partial.tree$edge.length))
-        next
-      }
       partial.tree <- newick2phylog(write.tree(drop.tip(data$phy, other.species)))
     }
     ## TODO: Some (I think) partial trees are not rooted. The results

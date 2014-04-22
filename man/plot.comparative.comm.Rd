@@ -1,10 +1,9 @@
-\name{cc.dotplot}
-\alias{cc.dotplot}
+\name{plot.comparative.comm}
+\alias{plot.comparative.comm}
 \title{Plots dot-plots of community presence/absence or abundance}
 \usage{
-  cc.dotplot(data, sites = NULL, abundance = FALSE,
-    dot.cex = NULL, site.col = "black", pch = 20,
-    fraction = 3, x.increment = NULL, ...)
+plot.comparative.comm(x, sites = NULL, abundance = FALSE, dot.cex = NULL,
+  site.col = "black", pch = 20, fraction = 3, x.increment = NULL, ...)
 }
 \arguments{
   \item{data}{a comparative community ecology object}
@@ -30,21 +29,20 @@
   plot; see examples}
 }
 \value{
-  List containing plot.phylo information, as well as the
-  used x.adj values
+List containing plot.phylo information, as well as the used
+x.adj values
 }
 \description{
-  \code{dot.plot.comparative.comm} plots a barplot of a
-  trait in a comparative community object
+\code{plot.comparative.comm} plots a barplot of a trait in
+a comparative community object
 }
 \details{
-  Getting the right spacing of dots on the phylogeny may
-  take some playing around with the fraction and
-  x.increment arguments, see below. It may seem a little
-  strange to set point size using a function; however, this
-  gives you much more flexibility when dealing with
-  abundance data, and allows you to transform the data -
-  see the examples
+Getting the right spacing of dots on the phylogeny may take
+some playing around with the fraction and x.increment
+arguments, see below. It may seem a little strange to set
+point size using a function; however, this gives you much
+more flexibility when dealing with abundance data, and
+allows you to transform the data - see the examples
 }
 \examples{
 \dontrun{
@@ -60,6 +58,6 @@ cc.dotplot(data, sites=c("clump1", "clump2a"), site.col=rainbow(2), fraction=1.2
 }
 }
 \author{
-  Will Pearse, Matt Helmus
+Will Pearse, Matt Helmus
 }
 

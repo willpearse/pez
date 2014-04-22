@@ -2,9 +2,9 @@
 \alias{summary.cc.shape}
 \title{Summarise a shape object}
 \usage{
-  \method{summary}{cc.shape} (x, ...)
+\method{summary}{cc.shape}(object, ...)
 }
 \description{
-  Summarise a shape object
+Summarise a shape object
 }
 

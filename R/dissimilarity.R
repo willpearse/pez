@@ -64,15 +64,15 @@ print.cc.dissimilarity <- function(x, ...){
 #' @method summary cc.dissimilarity
 #' @S3method summary cc.dissimilarity
 #' @export
-summary.cc.dissimilarity <- function(x, ...){
+summary.cc.dissimilarity <- function(object, ...){
   cat("\nDissimilarity metrics in this object:\n")
-  if(!is.null(x$unifrac)){
+  if(!is.null(object$unifrac)){
     cat("\tUniFrac (unifrac)\n")
   }
-  if(!is.null(x$pcd)){
+  if(!is.null(object$pcd)){
     cat("\tPCD (pcd)\n")
   }
-  if(!is.null(x$phylosor)){
+  if(!is.null(object$phylosor)){
     cat("\tPhyloSor (phylosor)\n")
   }
   cat("Use something like 'output$unifrac' to work with each measure\n")

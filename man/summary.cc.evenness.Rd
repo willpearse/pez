@@ -2,9 +2,9 @@
 \alias{summary.cc.evenness}
 \title{Summarise an evenness object}
 \usage{
-  \method{summary}{cc.evenness} (x, ...)
+\method{summary}{cc.evenness}(object, ...)
 }
 \description{
-  Summarise an evenness object
+Summarise an evenness object
 }
 

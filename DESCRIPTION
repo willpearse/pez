@@ -1,12 +1,16 @@
-Package: EcoPhyl
+Package: pez
 Type: Package
-Title: Eco-Phylognetic Analysis (in R)
-Version: 0.1
-Date: 2013-04-15
-Author: Will Pearse, Jeannine Cavender-Bares
+Title: Phylogenetics for the Environmental Sciences
+Version: 0.2
+Date: 2013-11-15
+Author: Matthew R. Helmus, William D. Pearse
 Maintainer: Will Pearse <wdpearse@umn.edu>
-Description: Eco-phylogenetic analysis; regressions of community co-existence
-    against phylogenetic dissimilarity and niche overlap
+Description: Eco-phylogenetic and community phylogenetic analyses.
+    Keeps community ecological and phylogenetic data matched up and
+    comparable using 'comparative.comm' objects. Wrappers for common
+    community phylogenetic indices ('shape', 'evenness', 'dispersion', and
+    'dissimilarity' metrics). Simplified and improved model-based
+    approaches using Phylogenetic Generalised Linear Mixed Models (PGLMM).
 License: GPL-2
 Imports:
     caper,
@@ -21,25 +25,3 @@ Imports:
     ape,
     apTreeshape,
     phylobase
-Collate:
-    'comparative.comm.R'
-    'D.c.R'
-    'dispersion.r'
-    'dissimilarity.r'
-    'dist.matrix.R'
-    'eco.env.regression.R'
-    'eco.phy.regression.R'
-    'eco.trait.regression.R'
-    'evenness.R'
-    'pae.r'
-    'PCD.r'
-    'pglm.r'
-    'shape.r'
-    'utility.R'
-    'EcoPhyl-package.R'
-    'jcb.regression.R'
-    'phy.signal.R'
-    'barplot.R'
-    'dot.plot.R'
-    'mirror.plot.R'
-    'plotting.R'

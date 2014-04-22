@@ -2,8 +2,8 @@
 \alias{evenness}
 \title{Calculate evenness metrics across communities}
 \usage{
-  evenness(data,
-    metric = c("all", "rao", "taxon", "entropy", "cadotte", "pst", "lambda", "delta", "kappa"))
+evenness(data, metric = c("all", "rao", "taxon", "entropy", "cadotte", "pst",
+  "lambda", "delta", "kappa"))
 }
 \arguments{
   \item{data}{a comparative community ecology object}
@@ -13,18 +13,18 @@
   the default 'all'}
 }
 \value{
-  cc.evenness object (a named list with the output from
-  each metric)
+cc.evenness object (a named list with the output from each
+metric)
 }
 \description{
-  \code{evenness} calculates evenness metrics in
-  comparative.comm communities
+\code{evenness} calculates evenness metrics in
+comparative.comm communities
 }
 \details{
-  This calculates Rao's quadratic entropy, taxonomic
-  diversity, phylogenetic entropy, Cadotte's abundance
-  measures, and Pst, all defined as evenness metrics in
-  Pearse et al.
+This calculates Rao's quadratic entropy, taxonomic
+diversity, phylogenetic entropy, Cadotte's abundance
+measures, and Pst, all defined as evenness metrics in
+Pearse et al.
 }
 \examples{
 \dontrun{
@@ -35,6 +35,6 @@ evenness(data, "rao")
 }
 }
 \author{
-  Matt Helmus, Will Pearse
+Matt Helmus, Will Pearse
 }
 

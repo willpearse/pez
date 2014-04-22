@@ -2,9 +2,9 @@
 \alias{summary.eco.env.regression.list}
 \title{Summarise an eco.env.regression regression}
 \usage{
-  \method{summary}{eco.env.regression.list} (x, ...)
+\method{summary}{eco.env.regression.list}(object, ...)
 }
 \description{
-  Summarise an eco.env.regression regression
+Summarise an eco.env.regression regression
 }
 

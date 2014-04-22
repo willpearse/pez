@@ -2,15 +2,13 @@
 \alias{cc.barplot}
 \title{Plots a barplot of a trait in a comparative community object}
 \usage{
-  cc.barplot(data, traits, scaling = FALSE, ranging = TRUE,
-    yranging = NULL, tipsontop = TRUE, ceti = 1, csub = 0,
-    f.phylog = 1/(1 + ncol(values)), clabel.leaves = 0,
-    grid.col = gray(0.85), connect.col = "black",
-    vert.line.col = grey(0.5), vert.line.lty = 1,
-    bar.col = heat.colors(dim(values)[1], alpha = 0.8),
-    spacing = 2.5, border.col = "black",
-    draw.connecting.lines = FALSE, draw.grid = FALSE,
-    draw.vert.line = TRUE, phylog.lwd = 1, ...)
+cc.barplot(data, traits, scaling = FALSE, ranging = TRUE, yranging = NULL,
+  tipsontop = TRUE, ceti = 1, csub = 0, f.phylog = 1/(1 + ncol(values)),
+  clabel.leaves = 0, grid.col = gray(0.85), connect.col = "black",
+  vert.line.col = grey(0.5), vert.line.lty = 1,
+  bar.col = heat.colors(dim(values)[1], alpha = 0.8), spacing = 2.5,
+  border.col = "black", draw.connecting.lines = FALSE, draw.grid = FALSE,
+  draw.vert.line = TRUE, phylog.lwd = 1, ...)
 }
 \arguments{
   \item{data}{a comparative community ecology object}
@@ -20,24 +18,24 @@
   \item{TO=DO}{}
 }
 \value{
-  Named numeric vector, where each element is a trait or
-  community.
+Named numeric vector, where each element is a trait or
+community.
 }
 \description{
-  \code{cc.barplot} plots a barplot of a trait in a
-  comparative community object
+\code{barplot.comparative.comm} plots a barplot of a trait
+in a comparative community object
 }
 \details{
-  This may not necessarily be a good thing to do!
+This may not necessarily be a good thing to do!
 }
 \examples{
 \dontrun{
 data(phylocom)
 data <- comparative.comm(phylocom$phy, phylocom$sample, traits=phylocom$traits)
-cc.barplot(data, c("traitA", "traitB"))
+barplot.cc(data, c("traitA", "traitB"))
 }
 }
 \author{
-  Matt Helmus, Will Pearse
+Matt Helmus, Will Pearse
 }
 

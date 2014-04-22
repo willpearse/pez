@@ -2,9 +2,9 @@
 \alias{print.cc.dissimilarity}
 \title{Print a dissimilarity object (...by summarising it...)}
 \usage{
-  \method{print}{cc.dissimilarity} (x, ...)
+\method{print}{cc.dissimilarity}(x, ...)
 }
 \description{
-  Print a dissimilarity object (...by summarising it...)
+Print a dissimilarity object (...by summarising it...)
 }
 

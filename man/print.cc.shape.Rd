@@ -2,9 +2,9 @@
 \alias{print.cc.shape}
 \title{Print a shape object (...by summarising it...)}
 \usage{
-  \method{print}{cc.shape} (x, ...)
+\method{print}{cc.shape}(x, ...)
 }
 \description{
-  Print a shape object (...by summarising it...)
+Print a shape object (...by summarising it...)
 }
 

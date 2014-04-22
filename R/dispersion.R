@@ -64,27 +64,27 @@ print.cc.dispersion <- function(x, ...){
 #' @method summary cc.dispersion
 #' @S3method summary cc.dispersion
 #' @export
-summary.cc.dispersion <- function(x, ...){
+summary.cc.dispersion <- function(object, ...){
   cat("\nDispersion metrics:\n")
-  if(!is.null(x$sesmpd)){
+  if(!is.null(object$sesmpd)){
     cat("SESmpd:\n")
-    print(x$sesmpd)
+    print(object$sesmpd)
   }
-  if(!is.null(x$sesmntd)){
+  if(!is.null(object$sesmntd)){
     cat("SESmntd:\n")
-    print(x$sesmmntd)
+    print(object$sesmmntd)
   }
-  if(!is.null(x$sespd)){
+  if(!is.null(object$sespd)){
     cat("SESpd:\n")
-    print(x$sespd)
+    print(object$sespd)
   }
-  if(!is.null(x$innd)){
+  if(!is.null(object$innd)){
     cat("INND:\n")
-    print(x$innd)
+    print(object$innd)
   }
-  if(!is.null(x$d)){
+  if(!is.null(object$d)){
     cat("D:\n")
-    print(x$d)
+    print(object$d)
   }
   cat("\n")
 }

@@ -134,30 +134,30 @@ print.cc.evenness <- function(x, ...){
 #' @method summary cc.evenness
 #' @S3method summary cc.evenness
 #' @export
-summary.cc.evenness <- function(x, ...){
+summary.cc.evenness <- function(object, ...){
   cat("\nEvenness metrics in this object:\n")
-  if(!is.null(x$rao)){
+  if(!is.null(object$rao)){
     cat("\tRao's quadratic entropy (rao)\n")
   }
-  if(!is.null(x$taxon)){
+  if(!is.null(object$taxon)){
     cat("\tTaxonomic diversity (taxon)\n")
   }
-  if(!is.null(x$entropy)){
+  if(!is.null(object$entropy)){
     cat("\tPhylogenetic entropy (entropy)\n")
   }
-  if(!is.null(x$cadotte)){
+  if(!is.null(object$cadotte)){
     cat("\tCadotte's abundance evenness measures (cadotte)\n")
   }
-  if(!is.null(x$pst)){
+  if(!is.null(object$pst)){
     cat("\tPst - Simpson's diversity (pst)\n")
   }
-  if(!is.null(x$lambda)){
+  if(!is.null(object$lambda)){
     cat("\tLambda transformation (lambda)\n")
   }
-  if(!is.null(x$delta)){
+  if(!is.null(object$delta)){
     cat("\t Delta transformation (delta)\n")
   }
-  if(!is.null(x$kappa)){
+  if(!is.null(object$kappa)){
     cat("\tKappa transformation (kappa)\n")
   }
   cat("Use something like 'output$rao' to work with each measure\n")

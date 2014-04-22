@@ -2,9 +2,8 @@
 \alias{dissimilarity}
 \title{Calculate dissimilarity metrics across communities}
 \usage{
-  dissimilarity(data,
-    metric = c("all", "unifrac", "pcd", "phylosor"),
-    pa = TRUE, permute = 1000)
+dissimilarity(data, metric = c("all", "unifrac", "pcd", "phylosor"),
+  pa = TRUE, permute = 1000)
 }
 \arguments{
   \item{data}{a comparative community ecology object}
@@ -20,21 +19,21 @@
   (currently only for PCD)}
 }
 \value{
-  cc.dissimilarity object (a named list with the output
-  from each metric)
+cc.dissimilarity object (a named list with the output from
+each metric)
 }
 \description{
-  \code{dissimilarity} calculates dissimilarity metrics in
-  comparative.comm communities
+\code{dissimilarity} calculates dissimilarity metrics in
+comparative.comm communities
 }
 \details{
-  This calculates UniFrac, PCD (and its subcomponents), and
-  the phylogenetic Sorenson's index, all defined as
-  dissimilarity metrics in Pearse et al.
+This calculates UniFrac, PCD (and its subcomponents), and
+the phylogenetic Sorenson's index, all defined as
+dissimilarity metrics in Pearse et al.
 }
 \note{
-  This function uses XXX's version of the PCD function, not
-  that included in picante
+This function uses XXX's version of the PCD function, not
+that included in picante
 }
 \examples{
 \dontrun{
@@ -45,6 +44,6 @@ dispersion(data, "pcd")
 }
 }
 \author{
-  Matt Helmus, Will Pearse
+Matt Helmus, Will Pearse
 }
 

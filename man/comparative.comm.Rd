@@ -3,10 +3,10 @@
 \alias{print.comparative.comm}
 \title{Make a comparative community ecology object}
 \usage{
-  comparative.comm(phy, comm, traits = NULL, env = NULL,
-    warn = TRUE, vcv = TRUE)
+comparative.comm(phy, comm, traits = NULL, env = NULL, warn = TRUE,
+  vcv = TRUE)
 
-  \method{print}{comparative.comm} (x, ...)
+\method{print}{comparative.comm}(x, ...)
 }
 \arguments{
   \item{phy}{phylogeny (in ape::phylo format) of species}
@@ -22,22 +22,22 @@
   'comm'}
 }
 \value{
-  comparative.comm object
+comparative.comm object
 }
 \description{
-  \code{comparative.comm} creates a community comparative
-  ecology object
+\code{comparative.comm} creates a community comparative
+ecology object
 }
 \details{
-  Basic checking of whether the input data match up is
-  performed; you need only supply 'comm' and 'phy', nothing
-  else is mandatory. Subsetting according to communities
-  (rows) and species (columns) is possible - see 'examples'
-  for details.
+Basic checking of whether the input data match up is
+performed; you need only supply 'comm' and 'phy', nothing
+else is mandatory. Subsetting according to communities
+(rows) and species (columns) is possible - see 'examples'
+for details.
 }
 \examples{
 \dontrun{
-data(phylocom)
+data(pez)
 data <- comparative.comm(phylocom$phy, phylocom$sample)
 data <- comparative.comm(phylocom$phy, phylocom$sample, traits=phylocom$traits)
 data[1:3,]

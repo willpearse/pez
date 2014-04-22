@@ -1,5 +1,4 @@
 #TO-DO:
-# - NAs in communities
 # - subsetting method in documentation?
 #' Make a comparative community ecology object
 #' 
@@ -13,7 +12,7 @@
 #' Subsetting according to communities (rows) and species (columns) is possible - see 'examples' for details.
 #' @return comparative.comm object
 #' @examples \dontrun{
-#' data(phylocom)
+#' data(pez)
 #' data <- comparative.comm(phylocom$phy, phylocom$sample)
 #' data <- comparative.comm(phylocom$phy, phylocom$sample, traits=phylocom$traits)
 #' data[1:3,]
@@ -168,7 +167,7 @@ print.comparative.comm <- function(x, ...){
 "[.comparative.comm" <- function(x, sites, spp, warn=FALSE) {
   #Assertions and setup
   if(!inherits(x, "comparative.comm"))
-    stop("'", subsitute(deparse(x)), "' not of class 'comparative.comm'")
+    stop("'", substitute(deparse(x)), "' not of class 'comparative.comm'")
     
   
   #Handle species

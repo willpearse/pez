@@ -33,6 +33,48 @@ D.c <- function(data, permute=1000, traits=TRUE) {
   if(any(el[! elTip] == 0)) 
     stop('Phylogeny contains zero length internal branches. Use di2multi.')
 
+
+  #Internal Dc calculation
+  .d.c <- function(ds, vcv, permute, phy){
+      dsSort <- sort(ds)
+      
+      ## Random Association model
+      ds.ran <- replicate(permute, sample(ds))
+      
+      ## Brownian Threshold model random data
+      ds.phy <- rmvnorm(permute, sigma=unclass(vcv)) # class of 'VCV.array' throws the method dispatch
+      ds.phy <- as.data.frame(t(ds.phy))
+      
+                                        # turn those into rank values, then pull that rank's observed value
+      ds.phy <- apply(ds.phy, 2, rank, ties="random")
+      ds.phy <- apply(ds.phy, 2, function(x) as.numeric(dsSort[x]))
+      
+      ## Get change along edges
+      ## insert observed and set dimnames for contrCalc
+      ds.ran <- cbind(Obs=ds, ds.ran)
+      ds.phy <- cbind(Obs=ds, ds.phy)
+      dimnames(ds.ran) <- dimnames(ds.phy) <- list(data$phy$tip.label, c('Obs', paste('V',1:permute, sep='')))
+      
+      ## now run that through the contrast engine 
+      ds.ran.cc <- contrCalc(vals=ds.ran, phy=phy, ref.var='V1', picMethod='phylo.d', crunch.brlen=0)
+      ds.phy.cc <- contrCalc(vals=ds.phy, phy=phy, ref.var='V1', picMethod='phylo.d', crunch.brlen=0)
+      
+      ## get sums of change and distributions
+      ransocc <- colSums(ds.ran.cc$contrMat)
+      physocc <- colSums(ds.phy.cc$contrMat)
+                                        # double check the observed, but only to six decimal places or you can get floating point errors
+      if(round(ransocc[1], digits=6) != round(physocc[1], digits=6)) stop('Problem with character change calculation in phylo.d')
+      obssocc <- ransocc[1]
+      ransocc <- ransocc[-1]
+      physocc <- physocc[-1]
+      
+      soccratio <- (obssocc - mean(physocc)) / (mean(ransocc) - mean(physocc))
+      soccpval1 <- sum(ransocc < obssocc) / permute
+      soccpval0 <- sum(physocc > obssocc) / permute
+      
+      return(c(soccratio, soccpval1, soccpval0))
+  }
+
   ## being careful with the edge order - pre-reorder the phylogeny
   phy <- reorder(data$phy, 'pruningwise')
   
@@ -53,45 +95,4 @@ D.c <- function(data, permute=1000, traits=TRUE) {
       vals[i,] <- .d.c(data$comm[i,], vcv, permute, data$phy)
   }
   return(vals)
-}
-
-#Internal Dc calculation
-.d.c <- function(ds, vcv, permute, phy){
-  dsSort <- sort(ds)
-  
-  ## Random Association model
-  ds.ran <- replicate(permute, sample(ds))
-  
-  ## Brownian Threshold model random data
-  ds.phy <- rmvnorm(permute, sigma=unclass(vcv)) # class of 'VCV.array' throws the method dispatch
-  ds.phy <- as.data.frame(t(ds.phy))
-  
-  # turn those into rank values, then pull that rank's observed value
-  ds.phy <- apply(ds.phy, 2, rank, ties="random")
-  ds.phy <- apply(ds.phy, 2, function(x) as.numeric(dsSort[x]))
-  
-  ## Get change along edges
-  ## insert observed and set dimnames for contrCalc
-  ds.ran <- cbind(Obs=ds, ds.ran)
-  ds.phy <- cbind(Obs=ds, ds.phy)
-  dimnames(ds.ran) <- dimnames(ds.phy) <- list(data$phy$tip.label, c('Obs', paste('V',1:permute, sep='')))
-   
-  ## now run that through the contrast engine 
-  ds.ran.cc <- contrCalc(vals=ds.ran, phy=phy, ref.var='V1', picMethod='phylo.d', crunch.brlen=0)
-  ds.phy.cc <- contrCalc(vals=ds.phy, phy=phy, ref.var='V1', picMethod='phylo.d', crunch.brlen=0)
-  
-  ## get sums of change and distributions
-  ransocc <- colSums(ds.ran.cc$contrMat)
-  physocc <- colSums(ds.phy.cc$contrMat)
-  # double check the observed, but only to six decimal places or you can get floating point errors
-  if(round(ransocc[1], digits=6) != round(physocc[1], digits=6)) stop('Problem with character change calculation in phylo.d')
-  obssocc <- ransocc[1]
-  ransocc <- ransocc[-1]
-  physocc <- physocc[-1]
-  
-  soccratio <- (obssocc - mean(physocc)) / (mean(ransocc) - mean(physocc))
-  soccpval1 <- sum(ransocc < obssocc) / permute
-  soccpval0 <- sum(physocc > obssocc) / permute
-  
-  return(c(soccratio, soccpval1, soccpval0))
 }
