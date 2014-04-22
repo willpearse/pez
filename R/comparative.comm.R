@@ -127,7 +127,10 @@ comparative.comm <- function(phy, comm, traits=NULL, env=NULL, warn=TRUE, vcv=TR
 #' @S3method print comparative.comm
 #' @export
 print.comparative.comm <- function(x, ...){
-
+    #Argument checking
+    if(!inherits(x, "comparative.comm"))
+        stop("'", substitute(deparse(x)), "' not of class 'comparative.comm'")
+    
     # basic summary data
     cat("Comparative community dataset of", ncol(x$comm), "taxa:\n")
     cat("Phylogeny:", x$names$phy, "\n")

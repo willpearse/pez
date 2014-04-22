@@ -14,16 +14,14 @@ cc.barplot(data, traits, scaling = FALSE, ranging = TRUE, yranging = NULL,
   \item{data}{a comparative community ecology object}
 
   \item{trait}{name of trait you wish to plot (only one!)}
-
-  \item{TO=DO}{}
 }
 \value{
 Named numeric vector, where each element is a trait or
 community.
 }
 \description{
-\code{barplot.comparative.comm} plots a barplot of a trait
-in a comparative community object
+\code{cc.barplot} plots a barplot of a trait in a
+comparative community object
 }
 \details{
 This may not necessarily be a good thing to do!
@@ -32,7 +30,7 @@ This may not necessarily be a good thing to do!
 \dontrun{
 data(phylocom)
 data <- comparative.comm(phylocom$phy, phylocom$sample, traits=phylocom$traits)
-barplot.cc(data, c("traitA", "traitB"))
+cc,barplotc(data, c("traitA", "traitB"))
 }
 }
 \author{

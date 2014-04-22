@@ -118,49 +118,9 @@ evenness <- function(data, metric=c("all", "rao", "taxon", "entropy", "cadotte",
   }
   
   #Prepare output
-  class(output) <- c("cc.evenness", class(output))
+  output$type <- "evenness"
+  class(output) <- "phy.structure"
   return(output)
-}
-
-#' Print an evenness object (...by summarising it...)
-#' @method print cc.evenness
-#' @S3method print cc.evenness
-#' @export
-print.cc.evenness <- function(x, ...){
-  summary(x)
-}
-
-#' Summarise an evenness object
-#' @method summary cc.evenness
-#' @S3method summary cc.evenness
-#' @export
-summary.cc.evenness <- function(object, ...){
-  cat("\nEvenness metrics in this object:\n")
-  if(!is.null(object$rao)){
-    cat("\tRao's quadratic entropy (rao)\n")
-  }
-  if(!is.null(object$taxon)){
-    cat("\tTaxonomic diversity (taxon)\n")
-  }
-  if(!is.null(object$entropy)){
-    cat("\tPhylogenetic entropy (entropy)\n")
-  }
-  if(!is.null(object$cadotte)){
-    cat("\tCadotte's abundance evenness measures (cadotte)\n")
-  }
-  if(!is.null(object$pst)){
-    cat("\tPst - Simpson's diversity (pst)\n")
-  }
-  if(!is.null(object$lambda)){
-    cat("\tLambda transformation (lambda)\n")
-  }
-  if(!is.null(object$delta)){
-    cat("\t Delta transformation (delta)\n")
-  }
-  if(!is.null(object$kappa)){
-    cat("\tKappa transformation (kappa)\n")
-  }
-  cat("Use something like 'output$rao' to work with each measure\n")
 }
 
 .phylo.entropy <- function(data)

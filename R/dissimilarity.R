@@ -48,32 +48,7 @@ dissimilarity <- function(data, metric=c("all", "unifrac", "pcd", "phylosor"), p
     output$phylosor <- phylosor(data$comm, data$phy)
   
   #Prepare output
-  class(output) <- c("cc.dissimilarity", class(output))
+  output$type <- "dissimilarity"
+  class(output) <- "phy.structure"
   return(output)
-}
-
-#' Print a dissimilarity object (...by summarising it...)
-#' @method print cc.dissimilarity
-#' @S3method print cc.dissimilarity
-#' @export
-print.cc.dissimilarity <- function(x, ...){
-  summary(x)
-}
-
-#' Summarise a dissimilarity object
-#' @method summary cc.dissimilarity
-#' @S3method summary cc.dissimilarity
-#' @export
-summary.cc.dissimilarity <- function(object, ...){
-  cat("\nDissimilarity metrics in this object:\n")
-  if(!is.null(object$unifrac)){
-    cat("\tUniFrac (unifrac)\n")
-  }
-  if(!is.null(object$pcd)){
-    cat("\tPCD (pcd)\n")
-  }
-  if(!is.null(object$phylosor)){
-    cat("\tPhyloSor (phylosor)\n")
-  }
-  cat("Use something like 'output$unifrac' to work with each measure\n")
 }
