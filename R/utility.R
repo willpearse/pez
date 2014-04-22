@@ -60,6 +60,7 @@
 }
 
 #Printing summaries of regressions
+#ADD RETURN STATEMENTS FOR FALL-THROUGH LIKE OTHERS
 #' @method summary ecophyl.regression
 #' @S3method summary ecophyl.regression
 #' @export
@@ -144,8 +145,72 @@ plot.ecophyl.regression <- function(x, ...){
     }
 }
 
+summary.ecophyl.regression.list <- function(x, ...){    
+    if(x$type == "eco.env.regression.list"){
+        cat("\neco.env.regression list:\n")
+        for(i in seq(ncol(object$data$env))){
+            cat("\n\n**", names(object$data$env)[i], "**\n")
+            summary(object[[i]], ...)
+        }
+        return()
+    }
 
-  
+    if(x$type == "eco.trait.regression.list"){
+        cat("\neco.trait.regression list:\n")
+        for(i in seq(ncol(object$data$traits))){
+            cat("\n\n**", names(object$data$traits)[i], "**\n")
+            summary(x[[i]], ...)
+        }
+        return()
+    }
+
+}
+
+print.ecophyl.regression.list <- function(x, ...){
+    if(x$type == "eco.env.regression.list"){
+        cat("\neco.env.regression list:\n")
+        cat("Traits:\n")
+        cat(colnames(x$data$env), sep=", ")
+        cat("\nTo examine each regression of each trait, use something like 'x[[1]]', or 'print(x[[2]])'\n")
+        cat("To display all at once, call something like 'summary(regression.list)'\n")
+        return()
+    }
+    if(x$type == "eco.trait.regression.list"){
+        cat("\neco.trait.regression list:\n")
+        cat("Traits:\n")
+        cat(colnames(x$data$traits), sep=", ")
+        cat("\nTo examine each regression of each trait, use something like 'x[[1]]', or 'print(x[[2]])'\n")
+        cat("To display all at once, call something like 'summary(regression.list)'\n")
+        return()
+    }
+}
+
+plot.ecophyl.regression.list <- function(x, ...){
+    if(x$type == "eco.env.regression.list"){
+        eco.matrix <- as.numeric(comm.dist(x$data$comm))
+        env.matrix <- pianka.dist(x$data, FALSE)
+        if(is.null(which)){
+            for(i in seq(ncol(x$data$env)))
+                .plot.regression(as.numeric(as.dist(env.matrix[,,i])), eco.matrix, x$observed, x$randomisations, x$method, x$permute,
+                                 xlab="Pianka's Distance", ylab="Ecological Co-existnce", main=names(x$data$env)[i], ...)
+        } else .plot.regression(as.numeric(as.dist(env.matrix[,,which])), eco.matrix, x$observed, x$randomisations, x$method, x$permute,
+                                xlab="Pianka's Distance", ylab="Ecological Co-existnce", ...)
+        return()
+    }
+
+    if(x$type == "eco.trait.regression.list"){
+        eco.matrix <- as.numeric(comm.dist(x$data$comm))
+        trait.matrix <- traits.dist(x$data, FALSE)
+        if(is.null(which)){
+            for(i in seq(ncol(x$data$traits)))
+                .plot.regression(as.numeric(as.dist(trait.matrix[,,i])), eco.matrix, x$observed, x$randomisations, x$method, x$permute,
+                                 xlab="Trait Distance", ylab="Ecological Co-existnce", main=names(x$data$traits)[i], ...)
+        } else .plot.regression(as.numeric(as.dist(trait.matrix[,,which])), eco.matrix, x$observed, x$randomisations, x$method, x$permute,
+                                xlab="Trait Distance", ylab="Ecological Co-existnce", ...)
+        return()
+    }
+}
+
 
 #Trim a phylogeny (ape work-around)
 #' @export

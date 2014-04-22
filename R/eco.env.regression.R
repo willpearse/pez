@@ -86,7 +86,8 @@ eco.env.regression <- function(data,
         output[[i]]$altogether <- FALSE
       }
       output$altogether <- FALSE
-      class(output) <- "eco.env.regression.list"
+      output$type <- "eco.env.regression.list"
+      class(output) <- "ecophyl.regression.list"
     }
   output$data <- data
   output$permute<-permute;output$method<-method
@@ -109,43 +110,4 @@ eco.env.regression <- function(data,
     model <- mantel(eco.mat, trait.mat, ...)
   
   return(model)
-}
-
-#' Print basic information about a list of eco.env.regressions
-#' @method print eco.env.regression.list
-#' @S3method print eco.env.regression.list
-#' @export
-print.eco.env.regression.list <- function(x, ...){
-  cat("\neco.env.regression list:\n")
-  cat("Traits:\n")
-  cat(colnames(x$data$env), sep=", ")
-  cat("\nTo examine each regression of each trait, use something like 'x[[1]]', or 'print(x[[2]])'\n")
-  cat("To display all at once, call something like 'summary(regression.list)'\n")
-}
-
-#' Summarise an eco.env.regression regression
-#' @method summary eco.env.regression.list
-#' @S3method summary eco.env.regression.list
-#' @export
-summary.eco.env.regression.list <- function(object, ...){
-  cat("\neco.env.regression list:\n")
-  for(i in seq(ncol(object$data$env))){
-    cat("\n\n**", names(object$data$env)[i], "**\n")
-    summary(object[[i]], ...)
-  }
-}
-
-#' Plot an eco.env.regression regression
-#' @method plot eco.env.regression.list
-#' @S3method plot eco.env.regression.list
-#' @export
-plot.eco.env.regression.list <- function(x, which=NULL, ...){
-  eco.matrix <- as.numeric(comm.dist(x$data$comm))
-  env.matrix <- pianka.dist(x$data, FALSE)
-  if(is.null(which)){
-    for(i in seq(ncol(x$data$env)))
-      .plot.regression(as.numeric(as.dist(env.matrix[,,i])), eco.matrix, x$observed, x$randomisations, x$method, x$permute,
-                       xlab="Pianka's Distance", ylab="Ecological Co-existnce", main=names(x$data$env)[i], ...)
-  } else .plot.regression(as.numeric(as.dist(env.matrix[,,which])), eco.matrix, x$observed, x$randomisations, x$method, x$permute,
-                          xlab="Pianka's Distance", ylab="Ecological Co-existnce", ...)
 }
