@@ -15,7 +15,9 @@
 #' data <- comparative.comm(phylocom$phy, phylocom$sample)
 #' eco.phy.regression(data, permute=10)
 #' }
-#' @import picante quantreg vegan
+#' @importFrom ape cophenetic.phylo
+#' @importFrom quantreg rq
+#' @importFrom vegan mantel
 #' @export
 eco.phy.regression <- function(data,
   randomisation=c("taxa.labels", "richness", "frequency", "sample.pool", "phylogeny.pool", "independentswap", "trialswap"),

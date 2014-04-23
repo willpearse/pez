@@ -18,7 +18,8 @@
 #' dispersion(data)
 #' dispersion(data, 100, "sesmpd")
 #' }
-#' @import caper picante
+#' @importFrom caper phylo.d
+#' @importFrom picante ses.mntd ses.mpd
 #' @export
 dispersion <- function(data, metric=c("all", "sesmpd", "sesmntd", "sespd", "innd", "d"), permute=1000)
 {

@@ -21,10 +21,6 @@
 #' plot(fingerprint.regression(data, permute=10, method="lm))
 #' plot(fingerprint.regression(data, permute=10, method="lm", altogether=FALSE))
 #' }
-#' @import caper
-#' @import picante
-#' @import quantreg
-#' @import vegan
 #' @export
 fingerprint.regression <- function(data, eco.rnd=c("taxa.labels", "richness", "frequency", "sample.pool", "phylogeny.pool", "independentswap", "trialswap"),
   eco.method=c("quantile", "lm", "mantel"), eco.permute=1000, eco.swap=1000, evo.method=c("lambda", "delta", "kappa"), evo.permute=1000, ...){

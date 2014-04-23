@@ -20,7 +20,13 @@
 #' evenness(data)
 #' evenness(data, "rao")
 #' }
-#' @import picante ecoPD spacodiR ade4
+#' @importFrom ape cophenetic.phylo drop.tip
+#' @importFrom picante pse raoD
+#' @importFrom vegan taxondive
+#' @importFrom ecoPD pae iac haed eaed simpson
+#' @importFrom phylobase phylo4d
+#' @importFrom caper comparative.data pgls
+#' @importFrom ade4 newick2phylog
 #' @export
 evenness <- function(data, metric=c("all", "rao", "taxon", "entropy", "cadotte", "pst", "lambda", "delta", "kappa"))
 {
@@ -53,8 +59,7 @@ evenness <- function(data, metric=c("all", "rao", "taxon", "entropy", "cadotte",
   
   if(metric == "cadotte" | metric == "all"){
     .abund <- data$comm[rowSums(data$comm>0)>1, ]
-    if(length(setdiff(data$phy$tip.label, colnames(.abund))))
-      tree <- drop.tip(data$phy, setdiff(data$phy$tip.label, colnames(.abund))) else tree <- data$phy
+    tree <- drop_tip(data$phy, colnames(.abund))
     temp <- phylo4d(tree, t(.abund))
     temp <- data.frame(PAE=pae(temp), IAC=iac(temp), Haed=haed(temp), Eaed=eaed(temp))
     output$cadotte <- temp[match(rownames(data$comm), rownames(temp)),]

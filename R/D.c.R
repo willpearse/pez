@@ -17,8 +17,8 @@
 #' D.c(data, permute=1000)
 #' D.c(data, traits=FALSE)
 #' }
-#' @import caper
-#' @import mvtnorm
+#' @importFrom caper contrCalc VCV.array
+#' @importFrom mvtnorm rmvnorm
 #' @export
 D.c <- function(data, permute=1000, traits=TRUE) {
   #Checking

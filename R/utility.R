@@ -215,7 +215,7 @@ plot.ecophyl.regression.list <- function(x, ...){
 #Trim a phylogeny (ape work-around)
 #' @export
 drop_tip <- function(tree, spp)
-  if(length(setdiff(tree$tip.label, spp)) >0) return(drop.tip(tree, spp)) else return(tree)
+  if(length(setdiff(tree$tip.label, spp)) >0) return(drop.tip(tree, setdiff(tree$tip.label, spp))) else return(tree)
 
 #Summarise phylogenetic structure objects
 #' @method summary phy.structure

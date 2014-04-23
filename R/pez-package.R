@@ -22,4 +22,3 @@
 #' @title Phylogenetic for the Environmental Sciences
 #' @author William D. Pearse \email{wdpearse@@umn.edu}
 #' @author Matthew R. Helmus
-#' @import ape apTreeshape caper picante quantreg mvtnorm vegan ecoPD PVR ade4 spacodiR

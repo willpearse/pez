@@ -18,7 +18,7 @@
 #' dispersion(data)
 #' dispersion(data, 100, "sesmpd")
 #' }
-#' @import caper picante
+#' @importFrom ape vcv.phylo compute.brlen
 #' @export
 
 pblm.traits<-function(assocs,tree1=NULL,tree2=NULL,covars1=NULL,covars2=NULL,bootstrap=FALSE,nreps=10,maxit=10000,pstart=c(.5,.5)){

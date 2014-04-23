@@ -20,7 +20,8 @@
 #' plot(eco.env.regression(data, permute=10, method="lm))
 #' plot(eco.env.regression(data, permute=10, method="lm", altogether=FALSE))
 #' }
-#' @import picante quantreg vegan
+#' @importFrom quantreg rq
+#' @importFrom vegan mantel
 #' @export
 eco.env.regression <- function(data,
                                  randomisation=c("taxa.labels", "richness", "frequency", "sample.pool", "phylogeny.pool", "independentswap", "trialswap"),

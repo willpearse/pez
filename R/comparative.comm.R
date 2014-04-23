@@ -18,7 +18,7 @@
 #' data[1:3,]
 #' data[,1:3]
 #' }
-#' @import ape
+#' @importFrom ape is.rooted cophenetic.phylo
 #' @export
 comparative.comm <- function(phy, comm, traits=NULL, env=NULL, warn=TRUE, vcv=TRUE){
   #Assertions and argument handling

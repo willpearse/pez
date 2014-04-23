@@ -23,9 +23,14 @@
 #' shape(data, "colless")
 #' shape(data, "eigen.sum", 2)
 #' }
-#' @import picante PVR apTreeshape ecoPD phylobase ape
+#' @importFrom picante psd mpd pd
+#' @importFrom vegan taxondive
+#' @importFrom PVR PVRdecomp
+#' @importFrom apTreeshape as.treeshape colless tipsubtree
+#' @importFrom ecoPD eed hed
+#' @importFrom phylobase phylo4d
+#' @importFrom ape gammaStat cophenetic.phylo drop.tip
 #' @export
-
 shape <- function(data, metric=c("all", "psv", "psr", "mpd", "pd", "colless", "gamma", "taxon", "eigen.sum", "cadotte.pd"), which.eigen=1)  #vecnums chooses the eigenvector to calculate sumvar in Diniz-Filho J.A.F., Cianciaruso M.V., Rangel T.F. & Bini L.M. (2011). Eigenvector estimation of phylogenetic and functional diversity. Functional Ecology, 25, 735-744.
 {
   #Assertions and argument handling
@@ -52,7 +57,7 @@ shape <- function(data, metric=c("all", "psv", "psr", "mpd", "pd", "colless", "g
     output$mpd <- mpd(pa, data$vcv)
   
   if(metric == "pd" | metric == "all"){
-    output$pd <- picante::pd(pa, data$phy)[,1]
+    output$pd <- pd(pa, data$phy)[,1]
     output$pd.ivs <- resid(lm(output$pd ~ rowSums(pa)))
   }
   
@@ -72,12 +77,12 @@ shape <- function(data, metric=c("all", "psv", "psr", "mpd", "pd", "colless", "g
   if(metric == "taxon" | metric == "all")
     output$taxon <- taxondive(pa, data$vcv)
   
-#  if(metric == "eigen.sum" | metric == "all"){
-#    evc <- PVRdecomp(data$phy)@Eigen$vectors  
-#    output$eigen.sum <- apply(pa, 1, 
-#                        function(x, evc, vecnums) if(sum(x>0)) return(sum(apply(as.matrix(evc[x>0,vecnums]),2,var))) else return(NA), 
-#                        evc,which.eigen)
-#  }
+  if(metric == "eigen.sum" | metric == "all"){
+      evc <- PVRdecomp(data$phy)@Eigen$vectors  
+      output$eigen.sum <- apply(pa, 1, 
+                                function(x, evc, vecnums) if(sum(x>0)) return(sum(apply(as.matrix(evc[x>0,vecnums]),2,var))) else return(NA), 
+                                evc,which.eigen)
+  }
   
   if(metric == "cadotte.pd" | metric == "all"){
     #require(phylobase)
@@ -105,14 +110,10 @@ shape <- function(data, metric=c("all", "psv", "psr", "mpd", "pd", "colless", "g
 }
 
 .gamma<-function(pa.vec,tree,nams)
-{
-  if(sum(pa.vec)<3)
-  {
-    return(NA)
-  } else {
-    if(length(setdiff(tree$tip.label, nams)) != 0){
-      tree <- drop.tip(setdiff(tree$tip.label, ))
-    }
-    return(gammaStat(drop.tip(tree,nams[pa.vec==0])))
-  }
+{    
+    if(sum(pa.vec)<3)
+        return(NA) else {
+            tree <- drop_tip(tree, nams)
+            return(gammaStat(drop.tip(tree,nams[pa.vec==0])))
+        }
 }

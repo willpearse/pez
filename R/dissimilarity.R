@@ -22,7 +22,7 @@
 #' dissimilarity(data)
 #' dispersion(data, "pcd")
 #' }
-#' @import picante
+#' @importFrom picante unifrac phylosor
 #' @export
 
 dissimilarity <- function(data, metric=c("all", "unifrac", "pcd", "phylosor"), pa=TRUE, permute=1000)

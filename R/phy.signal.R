@@ -15,6 +15,7 @@
 #' classic.phy.signal(data)
 #' classic.phy.signal(data, traits=FALSE, method="kappa")
 #' }
+#' @importFrom caper comparative.data pgls
 #' @export
 phy.signal <- function(data, traits=TRUE, method=c("lambda", "delta", "kappa")){
   #Assertions and argument handling
@@ -24,8 +25,8 @@ phy.signal <- function(data, traits=TRUE, method=c("lambda", "delta", "kappa")){
   #Traits
   if(traits){
     if(is.null(data$traits)) stop("Need traits to compute phylogenetic signal of traits!")
-    data$traits$wow.this.is.a.stupid.name.for.someones.data.if.you.name.your.column.this.ecophyl.wont.work <- rownames(data$traits)
-    comparative.data <- comparative.data(data$phy, data$traits, wow.this.is.a.stupid.name.for.someones.data.if.you.name.your.column.this.ecophyl.wont.work)
+    data$traits$this.breaks.pez <- rownames(data$traits)
+    comparative.data <- comparative.data(data$phy, data$traits, this.breaks.pez)
     traits <- numeric(ncol(comparative.data$data))
     names(traits) <- names(comparative.data$data)
     for(i in seq(ncol(comparative.data$data))){
@@ -47,8 +48,8 @@ phy.signal <- function(data, traits=TRUE, method=c("lambda", "delta", "kappa")){
   } else {
     #Community composition
     comm <- data.frame(t(data$comm))
-    comm$wow.this.is.a.stupid.name.for.someones.data.if.you.name.your.column.this.ecophyl.wont.work <- rownames(comm)
-    comparative.data <- comparative.data(data$phy, comm, wow.this.is.a.stupid.name.for.someones.data.if.you.name.your.column.this.ecophyl.wont.work)
+    comm$this.breaks.pez <- rownames(comm)
+    comparative.data <- comparative.data(data$phy, comm, this.breaks.pez)
     communities <- numeric(ncol(comparative.data$data))
     names(communities) <- names(comparative.data$data)
     for(i in seq(ncol(comparative.data$data))){
