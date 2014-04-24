@@ -2,6 +2,7 @@
 #' @export
 comm.dist <- function(x) UseMethod("comm.dist", x)
 # - Dispatch on comparative.comm calls the matrix method, which does the work
+#' @export
 comm.dist.matrix <- function(x){
 	output <- matrix(ncol=ncol(x), nrow=ncol(x))
 	for(i in seq(ncol(x))){
@@ -11,12 +12,14 @@ comm.dist.matrix <- function(x){
 	}
 	return(as.dist(output))
 }
+#' @export
 comm.dist.comparative.comm <- function(x) return(comm.dist(x$comm))
 
 
 #' Make trait distance matrices
 #' @export
 traits.dist <- function(x, ...) UseMethod("traits.dist", x)
+#' @export
 traits.dist.comparative.comm <- function(x, altogether=TRUE){
 	if(is.null(x$traits)) stop("No trait data for which to compute a trait distance matrix")
   if(altogether){
@@ -29,10 +32,12 @@ traits.dist.comparative.comm <- function(x, altogether=TRUE){
 	  return(traits)
   }
 }
+#' '@export
 traits.dist.numeric <- function(x){
   trait <- scale(x, center=TRUE, scale=TRUE)
   return(dist(trait))
 }
+#' @export
 traits.dist.matrix <- function(x){
   if(!is.numeric(x)) stop("Can only compute trait distance matrix of continuous traits")
   mat <- scale(x, center=TRUE, scale=TRUE)
@@ -42,6 +47,7 @@ traits.dist.matrix <- function(x){
 #' Make environmental tolerance distance matrices
 #' @export
 pianka.dist <- function(x, ...) UseMethod("pianka.dist", x)
+#' @export
 pianka.dist.matrix <- function(comm, env=NULL){
 	#Checks and assertions
 	if(!is.numeric(comm)) stop("Need numeric community matrix for Pianaka calculations")
@@ -64,6 +70,7 @@ pianka.dist.matrix <- function(comm, env=NULL){
 	}
 	return(as.dist(pianka))
 }
+#' @export
 pianka.dist.comparative.comm <- function(x, altogether=TRUE){
 	#Checks and assertions
 	if(is.null(x$env)) stop("Cannot calculate Pianka distances without environmental data")

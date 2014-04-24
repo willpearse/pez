@@ -25,7 +25,7 @@
 #' @importFrom vegan taxondive
 #' @importFrom ecoPD pae iac haed eaed simpson
 #' @importFrom phylobase phylo4d
-#' @importFrom caper comparative.data pgls
+#' @importFrom caper comparative.data pgls summary.pgls coef.pgls
 #' @importFrom ade4 newick2phylog
 #' @export
 evenness <- function(data, metric=c("all", "rao", "taxon", "entropy", "cadotte", "pst", "lambda", "delta", "kappa"))
@@ -59,7 +59,7 @@ evenness <- function(data, metric=c("all", "rao", "taxon", "entropy", "cadotte",
   
   if(metric == "cadotte" | metric == "all"){
     .abund <- data$comm[rowSums(data$comm>0)>1, ]
-    tree <- drop_tip(data$phy, colnames(.abund))
+    tree <- drop_tip(data$phy, setdiff(data$phy$tip.label, colnames(.abund)))
     temp <- phylo4d(tree, t(.abund))
     temp <- data.frame(PAE=pae(temp), IAC=iac(temp), Haed=haed(temp), Eaed=eaed(temp))
     output$cadotte <- temp[match(rownames(data$comm), rownames(temp)),]

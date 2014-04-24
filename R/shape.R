@@ -26,7 +26,7 @@
 #' @importFrom picante psd mpd pd
 #' @importFrom vegan taxondive
 #' @importFrom PVR PVRdecomp
-#' @importFrom apTreeshape as.treeshape colless tipsubtree
+#' @importFrom apTreeshape as.treeshape as.treeshape.phylo colless tipsubtree
 #' @importFrom ecoPD eed hed
 #' @importFrom phylobase phylo4d
 #' @importFrom ape gammaStat cophenetic.phylo drop.tip
@@ -85,7 +85,6 @@ shape <- function(data, metric=c("all", "psv", "psr", "mpd", "pd", "colless", "g
   }
   
   if(metric == "cadotte.pd" | metric == "all"){
-    #require(phylobase)
     .pa <- pa[rowSums(pa>0)>1,]
     .tree <- phylo4d(data$phy, t(.pa))
     temp <- data.frame(Eed=eed(.tree), Hed=hed(.tree))
@@ -109,11 +108,13 @@ shape <- function(data, metric=c("all", "psv", "psr", "mpd", "pd", "colless", "g
   }
 }
 
-.gamma<-function(pa.vec,tree,nams)
-{    
-    if(sum(pa.vec)<3)
-        return(NA) else {
-            tree <- drop_tip(tree, nams)
-            return(gammaStat(drop.tip(tree,nams[pa.vec==0])))
+.gamma<-function(pa.vec,tree,nams){
+    if(sum(pa.vec)<3){
+        return(NA)
+    } else {
+        if(length(setdiff(tree$tip.label, nams)) != 0){
+            tree <- drop.tip(setdiff(tree$tip.label, ))
         }
+        return(gammaStat(drop.tip(tree,nams[pa.vec==0])))
+    }
 }

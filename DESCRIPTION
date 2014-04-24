@@ -21,7 +21,6 @@ Imports:
     ecoPD,
     PVR,
     ade4,
-    spacodiR,
     ape,
     apTreeshape,
     phylobase

@@ -15,12 +15,18 @@ test_that("comm - phy", {
   expect_that(simple$comm[3,], equals(phylocom$sample[3,]))
   expect_that(simple[1:3,]$comm[3,], equals(simple$comm[3,]))
   expect_that(simple[,1:3]$comm[1,], equals(simple$comm[1,1:3]))
+  expect_that(sort(colnames(simple$comm)), equals(sort(simple$phy$tip.label)))
   
   t <- phylocom$sample
   colnames(t)[1] <- "deliberately wrong"
   dropping <- comparative.comm(phylocom$phy, t, warn=FALSE)
   expect_that(ncol(dropping$comm), equals(ncol(simple$comm)-1))
   expect_that(nrow(dropping$comm), equals(nrow(simple$comm)))
+  expect_that(names(simple), equals(c("phy","comm","traits","env","dropped","names","vcv")))
+  expect_that(rownames(simple$vcv), equals(simple$phy$tip.label))
+  expect_that(rownames(simple$vcv), equals(colnames(simple$vcv)))
+  expect_true(is.null(simple$traits))
+  expect_true(is.null(simple$env))
 })
 
 test_that("comm - phy - traits", {
@@ -34,6 +40,12 @@ test_that("comm - phy - traits", {
   expect_that(traits[,1:3]$comm[1,], equals(simple[,1:3]$comm[1,]))
   expect_that(traits[1:3,]$traits[3,], equals(traits$traits[3,]))
   expect_that(traits[,1:2]$traits[1,], equals(traits$traits[1,]))
+  expect_that(sort(colnames(traits$comm)), equals(sort(traits$phy$tip.label)))
+  expect_that(sort(rownames(traits$traits)), equals(sort(traits$phy$tip.label)))
+  expect_that(names(traits), equals(names(simple)))
+  expect_that(rownames(traits$vcv), equals(traits$phy$tip.label))
+  expect_that(rownames(traits$vcv), equals(colnames(traits$vcv)))
+  expect_true(is.null(traits$env))
 })
 
 test_that("comm - phy - traits - env", {
@@ -49,4 +61,10 @@ test_that("comm - phy - traits - env", {
   expect_that(env[,1:2]$traits[1,], equals(traits$traits[1,]))
   expect_that(env[1:3,]$env[,1], equals(dummy.env[1:3,1]))
   expect_that(env[,1:3]$env[,1], equals(dummy.env[,1]))
+  expect_that(sort(colnames(env$comm)), equals(sort(env$phy$tip.label)))
+  expect_that(rownames(env$comm), equals(rownames(env$env)))
+  expect_that(sort(rownames(env$traits)), equals(sort(env$phy$tip.label)))
+  expect_that(names(env), equals(names(simple)))
+  expect_that(rownames(env$vcv), equals(env$phy$tip.label))
+  expect_that(rownames(env$vcv), equals(colnames(env$vcv)))
 })

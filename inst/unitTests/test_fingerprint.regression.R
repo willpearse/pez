@@ -5,13 +5,14 @@ require(testthat)
 data(phylocom)
 data <- comparative.comm(phylocom$phylo, phylocom$sample, traits=phylocom$traits, warn=FALSE)
 
-context("jcb.regression")
+context("fingerprint.regression")
 
 test_that("quantile", {
   set.seed(123)
-  basic.quantile <<- jcb.regression(data, eco.permute=100)
+  basic.quantile <<- fingerprint.regression(data, eco.permute=100)
   set.seed(123)
-  expect_that(basic.quantile$method, equals(jcb.regression(data, eco.permute=100)$method))
+  expect_that(basic.quantile$method, equals(fingerprint.regression(data, eco.permute=100)$method))
+  expect_that(basic.quantile, is_a("fingerprint.regression"))
   expect_that(basic.quantile$eco.method, equals("quantile"))
   expect_that(basic.quantile$evo.method, equals("lambda"))
   expect_that(names(basic.quantile), equals(c("evo", "eco", "evo.method", "eco.method")))
@@ -24,7 +25,8 @@ test_that("quantile", {
 
 test_that("lm", {
   set.seed(123)
-  basic.lm <<- jcb.regression(data, eco.permute=100, eco.method="lm", eco.rnd="richness", evo.method="delta")
+  basic.lm <<- fingerprint.regression(data, eco.permute=100, eco.method="lm", eco.rnd="richness", evo.method="delta")
+  expect_that(basic.lm, is_a("fingerprint.regression"))
   expect_that(basic.lm$eco.method, equals("lm"))
   expect_that(basic.lm$evo.method, equals("delta"))
   expect_that(names(basic.lm), equals(c("evo", "eco", "evo.method", "eco.method")))
@@ -36,7 +38,8 @@ test_that("lm", {
 
 test_that("mantel", {
   set.seed(123)
-  basic.mantel <<- jcb.regression(data, eco.permute=100, eco.method="mantel", eco.rnd="trialswap", evo.method="kappa")
+  basic.mantel <<- fingerprint.regression(data, eco.permute=100, eco.method="mantel", eco.rnd="trialswap", evo.method="kappa")
+  expect_that(basic.mantel, is_a("fingerprint.regression"))
   expect_that(basic.mantel$eco.method, equals("mantel"))
   expect_that(basic.mantel$evo.method, equals("kappa"))
   expect_that(names(basic.mantel), equals(c("evo", "eco", "evo.method", "eco.method")))

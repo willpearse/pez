@@ -12,12 +12,14 @@ test_that("quantile", {
   set.seed(123)
   expect_that(basic.quantile$method, equals("quantile"))
   expect_that(basic.quantile$method, equals(eco.phy.regression(data, method="quantile")$method))
-  expect_that(names(basic.quantile), equals(c("observed", "randomisations", "obs.slope", "rnd.slopes", "method", "permute", "randomisation", "data")))
+  expect_that(names(basic.quantile), equals(c("observed", "randomisations", "obs.slope", "rnd.slopes", "method", "permute", "randomisation", "type", "data")))
   expect_that(basic.quantile$permute, equals(0))
   expect_that(basic.quantile$method, equals("quantile"))
   expect_that(basic.quantile$randomisations, equals(list()))
   expect_that(basic.quantile$obs.slope, is_equivalent_to(0.00893394615123583))
   expect_that(basic.quantile$data, equals(data))
+  expect_that(basic.quantile, is_a("ecophyl.regression"))
+  expect_that(basic.quantile$type, equals("eco.phy.regression"))
 })
 
 test_that("mantel", {
@@ -29,6 +31,8 @@ test_that("mantel", {
   expect_that(basic.mantel$randomisations, equals(basic.quantile$randomisations))
   expect_that(basic.mantel$obs.slope, equals(0.161663829782999))
   expect_that(basic.mantel$data, equals(data))
+  expect_that(basic.mantel, is_a("ecophyl.regression"))
+  expect_that(basic.mantel$type, equals("eco.phy.regression"))
 })
 
 test_that("lm", {
@@ -41,4 +45,6 @@ test_that("lm", {
   expect_that(basic.lm$randomisations, equals(basic.lm$randomisations))
   expect_that(basic.lm$obs.slope, is_equivalent_to(0.00621718355659297))
   expect_that(basic.lm$data, equals(data))
+  expect_that(basic.lm, is_a("ecophyl.regression"))
+  expect_that(basic.lm$type, equals("eco.phy.regression"))
 })

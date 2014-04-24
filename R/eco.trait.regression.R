@@ -74,7 +74,8 @@ eco.trait.regression <- function(data,
         output[[i]] <- .prepare.regression.output(observed[[i]], randomisations[[i]], method, permute, "eco.trait.regression")
         output[[i]]$altogether <- altogether
       }
-      class(output) <- "eco.trait.regression.list"
+      output$type <- "eco.trait.regression"
+      class(output) <- "ecophyl.regression.list"
     }
   output$data <- data
   output$altogether <- altogether

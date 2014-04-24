@@ -2,6 +2,7 @@
 # - though perhaps a few worked examples? Might help to check my own code...
 #Setup
 require(testthat)
+require(picante)
 data(phylocom)
 data <- comparative.comm(phylocom$phylo, phylocom$sample, traits=phylocom$traits, warn=FALSE)
 
@@ -13,25 +14,30 @@ test_that("quantile", {
   set.seed(123)
   expect_that(basic.quantile$method, equals(eco.trait.regression(data, method="quantile")$method))
   expect_that(basic.quantile$method, equals("quantile"))
-  expect_that(names(basic.quantile), equals(c("observed", "randomisations", "obs.slope", "rnd.slopes", "method", "permute", "randomisation", "data", "altogether")))
+  expect_that(names(basic.quantile), equals(c("observed", "randomisations", "obs.slope", "rnd.slopes", "method", "permute", "randomisation", "type", "data", "altogether")))
   expect_that(basic.quantile$permute, equals(0))
   expect_that(basic.quantile$altogether, equals(TRUE))
   expect_that(basic.quantile$method, equals("quantile"))
   expect_that(basic.quantile$randomisations, equals(list()))
   expect_that(basic.quantile$obs.slope, is_equivalent_to(0))
   expect_that(basic.quantile$data, equals(data))
+  expect_that(basic.quantile$type, equals("eco.trait.regression"))
+  expect_that(class(basic.quantile), equals("ecophyl.regression"))
   
   set.seed(123)
   complex.quantile <<- eco.trait.regression(data, randomisation="richness", permute=10, altogether=FALSE, tau=c(0.3, 0.7))
   expect_that(complex.quantile$method, equals(eco.trait.regression(data, method="quantile", randomisation="richness", permute=10, altogether=FALSE, tau=c(0.3, 0.7))$method))
   expect_that(coef(complex.quantile[[1]]$observed), is_equivalent_to(matrix(c(0.666666666666667, 0.0634793638092698, 1, 0), nrow=2, ncol=2)))
-  expect_that(names(complex.quantile), equals(c("", "", "", "", "data", "altogether", "permute", "method")))
+  expect_that(names(complex.quantile), equals(c("", "", "", "", "type", "data", "altogether", "permute", "method")))
   expect_that(complex.quantile$permute, equals(10))
   expect_that(complex.quantile$altogether, equals(FALSE))
   expect_that(complex.quantile$method, equals("quantile"))
   expect_that(complex.quantile$data, equals(data))
-  expect_that(names(complex.quantile[[1]]), equals(c("observed", "randomisations", "obs.slope", "rnd.slopes", "method", "permute", "randomisation", "altogether")))
+  expect_that(names(complex.quantile[[1]]), equals(c("observed", "randomisations", "obs.slope", "rnd.slopes", "method", "permute", "randomisation", "type", "altogether")))
   expect_that(coef(complex.quantile[[1]]$randomisations[[5]]), is_equivalent_to(matrix(c(0.666666666666667, 0.0634793638092698, 1, 0), nrow=2, ncol=2)))
+  expect_that(complex.quantile$type, equals("eco.trait.regression"))
+  expect_that(class(complex.quantile), equals("ecophyl.regression.list"))
+
 })
 
 test_that("mantel", {
@@ -44,6 +50,8 @@ test_that("mantel", {
   expect_that(basic.mantel$randomisations, equals(basic.quantile$randomisations))
   expect_that(basic.mantel$obs.slope, equals(0.0534054178977913))
   expect_that(basic.mantel$data, equals(data))
+  expect_that(basic.mantel$type, equals("eco.trait.regression"))
+  expect_that(class(basic.mantel), equals("ecophyl.regression"))
   
   set.seed(123)
   complex.mantel <<- eco.trait.regression(data, method="mantel", randomisation="frequency", permute=10, altogether=FALSE)
@@ -52,9 +60,11 @@ test_that("mantel", {
   expect_that(complex.mantel$altogether, equals(complex.quantile$altogether))
   expect_that(complex.mantel$method, equals("mantel"))
   expect_that(complex.mantel$data, equals(data))
-  expect_that(names(complex.mantel[[1]]), equals(c("observed", "randomisations", "obs.slope", "rnd.slopes", "method", "permute", "randomisation", "altogether")))
+  expect_that(names(complex.mantel[[1]]), equals(c("observed", "randomisations", "obs.slope", "rnd.slopes", "method", "permute", "randomisation", "type", "altogether")))
   expect_that(complex.mantel[[1]]$observed$statistic, equals(0.120457394086632))
   expect_that(complex.mantel[[1]]$randomisations[[5]]$statistic, equals(0.120457394086632))
+  expect_that(complex.mantel$type, equals("eco.trait.regression"))
+  expect_that(class(complex.mantel), equals("ecophyl.regression.list"))
 })
 
 test_that("lm", {
@@ -68,6 +78,8 @@ test_that("lm", {
   expect_that(basic.lm$randomisations, equals(basic.lm$randomisations))
   expect_that(basic.lm$obs.slope, is_equivalent_to(0.0152598604740927))
   expect_that(basic.lm$data, equals(data))
+  expect_that(basic.lm$type, equals("eco.trait.regression"))
+  expect_that(class(basic.lm), equals("ecophyl.regression"))
   
   set.seed(123)
   complex.lm <- eco.trait.regression(data, method="lm", randomisation="independentswap", permute=10, altogether=FALSE)
@@ -77,6 +89,8 @@ test_that("lm", {
   expect_that(complex.lm$altogether, equals(complex.quantile$altogether))
   expect_that(complex.lm$method, equals("lm"))
   expect_that(complex.lm$data, equals(data))
-  expect_that(names(complex.lm[[1]]), equals(c("observed", "randomisations", "obs.slope", "rnd.slopes", "method", "permute", "randomisation", "altogether")))
+  expect_that(names(complex.lm[[1]]), equals(c("observed", "randomisations", "obs.slope", "rnd.slopes", "method", "permute", "randomisation", "type", "altogether")))
   expect_that(coef(complex.lm[[1]]$randomisations[[5]]), is_equivalent_to(c(0.792682926829266, 0.0293888051781979)))
+  expect_that(complex.lm$type, equals("eco.trait.regression"))
+  expect_that(class(complex.lm), equals("ecophyl.regression.list"))
 })
