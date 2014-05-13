@@ -1,6 +1,7 @@
 #This may need checking on other systems, because I'm using exact value checks with no consideration of precision...
 #Testing all the measures together is somewhat silly, because I can't set the set on anything so the randomisations match.
 #Setup
+#Here's a demo Matt
 require(testthat)
 data(phylocom)
 data <- comparative.comm(phylocom$phylo, phylocom$sample, warn=FALSE)
