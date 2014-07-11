@@ -23,7 +23,6 @@
 #' @importFrom ape cophenetic.phylo drop.tip
 #' @importFrom picante pse raoD
 #' @importFrom vegan taxondive
-#' @importFrom ecoPD pae iac haed eaed simpson
 #' @importFrom phylobase phylo4d
 #' @importFrom caper comparative.data pgls summary.pgls coef.pgls
 #' @importFrom ade4 newick2phylog
@@ -61,7 +60,7 @@ evenness <- function(data, metric=c("all", "rao", "taxon", "entropy", "cadotte",
     .abund <- data$comm[rowSums(data$comm>0)>1, ]
     tree <- drop_tip(data$phy, setdiff(data$phy$tip.label, colnames(.abund)))
     temp <- phylo4d(tree, t(.abund))
-    temp <- data.frame(PAE=pae(temp), IAC=iac(temp), Haed=haed(temp), Eaed=eaed(temp))
+    temp <- data.frame(PAE=.pae(data), IAC=.iac(data), Haed=.haed(data), Eaed=.haed(data)/log(rowSums(data$comm)))
     output$cadotte <- temp[match(rownames(data$comm), rownames(temp)),]
   }
   
@@ -70,7 +69,7 @@ evenness <- function(data, metric=c("all", "rao", "taxon", "entropy", "cadotte",
     if(length(setdiff(data$phy$tip.label, colnames(.abund))))
       tree <- drop.tip(data$phy, setdiff(data$phy$tip.label, colnames(.abund))) else tree <- data$phy
     temp <- phylo4d(tree, t(.abund))
-    temp <- simpson(temp, "phylogenetic")
+    temp <- .simpson(temp, "phylogenetic")
     output$pst <- temp[match(rownames(data$comm), names(temp))]
   }
   
@@ -224,4 +223,123 @@ evenness <- function(data, metric=c("all", "rao", "taxon", "entropy", "cadotte",
   hp.sites[hp.sites==0]<-NA
   ## the end.
   return(hp.sites)
+}
+
+#' @importfrom phylobase ancestors edgeLength subtrees isDescendant
+.aed <- function(data, na.rm=TRUE) {
+    #Argument handling
+    if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
+    
+    #Internal functions
+    .isD <- function(tree) {
+        # get all node IDs, but excluding root node
+        nonroot.nodes <- setdiff(nodeId(tree), rootNode(tree))
+        # Create logical matrix indicating which tips (in columns) are
+        # descendants of each node (in rows), self-inclusive
+        t(sapply(ancestors(tree, tipLabels(tree), "ALL"),
+                 function(n) nonroot.nodes %in% n))
+    }
+    .elen <- function(tree) {
+        nonroot.nodes <- setdiff(nodeId(tree), rootNode(tree))
+        edgeLength(tree, nonroot.nodes)
+    }
+    .aed <- function(i){
+        spp <- row.names(isDescendant[[i]])
+        dAbund <- data$comm[i, spp] * isDescendant[[i]]
+        # Calculate individual-based AED of each species
+        AED <- colSums(edge.length[[i]] * t(prop.table(dAbund, margin=2)))
+        AED/data$comm[i, spp]
+    }
+
+    subtrees <- lapply(assemblage.phylogenies(data), as, "phylo4")
+    isDescendant <- lapply(subtrees, .isD)
+    edge.length <- lapply(subtrees, .elen)
+    
+    res <- lapply(seq(nrow(data$comm)), .aed)
+    names(res) <- rownames(data$comm)
+    return(res)
+
+}
+
+#' @importfrom picante pd
+.haed <- function(data, na.rm=TRUE) {
+    #Argument handling
+    if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
+    
+    # Recast AED in terms of individuals
+    AED <- .aed(data)
+    PD <- pd(data$comm, data$phy)
+    scaled.AED <- lapply(seq(nrow(data$comm)), function(i) {
+        spp <- names(AED[[i]])        
+        rep(unname(AED[[i]]), sum(data$comm[i, spp])) / PD$PD[i]
+    })
+    res <- sapply(scaled.AED, function(x) -sum(x * log(x)))
+    names(res) <- names(AED)
+    return(res)
+}
+
+#' @importFrom ape cophenetic.phylo 
+.simpson.phylogenetic <- function(data) {
+    N.relative <- prop.table(data$comm, 2)
+    dmat <- cophenetic(data$phy)
+    out <- apply(N.relative, 1, function(n) sum((n %o% n)*dmat))
+    return(out) 
+}
+
+.iac <- function(data, na.rm=TRUE) {
+    #Assertions and argument handling
+    if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
+    
+    subtrees <- assemblage.phylogenies(data)
+    .denom <-  function(tree, template) {
+        # Count number of lineages originating at each internal node
+        # (i.e. number of splits)
+        int.nodes <- sort(unique(as.numeric(pez.weeds$phy$edge)))
+        nSplits <- sapply(int.nodes, function(x) length(children(tree,
+            x)))
+        names(nSplits) <- int.nodes
+        # For each tip, take the product of the number of splits across
+        # all of its ancestral nodes
+        res <- sapply(ancestors(tree, tipLabels(tree)), function(x)
+            prod(nSplits[as.character(x)]))
+        template[match(names(res), names(template))] <- res
+        return(template)
+    }
+
+    # now for each subtree...
+    tmp <- setNames(rep(NA, length(data$phy$tip.label)), data$phy$tip.label)
+    denom <- lapply(subtrees, .denom, tmp)
+    denom <- do.call("cbind", denom)
+    nnodes <- sapply(subtrees, function(x) x$Nnode)
+
+    # Calculate expected number of individuals under null hypothesis
+    # of equal allocation to each lineage at each (node) split 
+    N <- rowSums(data$comm)
+    expected <- t(colSums(N, na.rm=na.rm) / t(denom))
+
+    # IAC: summed absolute difference between expected and observed
+    # abundances, divided by number of nodes
+    return(colSums(abs(expected - N), na.rm=na.rm) / nnodes)
+}
+
+.pae <- function(data, na.rm=TRUE) {
+    #Assertions and argument handling
+    if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
+    
+    subtrees <- assemblage.phylogenies(data)
+    PD <- pd(data$comm, data$phy)
+    tmp <- setNames(rep(0, ncol(data$comm)), colnames(data$comm))
+    TL <- lapply(subtrees, function(tree) {
+        #Get terminal edge length
+        res <- data$phy$edge.length[data$phy$edge[,2] <= length(data$phy$tip.label)]
+        tmp[match(data$phy$tip.label, names(tmp))] <- res
+        tmp
+    })
+    TL <- do.call("cbind", TL)
+    numer <- PD$PD + colSums(TL * (t(data$comm) - 1))
+    denom <- PD$PD + (rowSums(data$comm, na.rm = na.rm) / rowSums(data$comm,
+        na.rm=na.rm) - 1) * colSums(TL)
+    res <- numer/denom
+    names(res) <- rownames(data$comm)
+    return(res)
 }

@@ -328,6 +328,6 @@ assemblage.phylogenies <- function(data){
     if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
     subtrees <- vector("list", nrow(data$comm))
     for(i in seq(nrow(data$comm)))
-        subtrees[[i]] <- drop_tip(tree, rownames(data$comm)[data$comm[i,]!=0])
+        subtrees[[i]] <- drop_tip(data$phy, rownames(data$comm)[data$comm[i,]!=0])
     return(subtrees)
 }

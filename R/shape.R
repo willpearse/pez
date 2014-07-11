@@ -27,7 +27,6 @@
 #' @importFrom vegan taxondive
 #' @importFrom PVR PVRdecomp
 #' @importFrom apTreeshape as.treeshape as.treeshape.phylo colless tipsubtree
-#' @importFrom ecoPD eed hed
 #' @importFrom phylobase phylo4d
 #' @importFrom ape gammaStat cophenetic.phylo drop.tip
 #' @export
@@ -87,7 +86,7 @@ shape <- function(data, metric=c("all", "psv", "psr", "mpd", "pd", "colless", "g
   if(metric == "cadotte.pd" | metric == "all"){
     .pa <- pa[rowSums(pa>0)>1,]
     .tree <- phylo4d(data$phy, t(.pa))
-    temp <- data.frame(Eed=eed(.tree), Hed=hed(.tree))
+    temp <- data.frame(Eed=.eed(.tree), Hed=.hed(.tree))
     output$cadotte.pd <- temp[match(rownames(data$comm), rownames(temp)),]
   }
   
@@ -117,4 +116,53 @@ shape <- function(data, metric=c("all", "psv", "psr", "mpd", "pd", "colless", "g
         }
         return(gammaStat(drop.tip(tree,nams[pa.vec==0])))
     }
+}
+
+#' @importFrom phylobase phylo4d ancestors descendants edgeLength nodeId tipLabels
+.ed <- function(data, na.rm=TRUE) {
+    #Assertions and argument handling
+    if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
+
+    #Internal function
+    .edi <- function(tree) {
+        # set length of root edge to zero
+        edgeLength(tree)[edgeId(tree, "root")] <- 0
+
+        all.nodes <- nodeId(tree, type = "all")
+        des <- descendants(tree, all.nodes, type="tips")
+        nv <- edgeLength(tree, all.nodes) / sapply(des, length)
+        names(nv) <- all.nodes
+
+        tip.nodes <- nodeId(tree, "tip")
+        anc <- ancestors(tree, tip.nodes, "ALL")
+
+        res <- sapply(anc, function(n) sum(nv[as.character(n)], na.rm=TRUE))
+        names(res) <- tipLabels(tree)
+        return(res)
+    }
+
+    #Do the work
+    subtrees <- lapply(assemblage.phylogenies(data), as, "phylo4")
+    res <- lapply(subtrees, .edi)
+    names(res) <- rownames(data$comm)
+    return(res)
+
+}
+
+#' @importfrom picante pd
+.hed <- function(data, na.rm=TRUE) {
+    if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
+
+    ED <- .ed(data)
+    PD <- pd(data$comm, data$phy)
+    res <- sapply(seq_along(PD), function(x) {scaledED <- ED[[x]] / PD[[x]]; -sum(scaledED * log(scaledED))})
+    names(res) <- names(PD)
+    return(res)
+}
+
+.eed <- function(data, na.rm=TRUE) {
+    if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
+    subtrees <- lapply(assemblage.phylogenies(data), as, "phylo4")
+    output <- .hed(data) / log(sapply(subtrees, function(x) length(x@label)))
+    return(output)
 }
