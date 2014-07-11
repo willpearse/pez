@@ -2,7 +2,7 @@
 #Rather strange to test entropy when you know it's wrong!...
 #Setup
 require(testthat)
-require(caper)
+require(picante)
 data(phylocom)
 data <- comparative.comm(phylocom$phylo, phylocom$sample, warn=FALSE)
 context("evenness metrics")

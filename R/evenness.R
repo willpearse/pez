@@ -23,7 +23,6 @@
 #' @importFrom ape cophenetic.phylo drop.tip
 #' @importFrom picante pse raoD
 #' @importFrom vegan taxondive
-#' @importFrom phylobase phylo4d
 #' @importFrom caper comparative.data pgls summary.pgls coef.pgls
 #' @importFrom ade4 newick2phylog
 #' @export
@@ -57,9 +56,6 @@ evenness <- function(data, metric=c("all", "rao", "taxon", "entropy", "cadotte",
     output$entropy <- .phylo.entropy(data)
   
   if(metric == "cadotte" | metric == "all"){
-    .abund <- data$comm[rowSums(data$comm>0)>1, ]
-    tree <- drop_tip(data$phy, setdiff(data$phy$tip.label, colnames(.abund)))
-    temp <- phylo4d(tree, t(.abund))
     temp <- data.frame(PAE=.pae(data), IAC=.iac(data), Haed=.haed(data), Eaed=.haed(data)/log(rowSums(data$comm)))
     output$cadotte <- temp[match(rownames(data$comm), rownames(temp)),]
   }
@@ -68,8 +64,7 @@ evenness <- function(data, metric=c("all", "rao", "taxon", "entropy", "cadotte",
     .abund <- data$comm[rowSums(data$comm>0)>1, ]
     if(length(setdiff(data$phy$tip.label, colnames(.abund))))
       tree <- drop.tip(data$phy, setdiff(data$phy$tip.label, colnames(.abund))) else tree <- data$phy
-    temp <- phylo4d(tree, t(.abund))
-    temp <- .simpson(temp, "phylogenetic")
+    temp <- .simpson.phylogenetic(data)
     output$pst <- temp[match(rownames(data$comm), names(temp))]
   }
   
@@ -127,6 +122,7 @@ evenness <- function(data, metric=c("all", "rao", "taxon", "entropy", "cadotte",
   return(output)
 }
 
+#' @importFrom ade4 newick2phylog
 .phylo.entropy <- function(data)
 {
   #Assertions and argument handling
@@ -225,40 +221,34 @@ evenness <- function(data, metric=c("all", "rao", "taxon", "entropy", "cadotte",
   return(hp.sites)
 }
 
-#' @importFrom phylobase ancestors edgeLength subtrees isDescendant
+#' @importFrom caper clade.matrix
 .aed <- function(data, na.rm=TRUE) {
     #Argument handling
     if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
     
     #Internal functions
-    .isD <- function(tree) {
-        # get all node IDs, but excluding root node
-        nonroot.nodes <- setdiff(nodeId(tree), rootNode(tree))
-        # Create logical matrix indicating which tips (in columns) are
-        # descendants of each node (in rows), self-inclusive
-        t(sapply(ancestors(tree, tipLabels(tree), "ALL"),
-                 function(n) nonroot.nodes %in% n))
+    .desc <- function(tree) {
+        t <- clade.matrix(tree)
+        mat <- t$clade.matrix
+        mat <- mat[!apply(mat, 1, function(x) all(x==1)), ]
+        mat <- apply(mat, 1, as.logical)
+        rownames(mat) <- tree$tip.label
+        return(list(mat=mat, edge=t$edge.length))
     }
-    .elen <- function(tree) {
-        nonroot.nodes <- setdiff(nodeId(tree), rootNode(tree))
-        edgeLength(tree, nonroot.nodes)
-    }
-    .aed <- function(i){
-        spp <- row.names(isDescendant[[i]])
-        dAbund <- data$comm[i, spp] * isDescendant[[i]]
-        # Calculate individual-based AED of each species
-        AED <- colSums(edge.length[[i]] * t(prop.table(dAbund, margin=2)))
+    aed <- function(i){
+        spp <- row.names(desc[[i]]$mat)
+        dAbund <- data$comm[i, spp] * desc[[i]]$mat
+        AED <- colSums(edge.length[[i]] * t(prop.table(dAbund, margin=2)), na.rm=TRUE)
         AED/data$comm[i, spp]
     }
-
-    subtrees <- lapply(assemblage.phylogenies(data), as, "phylo4")
-    isDescendant <- lapply(subtrees, .isD)
-    edge.length <- lapply(subtrees, .elen)
     
-    res <- lapply(seq(nrow(data$comm)), .aed)
+    subtrees <- assemblage.phylogenies(data)
+    desc <- lapply(subtrees, .desc)
+    edge.length <- lapply(desc, function(x) x$edge[as.numeric(colnames(x$mat))])
+    
+    res <- lapply(seq(nrow(data$comm)), aed)
     names(res) <- rownames(data$comm)
     return(res)
-
 }
 
 #' @importFrom picante pd
@@ -291,35 +281,38 @@ evenness <- function(data, metric=c("all", "rao", "taxon", "entropy", "cadotte",
     if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
     
     subtrees <- assemblage.phylogenies(data)
-    .denom <-  function(tree, template) {
+    .ancestors <- function(tree, no.root=TRUE){
+        mat <- clade.matrix(tree)$clade.matrix
+        if(no.root)
+            mat <- mat[!apply(mat, 1, function(x) all(x==1)), ]
+        #Stop self-references
+        diag(mat) <- 0
+        apply(mat, 2, function(x) which(x == 1))
+    }
+        
+    .denom <-  function(tree) {
         # Count number of lineages originating at each internal node
         # (i.e. number of splits)
-        int.nodes <- sort(unique(as.numeric(pez.weeds$phy$edge)))
-        nSplits <- sapply(int.nodes, function(x) length(children(tree,
-            x)))
-        names(nSplits) <- int.nodes
+        nSplits <- table(tree$edge[,1])
         # For each tip, take the product of the number of splits across
         # all of its ancestral nodes
-        res <- sapply(ancestors(tree, tipLabels(tree)), function(x)
+        res <- sapply(.ancestors(tree), function(x)
             prod(nSplits[as.character(x)]))
-        template[match(names(res), names(template))] <- res
-        return(template)
+        return(res * 2)
     }
 
     # now for each subtree...
-    tmp <- setNames(rep(NA, length(data$phy$tip.label)), data$phy$tip.label)
-    denom <- lapply(subtrees, .denom, tmp)
+    denom <- lapply(subtrees, .denom)
     denom <- do.call("cbind", denom)
     nnodes <- sapply(subtrees, function(x) x$Nnode)
 
     # Calculate expected number of individuals under null hypothesis
     # of equal allocation to each lineage at each (node) split 
-    N <- rowSums(data$comm)
-    expected <- t(colSums(N, na.rm=na.rm) / t(denom))
+    expected <- rowSums(data$comm, na.rm=na.rm) / t(denom)
 
     # IAC: summed absolute difference between expected and observed
     # abundances, divided by number of nodes
-    return(colSums(abs(expected - N), na.rm=na.rm) / nnodes)
+    return(rowSums(abs(expected - data$comm), na.rm=na.rm) / nnodes)
 }
 
 .pae <- function(data, na.rm=TRUE) {
