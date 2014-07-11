@@ -1,6 +1,5 @@
 #TODO:
 # I'm not sure PD should be standardised by the sum of species, but rather the sum of individuals. In general, we need to have a better discussion about individual vs. species metrics and scaling
-# incorporate cat with null models by doing temp<-cat;cat<-function(...){} to hide all the output from colless.test!
 # it's going to be hard for people to install ecoPD, so we need some sensible 'require'-foo to get everything in there
 # I don't like having to 'require' ape when using phylobase, but either I'm doing something really stupid with the dependencies or phylobase doesn't have a properly setup NAMESPACE. Grrrr.
 
@@ -27,7 +26,7 @@
 #' @importFrom vegan taxondive
 #' @importFrom PVR PVRdecomp
 #' @importFrom apTreeshape as.treeshape as.treeshape.phylo colless tipsubtree
-#' @importFrom phylobase phylo4d
+#' @importFrom phylobase phylo4d ancestors descendants edgeLength nodeId tipLabels edgeId `edgeLength<-`
 #' @importFrom ape gammaStat cophenetic.phylo drop.tip
 #' @export
 shape <- function(data, metric=c("all", "psv", "psr", "mpd", "pd", "colless", "gamma", "taxon", "eigen.sum", "cadotte.pd"), which.eigen=1)  #vecnums chooses the eigenvector to calculate sumvar in Diniz-Filho J.A.F., Cianciaruso M.V., Rangel T.F. & Bini L.M. (2011). Eigenvector estimation of phylogenetic and functional diversity. Functional Ecology, 25, 735-744.
@@ -83,12 +82,8 @@ shape <- function(data, metric=c("all", "psv", "psr", "mpd", "pd", "colless", "g
                                 evc,which.eigen)
   }
   
-  if(metric == "cadotte.pd" | metric == "all"){
-    .pa <- pa[rowSums(pa>0)>1,]
-    .tree <- phylo4d(data$phy, t(.pa))
-    temp <- data.frame(Eed=.eed(.tree), Hed=.hed(.tree))
-    output$cadotte.pd <- temp[match(rownames(data$comm), rownames(temp)),]
-  }
+  if(metric == "cadotte.pd" | metric == "all")
+    output$cadotte.pd <- data.frame(Eed=.eed(data), Hed=.hed(data))
   
   #Prepare output
   output$type <- "shape"
@@ -118,7 +113,7 @@ shape <- function(data, metric=c("all", "psv", "psr", "mpd", "pd", "colless", "g
     }
 }
 
-#' @importFrom phylobase phylo4d ancestors descendants edgeLength nodeId tipLabels
+#' @importFrom phylobase phylo4d ancestors descendants edgeLength nodeId tipLabels edgeId `edgeLength`
 .ed <- function(data, na.rm=TRUE) {
     #Assertions and argument handling
     if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
@@ -149,7 +144,7 @@ shape <- function(data, metric=c("all", "psv", "psr", "mpd", "pd", "colless", "g
 
 }
 
-#' @importfrom picante pd
+#' @importFrom picante pd
 .hed <- function(data, na.rm=TRUE) {
     if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
 
@@ -164,5 +159,6 @@ shape <- function(data, metric=c("all", "psv", "psr", "mpd", "pd", "colless", "g
     if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
     subtrees <- lapply(assemblage.phylogenies(data), as, "phylo4")
     output <- .hed(data) / log(sapply(subtrees, function(x) length(x@label)))
+    names(output) <- rownames(data)
     return(output)
 }

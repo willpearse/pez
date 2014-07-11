@@ -225,7 +225,7 @@ evenness <- function(data, metric=c("all", "rao", "taxon", "entropy", "cadotte",
   return(hp.sites)
 }
 
-#' @importfrom phylobase ancestors edgeLength subtrees isDescendant
+#' @importFrom phylobase ancestors edgeLength subtrees isDescendant
 .aed <- function(data, na.rm=TRUE) {
     #Argument handling
     if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
@@ -261,7 +261,7 @@ evenness <- function(data, metric=c("all", "rao", "taxon", "entropy", "cadotte",
 
 }
 
-#' @importfrom picante pd
+#' @importFrom picante pd
 .haed <- function(data, na.rm=TRUE) {
     #Argument handling
     if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")

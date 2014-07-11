@@ -1,6 +1,7 @@
 #This may need checking on other systems, because I'm using exact value checks with no consideration of precision...
 #Setup
 require(testthat)
+require(picante)
 data(phylocom)
 data <- comparative.comm(phylocom$phylo, phylocom$sample, warn=FALSE)
 context("shape metrics")
