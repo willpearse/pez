@@ -18,7 +18,6 @@ Imports:
     quantreg,
     mvtnorm,
     vegan,
-    ecoPD,
     PVR,
     ade4,
     ape,
