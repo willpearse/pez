@@ -45,7 +45,7 @@ cc.barplot <- function(data, traits, scaling = FALSE, ranging = TRUE, yranging =
   par(lwd=lwd.old)
   mar.old <- par("mar")
   on.exit(par(mar = mar.old))
-  par(mar = c(0.1, 0.1, 0.1, 0.1))
+  par(mar = c(0.1, 0.1, 0.1, 0.1)) ## FIXME: too inflexible
   par(usr = c(0, 1, -0.05, 1))
   x1 <- w$xbase
   space <- (1 - w$xbase - (w$xbase - max(w$xy$x))/2 * ncol(values))/ncol(values)
