@@ -141,11 +141,11 @@ print.comparative.comm <- function(x, ...){
     cat("   ", x$phy$Nnode, " internal nodes", sep='')
     if(!is.null(x$vcv)) cat(', VCV matrix present\n') else cat("\n")
     cat("Community data:", x$names$comm, "\n")
-    cat("    ", nrow(x$comm), " sites\n")
+    cat("    ", nrow(x$comm), " sites, ", ncol(x$comm), " taxa\n")
     
     if(!is.null(x$traits)){
 	    cat("Trait data:", x$names$traits, "\n")
-    	cat("   ", ncol(x$traits), " variables")
+    	cat("   ", ncol(x$traits), " variables\n")
     } else cat("Trait data: None\n")
     
     if(!is.null(x$env)){
