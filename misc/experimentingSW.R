@@ -5,7 +5,7 @@ set.seed(1)
 n <- 8 # number of sites
 m <- 5 # number of species
 
-env <- data.frame(x = rnorm(n))
+env <- data.frame(x1 = rnorm(n), x2 = rnorm(n))
 coord <- data.frame(lat = rnorm(n), long = rnorm(n))
 rownames(env) <- rownames(coord) <- letters[1:n]
 
@@ -16,4 +16,10 @@ tree <- chronos(compute.brlen(read.tree(text = newick)))
 comm <- matrix(rbinom(n*m, 1, 0.5), n, m)
 dimnames(comm) <- list(rownames(env), rownames(traits))
 
-comparative.comm(tree, comm, traits, env)
+cc <- comparative.comm(tree, comm, traits, env)
+
+shape(cc)
+
+cc[1:2, 1:2]
+
+## cc.barplot(cc, )
