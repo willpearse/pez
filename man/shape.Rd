@@ -4,7 +4,7 @@
 \title{Calculate dissimilarity metrics across communities}
 \usage{
 shape(data, metric = c("all", "psv", "psr", "mpd", "pd", "colless", "gamma",
-  "taxon", "eigen.sum", "cadotte.pd"), which.eigen = 1)
+  "taxon", "eigen.sum", "cadotte.pd"), which.eigen = 1, removeErrors = TRUE)
 }
 \arguments{
 \item{data}{a comparative community ecology object}
@@ -14,6 +14,8 @@ shape(data, metric = c("all", "psv", "psr", "mpd", "pd", "colless", "gamma",
 \item{pa}{If TRUE (default), all metrics are calculated across presence-absence matrices, and species abundances are ignored}
 
 \item{permute}{Number of permutations for metric (currently only for PCD)}
+
+\item{removeErrors}{If \code{FALSE}, metrics that failed to be computed are returned as error messages}
 }
 \value{
 cc.dissimilarity object (a named list with the output from each metric)
