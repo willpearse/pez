@@ -87,13 +87,13 @@ comparative.comm <- function(phy, comm, traits=NULL, env=NULL, warn=TRUE, vcv=TR
   phy <- drop_tip(phy, phy.sp.lost)
   if(!is.null(traits)){
     traits.sp.lost <- setdiff(rownames(traits), species.to.keep)
-    traits <- traits[rownames(traits) %in% species.to.keep, , drop=TRUE]
+    traits <- traits[rownames(traits) %in% species.to.keep, , drop = FALSE]
     if(any(dim(traits)==0))
       stop("ERROR: trait data has no species in common with rest of data")
   } else traits.sp.lost <- character(0)
   if(!is.null(env)){
     env.sites.lost <- setdiff(rownames(env), sites.to.keep)
-    env <- env[rownames(env) %in% sites.to.keep, , drop=TRUE]
+    env <- env[rownames(env) %in% sites.to.keep, , drop = FALSE]
     if(any(dim(env)==0))
       stop("ERROR: environmental data has no sites in common with rest of data")
   } else env.sites.lost <- character(0)
@@ -103,16 +103,20 @@ comparative.comm <- function(phy, comm, traits=NULL, env=NULL, warn=TRUE, vcv=TR
   comm <- comm[order(rownames(comm)), ]
   comm <- comm[, order(colnames(comm))]
   if(!is.null(traits)){
-    traits <- traits[rownames(traits), ]
-    traits <- traits[, colnames(traits)]
+    traits <- traits[rownames(traits), , drop = FALSE]
+    traits <- traits[, colnames(traits), drop = FALSE]
   }
   if(!is.null(env)){
-    env <- env[rownames(env), ]
-    env <- env[, colnames(env)]
+    env <- env[rownames(env), , drop = FALSE]
+    env <- env[, colnames(env), drop = FALSE]
   }
   
   #Handle VCV, make output, and return
-  output <- list(phy=phy, comm=comm, traits=traits, env=env, dropped=list(comm.sp.lost=comm.sp.lost, comm.sites.lost=comm.sites.lost, phy.sp.lost=phy.sp.lost, traits.sp.lost=traits.sp.lost, env.sites.lost=env.sites.lost), names=names)
+  output <- list(phy=phy, comm=comm, traits=traits, env=env, dropped=list(comm.sp.lost = comm.sp.lost,
+                                                                 comm.sites.lost=comm.sites.lost,
+                                                                 phy.sp.lost=phy.sp.lost,
+                                                                 traits.sp.lost=traits.sp.lost,
+                                                                 env.sites.lost=env.sites.lost), names=names)
   if(vcv) output$vcv <- cophenetic(phy) else output$vcv <- NULL
   class(output) <- "comparative.comm"
   return(output)

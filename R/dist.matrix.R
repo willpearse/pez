@@ -32,7 +32,7 @@ traits.dist.comparative.comm <- function(x, altogether=TRUE){
 	  return(traits)
   }
 }
-#' '@export
+#' @export
 traits.dist.numeric <- function(x){
   trait <- scale(x, center=TRUE, scale=TRUE)
   return(dist(trait))
@@ -42,6 +42,13 @@ traits.dist.matrix <- function(x){
   if(!is.numeric(x)) stop("Can only compute trait distance matrix of continuous traits")
   mat <- scale(x, center=TRUE, scale=TRUE)
   return(dist(mat))
+}
+
+#' Make phylogenetic distance matrices
+#' @export
+phylo.dist <- function(x, ...) UseMethod("phylo.dist", x)
+#' @export
+phylo.dist.comparative.comm <- function(x, ...){
 }
 
 #' Make environmental tolerance distance matrices
