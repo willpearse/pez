@@ -15,12 +15,14 @@ rownames(env) <- rownames(coord) <- letters[1:n]
 traits <- data.frame(z1 = rnorm(m), z2 = rnorm(m))
 rownames(traits) <- LETTERS[1:m]
 newick <- "((A,(B,E)),(D,C));"
-tree <- chronos(compute.brlen(read.tree(text = newick)))
+## tree <- chronos(compute.brlen(read.tree(text = newick)))
+tree <- compute.brlen(read.tree(text = newick))
 comm <- matrix(rbinom(n*m, 1, 0.8), n, m)
 dimnames(comm) <- list(rownames(env), rownames(traits))
 
 cc <- comparative.comm(tree, comm, traits, env)
 cc.shape <- shape(cc, removeErrors = FALSE)
+cc.shape <- shape(cc, removeErrors = TRUE)
 
 
 psd(comm, tree)

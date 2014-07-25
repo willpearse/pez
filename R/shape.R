@@ -67,26 +67,26 @@ shape <- function(data,
     output$mpd <- try(mpd(pa, data$vcv), silent = TRUE)
   
   if(metric == "pd" | metric == "all"){
-      output$pd.ivs <- .trywith(output, {
-          pd <- pd(pa, data$phy)[,1]
-          resid(lm(pd ~ rowSums(pa)))
-      })
+      try({
+          output$pd <- pd(pa, data$phy)[,1]
+          output$pd.ivsresid(lm(pd ~ rowSums(pa)))
+      }, silent = TRUE)
   }
   
   if(metric == "colless" | metric == "all"){
-      output$colless <- .trywith(data, {
-          tree.shape <- as.treeshape(phy)
+      try({
+          tree.shape <- as.treeshape(data$phy)
           nams <- tree.shape$names
-          apply(pa, 1, .colless, tree.shape, nams)
-      })
+          output$colless <- apply(pa, 1, .colless, tree.shape, nams)
+      }, silent = TRUE)
   }
   
   if(metric == "gamma" | metric == "all"){
-      output$gamma <- .trywith(data, {
-          tree.shape <- as.treeshape(phy)
+      try({
+          tree.shape <- as.treeshape(data$phy)
           nams <- tree.shape$names
-          apply(pa, 1, .gamma, phy, nams)
-      })
+          output$gamma <- apply(pa, 1, .gamma, data$phy, nams)
+      }, silent = TRUE)
   }
   
   #Note - I've cut out some here because I think the simplification
@@ -95,17 +95,10 @@ shape <- function(data,
       output$taxon <- try(taxondive(pa, data$vcv), silent = TRUE)
   
   if(metric == "eigen.sum" | metric == "all"){
-      output$eigen.sum <- .trywith(data, {
-          evc <- PVRdecomp(phy)@Eigen$vectors
-          apply(pa, 1, 
-                function(x, evc, vecnums) {
-                    if(sum(x>0)){
-                        return(sum(apply(as.matrix(evc[x>0,vecnums]),2,var)))
-                    } else {
-                        return(NA)
-                    }
-                }, evc, which.eigen)
-      })
+      output$eigen.sum <- try({
+          evc <- PVRdecomp(data$phy)@Eigen$vectors
+          apply(pa, 1, .eigen.sum, evc, which.eigen)
+      }, silent = TRUE)
   }
   
   if(metric == "cadotte.pd" | metric == "all")
@@ -162,9 +155,16 @@ shape <- function(data,
 }
 
 
-.trywith <- function(data, expr) try(with(data, expr), silent = TRUE)
-
 .removeErrors <- function(object) {
     if(inherits(object, "try-error")) return(NULL)
     object
 }
+
+.eigen.sum <- function(x, evc, vecnums) {
+    if(sum(x>0)) {
+        return(sum(apply(as.matrix(evc[x>0,vecnums]),2,var)))
+    } else {
+        return(NA)
+    }
+}
+    
