@@ -41,7 +41,7 @@ cc.barplot <- function(data, traits, scaling = FALSE, ranging = TRUE, yranging =
   values<-as.data.frame(values)
   lwd.old <- par("lwd")
   par(lwd=phylog.lwd)
-  w <- plot.phylog(x = phylog, y = NULL, f.phylog = f.phylog, clabel.leaves = clabel.leaves)
+  w <- plot(x = phylog, y = NULL, f.phylog = f.phylog, clabel.leaves = clabel.leaves)
   par(lwd=lwd.old)
   mar.old <- par("mar")
   on.exit(par(mar = mar.old))

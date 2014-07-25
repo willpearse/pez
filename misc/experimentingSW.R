@@ -1,5 +1,7 @@
 library(pez)
 library(ape)
+library(ade4)
+library(subscript)
 set.seed(1)
 
 n <- 8 # number of sites
@@ -17,6 +19,8 @@ comm <- matrix(rbinom(n*m, 1, 0.5), n, m)
 dimnames(comm) <- list(rownames(env), rownames(traits))
 
 cc <- comparative.comm(tree, comm, traits, env)
+plot(cc)
+cc.barplot(cc, "z1")
 
 shape(cc)
 

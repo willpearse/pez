@@ -1,5 +1,5 @@
-%\VignetteIndexEntry{Data and analysis in picante}
-%\VignettePackage{picante}
+%\VignetteIndexEntry{EcoPhyl-intro}
+%\VignettePackage{pez}
 \documentclass[12pt]{article}
 \usepackage{amssymb,amsmath}
 \usepackage{geometry}
@@ -14,9 +14,25 @@
 \begin{document}
 \SweaveOpts{concordance=TRUE}
 \SweaveOpts{strip.white=true}
-<<echo=FALSE>>=
-options(width=72)
-@
+%% <<echo=FALSE>>=
+%% options(width=72)
+%% opts_chunk$set(tidy=FALSE)
+%% @
+
+%% <<preliminaries,include=FALSE,cache=FALSE,message=FALSE>>=
+%% options(width=69, show.signif.stars=FALSE,
+%%              str=strOptions(strict.width="cut"),
+%%              prompt = "R> ", continue = "   ")
+%% library("knitr")
+%% library("lme4")
+%% library("ggplot2")
+%% theme_set(theme_bw())
+%% library("grid")
+%% zmargin <- theme(panel.margin=unit(0,"lines"))
+%% library("lattice")
+%% opts_chunk$set(engine='R',dev='pdf',fig.width=9,prompt=TRUE,
+%%                fig.height=5.5,cache=TRUE,tidy=FALSE,comment=NA)
+%% @ % $ <- for emacs ESS
 
 \maketitle
 
@@ -37,7 +53,9 @@ Below we load EcoPhyl, some example data that comes with it, and then make a com
 <<>>=
 library(EcoPhyl)
 data(EcoPhyl)
-data <- comparative.comm(traits.and.phy$phy, traits.and.phy$comm, traits.and.phy$traits)
+data <- comparative.comm(traits.and.phy$phy, 
+                         traits.and.phy$comm, 
+                         traits.and.phy$traits)
 data
 @
 
