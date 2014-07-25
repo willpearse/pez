@@ -4,30 +4,40 @@
 \title{Calculate dissimilarity metrics across communities}
 \usage{
 shape(data, metric = c("all", "psv", "psr", "mpd", "pd", "colless", "gamma",
-  "taxon", "eigen.sum", "cadotte.pd"), which.eigen = 1, removeErrors = TRUE)
+  "taxon", "eigen.sum", "cadotte.pd", "mfpd"), which.eigen = 1,
+  phylogeneticWeight = 0.5, removeErrors = TRUE)
 }
 \arguments{
 \item{data}{a comparative community ecology object}
 
-\item{metric}{specify (a) particular metric(s) to calculate (unifrac, pcd, phylosor), or the default 'all'}
+\item{metric}{specify (a) particular metric(s) to calculate
+(unifrac, pcd, phylosor), or the default 'all'}
 
-\item{pa}{If TRUE (default), all metrics are calculated across presence-absence matrices, and species abundances are ignored}
+\item{which.eigen}{TODO}
 
-\item{permute}{Number of permutations for metric (currently only for PCD)}
+\item{phylogeneticWeight}{phylogenetic weighting parameter for
+computing a functional phylogenetic distance matrix}
 
-\item{removeErrors}{If \code{FALSE}, metrics that failed to be computed are returned as error messages}
+\item{removeErrors}{If \code{FALSE}, metrics that failed to be
+computed are returned as error messages}
 }
 \value{
-cc.dissimilarity object (a named list with the output from each metric)
+cc.dissimilarity object (a named list with the output from
+each metric)
 }
 \description{
-\code{dissimilarity} calculates dissimilarity metrics in comparative.comm communities
+\code{dissimilarity} calculates dissimilarity metrics in
+comparative.comm communities
+FIXME: properly describe shape indices, not dissimilarity (right?)
 }
 \details{
-This calculates UniFrac, PCD (and its subcomponents), and the phylogenetic Sorenson's index, all defined as dissimilarity metrics in Pearse et al.
+This calculates UniFrac, PCD (and its subcomponents), and
+the phylogenetic Sorenson's index, all defined as dissimilarity
+metrics in Pearse et al.
 }
 \note{
-This function uses XXX's version of the PCD function, not that included in picante
+This function uses XXX's version of the PCD function, not
+that included in picante
 }
 \examples{
 \dontrun{
@@ -35,7 +45,7 @@ data(phylocom)
 data <- comparative.comm(phylocom$phy, phylocom$sample)
 shape(data)
 shape(data, "colless")
-shape(data, "eigen.sum", 2)
+shape(data, "eigen.sum", which.eigen = 2)
 }
 }
 \author{

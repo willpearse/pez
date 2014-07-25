@@ -9,23 +9,32 @@
 
 #' Calculate dissimilarity metrics across communities
 #' 
-#' \code{dissimilarity} calculates dissimilarity metrics in comparative.comm communities
+#' \code{dissimilarity} calculates dissimilarity metrics in
+#' comparative.comm communities
+#' FIXME: properly describe shape indices, not dissimilarity (right?)
 #' 
 #' @param data a comparative community ecology object
-#' @param metric specify (a) particular metric(s) to calculate (unifrac, pcd, phylosor), or the default 'all'
-#' @param pa If TRUE (default), all metrics are calculated across presence-absence matrices, and species abundances are ignored
-#' @param permute Number of permutations for metric (currently only for PCD)
-#' @param removeErrors If \code{FALSE}, metrics that failed to be computed are returned as error messages
-#' @details This calculates UniFrac, PCD (and its subcomponents), and the phylogenetic Sorenson's index, all defined as dissimilarity metrics in Pearse et al.
-#' @note This function uses XXX's version of the PCD function, not that included in picante
-#' @return cc.dissimilarity object (a named list with the output from each metric)
+#' @param metric specify (a) particular metric(s) to calculate
+#' (unifrac, pcd, phylosor), or the default 'all'
+#' @param which.eigen TODO
+#' @param phylogeneticWeight phylogenetic weighting parameter for
+#' computing a functional phylogenetic distance matrix
+#' @param removeErrors If \code{FALSE}, metrics that failed to be
+#' computed are returned as error messages
+#' @details This calculates UniFrac, PCD (and its subcomponents), and
+#' the phylogenetic Sorenson's index, all defined as dissimilarity
+#' metrics in Pearse et al.
+#' @note This function uses XXX's version of the PCD function, not
+#' that included in picante
+#' @return cc.dissimilarity object (a named list with the output from
+#' each metric)
 #' @author Matt Helmus, Will Pearse
 #' @examples \dontrun{
 #' data(phylocom)
 #' data <- comparative.comm(phylocom$phy, phylocom$sample)
 #' shape(data)
 #' shape(data, "colless")
-#' shape(data, "eigen.sum", 2)
+#' shape(data, "eigen.sum", which.eigen = 2)
 #' }
 #' @importFrom picante psd mpd pd
 #' @importFrom vegan taxondive
@@ -35,13 +44,19 @@
 #' @export
 shape <- function(data,
                   metric=c("all", "psv", "psr", "mpd", "pd",
-                      "colless", "gamma", "taxon", "eigen.sum", "cadotte.pd"),
-                  which.eigen=1, removeErrors = TRUE)
+                      "colless", "gamma", "taxon", "eigen.sum",
+                      "cadotte.pd", "mfpd"),
+                  which.eigen=1, phylogeneticWeight = 0.5, removeErrors = TRUE)
 {
 # vecnums chooses the eigenvector to calculate sumvar in Diniz-Filho
 # J.A.F., Cianciaruso M.V., Rangel T.F. & Bini
 # L.M. (2011). Eigenvector estimation of phylogenetic and functional
 # diversity. Functional Ecology, 25, 735-744.
+
+#-------------------- Unused (old?) parameters --------------------
+# @param pa If TRUE (default), all metrics are calculated across
+# presence-absence matrices, and species abundances are ignored
+# @param permute Number of permutations for metric (currently only for PCD)
     
   #Assertions and argument handling
   if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
