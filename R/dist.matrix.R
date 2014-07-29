@@ -15,41 +15,62 @@ comm.dist.matrix <- function(x){
 #' @export
 comm.dist.comparative.comm <- function(x) return(comm.dist(x$comm))
 
+#' @export
+dist.func.default <- function(x) dist(scale(x, center=TRUE, scale=TRUE))
 
 #' Make trait distance matrices
 #' @export
-traits.dist <- function(x, ...) UseMethod("traits.dist", x)
+traits.dist <- function(x, dist.func = dist.func.default, ...) UseMethod("traits.dist", x)
 #' @export
-traits.dist.comparative.comm <- function(x, altogether=TRUE){
-	if(is.null(x$traits)) stop("No trait data for which to compute a trait distance matrix")
-  if(altogether){
-    mat <- as.matrix(x$traits)
-    return(traits.dist(mat))
-  } else {
-    traits <- array(dim=c(nrow(x$traits), nrow(x$traits), ncol(x$traits)))
-    for(i in seq(ncol(x$traits)))
-      traits[,,i] <- as.matrix(traits.dist(x$traits[,i]))
-	  return(traits)
-  }
+traits.dist.comparative.comm <- function(x, dist.func = dist.func.default, altogether = TRUE){
+    if(is.null(x$traits)) stop("No trait data for which to compute a trait distance matrix")
+    if(altogether){
+        return(traits.dist(x$traits))
+    } else {
+                                        # FIXME: is this change ok?  i
+                                        # radically changed this
+                                        # because i think we should
+                                        # pass around dist objects (or
+                                        # in this case a list of dist
+                                        # objects) --
+                                        # https://github.com/willpearse/pez/issues/2#issuecomment-50240752
+        return(sapply(as.data.frame(x$traits), dist.func)) 
+    }
 }
 #' @export
-traits.dist.numeric <- function(x){
-  trait <- scale(x, center=TRUE, scale=TRUE)
-  return(dist(trait))
-}
+traits.dist.numeric <- function(x, dist.func = dist.func.default, ...) dist.func(x)
 #' @export
-traits.dist.matrix <- function(x){
-  if(!is.numeric(x)) stop("Can only compute trait distance matrix of continuous traits")
-  mat <- scale(x, center=TRUE, scale=TRUE)
-  return(dist(mat))
-}
+traits.dist.matrix <- function(x, dist.func = dist.func.default, ...) dist.func(x)
+#' @export
+traits.dist.data.frame <- function(x, dist.func = dist.func.default, ...) dist.func(as.matrix(x))
 
 #' Make phylogenetic distance matrices
+#' TODO: not sure if this is necessary/useful yet
 #' @export
 phylo.dist <- function(x, ...) UseMethod("phylo.dist", x)
 #' @export
-phylo.dist.comparative.comm <- function(x, ...){
+phylo.dist.phylo <- function(x, ...) as.dist(cophenetic(x))
+#' @export
+phylo.dist.comparative.comm <- function(x, ...) phylo.dist(x$phy)
+
+
+#' Make functional phylogenetic distance matrix
+#'
+#' @param phyloWeight phylogenetic weighting parameter (referred to as
+#' \code{a} in Cadotte et al. (2013)
+#' @param p exponent giving the norm to use for combining functional
+#' and phylogenetic distances (\code{p = 2} gives a Euclidean
+#' combination).
+#' @export
+funct.phylo.dist <- function(x, phyloWeight, p, ...) UseMethod("funct.phylo.dist", x)
+#' export
+funct.phylo.dist.comparative.comm <- function(x, phyloWeight, p, ...) {
+    out <- traits.dist(x)
+    out[] <- (phyloWeight * phylo.dist(x)^p +
+              (1 - phyloWeight) * out[]^p)^(1/p)
+    return(out)
 }
+
 
 #' Make environmental tolerance distance matrices
 #' @export

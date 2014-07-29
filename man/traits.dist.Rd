@@ -3,7 +3,7 @@
 \alias{traits.dist}
 \title{Make trait distance matrices}
 \usage{
-traits.dist(x, ...)
+traits.dist(x, dist.func = dist.func.default, ...)
 }
 \description{
 Make trait distance matrices
