@@ -4,7 +4,7 @@
 #' 
 #' \code{scape} creates a community comparative ecology object of simulated communities that are phylogenetically structured
 #' 
-#' @param tree \code{\link{ape::phylo}} object
+#' @param tree \code{\link{phylo}} object
 #' @param scape.size edge dimension of square landscape
 #' @param g.center strength of phylogenetic signal in species range centers
 #' @param g.range strength of phylogenetic signal in species range sizes
@@ -20,14 +20,14 @@
 #' @param site.stoch.scale adjust strength of random variation in species richness across sites
 #' @param sd.center sd in \code{\link{rnorm}} for the range centers, increase to get more variation in center values across species
 #' @param sd.range sd \code{\link{rnorm}} for the range sizes, increase to get more variation in range sizes across gradients
-#' @param rho Grafen branch adjustment of phylogenetic tree see \code{\link{ape::corGrafen}}
+#' @param rho Grafen branch adjustment of phylogenetic tree see \code{\link{corGrafen}}
 #' @param th probability threshold 10^-th above which species are considered present at a site 
 #
 #' @details Simulates a 2d landscape with species (i.e., tree tips) distributions dependent on a supplied phylogenetic tree. 
 #' The amount and type of structure is determened by the signal parameters \code{g.center}, \code{g.range} and \code{g.repulse}. Parameters are
 #' based on an Ornstein-Uhlenbeck model of evolution with stabilizing selection. Values of g=1 indicate no stabilizing selection and correspond 
 #' to the Brownian motion model of evolution; 0<g<1 represents stabilizing selection; and g>1 corresponds to disruptive selection where 
-#' phylogenetic signal for the supplied tree is amplified. See /code{/link{ape::corBlomberg}}. 
+#' phylogenetic signal for the supplied tree is amplified. See /code{/link{corBlomberg}}. 
 #' Communities are simulated along two gradients where the positions along those gradients, \code{g.center} and range sizes \code{g.range},
 #' can exhibit phylogenetic signal. Phylogenetic attraction is simulated in the \code{g.center} paramter, while repulsion in \code{g.repulse}. Both can be exhibited 
 #' such that closly related species are generally found with similar range centers but just not at the same site.  
