@@ -57,17 +57,17 @@ scape(tree, scape.size = 10, g.center = 1, g.range = 1, g.repulse = 1,
 
 \code{X2} probabilities of species along gradient 2
 
-\code{sppXs} full probabilities of each species as an array arranged in a scape.size X scape.size matrix
+\code{sppXs} full probabilities of each species as an array arranged in a \code{scape.size}-by-\code{scape.size} matrix
 
 \code{V.phylo} initial phylogenetic covariance matrix from tree
 
 \code{V.phylo.rho} phylogenetic covariance matrix from tree scaled by Grafen if rho is provided
 
-\code{V.center} scaled (by \code{g.center}) phylo covariance matrix used in the simulations
+\code{V.center} scaled by \code{g.center} phylo covariance matrix used in the simulations
 
-\code{V.range}  scaled (by \code{g.range}) phylo covariance matrix used in the simulations
+\code{V.range}  scaled by \code{g.range} phylo covariance matrix used in the simulations
 
-\code{V.repulse} scaled (by \code{g.repulse}) phylo covariance matrix used in the simulations
+\code{V.repulse} scaled by \code{g.repulse} phylo covariance matrix used in the simulations
 
 \code{bspp1} species optima for gradient 1
 
@@ -78,25 +78,26 @@ scape(tree, scape.size = 10, g.center = 1, g.range = 1, g.repulse = 1,
 \code{wd} the denominator for species ranges
 }
 \description{
-\code{scape} creates a community comparative ecology object of simulated communities that are phylogenetically structured
+\code{scape} simulates communities that are phylogenetically structured
 }
 \details{
-Simulates a 2d landscape with species (i.e., tree tips) distributions dependent on a supplied phylogenetic tree.
+Simulates a landscape with species (i.e., tree tips) distributions dependent on a supplied phylogenetic tree.
 The amount and type of structure is determened by the signal parameters \code{g.center}, \code{g.range} and \code{g.repulse}. Parameters are
 based on an Ornstein-Uhlenbeck model of evolution with stabilizing selection. Values of g=1 indicate no stabilizing selection and correspond
 to the Brownian motion model of evolution; 0<g<1 represents stabilizing selection; and g>1 corresponds to disruptive selection where
-phylogenetic signal for the supplied tree is amplified. See /code{/link{corBlomberg}}.
+phylogenetic signal for the supplied tree is amplified. See \code{\link{corBlomberg}}.
 Communities are simulated along two gradients where the positions along those gradients, \code{g.center} and range sizes \code{g.range},
 can exhibit phylogenetic signal. Phylogenetic attraction is simulated in the \code{g.center} paramter, while repulsion in \code{g.repulse}. Both can be exhibited
-such that closly related species are generally found with similar range centers but just not at the same site.
+such that closly related species are generally found with similar range centers (phylogenetic attraction) but just not at the same site (phylogenetic repulsion).
 The function then returns probabilities of of each species across sites and the presence and absences of species based a supplied threshold, \code{th}, which can be
-increased to obtain more species at sites and thus increase average site SR.
+increased to obtain more species at sites and thus increase average site species richness.
 }
 \examples{
 \dontrun{
-require(ape)
 tree<-stree(8,type="balanced")       #signal in centers
 kk<-scape(tree, scape.size=100, g.center=100, g.range=1, g.repulse=1, wd.all=150, signal.center=TRUE, signal.range=FALSE, same.range=FALSE, repulse=FALSE,center.scale = 1, range.scale = 1, repulse.scale = 1, site.stoch.scale = 0, sd.center=3, sd.range=1,rho=NULL, th=20)
+
+#Make some plots
 require(plotrix)
 par(mfrow=c(1,Ntip(tree)),mar=c(.1,.1,.1,.1))
 for(j in 1:Ntip(tree)){color2D.matplot(1 - kk$sppXs[,,j]/max(kk$sppXs[,,j]), xlab = "", ylab = "",main = "",border=NA,do.hex=FALSE,axes=FALSE)}
