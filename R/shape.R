@@ -1,20 +1,34 @@
 #TODO:
-# I'm not sure PD should be standardised by the sum of species, but rather the sum of individuals. In general, we need to have a better discussion about individual vs. species metrics and scaling
+# 1. I'm not sure PD should be standardised by the sum of species, but rather the sum of individuals. In general, we need to have a better discussion about individual vs. species metrics and scaling
 # it's going to be hard for people to install ecoPD, so we need some sensible 'require'-foo to get everything in there
-# I don't like having to 'require' ape when using phylobase, but either I'm doing something really stupid with the dependencies or phylobase doesn't have a properly setup NAMESPACE. Grrrr.
+# 
+# 2. I don't like having to 'require' ape when using phylobase, but either I'm doing something really stupid with the dependencies or phylobase doesn't have a properly setup NAMESPACE. Grrrr.
+# 
+# 3. Gamma reference?
+#
+#
+#
+#
+#
+#' Calculate shape phylogenetic biodiversity metrics across communities
+#' 
+#' \code{shape} calculates phylogenetic biodiversity metrics
+#' 
+#' @param data a \code{comparative.comm} object
+#' @param metric specify particular metrics to calculate, default is \code{all}
+#' @param which.eigen The eigen vector to calculate for the PhyloEigen metric
 
-#' Calculate dissimilarity metrics across communities
-#' 
-#' \code{dissimilarity} calculates dissimilarity metrics in comparative.comm communities
-#' 
-#' @param data a comparative community ecology object
-#' @param metric specify (a) particular metric(s) to calculate (unifrac, pcd, phylosor), or the default 'all'
-#' @param pa If TRUE (default), all metrics are calculated across presence-absence matrices, and species abundances are ignored
-#' @param permute Number of permutations for metric (currently only for PCD)
-#' @details This calculates UniFrac, PCD (and its subcomponents), and the phylogenetic Sorenson's index, all defined as dissimilarity metrics in Pearse et al.
-#' @note This function uses XXX's version of the PCD function, not that included in picante
-#' @return cc.dissimilarity object (a named list with the output from each metric)
-#' @author Matt Helmus, Will Pearse
+#' @details Calculates various metrics of phylogenetic biodiversity that are categorized as \emph{shape} metrics by Pearse \emph{et al.} (2014)
+#' @return a \code{phy.structure} list object of metric values
+#' @author M.R. Helmus, Will Pearse
+#' @references Pearse W.D., Purvis A., Cavender-Bares J. & Helmus M.R. (2014). Metrics and Models of Community Phylogenetics. In: Modern Phylogenetic Comparative Methods and Their Application in Evolutionary Biology. Springer Berlin Heidelberg, pp. 451-464.
+#' @references \code{PSV,PSR} Helmus M.R., Bland T.J., Williams C.K. & Ives A.R. (2007). Phylogenetic measures of biodiversity. American Naturalist, 169, E68-E83.
+#' @references \code{PD} Faith D.P. (1992). Conservation evaluation and phylogenetic diversity. Biological Conservation, 61, 1-10.
+#' @references \code{colless} Colless D.H. (1982). Review of phylogenetics: the theory and practice of phylogenetic systematics. Systematic Zoology, 31, 100–104.
+#' @references \code{gamma}
+#' @references \code{taxon} Clarke K.R. & Warwick R.M. (1998). A taxonomic distinctness index and its statistical properties. J. Appl. Ecol., 35, 523-531.
+#' @references \code{eigen.sum} Diniz-Filho J.A.F., Cianciaruso M.V., Rangel T.F. & Bini L.M. (2011). Eigenvector estimation of phylogenetic and functional diversity. Functional Ecology, 25, 735-744.
+#' @references \code{cadotte.pd} (i.e., \emph{Eed, Hed}) Cadotte M.W., Davies T.J., Regetz J., Kembel S.W., Cleland E. & Oakley T.H. (2010). Phylogenetic diversity metrics for ecological communities: integrating species richness, abundance and evolutionary history. Ecology Letters, 13, 96-105.
 #' @examples \dontrun{
 #' data(phylocom)
 #' data <- comparative.comm(phylocom$phy, phylocom$sample)
