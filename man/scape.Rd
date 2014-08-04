@@ -10,7 +10,7 @@ scape(tree, scape.size = 10, g.center = 1, g.range = 1, g.repulse = 1,
   sd.range = 1, rho = NULL, th = 8)
 }
 \arguments{
-\item{tree}{\code{\link{ape::phylo}} object}
+\item{tree}{\code{\link{phylo}} object}
 
 \item{scape.size}{edge dimension of square landscape}
 
@@ -42,7 +42,7 @@ scape(tree, scape.size = 10, g.center = 1, g.range = 1, g.repulse = 1,
 
 \item{sd.range}{sd \code{\link{rnorm}} for the range sizes, increase to get more variation in range sizes across gradients}
 
-\item{rho}{Grafen branch adjustment of phylogenetic tree see \code{\link{ape::corGrafen}}}
+\item{rho}{Grafen branch adjustment of phylogenetic tree see \code{\link{corGrafen}}}
 
 \item{th}{probability threshold 10^-th above which species are considered present at a site}
 }
@@ -85,7 +85,7 @@ Simulates a 2d landscape with species (i.e., tree tips) distributions dependent 
 The amount and type of structure is determened by the signal parameters \code{g.center}, \code{g.range} and \code{g.repulse}. Parameters are
 based on an Ornstein-Uhlenbeck model of evolution with stabilizing selection. Values of g=1 indicate no stabilizing selection and correspond
 to the Brownian motion model of evolution; 0<g<1 represents stabilizing selection; and g>1 corresponds to disruptive selection where
-phylogenetic signal for the supplied tree is amplified. See /code{/link{ape::corBlomberg}}.
+phylogenetic signal for the supplied tree is amplified. See /code{/link{corBlomberg}}.
 Communities are simulated along two gradients where the positions along those gradients, \code{g.center} and range sizes \code{g.range},
 can exhibit phylogenetic signal. Phylogenetic attraction is simulated in the \code{g.center} paramter, while repulsion in \code{g.repulse}. Both can be exhibited
 such that closly related species are generally found with similar range centers but just not at the same site.
