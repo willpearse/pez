@@ -3,16 +3,16 @@
 \alias{ConDivSim}
 \title{Null models for functional-phylogenetic diversity}
 \usage{
-ConDivSim(data, type = "traits", n.sim = 100, plot = TRUE,
+ConDivSim(object, type = "traits", n.sim = 100, plot = TRUE,
   disp99 = FALSE)
 }
 \arguments{
-\item{tab}{The community by species presence table.}
+\item{object}{a \code{\link{comparative.comm}} object}
 
-\item{type}{The distance matrix on which the mean pairwise distance
-is based. Either "trait" or "phy" to a phylogenetic or trait-based
-distance matrix, or an actual matrix to use (e.g., one from
-\code{\link{FPDist}})}
+\item{type}{character string giving the type of distance matrix on
+which the mean pairwise distance is based. Either "trait" or "phy"
+to a phylogenetic or trait-based distance matrix, or an actual
+matrix to use (e.g., one from \code{\link{funct.phylo.dist}})}
 
 \item{n.sim}{The number of permutations of the presence vector used to
 make the estimations.}

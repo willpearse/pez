@@ -62,7 +62,6 @@
 #Printing summaries of regressions
 #ADD RETURN STATEMENTS FOR FALL-THROUGH LIKE OTHERS
 #' @method summary ecophyl.regression
-#' @S3method summary ecophyl.regression
 #' @export
 summary.ecophyl.regression <- function(x, ...){
     cat("\n", x$type, "\n", sep="")
@@ -84,14 +83,12 @@ summary.ecophyl.regression <- function(x, ...){
     cat("\n")
 }
 #' @method print ecophyl.regression
-#' @S3method print ecophyl.regression
 #' @export
 print.ecophyl.regression <- function(x, ...){
     summary(x, ...)
 }
 
 #' @method plot ecophyl.regression
-#' @S3method plot ecophyl.regression
 #' @export
 plot.ecophyl.regression <- function(x, ...){
     .plot.regression <- function(x, y, observed, randomisations, method=c("quantile", "lm", "mantel"), permute=0, ...){
@@ -219,7 +216,6 @@ drop_tip <- function(tree, spp)
 
 #Summarise phylogenetic structure objects
 #' @method summary phy.structure
-#' @S3method summary phy.structure
 #' @export
 summary.phy.structure <- function(object, ...){
     #Argument checking
@@ -318,7 +314,6 @@ summary.phy.structure <- function(object, ...){
 
 #' Print a phylogenetic structure object
 #' @method print phy.structure
-#' @S3method print phy.structure
 #' @export
 print.phy.structure <- function(x, ...){
     summary(x)

@@ -1,15 +1,19 @@
-#TODO:
-# Unit tests
-# Documentation
+## TODO:
+## Unit tests
+## Documentation
+
 #' Calculate dispersion metrics across communities
 #' 
 #' \code{dispersion} calculates dispersion metrics in comparative.comm communities
 #' 
 #' @param data a comparative community ecology object
 #' @param permute the number of null permutations to perform
-#' @param metric specify (a) particular metric(s) to calculate (sesmpd, sesmntd, sespd, innd, d), or the default 'all'
-#' @details This calculates $SES_{MPD}$, $SES_{MNTD}$, $SES_{PD}$, INND, and D. All these are defined as dispersion metrics in Pearse et al., 
-#' Dc=0 is the Brownian expectation, Dc=1 is the random expectation.
+#' @param metric specify (a) particular metric(s) to calculate
+#' (sesmpd, sesmntd, sespd, innd, d), or the default 'all'
+#' @details This calculates $SES_{MPD}$, $SES_{MNTD}$, $SES_{PD}$,
+#' INND, and D. All these are defined as dispersion metrics in Pearse
+#' et al., Dc=0 is the Brownian expectation, Dc=1 is the random
+#' expectation.
 #' @return cc.dispersion object (a named list with the output from each metric)
 #' @author Matt Helmus, Will Pearse
 #' @examples \dontrun{
@@ -20,9 +24,8 @@
 #' }
 #' @importFrom ape vcv.phylo compute.brlen
 #' @export
-
 pblm.traits<-function(assocs,tree1=NULL,tree2=NULL,covars1=NULL,covars2=NULL,bootstrap=FALSE,nreps=10,maxit=10000,pstart=c(.5,.5)){
-
+    
   # Make a vector of associations
   A<-as.matrix(as.vector(as.matrix(assocs)))
   data.vecs<-A

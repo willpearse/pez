@@ -1,8 +1,7 @@
-#TODO:
-# Carry through arguments (?)
-# as.dist argument would allow hclust-ing, etc., of these measures more easily
-# are there implications from pa=FALSE?
-# Will has altered UniFrac and PhyloSor to remove the rowMeans (is that OK?)
+## TODO: Carry through arguments (?)  as.dist argument would allow
+## hclust-ing, etc., of these measures more easily are there
+## implications from pa=FALSE?  Will has altered UniFrac and PhyloSor
+## to remove the rowMeans (is that OK?)
 
 #' Calculate dissimilarity metrics across communities
 #' 
@@ -24,9 +23,10 @@
 #' }
 #' @importFrom picante unifrac phylosor
 #' @export
-
 dissimilarity <- function(data, metric=c("all", "unifrac", "pcd", "phylosor"), pa=TRUE, permute=1000)
 {
+
+    
   #Assertions and argument handling
   if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
   metric <- match.arg(metric)

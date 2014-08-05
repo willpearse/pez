@@ -12,7 +12,8 @@ pblm.traits(assocs, tree1 = NULL, tree2 = NULL, covars1 = NULL,
 
 \item{permute}{the number of null permutations to perform}
 
-\item{metric}{specify (a) particular metric(s) to calculate (sesmpd, sesmntd, sespd, innd, d), or the default 'all'}
+\item{metric}{specify (a) particular metric(s) to calculate
+(sesmpd, sesmntd, sespd, innd, d), or the default 'all'}
 }
 \value{
 cc.dispersion object (a named list with the output from each metric)
@@ -21,8 +22,10 @@ cc.dispersion object (a named list with the output from each metric)
 \code{dispersion} calculates dispersion metrics in comparative.comm communities
 }
 \details{
-This calculates $SES_{MPD}$, $SES_{MNTD}$, $SES_{PD}$, INND, and D. All these are defined as dispersion metrics in Pearse et al.,
-Dc=0 is the Brownian expectation, Dc=1 is the random expectation.
+This calculates $SES_{MPD}$, $SES_{MNTD}$, $SES_{PD}$,
+INND, and D. All these are defined as dispersion metrics in Pearse
+et al., Dc=0 is the Brownian expectation, Dc=1 is the random
+expectation.
 }
 \examples{
 \dontrun{
