@@ -4,14 +4,18 @@
 \title{Calculate dispersion phylogenetic biodiversity metrics across communities}
 \usage{
 dispersion(data, metric = c("all", "sesmpd", "sesmntd", "sespd", "innd", "d"),
-  permute = 1000)
+  permute = 1000, ...)
 }
 \arguments{
 \item{data}{a \code{comparative.comm} object}
 
 \item{permute}{the number of null permutations to perform}
 
-\item{metric}{specify particular metrics to calculate, default is \code{all}}
+\item{metric}{specify particular metrics to calculate, default is
+\code{all}}
+
+\item{...}{additional arguments for modifying the behaviour of
+various metrics (see details)}
 }
 \value{
 a \code{phy.structure} list object of metric values

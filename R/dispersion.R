@@ -6,13 +6,28 @@
 ## ses. functions such as different null models. MRH does not know how
 ## to do this, is it with the "..." argument?
 
+## SCW: the list(...) idiom might help with issue #2.  But I wonder
+## why not just add these arguments to the list, and then check to see
+## whether or not they are being ignored (so the user can be usefully
+## informed about whether they've made an honest mistake).  If you
+## only need to pass arguments on to one function, then:
+##   dispersion <- function( , ...){
+##      some code
+##      onlyFunctionThatNeedsDots( , ...)
+##      some more code
+##   }
+## would work.
+
 #' Calculate dispersion phylogenetic biodiversity metrics across communities
 #' 
 #' \code{dispersion} calculates phylogenetic biodiversity metrics
 #' 
 #' @param data a \code{comparative.comm} object
 #' @param permute the number of null permutations to perform
-#' @param metric specify particular metrics to calculate, default is \code{all}
+#' @param metric specify particular metrics to calculate, default is
+#' \code{all}
+#' @param ... additional arguments for modifying the behaviour of
+#' various metrics (see details)
 #'
 #' @details Calculates various metrics of phylogenetic biodiversity
 #' that are categorized as \emph{dispersion} metrics by Pearse
@@ -51,8 +66,13 @@
 #' @importFrom picante ses.mntd ses.mpd
 #' @export
 dispersion <- function(data, metric = c("all", "sesmpd", "sesmntd", "sespd", "innd", "d"),
-                       permute=1000)
+                       permute=1000, ...)
 {
+
+    ## MRH, is this what you mean?
+    l... <- list(...)
+    Dc <- l...$Dc
+    hasDc <- !is.null(reGenerators) # in case you need to know whether its available
     
   #Assertions and argument handling
   if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
