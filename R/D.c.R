@@ -12,8 +12,8 @@
 #' @return Matrix with columns for each trait or community, and rows for Dc value, and P(Dc=0) and P(Dc=1).
 #' @author Will Pearse
 #' @examples \dontrun{
-#' data(phylocom)
-#' data <- comparative.comm(phylocom$phy, phylocom$sample)
+#' data(laja)
+#' data <- comparative.comm(invert.tree, river.sites, invert.traits)
 #' D.c(data, permute=1000)
 #' D.c(data, traits=FALSE)
 #' }
