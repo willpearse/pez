@@ -2,28 +2,34 @@
 ## hclust-ing, etc., of these measures more easily are there
 ## implications from pa=FALSE?  Will has altered UniFrac and PhyloSor
 ## to remove the rowMeans (is that OK?)
-
-#' Calculate dissimilarity metrics across communities
+#
+#
+#
+#' Calculate dissimilarity phylogenetic biodiversity metrics across communities
 #' 
-#' \code{dissimilarity} calculates dissimilarity metrics in comparative.comm communities
+#' \code{dissimilarity} calculates phylogenetic biodiversity metrics
 #' 
-#' @param data a comparative community ecology object
-#' @param metric specify (a) particular metric(s) to calculate (unifrac, pcd, phylosor), or the default 'all'
+#' @param data a \code{comparative.comm} object
+#' @param metric specify particular metrics to calculate, default is \code{all}
 #' @param pa If TRUE (default), all metrics are calculated across presence-absence matrices, and species abundances are ignored
 #' @param permute Number of permutations for metric (currently only for PCD)
-#' @details This calculates UniFrac, PCD (and its subcomponents), and the phylogenetic Sorenson's index, all defined as dissimilarity metrics in Pearse et al.
-#' @note This function uses XXX's version of the PCD function, not that included in picante
-#' @return cc.dissimilarity object (a named list with the output from each metric)
-#' @author Matt Helmus, Will Pearse
+#' @details Calculates various metrics of phylogenetic biodiversity that are categorized as \emph{dissimilarity} metrics by Pearse \emph{et al.} (2014)
+#' @note This function uses a version of the PCD function, that is not included in \code{picante} and can be slow if \code{metric}="all"
+#' @return a \code{phy.structure} list object of metric values
+#' @author M.R. Helmus, Will Pearse
+#' @references Pearse W.D., Purvis A., Cavender-Bares J. & Helmus M.R. (2014). Metrics and Models of Community Phylogenetics. In: Modern Phylogenetic Comparative Methods and Their Application in Evolutionary Biology. Springer Berlin Heidelberg, pp. 451-464.
+#' @references \code{unifrac} Lozupone C.A. & Knight R. (2005). UniFrac: a new phylogenetic method for comparing microbial communities. Applied and Environmental Microbiology, 71, 8228-8235.
+#' @references \code{pcd} Ives A.R. & Helmus M.R. (2010). Phylogenetic metrics of community similarity. The American Naturalist, 176, E128-E142.
+#' @references \code{phylosor} Bryant J.A., Lamanna C., Morlon H., Kerkhoff A.J., Enquist B.J. & Green J.L. (2008). Microbes on mountainsides: Contrasting elevational patterns of bacterial and plant diversity. Proceedings of the National Academy of Sciences of the United States of America, 105, 11505-11511.
 #' @examples \dontrun{
-#' data(phylocom)
-#' data <- comparative.comm(phylocom$phy, phylocom$sample)
+#' data(laja)
+#' data <- comparative.comm(invert.tree, river.sites, invert.traits)
 #' dissimilarity(data)
 #' dispersion(data, "pcd")
 #' }
 #' @importFrom picante unifrac phylosor
 #' @export
-dissimilarity <- function(data, metric=c("all", "unifrac", "pcd", "phylosor"), pa=TRUE, permute=1000)
+dissimilarity <- function(data, metric=c("all", "unifrac", "pcd", "phylosor"), pa=TRUE, permute=100)
 {
 
     
