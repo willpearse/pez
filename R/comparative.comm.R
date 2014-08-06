@@ -12,9 +12,9 @@
 #' Subsetting according to communities (rows) and species (columns) is possible - see 'examples' for details.
 #' @return comparative.comm object
 #' @examples \dontrun{
-#' data(pez)
-#' data <- comparative.comm(phylocom$phy, phylocom$sample)
-#' data <- comparative.comm(phylocom$phy, phylocom$sample, traits=phylocom$traits)
+#' data(laja)
+#' data <- comparative.comm(invert.tree, river.sites)
+#' data <- comparative.comm(invert.tree, river.sites, invert.traits)
 #' data[1:3,]
 #' data[,1:3]
 #' }
@@ -128,6 +128,7 @@ comparative.comm <- function(phy, comm, traits=NULL, env=NULL, warn=TRUE, vcv=TR
 
 #' @rdname comparative.comm
 #' @method print comparative.comm
+#' @S3method print comparative.comm
 #' @export
 print.comparative.comm <- function(x, ...){
     #Argument checking
