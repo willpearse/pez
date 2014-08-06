@@ -15,6 +15,7 @@
 #' data(laja)
 #' data <- comparative.comm(invert.tree, river.sites)
 #' data <- comparative.comm(invert.tree, river.sites, invert.traits)
+#' data <- comparative.comm(invert.tree, river.sites, invert.traits, river.env)
 #' data[1:3,]
 #' data[,1:3]
 #' }
