@@ -42,8 +42,6 @@ Pearse W.D., Purvis A., Cavender-Bares J. & Helmus M.R. (2014). Metrics and Mode
 
 \code{PD} Faith D.P. (1992). Conservation evaluation and phylogenetic diversity. Biological Conservation, 61, 1-10.
 
-\code{colless} Colless D.H. (1982). Review of phylogenetics: the theory and practice of phylogenetic systematics. Systematic Zoology, 31, 100–104.
-
 \code{gamma}
 
 \code{taxon} Clarke K.R. & Warwick R.M. (1998). A taxonomic distinctness index and its statistical properties. J. Appl. Ecol., 35, 523-531.
