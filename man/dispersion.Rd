@@ -23,7 +23,7 @@ each metric)
 \details{
 Calculates various metrics of phylogenetic biodiversity
 that are categorized as \emph{dispersion} metrics by Pearse
-\emph{et al.} (2014). All these are defined as dispersion metrics
+\emph{et al.} (2014). All these a defined as dispersion metrics
 in Pearse et al., Dc=0 is the Brownian expectation, Dc=1 is the
 random expectation.
 }
@@ -38,5 +38,29 @@ dispersion(data, 100, "sesmpd")
 }
 \author{
 Matt Helmus, Will Pearse
+}
+\references{
+Pearse W.D., Purvis A., Cavender-Bares J. & Helmus
+M.R. (2014). Metrics and Models of Community Phylogenetics. In:
+Modern Phylogenetic Comparative Methods and Their Application in
+Evolutionary Biology. Springer Berlin Heidelberg, pp. 451-464.
+
+\code{sesmpd,sesmntd} Webb C.O. (2000). Exploring the
+phylogenetic structure of ecological communities: An example for
+rain forest trees. American Naturalist, 156, 145-155.
+
+\code{sespd} Webb C.O., Ackerly D.D. & Kembel
+S.W. (2008). Phylocom: software for the analysis of phylogenetic
+community structure and trait evolution. Bioinformatics
+Applications Note, 24, 2098-2100.
+
+\code{innd} Ness J.H., Rollinson E.J. & Whitney
+K.D. (2011). Phylogenetic distance can predict susceptibility to
+attack by natural enemies. Oikos, 120, 1327-1334.
+
+\code{d} Fritz S.A. & Purvis A. (2010). Selectivity in
+Mammalian Extinction Risk and Threat Types: a New Measure of
+Phylogenetic Signal Strength in Binary Traits. Conservation
+Biology, 24, 1042-1051.
 }
 

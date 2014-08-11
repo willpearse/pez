@@ -16,6 +16,24 @@
 #' @return cc.dispersion object (a named list with the output from
 #' each metric)
 #' @author Matt Helmus, Will Pearse
+#' @references Pearse W.D., Purvis A., Cavender-Bares J. & Helmus
+#' M.R. (2014). Metrics and Models of Community Phylogenetics. In:
+#' Modern Phylogenetic Comparative Methods and Their Application in
+#' Evolutionary Biology. Springer Berlin Heidelberg, pp. 451-464.
+#' @references \code{sesmpd,sesmntd} Webb C.O. (2000). Exploring the
+#' phylogenetic structure of ecological communities: An example for
+#' rain forest trees. American Naturalist, 156, 145-155.
+#' @references \code{sespd} Webb C.O., Ackerly D.D. & Kembel
+#' S.W. (2008). Phylocom: software for the analysis of phylogenetic
+#' community structure and trait evolution. Bioinformatics
+#' Applications Note, 24, 2098-2100.
+#' @references \code{innd} Ness J.H., Rollinson E.J. & Whitney
+#' K.D. (2011). Phylogenetic distance can predict susceptibility to
+#' attack by natural enemies. Oikos, 120, 1327-1334.
+#' @references \code{d} Fritz S.A. & Purvis A. (2010). Selectivity in
+#' Mammalian Extinction Risk and Threat Types: a New Measure of
+#' Phylogenetic Signal Strength in Binary Traits. Conservation
+#' Biology, 24, 1042-1051.
 #' @examples \dontrun{
 #' data(phylocom)
 #' data(laja)
