@@ -110,15 +110,12 @@ funct.phylo.dist.comparative.comm <- function(x, phyloWeight, p, ...) {
 #' Make environmental tolerance distance matrices
 #'
 #' @param x an object
-#' @param alltogether see \code{\link{traits.dist}}
-#' @param ... not used
 #' @export
 #' @rdname pianka.dist
 #' @family distnaces
 pianka.dist <- function(x, ...) UseMethod("pianka.dist", x)
 #' @export
-pianka.dist.matrix <- function(x, env = NULL, ...){
-    comm <- x
+pianka.dist.matrix <- function(comm, env=NULL){
     ## FIXME: comm in method, x in generic
 	#Checks and assertions
 	if(!is.numeric(comm)) stop("Need numeric community matrix for Pianaka calculations")
@@ -143,7 +140,7 @@ pianka.dist.matrix <- function(x, env = NULL, ...){
 }
 #' @export
 #' @rdname pianka.dist
-pianka.dist.comparative.comm <- function(x, alltogether = TRUE, ...){
+pianka.dist.comparative.comm <- function(x, alltogether=TRUE){
 	#Checks and assertions
 	if(is.null(x$env)) stop("Cannot calculate Pianka distances without environmental data")
 	if(any(!sapply(x$env, is.factor))) stop("Cannot calculate Pianka distances of environmental data non-factor-level environmental data")

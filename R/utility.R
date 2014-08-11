@@ -63,8 +63,7 @@
 #ADD RETURN STATEMENTS FOR FALL-THROUGH LIKE OTHERS
 #' @method summary ecophyl.regression
 #' @export
-summary.ecophyl.regression <- function(object, ...){
-    x <- object  ## FIXME:  lazy hack
+summary.ecophyl.regression <- function(x, ...){
     cat("\n", x$type, "\n", sep="")
     cat("Method: ", x$method, "\n")
     if(x$permute > 0)
@@ -143,8 +142,7 @@ plot.ecophyl.regression <- function(x, ...){
     }
 }
 
-summary.ecophyl.regression.list <- function(object, ...){
-    x <- object ## FIXME:  lazy hack
+summary.ecophyl.regression.list <- function(x, ...){    
     if(x$type == "eco.env.regression.list"){
         cat("\neco.env.regression list:\n")
         for(i in seq(ncol(object$data$env))){
