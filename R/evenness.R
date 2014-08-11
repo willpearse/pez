@@ -15,8 +15,8 @@
 #' @return cc.evenness object (a named list with the output from each metric)
 #' @author Matt Helmus, Will Pearse
 #' @examples \dontrun{
-#' data(phylocom)
-#' data <- comparative.comm(phylocom$phy, phylocom$sample)
+#' data(laja)
+#' data <- comparative.comm(invert.tree, river.sites, invert.traits)
 #' evenness(data)
 #' evenness(data, "rao")
 #' }
