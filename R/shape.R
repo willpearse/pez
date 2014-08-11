@@ -33,6 +33,10 @@
 #' data(phylocom)
 #' data <- comparative.comm(phylocom$phy, phylocom$sample)
 #' shape(data)
+#' data(laja)
+#' data <- comparative.comm(invert.tree, river.sites, invert.traits)
+#' (output<-shape(data))
+#' str(output)
 #' shape(data, "colless")
 #' shape(data, "eigen.sum", which.eigen = 2)
 #' }
