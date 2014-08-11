@@ -1,19 +1,33 @@
 #TODO:
-# Are Delta et al., when calculated here, based on abundances? Worth checking...
-# There is an error message coming from phylo.entropy that is described in its script
-# Could encapsulate phylogenetic signal measures by writing a wrapper and using expression to wrap the correct thing in (if you cared enough...)
-# optimise (? and if can be bothered)
+# 1. Are Delta et al., when calculated here, based on abundances? Worth checking...
+# 
+# 2. There is an error message coming from phylo.entropy that is described in its script
+# Could encapsulate phylogenetic signal measures by writing a wrapper and using expression to wrap the correct thing in (if you cared enough...) optimise (? and if can be bothered)
 # mis-match between proportions and partial.tree$edge.length - not introduced by the changes below
-
-#' Calculate evenness metrics across communities
+#
+# 3. lambda, delta, kappa reference
+#
+#
+#
+#' Calculate evenness phylogenetic biodiversity metrics across communities
 #' 
-#' \code{evenness} calculates evenness metrics in comparative.comm communities
+#' \code{evenness} calculates phylogenetic biodiversity metrics
 #' 
 #' @param data a comparative community ecology object
 #' @param metric specify (a) particular metric(s) to calculate (all, rao, delta, entropy, cadotte, pst), or the default 'all'
-#' @details This calculates Rao's quadratic entropy, taxonomic diversity, phylogenetic entropy, Cadotte's abundance measures, and Pst, all defined as evenness metrics in Pearse et al.
-#' @return cc.evenness object (a named list with the output from each metric)
-#' @author Matt Helmus, Will Pearse
+#' @details Calculates various metrics of phylogenetic biodiversity that are categorized as \emph{evenness} metrics by Pearse \emph{et al.} (2014)
+#' @return a \code{phy.structure} list object of metric values
+#' @author M.R. Helmus, Will Pearse
+#' @references Pearse W.D., Purvis A., Cavender-Bares J. & Helmus M.R. (2014). Metrics and Models of Community Phylogenetics. In: Modern Phylogenetic Comparative Methods and Their Application in Evolutionary Biology. Springer Berlin Heidelberg, pp. 451-464.
+#' @references \code{pse} Helmus M.R., Bland T.J., Williams C.K. & Ives A.R. (2007). Phylogenetic measures of biodiversity. American Naturalist, 169, E68-E83.
+#' @references \code{rao} Webb C.O. (2000). Exploring the phylogenetic structure of ecological communities: An example for rain forest trees. American Naturalist, 156, 145-155.
+#' @references \code{taxon} Clarke K.R. & Warwick R.M. (1998). A taxonomic distinctness index and its statistical properties. J. Appl. Ecol., 35, 523-531.
+#' @references \code{entropy} Allen B., Kon M. & Bar-Yam Y. (2009). A New Phylogenetic Diversity Measure Generalizing the Shannon Index and Its Application to Phyllostomid Bats. The American Naturalist, 174, 236-243.
+#' @references \code{cadotte} (i.e., \emph{PAE, IAC, Haed, Eaed}) Cadotte M.W., Davies T.J., Regetz J., Kembel S.W., Cleland E. & Oakley T.H. (2010). Phylogenetic diversity metrics for ecological communities: integrating species richness, abundance and evolutionary history. Ecology Letters, 13, 96-105.
+#' @references \code{pst} Hardy O.J. & Senterre B. (2007). Characterizing the phylogenetic structure of communities by an additive partitioning of phylogenetic diversity. Journal of Ecology, 95, 493-506.
+#' @references \code{lambda} 
+#' @references \code{delta} 
+#' @references \code{kappa} 
 #' @examples \dontrun{
 #' data(laja)
 #' data <- comparative.comm(invert.tree, river.sites, invert.traits)
@@ -26,7 +40,7 @@
 #' @importFrom caper comparative.data pgls summary.pgls coef.pgls
 #' @importFrom ade4 newick2phylog
 #' @export
-evenness <- function(data, metric=c("all", "rao", "taxon", "entropy", "cadotte", "pst", "lambda", "delta", "kappa"))
+evenness <- function(data, metric=c("all", "pse", "rao", "taxon", "entropy", "cadotte", "pst", "lambda", "delta", "kappa"))
 {
   #Assertions and argument handling
   if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
