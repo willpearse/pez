@@ -14,7 +14,8 @@
 #' @author Matt Helmus, Will Pearse
 #' @examples \dontrun{
 #' data(phylocom)
-#' data <- comparative.comm(phylocom$phy, phylocom$sample)
+#' data(laja)
+#' data <- comparative.comm(invert.tree, river.sites, invert.traits)
 #' dispersion(data)
 #' dispersion(data, 100, "sesmpd")
 #' }
