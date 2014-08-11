@@ -129,7 +129,6 @@ comparative.comm <- function(phy, comm, traits=NULL, env=NULL, warn=TRUE, vcv=TR
 
 #' @rdname comparative.comm
 #' @method print comparative.comm
-#' @S3method print comparative.comm
 #' @export
 print.comparative.comm <- function(x, ...){
     #Argument checking

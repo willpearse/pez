@@ -7,21 +7,25 @@ dispersion(data, metric = c("all", "sesmpd", "sesmntd", "sespd", "innd", "d"),
   permute = 1000)
 }
 \arguments{
-\item{data}{a comparative community ecology object}
+\item{data}{a \code{comparative.comm} object}
 
 \item{permute}{the number of null permutations to perform}
 
-\item{metric}{specify (a) particular metric(s) to calculate (sesmpd, sesmntd, sespd, innd, d), or the default 'all'}
+\item{metric}{specify particular metrics to calculate, default is \code{all}}
 }
 \value{
-cc.dispersion object (a named list with the output from each metric)
+cc.dispersion object (a named list with the output from
+each metric)
 }
 \description{
 \code{dispersion} calculates dispersion metrics in comparative.comm communities
 }
 \details{
-This calculates $SES_{MPD}$, $SES_{MNTD}$, $SES_{PD}$, INND, and D. All these are defined as dispersion metrics in Pearse et al.,
-Dc=0 is the Brownian expectation, Dc=1 is the random expectation.
+Calculates various metrics of phylogenetic biodiversity
+that are categorized as \emph{dispersion} metrics by Pearse
+\emph{et al.} (2014). All these are defined as dispersion metrics
+in Pearse et al., Dc=0 is the Brownian expectation, Dc=1 is the
+random expectation.
 }
 \examples{
 \dontrun{
