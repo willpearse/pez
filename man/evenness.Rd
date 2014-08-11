@@ -31,4 +31,44 @@ evenness(data, "rao")
 \author{
 Matt Helmus, Will Pearse
 }
+\references{
+Pearse W.D., Purvis A., Cavender-Bares J. & Helmus
+M.R. (2014). Metrics and Models of Community Phylogenetics. In:
+Modern Phylogenetic Comparative Methods and Their Application in
+Evolutionary Biology. Springer Berlin Heidelberg, pp. 451-464.
+
+\code{pse} Helmus M.R., Bland T.J., Williams C.K. &
+Ives A.R. (2007). Phylogenetic measures of biodiversity. American
+Naturalist, 169, E68-E83.
+
+\code{rao} Webb C.O. (2000). Exploring the phylogenetic
+structure of ecological communities: An example for rain forest
+trees. American Naturalist, 156, 145-155.
+
+\code{taxon} Clarke K.R. & Warwick R.M. (1998). A
+taxonomic distinctness index and its statistical
+properties. J. Appl. Ecol., 35, 523-531.
+
+\code{entropy} Allen B., Kon M. & Bar-Yam Y. (2009). A
+New Phylogenetic Diversity Measure Generalizing the Shannon Index
+and Its Application to Phyllostomid Bats. The American Naturalist,
+174, 236-243.
+
+\code{cadotte} (i.e., \emph{PAE, IAC, Haed, Eaed})
+Cadotte M.W., Davies T.J., Regetz J., Kembel S.W., Cleland E. &
+Oakley T.H. (2010). Phylogenetic diversity metrics for ecological
+communities: integrating species richness, abundance and
+evolutionary history. Ecology Letters, 13, 96-105.
+
+\code{pst} Hardy O.J. & Senterre
+B. (2007). Characterizing the phylogenetic structure of communities
+by an additive partitioning of phylogenetic diversity. Journal of
+Ecology, 95, 493-506.
+
+\code{lambda}
+
+\code{delta}
+
+\code{kappa}
+}
 

@@ -39,12 +39,24 @@ dispersion(data, "pcd")
 M.R. Helmus, Will Pearse
 }
 \references{
-Pearse W.D., Purvis A., Cavender-Bares J. & Helmus M.R. (2014). Metrics and Models of Community Phylogenetics. In: Modern Phylogenetic Comparative Methods and Their Application in Evolutionary Biology. Springer Berlin Heidelberg, pp. 451-464.
+Pearse W.D., Purvis A., Cavender-Bares J. & Helmus
+M.R. (2014). Metrics and Models of Community Phylogenetics. In:
+Modern Phylogenetic Comparative Methods and Their Application in
+Evolutionary Biology. Springer Berlin Heidelberg, pp. 451-464.
 
-\code{unifrac} Lozupone C.A. & Knight R. (2005). UniFrac: a new phylogenetic method for comparing microbial communities. Applied and Environmental Microbiology, 71, 8228-8235.
+\code{unifrac} Lozupone C.A. & Knight
+R. (2005). UniFrac: a new phylogenetic method for comparing
+microbial communities. Applied and Environmental Microbiology, 71,
+8228-8235.
 
-\code{pcd} Ives A.R. & Helmus M.R. (2010). Phylogenetic metrics of community similarity. The American Naturalist, 176, E128-E142.
+\code{pcd} Ives A.R. & Helmus M.R. (2010). Phylogenetic
+metrics of community similarity. The American Naturalist, 176,
+E128-E142.
 
-\code{phylosor} Bryant J.A., Lamanna C., Morlon H., Kerkhoff A.J., Enquist B.J. & Green J.L. (2008). Microbes on mountainsides: Contrasting elevational patterns of bacterial and plant diversity. Proceedings of the National Academy of Sciences of the United States of America, 105, 11505-11511.
+\code{phylosor} Bryant J.A., Lamanna C., Morlon H.,
+Kerkhoff A.J., Enquist B.J. & Green J.L. (2008). Microbes on
+mountainsides: Contrasting elevational patterns of bacterial and
+plant diversity. Proceedings of the National Academy of Sciences of
+the United States of America, 105, 11505-11511.
 }
 

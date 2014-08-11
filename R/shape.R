@@ -29,6 +29,18 @@
 #' @return cc.dissimilarity object (a named list with the output from
 #' each metric)
 #' @author Matt Helmus, Will Pearse
+#' @references Pearse W.D., Purvis A., Cavender-Bares J. & Helmus
+#' M.R. (2014). Metrics and Models of Community Phylogenetics. In:
+#' Modern Phylogenetic Comparative Methods and Their Application in
+#' Evolutionary Biology. Springer Berlin Heidelberg, pp. 451-464.
+#' @references \code{PSV,PSR} Helmus M.R., Bland T.J., Williams C.K. &
+#' Ives A.R. (2007). Phylogenetic measures of biodiversity. American
+#' Naturalist, 169, E68-E83.
+#' @references \code{PD} Faith D.P. (1992). Conservation evaluation
+#' and phylogenetic diversity. Biological Conservation, 61, 1-10.
+#' @references \code{colless} Colless D.H. (1982). Review of
+#' phylogenetics: the theory and practice of phylogenetic
+#' systematics. Systematic Zoology, 31, 100: 104.
 #' @examples \dontrun{
 #' data(phylocom)
 #' data <- comparative.comm(phylocom$phy, phylocom$sample)
