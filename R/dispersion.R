@@ -5,12 +5,16 @@
 #' 
 #' \code{dispersion} calculates dispersion metrics in comparative.comm communities
 #' 
-#' @param data a comparative community ecology object
+#' @param data a \code{comparative.comm} object
 #' @param permute the number of null permutations to perform
-#' @param metric specify (a) particular metric(s) to calculate (sesmpd, sesmntd, sespd, innd, d), or the default 'all'
-#' @details This calculates $SES_{MPD}$, $SES_{MNTD}$, $SES_{PD}$, INND, and D. All these are defined as dispersion metrics in Pearse et al., 
-#' Dc=0 is the Brownian expectation, Dc=1 is the random expectation.
-#' @return cc.dispersion object (a named list with the output from each metric)
+#' @param metric specify particular metrics to calculate, default is \code{all}
+#' @details Calculates various metrics of phylogenetic biodiversity
+#' that are categorized as \emph{dispersion} metrics by Pearse
+#' \emph{et al.} (2014). All these are defined as dispersion metrics
+#' in Pearse et al., Dc=0 is the Brownian expectation, Dc=1 is the
+#' random expectation.
+#' @return cc.dispersion object (a named list with the output from
+#' each metric)
 #' @author Matt Helmus, Will Pearse
 #' @examples \dontrun{
 #' data(phylocom)
