@@ -10,7 +10,7 @@
 #' @param metric specify particular metrics to calculate, default is \code{all}
 #' @details Calculates various metrics of phylogenetic biodiversity
 #' that are categorized as \emph{dispersion} metrics by Pearse
-#' \emph{et al.} (2014). All these a defined as dispersion metrics
+#' \emph{et al.} (2014). All these are defined as dispersion metrics
 #' in Pearse et al., Dc=0 is the Brownian expectation, Dc=1 is the
 #' random expectation.
 #' @return cc.dispersion object (a named list with the output from
