@@ -35,15 +35,15 @@
 
 \begin{document}
 \section*{Title Page}
-Pez: Phylogenetics for the Environmental Sciences
+pez: Phylogenetics for the Environmental Sciences   %Do you want to capitalize Pez? I would keep it as pez?
 \section*{Short Structured Abstract}
 \subsection*{Summary}
-Pez is an \emph{R} package that calculates 30 community phylogenetic
+Pez is an \emph{R} package that calculates >30 community phylogenetic 
 metrics, statistically models phylogenetic, trait, and community data,
-and simulates eco-phylogenetic data. It provides a common programmatic
-standard for the management and manipulation of eco-phylogenetic data
+and simulates community structure. It provides a common programmatic
+standard for the management and manipulation of eco-phylogenetic data  %Define eco-phylogenetic or do not use it here at the beginning?
 in \emph{R}.
-\subsection*{Availability}
+\subsection*{Availability}`
 Pez is released under the GPL v3 open-source license, available on the
 Internet from CRAN (\url{http://cran.r-project.org}). The package is
 under active development, and the authors welcome contributions (see
@@ -53,61 +53,53 @@ William D.\ Pearse (\url{wdpearse@umn.edu}) Department of Ecology, Evolution, an
 \\Marc Cadotte XXX
 \\Caroline Tucker XXX
 \\Steve Walker XXX
-\\Matthew R.\ Helmus (\url{mrhelmus@gmail.com}) Amsterdam Global Change Institute, Department of Animal Ecology, Vrije Universiteit, 1081 HV, Amsterdam, The Netherlands
+\\Matthew R.\ Helmus (\url{mrhelmus@gmail.com}) Department of Animal Ecology, Vrije Universiteit, 1081 HV, Amsterdam, The Netherlands
 \subsection*{Supplmentary information}
 A vignette (available with the package) showing some of the package's
 functions, and briefly describing the classification of community
 phylogenetic metrics.
 \section*{Text}
 \subsection*{Introduction}
-Community phylogenetics intends to link observed ecological structure
-with the evolutionary processes that generate species
+Community phylogenetics is a subfield of ecology which links ecological phenomena (e.g., competition, ecosystem functioning)
+with the evolutionary processes that generate species and their traits
 \autocite[see][]{Webb2002,Cavender-Bares2009}. This growing field has
-generated a large number of software packages
-\autocite[notably][]{Webb2008,Regetz2009,Kembel2010,Orme2013,Eastman2013},
-each with remarkably different designs and implementation details that
-can make routine analysis challenging. Many more metrics have code
-available only as supplementary materials to papers which are not
-maintained, or have no publically available source code. With no one
-to maintain this code, these valuable metrics are effectively lost to
+generated a number of statistical tools, mostly metrics of phylogenetic biodiversity, and software code and packages to implement such statistics
+\autocite[notably][]{Webb2008,Regetz2009,Kembel2010,Orme2013,Eastman2013}. The code is disparate and handles data differently 
+making routine data analyses with different statistcs by the end user challenging. In many cases, the statistics are also not formally implmeneted in a particular software package and are available only as supplementary materials to papers which are not
+maintained or have public source code. Without active maintenance, these valuable statistics are effectively lost to
 the scientific community.
 
 \emph{Pez} provides an \emph{R} class (\emph{comparative.comm}) that
-links phylogenetic, community composition, and environmental data in a
-single data structure. It provides wrappers for metrics (many
-previously unavailable in \emph{R}), thematically organising them
-according to the \textcite{Pearse2014review} framework. It also
-implements and extends the regression framework presented
+integrates phylogenetic, community, environmental and trait data in as
+a single object. From one of these eco-phylogenetic data objects, one can calculates a large body of phylogenetic biodiversity metrics (many
+previously unavailable in \emph{R}). The implemented metrics are thematically organized according to the framework outlined in \textcite{Pearse2014review} alowing the user to better understand the actual aspects of phylogenetic biodiversity they are calculating with any particular metric. As the structure of the package has been written to be flexible and intuative, newly published metrics will continue to be incorporated in \emph{Pez}. 
+
+Further, \emph{Pez} implements and extends the regression framework presented
 by \parencite{Cavender-Bares2004} \autocite[see
-also][]{Cavender-Bares2006}, and provides code to simulate null
-data. Our hope is that will speed the analysis of eco-phylogenetic
-datasets, and provide a common \emph{R} framework for the phylogenetic
-analysis of environmental data.
+also][]{Cavender-Bares2006}. Finally, it provides functions that simulate ecological communities to exhibit varying degrees of phylogenetic and trait community structure. Together, the functions we have implemented in \emph{Pez} will facilitate and speed the use of analysis of eco-phylogenetic
+datasets, and provide a common \emph{R} framework for community phylogenetics.
 \subsection*{Description}
 \subsubsection*{Data manipulation and storage}
 \emph{Pez} extends the data manipulation and import/export features of
 \emph{R}, and contains a unified class to contain all eco-phyogenetic
-data. It simplifyies the process of ensuring community ecological,
+data. It simplifyies the process of ensuring community, trait,
 environmental, and phylogenetic data are compatible by overloading
 \emph{R}'s standard row and column operators. This makes it simple to
 make consistent changes across datasets; for example, removing a
 species from the community data automatically trims it from the
 phylogeny, and removes its associated trait data. \emph{Pez} was
 designed to be backwards-compatible with \emph{caper}'s
-\autocite{Orme2013} \emph{comparative.data} class, permitting detailed
-comparative analysis of species trait data without additional fuss.
+\autocite{Orme2013} \emph{comparative.data} class, seamlessly permitting detailed
+comparative analysis of species trait data.
 \subsubsection*{Metrics}
 Following the classification of \textcite{Pearse2014review},
 \emph{pez} simplifies the calculation and comparison of a number of
 metrics by grouping them into four categories: \emph{shape},
-\emph{evenness}, \emph{dispersion}, and \emph{dissimilarity}. Briefly,
-shape metrics examine the structure of an assemblage phylogeny, while
-evenness metrics incorporate species’ abundances. Dispersion metrics
-examine assemblages given a phylogeny of species that could occupy
-that assemblage (the source pool), while dissimilarity metrics compare
-phylogenetic structure between assemblages. Table \ref{metricTable}
-gives an overview of the functions contained within \emph{pez},
-including the metrics it can calculate. Additionally, \emph{trait.asm}
+\emph{evenness}, \emph{dispersion}, and \emph{dissimilarity}. Shape metrics measure the structure of an community phylogeny. Evenness metrics are shape metrics that incorporate a weighting with species’ abundances. Dispersion metrics
+calculate the phylogenetic biodiversity expected given a source pool. Finally, dissimilarity differ from the former as they directly calculate the pairwise difference in 
+phylogenetic biodiversity between assemblages. 
+Table \ref{metricTable}
+gives an overview of the functions contained within \emph{pez}, \emph{trait.asm}
 permits the direct comparison of phylogenetic and trait structure,
 following the \emph{traitgram} framework of XXX. Speeding and easing
 the comparison of community phylogenetic metrics is important, since
@@ -123,7 +115,7 @@ ecological assemblages \autocite{Cadotte2010}.
   \emph{dispersion} & $SES_{MPD}$/\emph{NRI}$^*$ \autocite{Webb2000,Webb2002,Kembel2009}, $SES_{MNTD}/\emph{NTI}$$^*$ \autocite{Webb2000,Webb2002,Kembel2009}, \emph{INND} \autocite{Ness2011}, \emph{D}$^*$ \autocite{Fritz2010}\\
 \emph{dissimilarity} &  UniFrac \autocite{Lozupone2005}, \emph{PCD} \autocite{Helmus2010}, PhyloSor \autocite{Bryant2008}, Rao's Q \autocite{Rao1982a}\\
   \emph{fingerprint.regression} & Compares phylogenetic, community co-existence, and trait similarity matrices using Mantel tests, quantile regressions, or linear models following \autocite{Cavender-Bares2004,Cavender-Bares2006}. Completely re-implements all features previously available in \emph{EcoPhyl} (XXX) \\
-  \emph{scape} & Simulates community phylogenetic structure across a landscape, simulating phylogenetic repulsion, attraction, niche width, and range size (XXX)\\
+  \emph{scape} & Simulates community phylogenetic structure across a landscape, simulating phylogenetic repulsion, attraction, niche width, and range size (Helmus2012)\\ %STOPPED STOPPED
   \emph{trait.asm} & Calculate optimal traitgram that explains community data, following XXX\\
   Others? & classic.phy.signal (worth keeping?) - some stuff from willeerd?\\
   \hline
