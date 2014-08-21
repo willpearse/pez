@@ -6,51 +6,34 @@
 # having to 'require' ape when using phylobase, but either I'm doing
 # something really stupid with the dependencies or phylobase doesn't
 # have a properly setup NAMESPACE. Grrrr.
+# NEEDED Gamma reference?
 
-#' Calculate dissimilarity metrics across communities
-#' 
-#' \code{dissimilarity} calculates dissimilarity metrics in
-#' comparative.comm communities
-#' FIXME: properly describe shape indices, not dissimilarity (right?)
-#' 
-#' @param data a comparative community ecology object
-#' @param metric specify (a) particular metric(s) to calculate
-#' (unifrac, pcd, phylosor), or the default 'all'
-#' @param which.eigen TODO
-#' @param phylogeneticWeight phylogenetic weighting parameter for
-#' computing a functional phylogenetic distance matrix
-#' @param removeErrors If \code{FALSE}, metrics that failed to be
-#' computed are returned as error messages
-#' @details This calculates UniFrac, PCD (and its subcomponents), and
-#' the phylogenetic Sorenson's index, all defined as dissimilarity
-#' metrics in Pearse et al.
-#' @note This function uses XXX's version of the PCD function, not
-#' that included in picante
-#' @return cc.dissimilarity object (a named list with the output from
-#' each metric)
-#' @author Matt Helmus, Will Pearse
-#' @references Pearse W.D., Purvis A., Cavender-Bares J. & Helmus
-#' M.R. (2014). Metrics and Models of Community Phylogenetics. In:
-#' Modern Phylogenetic Comparative Methods and Their Application in
-#' Evolutionary Biology. Springer Berlin Heidelberg, pp. 451-464.
-#' @references \code{PSV,PSR} Helmus M.R., Bland T.J., Williams C.K. &
-#' Ives A.R. (2007). Phylogenetic measures of biodiversity. American
-#' Naturalist, 169, E68-E83.
-#' @references \code{PD} Faith D.P. (1992). Conservation evaluation
-#' and phylogenetic diversity. Biological Conservation, 61, 1-10.
-#' @references \code{colless} Colless D.H. (1982). Review of
-#' phylogenetics: the theory and practice of phylogenetic
-#' systematics. Systematic Zoology, 31, 100: 104.
+#' Calculate shape phylogenetic biodiversity metrics across communities
+#'
+#' \code{shape} calculates phylogenetic biodiversity metrics
+#'
+#' @param data a \code{comparative.comm} object
+#' @param metric specify particular metrics to calculate, default is \code{all}
+#' @param which.eigen The eigen vector to calculate for the PhyloEigen metric
+
+#' @details Calculates various metrics of phylogenetic biodiversity that are categorized as \emph{shape} metrics by Pearse \emph{et al.} (2014)
+#' @return a \code{phy.structure} list object of metric values
+#' @author M.R. Helmus, Will Pearse
+#' @references Pearse W.D., Purvis A., Cavender-Bares J. & Helmus M.R. (2014). Metrics and Models of Community Phylogenetics. In: Modern Phylogenetic Comparative Methods and Their Application in Evolutionary Biology. Springer Berlin Heidelberg, pp. 451-464.
+#' @references \code{PSV,PSR} Helmus M.R., Bland T.J., Williams C.K. & Ives A.R. (2007). Phylogenetic measures of biodiversity. American Naturalist, 169, E68-E83.
+#' @references \code{PD} Faith D.P. (1992). Conservation evaluation and phylogenetic diversity. Biological Conservation, 61, 1-10.
+#' @references \code{colless} Colless D.H. (1982). Review of phylogenetics: the theory and practice of phylogenetic systematics. Systematic Zoology, 31, 100–104.
+#' @references \code{gamma}
+#' @references \code{taxon} Clarke K.R. & Warwick R.M. (1998). A taxonomic distinctness index and its statistical properties. J. Appl. Ecol., 35, 523-531.
+#' @references \code{eigen.sum} Diniz-Filho J.A.F., Cianciaruso M.V., Rangel T.F. & Bini L.M. (2011). Eigenvector estimation of phylogenetic and functional diversity. Functional Ecology, 25, 735-744.
+#' @references \code{cadotte.pd} (i.e., \emph{Eed, Hed}) Cadotte M.W., Davies T.J., Regetz J., Kembel S.W., Cleland E. & Oakley T.H. (2010). Phylogenetic diversity metrics for ecological communities: integrating species richness, abundance and evolutionary history. Ecology Letters, 13, 96-105.
 #' @examples \dontrun{
-#' data(phylocom)
-#' data <- comparative.comm(phylocom$phy, phylocom$sample)
-#' shape(data)
 #' data(laja)
 #' data <- comparative.comm(invert.tree, river.sites, invert.traits)
 #' (output<-shape(data))
 #' str(output)
 #' shape(data, "colless")
-#' shape(data, "eigen.sum", which.eigen = 2)
+#' shape(data, "eigen.sum", 2)
 #' }
 #' @importFrom picante psd mpd pd
 #' @importFrom vegan taxondive
@@ -58,11 +41,7 @@
 #' @importFrom apTreeshape as.treeshape as.treeshape.phylo colless tipsubtree
 #' @importFrom ape gammaStat cophenetic.phylo drop.tip
 #' @export
-shape <- function(data,
-                  metric=c("all", "psv", "psr", "mpd", "pd",
-                      "colless", "gamma", "taxon", "eigen.sum",
-                      "cadotte.pd", "mfpd"),
-                  which.eigen=1, phylogeneticWeight = 0.5, removeErrors = TRUE)
+shape <- function(data,metric=c("all", "psv", "psr", "mpd", "pd","colless", "gamma", "taxon", "eigen.sum","cadotte.pd", "mfpd"),which.eigen=1, phylogeneticWeight = 0.5, removeErrors = TRUE)
 {
 # vecnums chooses the eigenvector to calculate sumvar in Diniz-Filho
 # J.A.F., Cianciaruso M.V., Rangel T.F. & Bini

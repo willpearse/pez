@@ -1,9 +1,9 @@
 #TODO:
 # Carry through arguments
 
-#' Calculate dispersion metrics across communities
+#' Calculate dispersion phylogenetic biodiversity metrics across communities
 #' 
-#' \code{dispersion} calculates dispersion metrics in comparative.comm communities
+#' \code{dispersion} calculates phylogenetic biodiversity metrics
 #' 
 #' @param data a \code{comparative.comm} object
 #' @param permute the number of null permutations to perform
@@ -13,9 +13,8 @@
 #' \emph{et al.} (2014). All these are defined as dispersion metrics
 #' in Pearse et al., Dc=0 is the Brownian expectation, Dc=1 is the
 #' random expectation.
-#' @return cc.dispersion object (a named list with the output from
-#' each metric)
-#' @author Matt Helmus, Will Pearse
+#' @return a \code{phy.structure} list object of metric values
+#' @author M.R. Helmus, Will Pearse
 #' @references Pearse W.D., Purvis A., Cavender-Bares J. & Helmus
 #' M.R. (2014). Metrics and Models of Community Phylogenetics. In:
 #' Modern Phylogenetic Comparative Methods and Their Application in
