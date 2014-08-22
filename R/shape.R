@@ -3,6 +3,7 @@
 #' @param data a \code{comparative.comm} object
 #' @param metric specify particular metrics to calculate, default is \code{all}
 #' @param which.eigen The eigen vector to calculate for the PhyloEigen metric
+#' @param ... Additional arguments to passed to metric functions (unlikely you will want this!)
 #' @details Calculates various metrics of phylogenetic biodiversity that are categorized as \emph{shape} metrics by Pearse \emph{et al.} (2014)
 #' @return a \code{phy.structure} list object of metric values
 #' @author M.R. Helmus, Will Pearse
@@ -28,7 +29,7 @@
 #' @importFrom apTreeshape as.treeshape as.treeshape.phylo colless tipsubtree
 #' @importFrom ape gammaStat cophenetic.phylo drop.tip
 #' @export
-shape <- function(data,metric=c("all", "psv", "psr", "mpd", "pd","colless", "gamma", "taxon", "eigen.sum","cadotte.pd", "mfpd"),which.eigen=1, phylogeneticWeight = 0.5, removeErrors = TRUE)
+shape <- function(data,metric=c("all", "psv", "psr", "mpd", "pd","colless", "gamma", "taxon", "eigen.sum","cadotte.pd", "mfpd"),which.eigen=1, phylogeneticWeight = 0.5, removeErrors = TRUE, ...)
 {
 # vecnums chooses the eigenvector to calculate sumvar in Diniz-Filho
 # J.A.F., Cianciaruso M.V., Rangel T.F. & Bini
@@ -56,17 +57,17 @@ shape <- function(data,metric=c("all", "psv", "psr", "mpd", "pd","colless", "gam
   
   #Calculate measures
   if(metric == "psv" | metric == "all")
-    output$psv <- coefs$psv <- try(psd(data$comm, data$phy)[,1], silent = TRUE)
+    output$psv <- coefs$psv <- try(psd(data$comm, data$phy, ...)[,1], silent = TRUE)
   
   if(metric == "psr" | metric == "all")
-    output$psr <- coefs$psr <- try(psd(data$comm, data$phy)[,4], silent = TRUE)
+    output$psr <- coefs$psr <- try(psd(data$comm, data$phy, ...)[,4], silent = TRUE)
   
   if(metric == "mpd" | metric == "all")
-    output$mpd <- coefs$mpd <- try(mpd(data$comm, data$vcv), silent = TRUE)
+    output$mpd <- coefs$mpd <- try(mpd(data$comm, data$vcv, abundance.weighted=FALSE, ...), silent = TRUE)
   
   if(metric == "pd" | metric == "all")
     try({
-      output$pd <- coefs$pd <- pd(data$comm, data$phy)[,1]
+      output$pd <- coefs$pd <- pd(data$comm, data$phy, ...)[,1]
       output$pd.ivs <- coefs$pd.ivs <- unname(resid(lm(coefs$pd ~ rowSums(data$comm))))
     }, silent = TRUE)
   
@@ -88,7 +89,7 @@ shape <- function(data,metric=c("all", "psv", "psr", "mpd", "pd","colless", "gam
   #can happen in the summary output
   if(metric == "taxon" | metric == "all")
       try({
-        output$taxon <- taxondive(data$comm, data$vcv)
+        output$taxon <- taxondive(data$comm, data$vcv, ...)
         t <- data.frame(output$taxon$D, output$taxon$Dstar, output$taxon$Lambda, output$taxon$Dplus, output$taxon$SDplus)
         names(t) <- c("Delta", "DeltaStar", "LambdaPlus", "DeltaPlus", "S.DeltaPlus")
         coefs <- cbind(coefs, t)
@@ -96,7 +97,7 @@ shape <- function(data,metric=c("all", "psv", "psr", "mpd", "pd","colless", "gam
   
   if(metric == "eigen.sum" | metric == "all")
       try({
-          evc <- PVRdecomp(data$phy)@Eigen$vectors
+          evc <- PVRdecomp(data$phy, ...)@Eigen$vectors
           output$eigen.sum <- coefs$eigen.sum <- apply(data$comm, 1, .eigen.sum, evc, which.eigen)
       }, silent = TRUE)
   

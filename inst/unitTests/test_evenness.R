@@ -20,6 +20,7 @@ test_that("Rao", {
   expect_that(rao_test$pst, equals(NULL))
   expect_that(rao_test$taxon, equals(NULL))
   expect_that(rao_test$rao, is_equivalent_to(rao_test$coefs$rao))
+  expect_that(rao_test$mpd, equals(NULL))
 })
 
 test_that("taxon", {
@@ -37,6 +38,7 @@ test_that("taxon", {
   expect_that(taxon_test$coefs$LambdaPlus, is_equivalent_to(taxon_test$taxon$Lambda[1:6]))
   expect_that(taxon_test$coefs$DeltaPlus, is_equivalent_to(taxon_test$taxon$Dplus[1:6]))
   expect_that(taxon_test$coefs$S.DeltaPlus, is_equivalent_to(taxon_test$taxon$SDplus[1:6]))
+  expect_that(taxon_test$mpd, equals(NULL))
 })
 
 test_that("Entropy", {
@@ -48,6 +50,7 @@ test_that("Entropy", {
   expect_that(entropy_test$pst, equals(NULL))
   expect_that(entropy_test$taxon, equals(NULL))
   expect_that(entropy_test$entropy, is_equivalent_to(entropy_test$coefs$entropy))
+  expect_that(entropy_test$mpd, equals(NULL))
 })
 
 test_that("Cadotte", {
@@ -66,6 +69,7 @@ test_that("Cadotte", {
   expect_that(cadotte_test$pst, equals(NULL))
   expect_that(entropy_test$taxon, equals(NULL))
   expect_that(cadotte_test$cadotte, is_equivalent_to(cadotte_test$coefs[,c("PAE", "IAC", "Haed", "Eaed")]))
+  expect_that(entropy_test$mpd, equals(NULL))
 })
 
 test_that("Pst", {
@@ -77,6 +81,7 @@ test_that("Pst", {
   expect_that(pst_test$pst, is_equivalent_to(c(4.25, 4.94444444444444, 5.83333333333333, 6.94444444444444, 7.75, 7.109375)))
   expect_that(pst_test$taxon, equals(NULL))
   expect_that(pst_test$pst, is_equivalent_to(pst_test$coefs$pst))
+  expect_that(pst_test$mpd, equals(NULL))
 })
 
 test_that("Delta", {
@@ -94,6 +99,7 @@ test_that("Delta", {
   expect_that(delta_test$lambda, equals(NULL))
   expect_that(delta_test$kappa, equals(NULL))
   expect_that(delta_test$delta$values, is_equivalent_to(delta_test$coefs$delta))
+  expect_that(entropy_test$mpd, equals(NULL))
 })
 
 test_that("Kappa", {
@@ -111,6 +117,7 @@ test_that("Kappa", {
   expect_that(kappa_test$lambda, equals(NULL))
   expect_that(kappa_test$delta, equals(NULL))
   expect_that(kappa_test$kappa$values, is_equivalent_to(kappa_test$coefs$kappa))
+  expect_that(entropy_test$mpd, equals(NULL))
 })
 
 test_that("Lambda", {
@@ -128,6 +135,22 @@ test_that("Lambda", {
   expect_that(lambda_test$kappa, equals(NULL))
   expect_that(lambda_test$delta, equals(NULL))
   expect_that(lambda_test$lambda$values, is_equivalent_to(lambda_test$coefs$lambda))
+  expect_that(lambda_test$mpd, equals(NULL))
+})
+
+test_that("MPD", {
+  mpd_test <<- evenness(data, "mpd")
+  expect_that(mpd_test$rao, equals(NULL))
+  expect_that(mpd_test$delta, equals(NULL))
+  expect_that(mpd_test$entropy, equals(NULL))
+  expect_that(mpd_test$cadotte, equals(NULL))
+  expect_that(mpd_test$pst, equals(NULL))
+  expect_that(mpd_test$taxon, equals(NULL))
+  expect_that(mpd_test$lambda, equals(NULL))
+  expect_that(lambda_test$kappa, equals(NULL))
+  expect_that(mpd_test$delta, equals(NULL))
+  expect_that(mpd_test$mpd, is_equivalent_to(mpd_test$coefs$mpd))
+  expect_that(mpd_test$mpd, equals(c(c(4.25, 4.94444444444444, 5.83333333333333, 6.94444444444444, 7.75, 7.109375))))
 })
 
 test_that("Each measure is the same as calculated together (where can)", {

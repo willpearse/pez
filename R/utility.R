@@ -270,6 +270,8 @@ summary.phy.structure <- function(object, ...){
             cat("\tDelta transformation (delta)\n")
         if(!is.null(object$kappa))
             cat("\tKappa transformation (kappa)\n")
+        if(!is.null(object$mpd))
+            cat("\tMean Phylogenetic Distance (mpd)\n")
         cat("Use something like 'output$rao' to work with each measure\n")
         cat("...or coef(output) to get a table of metric values\n")
         return()

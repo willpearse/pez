@@ -12,6 +12,7 @@
 #' 
 #' @param data a comparative community ecology object
 #' @param metric specify particular metrics to calculate, default is \code{all}
+#' @param ... Additional arguments to passed to metric functions (unlikely you will want this!)
 #' @details Calculates various metrics of phylogenetic biodiversity that are categorized as \emph{evenness} metrics by Pearse \emph{et al.} (2014)
 #' @return a \code{phy.structure} list object of metric values
 #' @author M.R. Helmus, Will Pearse
@@ -44,7 +45,7 @@
 #' @importFrom caper comparative.data pgls summary.pgls coef.pgls
 #' @importFrom ade4 newick2phylog
 #' @export
-evenness <- function(data, metric=c("all", "rao", "taxon", "entropy", "cadotte", "pst", "lambda", "delta", "kappa"))
+evenness <- function(data, metric=c("all", "rao", "taxon", "entropy", "cadotte", "pst", "lambda", "delta", "kappa", "mpd"), ...)
 {
   #Assertions and argument handling
   if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
@@ -68,7 +69,7 @@ evenness <- function(data, metric=c("all", "rao", "taxon", "entropy", "cadotte",
   
   if(metric == "taxon" | metric == "all")
     try({
-      output$taxon <- taxondive(data$comm, data$vcv)
+      output$taxon <- taxondive(data$comm, data$vcv, ...)
       t <- data.frame(output$taxon$D, output$taxon$Dstar, output$taxon$Lambda, output$taxon$Dplus, output$taxon$SDplus)
       names(t) <- c("Delta", "DeltaStar", "LambdaPlus", "DeltaPlus", "S.DeltaPlus")
       coefs <- cbind(coefs, t)
@@ -105,7 +106,7 @@ evenness <- function(data, metric=c("all", "rao", "taxon", "entropy", "cadotte",
       if(length(unique(c.data)) > 1){
         c.data <- data.frame(comm=c.data, names=names(c.data))
         c.data <- comparative.data(phy=drop_tip(data$phy, setdiff(data$phy$tip.label, c.data$names)), data=c.data, names.col=names)
-        output$lambda$models[[i]] <- pgls(comm ~ 1, c.data, lambda="ML")
+        output$lambda$models[[i]] <- pgls(comm ~ 1, c.data, lambda="ML", ...)
         output$lambda$values[i] <- summary(output$lambda$models[[i]])$param.CI$lambda$opt
       } else {
         output$lambda$models[[i]] <- NA
@@ -122,7 +123,7 @@ evenness <- function(data, metric=c("all", "rao", "taxon", "entropy", "cadotte",
       if(length(unique(c.data)) > 1){
         c.data <- data.frame(comm=c.data, names=names(c.data))
         c.data <- comparative.data(phy=drop_tip(data$phy, setdiff(data$phy$tip.label, c.data$names)), data=c.data, names.col=names)
-        output$delta$models[[i]] <- pgls(comm ~ 1, c.data, delta="ML")
+        output$delta$models[[i]] <- pgls(comm ~ 1, c.data, delta="ML", ...)
         output$delta$values[i] <- summary(output$delta$models[[i]])$param.CI$delta$opt
       } else {
         output$delta$models[[i]] <- NA
@@ -139,7 +140,7 @@ evenness <- function(data, metric=c("all", "rao", "taxon", "entropy", "cadotte",
       if(length(unique(c.data)) > 1){
         c.data <- data.frame(comm=c.data, names=names(c.data))
         c.data <- comparative.data(phy=drop_tip(data$phy, setdiff(data$phy$tip.label, c.data$names)), data=c.data, names.col=names)
-        output$kappa$models[[i]] <- pgls(comm ~ 1, c.data, kappa="ML")
+        output$kappa$models[[i]] <- pgls(comm ~ 1, c.data, kappa="ML", ...)
         output$kappa$values[i] <- summary(output$kappa$models[[i]])$param.CI$kappa$opt
       } else {
         output$kappa$models[[i]] <- NA
@@ -148,6 +149,10 @@ evenness <- function(data, metric=c("all", "rao", "taxon", "entropy", "cadotte",
     }
     coefs$kappa <- output$kappa$values
   }
+
+  if(metric == "mpd" | metric == "all")
+    output$mpd <- coefs$mpd <- try(mpd(data$comm, data$vcv, abundance.weighted=TRUE, ...), silent = TRUE)
+
   
   #Prepare output
   output$type <- "evenness"
