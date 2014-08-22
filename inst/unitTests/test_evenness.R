@@ -138,5 +138,5 @@ test_that("Each measure is the same as calculated together (where can)", {
   expect_that(cadotte_test$cadotte, equals(all_test$cadotte))
   expect_that(pst_test$pst, equals(all_test$pst))
   expect_that(delta_test$delta, equals(all_test$delta))
-  expect_that(all_test$coefs, equals(coefs(all_test)))
+  expect_that(all_test$coefs, equals(coef(all_test)))
 })
