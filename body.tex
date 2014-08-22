@@ -71,8 +71,7 @@ the scientific community.
 
 \emph{Pez} provides an \emph{R} class (\emph{comparative.comm}) that
 integrates phylogenetic, community, environmental and trait data in as
-a single object. From one of these eco-phylogenetic data objects, one can calculates a large body of phylogenetic biodiversity metrics (many
-previously unavailable in \emph{R}). The implemented metrics are thematically organized according to the framework outlined in \textcite{Pearse2014review} alowing the user to better understand the actual aspects of phylogenetic biodiversity they are calculating with any particular metric. As the structure of the package has been written to be flexible and intuative, newly published metrics will continue to be incorporated in \emph{Pez}. 
+a single object. From one of these eco-phylogenetic data objects, one can calculates a large body of phylogenetic biodiversity metrics utilizing single functions. The implemented metrics are thematically organized into one of four classifications according to the framework outlined in \textcite{Pearse2014review} alowing the user to better understand the actual aspects of phylogenetic biodiversity they are calculating with any particular metric. As the structure of the package has been written to be flexible and intuative, newly published metrics will continue to be incorporated in \emph{Pez}. 
 
 Further, \emph{Pez} implements and extends the regression framework presented
 by \parencite{Cavender-Bares2004} \autocite[see
@@ -109,18 +108,20 @@ ecological assemblages \autocite{Cadotte2010}.
 \begin{center}
 \begin{tabular}{p{3.5cm} p{14cm}}
   Function & Description\\\hline
-  \emph{comparative.comm} & Stores community, phylogenetic, environmental, and species trait data\\
+  \emph{comparative.comm} & Object class to store community, phylogenetic, environmental, and trait data\\
   \emph{shape} & Calcuates \emph{PSV}$^*$ \autocite{Helmus2007}, \emph{PSR}$^*$ \autocite{Helmus2007}, \emph{PD}$^*$ \& \emph{MPD}$^*$ \autocite{Faith1992}, Colless' Index$^*$ \autocite{Colless1982}, $\gamma$$^*$ \autocite{Pybus2000}, $\Delta$$^*$ \autocite{Warwick1995}, $E_{ED}$ \& $H_{ed}$ \autocite{Cadotte2010}, phylo-eigenvectors$^*$ \autocite{Diniz-Filho2011}\\
   \emph{evenness} & Calculates $\Delta$ \autocite{Warwick1995}, Phylogenetic Entropy \autocite{Allen2009}, \emph{PAE}, \emph{IAC}, $H_{aed}$, \& $E_{aed}$ \autocite{Cadotte2010}, Rao's quadratic entropy$^*$ \autocite{Rao1982a}, $\lambda$ \autocite{Pagel1999}, $\delta$ \autocite{Pagel1999}, $\kappa$ \autocite{Pagel1999}, Simpson's XXX (XXX)\\
   \emph{dispersion} & $SES_{MPD}$/\emph{NRI}$^*$ \autocite{Webb2000,Webb2002,Kembel2009}, $SES_{MNTD}/\emph{NTI}$$^*$ \autocite{Webb2000,Webb2002,Kembel2009}, \emph{INND} \autocite{Ness2011}, \emph{D}$^*$ \autocite{Fritz2010}\\
 \emph{dissimilarity} &  UniFrac \autocite{Lozupone2005}, \emph{PCD} \autocite{Helmus2010}, PhyloSor \autocite{Bryant2008}, Rao's Q \autocite{Rao1982a}\\
   \emph{fingerprint.regression} & Compares phylogenetic, community co-existence, and trait similarity matrices using Mantel tests, quantile regressions, or linear models following \autocite{Cavender-Bares2004,Cavender-Bares2006}. Completely re-implements all features previously available in \emph{EcoPhyl} (XXX) \\
-  \emph{scape} & Simulates community phylogenetic structure across a landscape, simulating phylogenetic repulsion, attraction, niche width, and range size (Helmus2012)\\ %STOPPED STOPPED
-  \emph{trait.asm} & Calculate optimal traitgram that explains community data, following XXX\\
+  \emph{scape} & Simulates community phylogenetic structure across a landscape, simulating phylogenetic repulsion, attraction, niche width, and range size (Helmus2012)\\ %Helmus M.R. & Ives A.R. (2012). Phylogenetic diversity-area curves. Ecology, 93, S31-S43.
+
+  \emph{trait.asm} & Calculate optimal traitgram that explains community data, following Helmus2013\\ %Helmus M.R., Mercado-Silva N. & Vander Zanden M.J. (2013). Subsidies to predators, apparent competition and the phylogenetic structure of prey communities. Oecologia, 1-11.
+
   Others? & classic.phy.signal (worth keeping?) - some stuff from willeerd?\\
   \hline
 \end{tabular}
-\caption{Some of the functions available in \emph{pez}. $^*$ indicates
+\caption{Some of the functions available in \emph{pez}. $^*$ indicates % I am uncertain if you need to state this here as most all were of existing R code, some in picante, some not, the strength of pez is its exhaustive integration of all metrics under one roof. 
   a metric whose code is based on existing \emph{R} code. Note that
   calculation of Pagel's $\lambda$ \autocite{Pagel1999}, $\delta$
   \autocite{Pagel1999}, $\kappa$ \autocite{Pagel1999} are calculated
