@@ -63,15 +63,15 @@ phylogenetic metrics.
 Community phylogenetics is a subfield of ecology which links ecological phenomena (e.g., competition, ecosystem functioning)
 with the evolutionary processes that generate species and their traits
 \autocite[see][]{Webb2002,Cavender-Bares2009}. This growing field has
-generated a number of statistical tools, mostly metrics of phylogenetic biodiversity, and software code and packages to implement such statistics
-\autocite[notably][]{Webb2008,Regetz2009,Kembel2010,Orme2013,Eastman2013}. The code is disparate and handles data differently 
-making routine data analyses with different statistcs by the end user challenging. In many cases, the statistics are also not formally implmeneted in a particular software package and are available only as supplementary materials to papers which are not
+generated a number of statistical tools, such as >30 metrics of phylogenetic biodiversity, and software code and packages to implement such statistics
+\autocite[notably][]{Webb2008,Regetz2009,Kembel2010,Orme2013,Eastman2013}. However, existing code for these statistics is disparate and handles data differently 
+making routine data analyses with different statistcs by the end user challenging. Further, many statistics are not formally implmeneted in a particular software package and are available only as supplementary materials to papers which are not
 maintained or have public source code. Without active maintenance, these valuable statistics are effectively lost to
 the scientific community.
 
 \emph{Pez} provides an \emph{R} class (\emph{comparative.comm}) that
-integrates phylogenetic, community, environmental and trait data in as
-a single object. From one of these eco-phylogenetic data objects, one can calculates a large body of phylogenetic biodiversity metrics utilizing single functions. The implemented metrics are thematically organized into one of four classifications according to the framework outlined in \textcite{Pearse2014review} alowing the user to better understand the actual aspects of phylogenetic biodiversity they are calculating with any particular metric. As the structure of the package has been written to be flexible and intuative, newly published metrics will continue to be incorporated in \emph{Pez}. 
+integrates phylogenetic, community, environmental and trait data in as %we list these items a few times, lets keep them in the same order
+a single object. One can then calculate a large number of phylogenetic biodiversity metrics utilizing single functions. The implemented metrics are thematically organized into one of four classifications according to the framework outlined in \textcite{Pearse2014review} alowing the user to better understand the actual aspects of phylogenetic biodiversity they are calculating with any particular metric. As the structure of the package has been written to be flexible and intuative, newly published metrics will continue to be incorporated in \emph{Pez}. 
 
 Further, \emph{Pez} implements and extends the regression framework presented
 by \parencite{Cavender-Bares2004} \autocite[see
@@ -89,18 +89,18 @@ species from the community data automatically trims it from the
 phylogeny, and removes its associated trait data. \emph{Pez} was
 designed to be backwards-compatible with \emph{caper}'s
 \autocite{Orme2013} \emph{comparative.data} class, seamlessly permitting detailed
-comparative analysis of species trait data.
+comparative analysis of species trait data. The data of \emph{comparative.comm} objects 
+can also easily extracted to be compatable with the functions of an existing community phylogenetics R package \emph{picante}. The data structure of /emph{pez} thus allows for fully integrated data analyses with existing 
+and future eco-phylogenetic packages.   
 \subsubsection*{Metrics}
 Following the classification of \textcite{Pearse2014review},
 \emph{pez} simplifies the calculation and comparison of a number of
 metrics by grouping them into four categories: \emph{shape},
-\emph{evenness}, \emph{dispersion}, and \emph{dissimilarity}. Shape metrics measure the structure of an community phylogeny. Evenness metrics are shape metrics that incorporate a weighting with species’ abundances. Dispersion metrics
+\emph{evenness}, \emph{dispersion}, and \emph{dissimilarity}. Shape metrics measure the structure of a community phylogeny. Evenness metrics are shape metrics that incorporate a weighting with species’ abundances. Dispersion metrics
 calculate the phylogenetic biodiversity expected given a source pool. Finally, dissimilarity differ from the former as they directly calculate the pairwise difference in 
 phylogenetic biodiversity between assemblages. 
 Table \ref{metricTable}
-gives an overview of the functions contained within \emph{pez}, \emph{trait.asm}
-permits the direct comparison of phylogenetic and trait structure,
-following the \emph{traitgram} framework of XXX. Speeding and easing
+gives an overview of the metrics that may be calculated in \emph{pez}, speeding and easing
 the comparison of community phylogenetic metrics is important, since
 each can reveal radically different aspects of the structure of
 ecological assemblages \autocite{Cadotte2010}.
@@ -116,7 +116,7 @@ ecological assemblages \autocite{Cadotte2010}.
   \emph{fingerprint.regression} & Compares phylogenetic, community co-existence, and trait similarity matrices using Mantel tests, quantile regressions, or linear models following \autocite{Cavender-Bares2004,Cavender-Bares2006}. Completely re-implements all features previously available in \emph{EcoPhyl} (XXX) \\
   \emph{scape} & Simulates community phylogenetic structure across a landscape, simulating phylogenetic repulsion, attraction, niche width, and range size (Helmus2012)\\ %Helmus M.R. & Ives A.R. (2012). Phylogenetic diversity-area curves. Ecology, 93, S31-S43.
 
-  \emph{trait.asm} & Calculate optimal traitgram that explains community data, following Helmus2013\\ %Helmus M.R., Mercado-Silva N. & Vander Zanden M.J. (2013). Subsidies to predators, apparent competition and the phylogenetic structure of prey communities. Oecologia, 1-11.
+  \emph{trait.asm} & Simulated community structure based on species traits following Helmus2013\\ %Helmus M.R., Mercado-Silva N. & Vander Zanden M.J. (2013). Subsidies to predators, apparent competition and the phylogenetic structure of prey communities. Oecologia, 1-11.
 
   Others? & classic.phy.signal (worth keeping?) - some stuff from willeerd?\\
   \hline
@@ -143,18 +143,16 @@ these routines to include, for example, more modern measures of
 phylogenetic signal (\emph{e.g.}, $\lambda$, $delta$, $\kappa$, $D$),
 and to examine differences in relationships among clades.
 \subsection*{Simulation}
-Finally, \emph{pez} contains a number of functions that will simulate
-ecological communities under various null models of community assembly
-and/or evolution. \emph{scape} is intended to model community assembly
-over a region, and models both species niche width and
-range. \emph{metapop.sim} fits models of trait evolution and dispersal
+Finally, \emph{pez} contains functions to simulate
+communities under various models of community assembly
+and/or evolution. \emph{scape} simulates community assembly
+over a region and allows the user to simultaniously model phylogenetic attraction and repulsion such that closely related species are generally found at sites of similar environment, just not at the same site. 
+\emph{metapop.sim} fits models of trait evolution and dispersal
 ability to a static landscape, evolving both a phylogeny, species
 traits, and the resulting distribution of species across the
-landscape. While these are works in progress, we are confident that
-they at least form a basis for further model-based exploration of
-data.
+landscape.
 \subsection*{Acknowledgements}
-MRH was funded by XXX; WDP was funded by XXX; both were funded by
+MRH was funded by the Netherlands Organisation for Scientific Research (858.14.040) ; WDP was funded by XXX; both were funded by
 SESYNC (XXX). We are grateful to A.\ Purvis and J.\ Cavender-Bares,
 who contributed to metric framework according to which this package's
 metrics are organised.
