@@ -248,6 +248,7 @@ summary.phy.structure <- function(object, ...){
         if(!is.null(object$cadotte.pd))
             cat("\tCadotte's expected phylogenetic diversity (cadotte.pd)\n")
         cat("Use something like 'output$psv' to work with each measure\n")
+        cat("...or coef(output) to get a table of metric values\n")
         return()
     }
     #Evenness
@@ -270,6 +271,7 @@ summary.phy.structure <- function(object, ...){
         if(!is.null(object$kappa))
             cat("\tKappa transformation (kappa)\n")
         cat("Use something like 'output$rao' to work with each measure\n")
+        cat("...or coef(output) to get a table of metric values\n")
         return()
     }
     #Dispersion
@@ -281,7 +283,7 @@ summary.phy.structure <- function(object, ...){
         }
         if(!is.null(object$sesmntd)){
             cat("SESmntd:\n")
-            print(object$sesmmntd)
+            print(object$sesmntd)
         }
         if(!is.null(object$sespd)){
             cat("SESpd:\n")
@@ -296,6 +298,7 @@ summary.phy.structure <- function(object, ...){
             print(object$d)
         }
         cat("Use something like 'output$d' to work with each measure\n")
+        cat("...or coef(output) to get a table of metric values\n")
         return()
     }
     #Dissimilarity
@@ -321,10 +324,28 @@ print.phy.structure <- function(x, ...){
     summary(x)
 }
 
+#' Get coefs of a phylogenetic structure object
+#' @method coef phy.structure
+#' @export
+coef.phy.structure <- function(x, ...){
+    #Shape
+    if(x$type == "dissimilarity")
+      cat("\nCannot produce a simple summary of dissimilarity matrices. Sorry.\n")
+    else
+      return(x$coefs)
+}
+
+
 assemblage.phylogenies <- function(data){
     if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
     subtrees <- vector("list", nrow(data$comm))
     for(i in seq(nrow(data$comm)))
         subtrees[[i]] <- drop_tip(data$phy, rownames(data$comm)[data$comm[i,]!=0])
     return(subtrees)
+}
+
+
+.removeErrors <- function(object) {
+    if(inherits(object, "try-error")) return(NULL)
+    object
 }

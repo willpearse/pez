@@ -49,29 +49,41 @@ dispersion <- function(data, metric=c("all", "sesmpd", "sesmntd", "sespd", "innd
   if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
   metric <- match.arg(metric)
   if(permute < 0) stop("Can't have negative null permutations!")
+  coefs <- data.frame(row.names=rownames(data$comm))
   
   #Setup
   tree.dist <- cophenetic(data$phy)
   output <- list(sesmpd=NULL, sesmntd=NULL, sespd=NULL, innd=NULL, d=NULL)
   
   #Caculate measures
-  if(metric == "sesmpd" | metric == "all")
+  if(metric == "sesmpd" | metric == "all"){
     output$sesmpd <- ses.mpd(data$comm,tree.dist)
+    coefs$sesmpd <- output$sesmpd$mpd.obs.z
+  }
   
-  if(metric == "sesmntd" | metric == "all")
+  if(metric == "sesmntd" | metric == "all"){
     output$sesmntd <- ses.mntd(data$comm,tree.dist)
+    coefs$sesmntd <- output$sesmntd$mntd.obs.z
+  }
   
-  if(metric == "sespd" | metric == "all")
+  if(metric == "sespd" | metric == "all"){
     output$sespd <- ses.pd(data$comm,data$phy)
+    coefs$sespd <- output$sespd$pd.obs.z
+  }
   
-  if(metric == "innd" | metric == "all")
+  if(metric == "innd" | metric == "all"){
     output$innd <- ses.mpd(data$comm,1/tree.dist)
+    coefs$innd <- output$innd$mpd.obs.z
+  }
   
-  if(metric == "d" | metric == "all")
+  if(metric == "d" | metric == "all"){
     output$d <- D.c(data, traits=FALSE)
+    coefs$d <- output$d[,1]
+  }
   
   #Prepare output
   output$type <- "dispersion"
+  output$coefs <- coefs
   class(output) <- "phy.structure"
   return(output)
 }

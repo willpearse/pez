@@ -1,28 +1,15 @@
-#TODO: I'm not sure PD should be standardised by the sum of species,
-# but rather the sum of individuals. In general, we need to have a
-# better discussion about individual vs. species metrics and scaling
-# it's going to be hard for people to install ecoPD, so we need some
-# sensible 'require'-foo to get everything in there I don't like
-# having to 'require' ape when using phylobase, but either I'm doing
-# something really stupid with the dependencies or phylobase doesn't
-# have a properly setup NAMESPACE. Grrrr.
-# NEEDED Gamma reference?
-
-#' Calculate shape phylogenetic biodiversity metrics across communities
-#'
 #' \code{shape} calculates phylogenetic biodiversity metrics
 #'
 #' @param data a \code{comparative.comm} object
 #' @param metric specify particular metrics to calculate, default is \code{all}
 #' @param which.eigen The eigen vector to calculate for the PhyloEigen metric
-
 #' @details Calculates various metrics of phylogenetic biodiversity that are categorized as \emph{shape} metrics by Pearse \emph{et al.} (2014)
 #' @return a \code{phy.structure} list object of metric values
 #' @author M.R. Helmus, Will Pearse
 #' @references Pearse W.D., Purvis A., Cavender-Bares J. & Helmus M.R. (2014). Metrics and Models of Community Phylogenetics. In: Modern Phylogenetic Comparative Methods and Their Application in Evolutionary Biology. Springer Berlin Heidelberg, pp. 451-464.
 #' @references \code{PSV,PSR} Helmus M.R., Bland T.J., Williams C.K. & Ives A.R. (2007). Phylogenetic measures of biodiversity. American Naturalist, 169, E68-E83.
 #' @references \code{PD} Faith D.P. (1992). Conservation evaluation and phylogenetic diversity. Biological Conservation, 61, 1-10.
-#' @references \code{colless} Colless D.H. (1982). Review of phylogenetics: the theory and practice of phylogenetic systematics. Systematic Zoology, 31, 100–104.
+#' @references \code{colless} Colless D.H. (1982). Review of phylogenetics: the theory and practice of phylogenetic systematics. Systematic Zoology, 31, 100-104.
 #' @references \code{gamma}
 #' @references \code{taxon} Clarke K.R. & Warwick R.M. (1998). A taxonomic distinctness index and its statistical properties. J. Appl. Ecol., 35, 523-531.
 #' @references \code{eigen.sum} Diniz-Filho J.A.F., Cianciaruso M.V., Rangel T.F. & Bini L.M. (2011). Eigenvector estimation of phylogenetic and functional diversity. Functional Ecology, 25, 735-744.
@@ -61,63 +48,70 @@ shape <- function(data,metric=c("all", "psv", "psr", "mpd", "pd","colless", "gam
   nspp <- ncol(data$comm)
   nsite <- nrow(data$comm)
   SR <- rowSums(data$comm > 0)
-  pa <- data$comm > 0
+  data$comm <- as.numeric(data$comm > 0)
+  coefs <- data.frame(row.names=rownames(data$comm))
   if(is.null(data$vcv))
     data$vcv <- cophenetic(data$phy)
   output <- list(psv=NULL, psr=NULL, mpd=NULL, pd=NULL, pd.ivs=NULL, colless=NULL, gamma=NULL, taxon=NULL, eigen.sum=NULL, cadotte.pd=NULL)
   
   #Calculate measures
   if(metric == "psv" | metric == "all")
-    output$psv <- try(psd(pa, data$phy)[,1], silent = TRUE)
+    output$psv <- coefs$psv <- try(psd(data$comm, data$phy)[,1], silent = TRUE)
   
   if(metric == "psr" | metric == "all")
-    output$psr <- try(psd(pa, data$phy)[,4], silent = TRUE)
+    output$psr <- coefs$psr <- try(psd(data$comm, data$phy)[,4], silent = TRUE)
   
   if(metric == "mpd" | metric == "all")
-    output$mpd <- try(mpd(pa, data$vcv), silent = TRUE)
+    output$mpd <- coefs$mpd <- try(mpd(data$comm, data$vcv), silent = TRUE)
   
-  if(metric == "pd" | metric == "all"){
+  if(metric == "pd" | metric == "all")
+    try({
+      output$pd <- coefs$pd <- pd(data$comm, data$phy)[,1]
+      output$pd.ivs <- coefs$pd.ivs <- unname(resid(lm(coefs$pd ~ rowSums(data$comm))))
+    }, silent = TRUE)
+  
+  if(metric == "colless" | metric == "all")
       try({
-          output$pd <- pd(pa, data$phy)[,1]
-          output$pd.ivsresid(lm(pd ~ rowSums(pa)))
+          tree.shape <- as.treeshape(data$phy)
+          output$colless <- coefs$colless <- apply(data$comm, 1, .colless, tree.shape, tree.shape$names)
       }, silent = TRUE)
-  }
   
-  if(metric == "colless" | metric == "all"){
+  
+  if(metric == "gamma" | metric == "all")
       try({
           tree.shape <- as.treeshape(data$phy)
           nams <- tree.shape$names
-          output$colless <- apply(pa, 1, .colless, tree.shape, nams)
+          output$gamma <- coefs$gamma <- apply(data$comm, 1, .gamma, data$phy, nams)
       }, silent = TRUE)
-  }
-  
-  if(metric == "gamma" | metric == "all"){
-      try({
-          tree.shape <- as.treeshape(data$phy)
-          nams <- tree.shape$names
-          output$gamma <- apply(pa, 1, .gamma, data$phy, nams)
-      }, silent = TRUE)
-  }
   
   #Note - I've cut out some here because I think the simplification
   #can happen in the summary output
   if(metric == "taxon" | metric == "all")
-      output$taxon <- try(taxondive(pa, data$vcv), silent = TRUE)
-  
-  if(metric == "eigen.sum" | metric == "all"){
-      output$eigen.sum <- try({
-          evc <- PVRdecomp(data$phy)@Eigen$vectors
-          apply(pa, 1, .eigen.sum, evc, which.eigen)
+      try({
+        output$taxon <- taxondive(data$comm, data$vcv)
+        t <- data.frame(output$taxon$D, output$taxon$Dstar, output$taxon$Lambda, output$taxon$Dplus, output$taxon$SDplus)
+        names(t) <- c("Delta", "DeltaStar", "LambdaPlus", "DeltaPlus", "S.DeltaPlus")
+        coefs <- cbind(coefs, t)
       }, silent = TRUE)
-  }
+  
+  if(metric == "eigen.sum" | metric == "all")
+      try({
+          evc <- PVRdecomp(data$phy)@Eigen$vectors
+          output$eigen.sum <- coefs$eigen.sum <- apply(data$comm, 1, .eigen.sum, evc, which.eigen)
+      }, silent = TRUE)
   
   if(metric == "cadotte.pd" | metric == "all")
-    output$cadotte.pd <- try(data.frame(Eed=.eed(data), Hed=.hed(data)), silent = TRUE)
+    try({
+      output$cadotte.pd <- data.frame(Eed=.eed(data), Hed=.hed(data))
+      coefs$EED <- output$cadotte.pd$Eed
+      coefs$HED <- output$cadotte.pd$Hed
+    }, silent = TRUE)
 
   if(removeErrors) output <- lapply(output, .removeErrors)
   
   #Prepare output
   output$type <- "shape"
+  output$coefs <- coefs
   class(output) <- "phy.structure"
   return(output)
 }
@@ -146,15 +140,27 @@ shape <- function(data,metric=c("all", "psv", "psr", "mpd", "pd","colless", "gam
 }
 
 #' @importFrom picante pd
-#' @importFrom caper ed.calc
-.hed <- function(data, na.rm=TRUE) {
+#' @importFrom picante evol.distinct
+.hed <- function(data){
+    #Argument handling
     if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
 
-    ED <- lapply(assemblage.phylogenies(data), function(x) setNames(ed.calc(x)$spp$ED, x$tip.label))
-    PD <- pd(data$comm, data$phy)$PD
-    res <- sapply(seq_along(PD), function(x) {scaledED <- ED[[x]] / PD[x]; -sum(scaledED * log(scaledED))})
-    names(res) <- rownames(data$comm)
-    return(res)
+    #Setup
+    ed <- evol.distinct(data$phy, "fair.proportion")$w
+    pd <- pd(data$comm, data$phy)$PD
+
+    #Internal assemblage calc.
+    ..hed <- function(ed, pd.comm){
+        hed <- ed / pd.comm
+        return(-sum(hed * log(hed)))
+    }
+
+    #Calculate, clean, and return
+    output <- numeric(nrow(data$comm))
+    names(output) <- rownames(data$comm)
+    for(i in seq(nrow(data$comm)))
+        output[i] <- ..hed(ed, pd[i])
+    return(output)
 }
 
 .eed <- function(data, na.rm=TRUE) {
@@ -164,12 +170,6 @@ shape <- function(data,metric=c("all", "psv", "psr", "mpd", "pd","colless", "gam
     return(output)
 }
 
-
-.removeErrors <- function(object) {
-    if(inherits(object, "try-error")) return(NULL)
-    object
-}
-
 .eigen.sum <- function(x, evc, vecnums) {
     if(sum(x>0)) {
         return(sum(apply(as.matrix(evc[x>0,vecnums]),2,var)))
@@ -177,4 +177,3 @@ shape <- function(data,metric=c("all", "psv", "psr", "mpd", "pd","colless", "gam
         return(NA)
     }
 }
-    

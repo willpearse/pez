@@ -101,8 +101,9 @@ comparative.comm <- function(phy, comm, traits=NULL, env=NULL, warn=TRUE, vcv=TR
   
   #Put species and sites in same order(s)
   # - leave phy alone (if caper needs it altered it will alter it)
+  # - match everything to phylogeny's order (makes later work easier)
   comm <- comm[order(rownames(comm)), ]
-  comm <- comm[, order(colnames(comm))]
+  comm <- comm[, match(phy$tip.label, colnames(comm))]
   if(!is.null(traits)){
     traits <- traits[rownames(traits), , drop = FALSE]
     traits <- traits[, colnames(traits), drop = FALSE]

@@ -1,6 +1,7 @@
 #This may need checking on other systems, because I'm using exact value checks with no consideration of precision...
 #Setup
 require(testthat)
+require(pez)
 require(picante)
 data(phylocom)
 data <- comparative.comm(phylocom$phylo, phylocom$sample, warn=FALSE)
@@ -19,6 +20,7 @@ test_that("PSV", {
   expect_that(psv_test$taxon, equals(NULL))
   expect_that(psv_test$eigen.sum, equals(NULL))
   expect_that(psv_test$cadotte.pd, equals(NULL))
+  expect_that(psv_test$psv, equals(psv_test$coefs$psv))
 })
 test_that("PSR", {
   psr_test <<- shape(data, "psr")
@@ -32,6 +34,7 @@ test_that("PSR", {
   expect_that(psr_test$taxon, equals(NULL))
   expect_that(psr_test$eigen.sum, equals(NULL))
   expect_that(psr_test$cadotte.pd, equals(NULL))
+  expect_that(psr_test$psr, equals(psr_test$coefs$psr))
 })
 test_that("MPD", {
   mpd_test <<- shape(data, "mpd")
@@ -45,6 +48,7 @@ test_that("MPD", {
   expect_that(mpd_test$taxon, equals(NULL))
   expect_that(mpd_test$eigen.sum, equals(NULL))
   expect_that(mpd_test$cadotte.pd, equals(NULL))
+  expect_that(mpd_test$mpd, equals(mpd_test$coefs$mpd))
 })
 test_that("PD", {
   pd_test <<- shape(data, "pd")
@@ -58,6 +62,8 @@ test_that("PD", {
   expect_that(pd_test$taxon, equals(NULL))
   expect_that(pd_test$eigen.sum, equals(NULL))
   expect_that(pd_test$cadotte.pd, equals(NULL))
+  expect_that(pd_test$pd, is_equivalent_to(pd_test$coefs$pd))
+  expect_that(pd_test$pd.ivs, is_equivalent_to(pd_test$coefs$pd.ivs))
 })
 test_that("Colless", {
   colless_test <<- shape(data, "colless")
@@ -71,6 +77,7 @@ test_that("Colless", {
   expect_that(colless_test$taxon, equals(NULL))
   expect_that(colless_test$eigen.sum, equals(NULL))
   expect_that(colless_test$cadotte.pd, equals(NULL))
+  expect_that(colless_test$colless, is_equivalent_to(colless_test$coefs$colless))
 })
 test_that("Gamma", {
   gamma_test <<- shape(data, "gamma")
@@ -84,6 +91,7 @@ test_that("Gamma", {
   expect_that(gamma_test$taxon, equals(NULL))
   expect_that(gamma_test$eigen.sum, equals(NULL))
   expect_that(gamma_test$cadotte.pd, equals(NULL))
+  expect_that(gamma_test$gamma, is_equivalent_to(gamma_test$coefs$gamma))
 })
 test_that("Taxon", {
   taxon_test <<- shape(data, "taxon")
@@ -95,23 +103,14 @@ test_that("Taxon", {
   expect_that(taxon_test$colless, equals(NULL))
   expect_that(taxon_test$gamma, equals(NULL))
   expect_that(taxon_test$taxon$Species, is_equivalent_to(c(8, 8, 8, 8, 8, 8)))
-  expect_that(names(taxon_test$taxon$Species), equals(rownames(data$comm)))
-  expect_that(taxon_test$taxon$D, is_equivalent_to(c(7.92857142857143, 8, 7.71428571428571, 8.35714285714286, 8.57142857142857, 7.5)))
-  expect_that(names(taxon_test$taxon$D), equals(rownames(data$comm)))
-  expect_that(taxon_test$taxon$Dstar, is_equivalent_to(c(c(7.92857142857143, 8, 7.71428571428571, 8.35714285714286, 8.57142857142857, 7.5))))
-  expect_that(names(taxon_test$taxon$Dstar), equals(rownames(data$comm)))
-  expect_that(taxon_test$taxon$Dplus, is_equivalent_to(c(7.92857142857143, 8, 7.71428571428571, 8.35714285714286, 8.57142857142857, 7.5)))
-  expect_that(names(taxon_test$taxon$Dplus), equals(rownames(data$comm)))
-  expect_that(taxon_test$taxon$sd.Dplus, is_equivalent_to(c(0.370294155321945, 0.370294155321945, 0.370294155321945, 0.370294155321945, 0.370294155321945, 0.370294155321945)))
-  expect_that(taxon_test$taxon$SDplus, is_equivalent_to(c(63.4285714285714, 64, 61.7142857142857, 66.8571428571429, 68.5714285714286, 60)))
-expect_that(names(taxon_test$taxon$SDplus), equals(rownames(data$comm)))
-  expect_that(taxon_test$taxon$ED, equals(16.25))
-  expect_that(taxon_test$taxon$EDstar, equals(7.95212765957447))
-  expect_that(taxon_test$taxon$EDplus, equals(8.23333333333333))
-  expect_that(class(taxon_test$taxon), equals("taxondive"))
-  expect_that(names(taxon_test$taxon), equals(c("Species", "D", "Dstar", "Lambda", "Dplus", "sd.Dplus", "SDplus", "ED", "EDstar", "EDplus")))
+  expect_that(names(taxon_test$taxon), equals(taxondive(data$comm, cophenetic(data$phy))))
   expect_that(taxon_test$eigen.sum, equals(NULL))
   expect_that(taxon_test$cadotte.pd, equals(NULL))
+  expect_that(taxon_test$coefs$Delta, is_equivalent_to(taxon_test$taxon$D[1:6]))
+  expect_that(taxon_test$coefs$DeltaStar, is_equivalent_to(taxon_test$taxon$Dstar[1:6]))
+  expect_that(taxon_test$coefs$LambdaPlus, is_equivalent_to(taxon_test$taxon$Lambda[1:6]))
+  expect_that(taxon_test$coefs$DeltaPlus, is_equivalent_to(taxon_test$taxon$Dplus[1:6]))
+  expect_that(taxon_test$coefs$S.DeltaPlus, is_equivalent_to(taxon_test$taxon$SDplus[1:6]))
 })
 test_that("Eigenvectors", {
   set.seed(123)
@@ -128,8 +127,8 @@ test_that("Eigenvectors", {
   set.seed(123)
   expect_that(shape(data, "eigen.sum", 2)$eigen.sum, is_equivalent_to(c(0.0209484841142963, 0.036527380415346, 0.0587577270236274, 0.0492929836486836, 0.0292213010742769, 0.0621021096378085)))
   expect_that(eigen.sum$cadotte.pd, equals(NULL))
+  expect_that(eigen.sum$eigen.sum, is_equivalent_to(eigen.sum$coefs$eigen.sum))
 })
-#We can't thoroughly test these functions because their values change and they seem to be causing errors; perhaps they should be depreciated? The error seems to be coming from ecoPD, not pez...
 test_that("Cadotte PD", {
   cadotte.pd <<- shape(data, "cadotte.pd")
   expect_that(cadotte.pd$psv, equals(NULL))
@@ -143,8 +142,10 @@ test_that("Cadotte PD", {
   expect_that(cadotte.pd$eigen.sum, equals(NULL))
   expect_that(rownames(cadotte.pd$cadotte.pd), equals(rownames(data$comm)))
   expect_that(colnames(cadotte.pd$cadotte.pd), equals(c("Eed", "Hed")))
-  #expect_that(cadotte.pd$cadotte.pd$Eed, is_equivalent_to(c(1, 1, 1, 1, 1, 0.998304366294293)))
-  #expect_that(cadotte.pd$cadotte.pd$Hed, is_equivalent_to(c(2.07944154167984, 2.07944154167984, 2.07944154167984, 2.07944154167984, 2.07944154167984, 2.07591557051272)))
+  expect_that(cadotte.pd$cadotte.pd$Eed, equals(c(3.202317, 3.104838, 3.013283, 2.697896, 2.241960, 2.391608), tolerance=0.00001))
+  expect_that(cadotte.pd$cadotte.pd$Hed, equals(c(6.659032, 6.456330, 6.265945, 5.610116, 4.662026, 4.973210), tolerance=0.00001))
+  expect_that(cadotte.pd$cadotte.pd$Eed, is_equivalent_to(cadotte.pd$coefs$EED))
+  expect_that(cadotte.pd$cadotte.pd$Hed, is_equivalent_to(cadotte.pd$coefs$HED))
 })
 test_that("Each measure is the same as calculated together", {
   all <- shape(data)
@@ -158,4 +159,7 @@ test_that("Each measure is the same as calculated together", {
   expect_that(taxon_test$taxon, equals(all$taxon))
   expect_that(eigen.sum$eigen.sum, equals(all$eigen.sum))
   expect_that(cadotte.pd$cadotte.pd, equals(all$cadotte.pd))
+  expect_that(names(all), equals(c('psv','psr','mpd','pd','pd.ivs','colless','gamma','taxon','eigen.sum','cadotte.pd','type','coefs')))
+  expect_that(names(all$coefs), equals(c('psv','psr','mpd','pd','pd.ivs','colless','gamma','Delta','DeltaStar','LambdaPlus','DeltaPlus','S.DeltaPlus','eigen.sum','EED','HED')))
+  expect_that(all_test$coefs, equals(coef(all_test)))
 })
