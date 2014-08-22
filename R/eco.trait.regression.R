@@ -32,14 +32,14 @@ eco.trait.regression <- function(data,
 	
 	#Setup matrices
 	eco.matrix <- comm.dist(data$comm)
-  if(!is.null(data$traits)) traits.matrix <- traits.dist(data, altogether) else stop("'data' must contain trait data for a trait regression!")
+  if(!is.null(data$data)) traits.matrix <- traits.dist(data, altogether) else stop("'data' must contain trait data for a trait regression!")
 	
 	#Observed eco.trait.regression
   if(altogether)
 	  observed <- .eco.trait.regression(eco.matrix, traits.matrix, NULL, method, ...) else {
       #Do separately for all traits
-      observed <- vector("list", ncol(data$traits))
-      for(i in seq(ncol(data$traits)))
+      observed <- vector("list", ncol(data$data))
+      for(i in seq(ncol(data$data)))
         observed[[i]] <- .eco.trait.regression(eco.matrix, traits.matrix, i, method, ...)
 	  }
   
@@ -56,12 +56,12 @@ eco.trait.regression <- function(data,
   } else {
     #Separately for each trait
     # - preallocate
-    randomisations <- vector(mode="list", length=ncol(data$traits))
+    randomisations <- vector(mode="list", length=ncol(data$data))
     for(i in seq_along(randomisations)) randomisations[[i]] <- vector("list", permute)
     for(i in seq(from=1, length.out=permute)){
       curr.rnd <- .eco.null(data$comm, randomisation)
       rnd.mat <- comm.dist(curr.rnd)
-      for(j in seq(ncol(data$traits)))
+      for(j in seq(ncol(data$data)))
         randomisations[[j]][[i]] <- .eco.trait.regression(eco.matrix, traits.matrix, j, method, ...)
     }
   }
@@ -69,7 +69,7 @@ eco.trait.regression <- function(data,
   #Prepare output (...and return)
   if(altogether)
     output <- .prepare.regression.output(observed, randomisations, method, permute, "eco.trait.regression") else {
-      output <- vector("list", ncol(data$traits))
+      output <- vector("list", ncol(data$data))
       for(i in seq_along(output)){
         output[[i]] <- .prepare.regression.output(observed[[i]], randomisations[[i]], method, permute, "eco.trait.regression")
         output[[i]]$altogether <- altogether

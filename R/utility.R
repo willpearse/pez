@@ -156,8 +156,8 @@ summary.ecophyl.regression.list <- function(object, ...){
 
     if(x$type == "eco.trait.regression.list"){
         cat("\neco.trait.regression list:\n")
-        for(i in seq(ncol(object$data$traits))){
-            cat("\n\n**", names(object$data$traits)[i], "**\n")
+        for(i in seq(ncol(object$data$data))){
+            cat("\n\n**", names(object$data$data)[i], "**\n")
             summary(x[[i]], ...)
         }
         return()
@@ -177,7 +177,7 @@ print.ecophyl.regression.list <- function(x, ...){
     if(x$type == "eco.trait.regression.list"){
         cat("\neco.trait.regression list:\n")
         cat("Traits:\n")
-        cat(colnames(x$data$traits), sep=", ")
+        cat(colnames(x$data$data), sep=", ")
         cat("\nTo examine each regression of each trait, use something like 'x[[1]]', or 'print(x[[2]])'\n")
         cat("To display all at once, call something like 'summary(regression.list)'\n")
         return()
@@ -201,9 +201,9 @@ plot.ecophyl.regression.list <- function(x, ...){
         eco.matrix <- as.numeric(comm.dist(x$data$comm))
         trait.matrix <- traits.dist(x$data, FALSE)
         if(is.null(which)){
-            for(i in seq(ncol(x$data$traits)))
+            for(i in seq(ncol(x$data$data)))
                 .plot.regression(as.numeric(as.dist(trait.matrix[,,i])), eco.matrix, x$observed, x$randomisations, x$method, x$permute,
-                                 xlab="Trait Distance", ylab="Ecological Co-existnce", main=names(x$data$traits)[i], ...)
+                                 xlab="Trait Distance", ylab="Ecological Co-existnce", main=names(x$data$data)[i], ...)
         } else .plot.regression(as.numeric(as.dist(trait.matrix[,,which])), eco.matrix, x$observed, x$randomisations, x$method, x$permute,
                                 xlab="Trait Distance", ylab="Ecological Co-existnce", ...)
         return()

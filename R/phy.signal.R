@@ -24,9 +24,9 @@ phy.signal <- function(data, traits=TRUE, method=c("lambda", "delta", "kappa")){
   
   #Traits
   if(traits){
-    if(is.null(data$traits)) stop("Need traits to compute phylogenetic signal of traits!")
-    data$traits$this.breaks.pez <- rownames(data$traits)
-    comparative.data <- comparative.data(data$phy, data$traits, this.breaks.pez)
+    if(is.null(data$data)) stop("Need traits to compute phylogenetic signal of traits!")
+    data$data$this.breaks.pez <- rownames(data$data)
+    comparative.data <- comparative.data(data$phy, data$data, this.breaks.pez)
     traits <- numeric(ncol(comparative.data$data))
     names(traits) <- names(comparative.data$data)
     for(i in seq(ncol(comparative.data$data))){

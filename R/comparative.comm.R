@@ -47,8 +47,8 @@ comparative.comm <- function(phy, comm, traits=NULL, env=NULL, warn=TRUE, vcv=TR
     if(! is.data.frame(traits)) stop("'", deparse(substitute(traits)), "' must be an object of class 'data.frame'.")
     if(is.null(colnames(traits))) stop("'", deparse(substitute(traits)), "' must have row names (preferably species!)")
     if(is.null(rownames(traits))) stop("'", deparse(substitute(traits)), "' must have row names")
-    names$traits <- deparse(substitute(traits))
-  } else names$traits <- NULL
+    names$data <- deparse(substitute(traits))
+  } else names$data <- NULL
   #Environment
   if(!is.null(env)){
     if(! is.data.frame(env)) stop("'", deparse(substitute(env)), "' must be an object of class 'data.frame'.")
@@ -114,13 +114,13 @@ comparative.comm <- function(phy, comm, traits=NULL, env=NULL, warn=TRUE, vcv=TR
   }
   
   #Handle VCV, make output, and return
-  output <- list(phy=phy, comm=comm, traits=traits, env=env, dropped=list(comm.sp.lost = comm.sp.lost,
+  output <- list(phy=phy, comm=comm, data=traits, env=env, dropped=list(comm.sp.lost = comm.sp.lost,
                                                                  comm.sites.lost=comm.sites.lost,
                                                                  phy.sp.lost=phy.sp.lost,
                                                                  traits.sp.lost=traits.sp.lost,
                                                                  env.sites.lost=env.sites.lost), names=names)
   if(vcv) output$vcv <- cophenetic(phy) else output$vcv <- NULL
-  class(output) <- "comparative.comm"
+  class(output) <- c("comparative.comm", "comparative.data")
   return(output)
 }
 
@@ -144,9 +144,9 @@ print.comparative.comm <- function(x, ...){
     cat("Community data:", x$names$comm, "\n")
     cat("    ", nrow(x$comm), " sites, ", ncol(x$comm), " taxa\n")
     
-    if(!is.null(x$traits)){
-	    cat("Trait data:", x$names$traits, "\n")
-    	cat("   ", ncol(x$traits), " variables\n")
+    if(!is.null(x$data)){
+	    cat("Trait data:", x$names$data, "\n")
+    	cat("   ", ncol(x$data), " variables\n")
     } else cat("Trait data: None\n")
     
     if(!is.null(x$env)){
@@ -155,12 +155,12 @@ print.comparative.comm <- function(x, ...){
     } else cat("Environmental data: None\n")
   
 	# report on mismatch on merge
-    if(length(x$dropped$phy.sp.lost)>0 | length(x$dropped$comm.sp.lost)>0 | length(x$dropped$traits.sp.lost)>0){
+    if(length(x$dropped$phy.sp.lost)>0 | length(x$dropped$comm.sp.lost)>0 | length(x$dropped$data.sp.lost)>0){
   	 cat('Dropped taxa:\n')
   	 cat('   ', x$names$phy , ' : ', length(x$dropped$phy.sp.lost), '\n')
   	 cat('   ', x$names$comm , ' : ', length(x$dropped$comm.sp.lost), '\n')
-     if(!is.null(x$traits))
-        cat('   ', x$names$traits , ' : ', length(x$dropped$traits.sp.lost), '\n')
+     if(!is.null(x$data))
+        cat('   ', x$names$data , ' : ', length(x$dropped$data.sp.lost), '\n')
     }
   if(length(x$dropped$comm.sites.lost)>0 | length(x$dropped$env.sites.lost)>0){
   	 cat('Dropped sites:\n')
@@ -184,8 +184,8 @@ print.comparative.comm <- function(x, ...){
     spp.to.keep <- colnames(x$comm)[spp]
     comm <- x$comm[, spp.to.keep]
     phy <- drop_tip(x$phy, setdiff(x$phy$tip.label, spp.to.keep))
-    if(!is.null(x$traits))
-      traits <- x$traits[spp.to.keep, ] else traits <- NULL
+    if(!is.null(x$data))
+      traits <- x$data[spp.to.keep, ] else traits <- NULL
     new.x <- comparative.comm(phy, comm, traits, x$env, warn=warn)
   } else new.x <- x
   
@@ -196,7 +196,7 @@ print.comparative.comm <- function(x, ...){
     comm <- new.x$comm[sites.to.keep, ]
     if(!is.null(x$env))
       env <- new.x$env[sites.to.keep, ] else env <- new.x$env
-    new.x <- comparative.comm(x$phy, comm, new.x$traits, env, warn=FALSE)
+    new.x <- comparative.comm(x$phy, comm, new.x$data, env, warn=FALSE)
   }
   
   #Warn of dropped species/sites (if asked)
@@ -207,8 +207,8 @@ print.comparative.comm <- function(x, ...){
       warning("Mismatch between phylogeny and other data, dropping ", length(setdiff(orig.species, new.x$phy$tip.label)), " tips")
     if(length(setdiff(orig.sites, colnames(new.x$comm))) > 0)
       warning("Mismatch between community matrix and other data, dropping ", length(setdiff(orig.species, colnames(new.x$comm))), " columns")
-    if(!is.null(new.x$traits) & length(setdiff(orig.species, rownames(new.x$traits))) > 0)
-      warning("Mismatch between traits and other data, dropping ", length(setdiff(orig.species, rownames(new.x$traits))), " columns")
+    if(!is.null(new.x$data) & length(setdiff(orig.species, rownames(new.x$data))) > 0)
+      warning("Mismatch between traits and other data, dropping ", length(setdiff(orig.species, rownames(new.x$data))), " columns")
     if(length(setdiff(rownames(new.x$comm), orig.sites)) > 0)
       warning("Mismatch between community matrix and data, dropping ", length(setdiff(orig.sites, rownames(new.x$comm))), " rows")
     if(!is.null(new.x$env) & length(setdiff(rownames(new.x$env), orig.sites)) > 0)

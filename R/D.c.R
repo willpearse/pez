@@ -81,12 +81,12 @@ D.c <- function(data, permute=1000, traits=TRUE) {
   vcv <- VCV.array(data$phy)
   
   if(traits){
-    if(is.null(data$traits)) stop("Need trait data to calculate D.c of traits!")
-    vals <- matrix(ncol=3, nrow=ncol(data$traits))
-    rownames(vals) <- colnames(data$traits)
+    if(is.null(data$data)) stop("Need trait data to calculate D.c of traits!")
+    vals <- matrix(ncol=3, nrow=ncol(data$data))
+    rownames(vals) <- colnames(data$data)
     colnames(vals) <- c("D.c", "P(D.c=1)", "P(D.c=0)")
-    for(i in seq(ncol(data$traits)))
-      vals[i,] <- .d.c(data$traits[,i], vcv, permute, data$phy)
+    for(i in seq(ncol(data$data)))
+      vals[i,] <- .d.c(data$data[,i], vcv, permute, data$phy)
   } else {
     vals <- matrix(ncol=3, nrow=nrow(data$comm))
     rownames(vals) <- rownames(data$comm)

@@ -38,9 +38,9 @@ traits.dist <- function(x, dist.func = dist.func.default, ...) UseMethod("traits
 #' @rdname traits.dist
 #' @export
 traits.dist.comparative.comm <- function(x, dist.func = dist.func.default, alltogether = TRUE, ...){
-    if(is.null(x$traits)) stop("No trait data for which to compute a trait distance matrix")
+    if(is.null(x$data)) stop("No trait data for which to compute a trait distance matrix")
     if(alltogether){
-        return(traits.dist(x$traits))
+        return(traits.dist(x$data))
     } else {
                                         # FIXME: is this change ok?  i
                                         # radically changed this
@@ -49,7 +49,7 @@ traits.dist.comparative.comm <- function(x, dist.func = dist.func.default, allto
                                         # in this case a list of dist
                                         # objects) --
                                         # https://github.com/willpearse/pez/issues/2#issuecomment-50240752
-        return(sapply(as.data.frame(x$traits), dist.func)) 
+        return(sapply(as.data.frame(x$data), dist.func)) 
     }
 }
 #' @export
@@ -95,7 +95,7 @@ funct.phylo.dist <- function(x, phyloWeight, p, ...) UseMethod("funct.phylo.dist
 funct.phylo.dist.comparative.comm <- function(x, phyloWeight, p, ...) {
                                         #Assertions and argument handling
     if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
-    if(is.null(data$traits)) stop("'data' must contain trait data")
+    if(is.null(data$data)) stop("'data' must contain trait data")
     if(phyloWeight < 0 | phyloWeight > 1) stop("'a' must be between 0 and 1")
     if(!is.numeric(p)) stop("'p' must be a numeric")
     
