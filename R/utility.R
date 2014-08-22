@@ -267,7 +267,7 @@ summary.phy.structure <- function(object, ...){
         if(!is.null(object$lambda))
             cat("\tLambda transformation (lambda)\n")
         if(!is.null(object$delta))
-            cat("\t Delta transformation (delta)\n")
+            cat("\tDelta transformation (delta)\n")
         if(!is.null(object$kappa))
             cat("\tKappa transformation (kappa)\n")
         cat("Use something like 'output$rao' to work with each measure\n")

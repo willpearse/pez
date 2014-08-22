@@ -48,7 +48,7 @@ shape <- function(data,metric=c("all", "psv", "psr", "mpd", "pd","colless", "gam
   nspp <- ncol(data$comm)
   nsite <- nrow(data$comm)
   SR <- rowSums(data$comm > 0)
-  data$comm <- as.numeric(data$comm > 0)
+  data$comm[data$comm > 0] <- 1
   coefs <- data.frame(row.names=rownames(data$comm))
   if(is.null(data$vcv))
     data$vcv <- cophenetic(data$phy)

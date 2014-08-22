@@ -13,7 +13,7 @@
 #' @param metric specify particular metrics to calculate, default is \code{all}
 #' @param pa If TRUE (default), all metrics are calculated across presence-absence matrices, and species abundances are ignored
 #' @param permute Number of permutations for metric (currently only for PCD)
-#' @details Calculates various metrics of phylogenetic biodiversity that are categorized as \emph{dissimilarity} metrics by Pearse \emph{et al.} (2014)
+#' @details Calculates various metrics of phylogenetic biodiversity that are categorized as \emph{dissimilarity} metrics by Pearse \emph{et al.} (2014). WARNING: Phylosor is presented as a distance matrix here, i.e. it is *not* the fraction of shared branch length among communities, but rather '1 - shared branch length'. This means \code{dissimilarity} returns a *distance* object, not a similarity object. This is different from the output of other R packages, but more convenient for us!
 #' @note This function uses a version of the PCD function, that is not included in \code{picante} and can be slow if \code{metric}="all"
 #' @return a \code{phy.structure} list object of metric values
 #' @author M.R. Helmus, Will Pearse
@@ -62,8 +62,11 @@ dissimilarity <- function(data, metric=c("all", "unifrac", "pcd", "phylosor"), p
   if(metric == "pcd" | metric == "all")
     output$pcd <- PCD(data$comm, data$phy, reps=permute)
 
-  if(metric == "phylosor" | metric == "all")
+  #NOTE: I'm flipping phylosor to be a distance matrix
+  if(metric == "phylosor" | metric == "all"){
     output$phylosor <- phylosor(data$comm, data$phy)
+    output$phylosor <- as.dist(1 - as.matrix(output$phylosor))
+  }
   
   #Prepare output
   output$type <- "dissimilarity"
