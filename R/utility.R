@@ -310,6 +310,8 @@ summary.phy.structure <- function(object, ...){
             cat("\tPCD (pcd)\n")
         if(!is.null(object$phylosor))
             cat("\tPhyloSor (phylosor)\n")
+        if(!is.null(object$comdist))
+            cat("\tComdist (comdist)\n")
         cat("Use something like 'output$unifrac' to work with each measure\n")
         return()
     }

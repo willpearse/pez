@@ -11,8 +11,9 @@
 #' 
 #' @param data a \code{comparative.comm} object
 #' @param metric specify particular metrics to calculate, default is \code{all}
-#' @param pa If TRUE (default), all metrics are calculated across presence-absence matrices, and species abundances are ignored
+#' @param abundance If TRUE (default) metrics are calculated incorporating species abundances (currently only comdist)
 #' @param permute Number of permutations for metric (currently only for PCD)
+#' @param ... additional parameters to be passed to `metric function(s) you are calling
 #' @details Calculates various metrics of phylogenetic biodiversity that are categorized as \emph{dissimilarity} metrics by Pearse \emph{et al.} (2014). WARNING: Phylosor is presented as a distance matrix here, i.e. it is *not* the fraction of shared branch length among communities, but rather '1 - shared branch length'. This means \code{dissimilarity} returns a *distance* object, not a similarity object. This is different from the output of other R packages, but more convenient for us!
 #' @note This function uses a version of the PCD function, that is not included in \code{picante} and can be slow if \code{metric}="all"
 #' @return a \code{phy.structure} list object of metric values
@@ -33,40 +34,43 @@
 #' mountainsides: Contrasting elevational patterns of bacterial and
 #' plant diversity. Proceedings of the National Academy of Sciences of
 #' the United States of America, 105, 11505-11511.
+#' @references \code{comdist} C.O. Webb, D.D. Ackerly, and
+#' S.W. Kembel. 2008. Phylocom: software for the analysis of
+#' phylogenetic community structure and trait
+#' evolution. Bioinformatics 18:2098-2100.
 #' @examples \dontrun{
 #' data(laja)
 #' data <- comparative.comm(invert.tree, river.sites, invert.traits)
 #' dissimilarity(data)
-#' dispersion(data, "pcd")
+#' dissimilarity(data, "pcd")
 #' }
-#' @importFrom picante unifrac phylosor
+#' @importFrom picante unifrac phylosor pcd comdist
 #' @export
-dissimilarity <- function(data, metric=c("all", "unifrac", "pcd", "phylosor"), pa=TRUE, permute=100)
-{
-
-    
+dissimilarity <- function(data, metric=c("all", "unifrac", "pcd", "phylosor", "comdist"), abundance=TRUE, permute=100, ...)
+{   
   #Assertions and argument handling
   if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
   metric <- match.arg(metric)
   if(permute < 0) stop("Can't have negative null permutations!")
   
   #Setup
-  if(pa)
-    data$comm <- data$comm[rowSums(data$comm)>0, ]
-  output <- list(unifrac=NULL, pcd=NULL, phylosor=NULL)
+  output <- list(unifrac=NULL, pcd=NULL, phylosor=NULL, comdist=NULL)
   
   #Caculate measures
   if(metric == "unifrac" | metric == "all")
-    output$unifrac <- unifrac(data$comm, data$phy)
+    output$unifrac <- unifrac(data$comm, data$phy, ...)
   
   if(metric == "pcd" | metric == "all")
-    output$pcd <- PCD(data$comm, data$phy, reps=permute)
+    output$pcd <- pcd(data$comm, data$phy, reps=permute, ...)
 
   #NOTE: I'm flipping phylosor to be a distance matrix
   if(metric == "phylosor" | metric == "all"){
-    output$phylosor <- phylosor(data$comm, data$phy)
+    output$phylosor <- phylosor(data$comm, data$phy, ...)
     output$phylosor <- as.dist(1 - as.matrix(output$phylosor))
   }
+
+  if(metric == "comdist" | metric == "all")
+    output$comdist <- comdist(data$comm, cophenetic(data$phy), abundance.weighted=abundance, ...)
   
   #Prepare output
   output$type <- "dissimilarity"
