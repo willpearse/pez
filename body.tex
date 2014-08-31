@@ -41,15 +41,15 @@ Community phylogenetics (or eco-phylogenetics) is a sub-field of
 ecology which links ecological phenomena with the evolutionary
 processes that generate species and their traits
 \citep[see][]{Webb2002,Cavender-Bares2009}. This growing field has
-generated a number of statistical tools and software code and packages
-that implement them
+generated a number of statistical tools and software code to implement
+them
 \citep[\emph{e.g.},][]{Webb2008,Regetz2009,Kembel2010,Orme2013,Eastman2013}. This
 code is disparate and handles data differently, making routine data
 analyses challenging. In many cases, the statistics are also not
-formally implemented in a particular software package and are
-available only as supplementary materials to papers. Without active
-(public) maintenance, these valuable techniques are effectively lost
-to the scientific community.
+formally implemented in a software package and are available only as
+supplementary materials to papers. Without active (public)
+maintenance, these valuable techniques are effectively lost to the
+scientific community.
 
 \emph{pez} provides an \emph{R} \citep{R2014} class
 (\emph{comparative.comm}) that integrates phylogenetic, community,
@@ -63,17 +63,18 @@ interpretation and comparison of different aspects of phylogenetic
 biodiversity. Further, \emph{pez} implements and extends the
 regression framework presented by \citep{Cavender-Bares2004}, and
 provides functions to simulate phylogenetic and ecological data. It is
-our hope that \emph{pez} will provide an easy to use, common, and
+our hope that \emph{pez} will provide a universal, easy to use, and
 extendable \emph{R} framework for eco-phylogenetic analysis.
 \section{Description}
 \subsection{Data manipulation and storage}
 \emph{pez} extends the data manipulation and import/export features of
 \emph{R}, and contains a unified class to contain all eco-phyogenetic
 data. It simplifies the process of ensuring community, trait,
-environmental, and phylogenetic data are compatible, and makes it easy
-to remove species/sites from all datasets simultaneously. \emph{pez}
-inherits from \emph{caper}'s \citep{Orme2013} \emph{comparative.data}
-class, aiding comparative analysis of species trait data.
+environmental, and phylogenetic data are compatible, and simplifies
+removing species/sites from all datasets simultaneously. \emph{pez} is
+compatible with \emph{caper}'s \citep{Orme2013}
+\emph{comparative.data} class, aiding comparative analysis of species
+trait data.
 
 \subsection{Metrics}
 Following the classification of \citet{Pearse2014review}, \emph{pez}
@@ -87,10 +88,10 @@ differs from the expectation of random assembly from a given set of
 species. Finally, dissimilarity measures the pairwise difference in
 phylogenetic biodiversity between assemblages. The \emph{traitgram}
 framework of \citet{Cadotte2013}, which directly compares phylogenetic
-and functional trait community structure, is also included. Speeding
-and easing the comparison of community phylogenetic metrics is
-important, since different metrics can reveal separate aspects
-eco-phylogenetic structure \citep{Cadotte2010}.
+and functional trait community structure, is also
+implemented. Speeding and easing the comparison of community
+phylogenetic metrics is important, since different metrics can reveal
+separate aspects eco-phylogenetic structure \citep{Cadotte2010}.
 
 \begin{table*}
   \processtable{Overview of some of the functions available in \emph{pez}.\label{metricTable}}
@@ -101,7 +102,7 @@ eco-phylogenetic structure \citep{Cadotte2010}.
       \emph{evenness} & Calculates $\Delta$ \citep{Warwick1995}, Phylogenetic Entropy \citep{Allen2009}, \emph{PAE}, \emph{IAC}, $H_{aed}$, \& $E_{aed}$ \citep{Cadotte2010}, Rao's quadratic entropy \citep{Rao1982a}, $\lambda$ \citep{Pagel1999}, $\delta$ \citep{Pagel1999}, $\kappa$ \citep{Pagel1999}, Simpson's XXX (XXX)\\
       \emph{dispersion} & Calculates $SES_{MPD}$/\emph{NRI} \citep{Webb2000,Webb2002,Kembel2009}, $SES_{MNTD}/\emph{NTI}$ \citep{Webb2000,Webb2002,Kembel2009}, \emph{INND} \citep{Ness2011}, \emph{D} \citep{Fritz2010}\\
       \emph{dissimilarity} &  Calculates UniFrac \citep{Lozupone2005}, \emph{PCD} \citep{Helmus2010}, PhyloSor \citep{Bryant2008}, Rao's Q \citep{Rao1982a}\\
-      \emph{fingerprint.regression} & Compares phylogenetic, community co-existence, and trait similarity matrices using Mantel tests, quantile regressions, or linear models following \citep{Cavender-Bares2004,Cavender-Bares2006} \\
+      \emph{fingerprint.regression} & Compares phylogenetic, community co-existence, and trait similarity matrices using Mantel tests, quantile regressions, or linear models, following \citep{Cavender-Bares2004,Cavender-Bares2006} \\
       \emph{scape} & Simulates community phylogenetic structure across a landscape, simulating phylogenetic repulsion, attraction, niche width, and range size \citep{Helmus2012}\\
       \emph{trait.asm} & Calculates optimal \emph{traitgram} that explains community data, following \citep{Cadotte2013}\\
       \botrule
