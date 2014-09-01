@@ -1,3 +1,4 @@
+##' @importFrom ape compute.brlen
 PCD <- function(samp, tree, PSVmncd=NULL, PSVpool=NULL, reps=10^4)
 {
   SSii<-PSVmncd
