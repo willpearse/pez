@@ -29,7 +29,7 @@ ConDivSim<-function(object, type="traits", n.sim=100, plot = TRUE, disp99 = FALS
     if(type == "traits")
         if(is.null(object$traits)) stop("'object' must contain trait data if using a trait matrix") else dist <- as.matrix(dist(object$traits))
     if(type == "phy")
-        dist <- copheneitc(object$phy)
+        dist <- cophenetic(object$phy)
     if(is.null(dist))
         if(nrow(type)==length(object$phy$tip.label) & nrow(type)==ncol(type))
             dist <- type else stop("'Provided distance matrix is of incorrect dimension'")

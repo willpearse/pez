@@ -1,4 +1,4 @@
-#TODO: I'm not sure PD should be standardised by the sum of species,
+# TODO: I'm not sure PD should be standardised by the sum of species,
 # but rather the sum of individuals. In general, we need to have a
 # better discussion about individual vs. species metrics and scaling
 # it's going to be hard for people to install ecoPD, so we need some
@@ -15,14 +15,13 @@
 #' @param data a \code{comparative.comm} object
 #' @param metric specify particular metrics to calculate, default is \code{all}
 #' @param which.eigen The eigen vector to calculate for the PhyloEigen metric
-
 #' @details Calculates various metrics of phylogenetic biodiversity that are categorized as \emph{shape} metrics by Pearse \emph{et al.} (2014)
 #' @return a \code{phy.structure} list object of metric values
 #' @author M.R. Helmus, Will Pearse
 #' @references Pearse W.D., Purvis A., Cavender-Bares J. & Helmus M.R. (2014). Metrics and Models of Community Phylogenetics. In: Modern Phylogenetic Comparative Methods and Their Application in Evolutionary Biology. Springer Berlin Heidelberg, pp. 451-464.
 #' @references \code{PSV,PSR} Helmus M.R., Bland T.J., Williams C.K. & Ives A.R. (2007). Phylogenetic measures of biodiversity. American Naturalist, 169, E68-E83.
 #' @references \code{PD} Faith D.P. (1992). Conservation evaluation and phylogenetic diversity. Biological Conservation, 61, 1-10.
-#' @references \code{colless} Colless D.H. (1982). Review of phylogenetics: the theory and practice of phylogenetic systematics. Systematic Zoology, 31, 100–104.
+#' @references \code{colless} Colless D.H. (1982). Review of phylogenetics: the theory and practice of phylogenetic systematics. Systematic Zoology, 31, 100-104.
 #' @references \code{gamma}
 #' @references \code{taxon} Clarke K.R. & Warwick R.M. (1998). A taxonomic distinctness index and its statistical properties. J. Appl. Ecol., 35, 523-531.
 #' @references \code{eigen.sum} Diniz-Filho J.A.F., Cianciaruso M.V., Rangel T.F. & Bini L.M. (2011). Eigenvector estimation of phylogenetic and functional diversity. Functional Ecology, 25, 735-744.

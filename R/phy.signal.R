@@ -26,7 +26,8 @@ phy.signal <- function(data, traits=TRUE, method=c("lambda", "delta", "kappa")){
   if(traits){
     if(is.null(data$traits)) stop("Need traits to compute phylogenetic signal of traits!")
     data$traits$this.breaks.pez <- rownames(data$traits)
-    comparative.data <- comparative.data(data$phy, data$traits, this.breaks.pez)
+    ## FIXME:  are we supposed to look for this.breaks.pez in data$traits?
+    comparative.data <- comparative.data(data$phy, data$traits, data$traits$this.breaks.pez)
     traits <- numeric(ncol(comparative.data$data))
     names(traits) <- names(comparative.data$data)
     for(i in seq(ncol(comparative.data$data))){
@@ -49,7 +50,7 @@ phy.signal <- function(data, traits=TRUE, method=c("lambda", "delta", "kappa")){
     #Community composition
     comm <- data.frame(t(data$comm))
     comm$this.breaks.pez <- rownames(comm)
-    comparative.data <- comparative.data(data$phy, comm, this.breaks.pez)
+    comparative.data <- comparative.data(data$phy, comm, data$traits$this.breaks.pez)
     communities <- numeric(ncol(comparative.data$data))
     names(communities) <- names(comparative.data$data)
     for(i in seq(ncol(comparative.data$data))){

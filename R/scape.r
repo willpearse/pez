@@ -1,4 +1,4 @@
-#TO_DO:
+# TO_DO:
 # clean up Rd code, write nice example
 #' Simulate phylogenetic community structure across a landscape
 #' 
@@ -23,16 +23,28 @@
 #' @param rho Grafen branch adjustment of phylogenetic tree see \code{\link{corGrafen}}
 #' @param th probability threshold 10^-th above which species are considered present at a site 
 #
-#' @details Simulates a landscape with species (i.e., tree tips) distributions dependent on a supplied phylogenetic tree. 
-#' The amount and type of structure is determened by the signal parameters \code{g.center}, \code{g.range} and \code{g.repulse}. Parameters are
-#' based on an Ornstein-Uhlenbeck model of evolution with stabilizing selection. Values of g=1 indicate no stabilizing selection and correspond 
-#' to the Brownian motion model of evolution; 0<g<1 represents stabilizing selection; and g>1 corresponds to disruptive selection where 
-#' phylogenetic signal for the supplied tree is amplified. See \code{\link{corBlomberg}}. 
-#' Communities are simulated along two gradients where the positions along those gradients, \code{g.center} and range sizes \code{g.range},
-#' can exhibit phylogenetic signal. Phylogenetic attraction is simulated in the \code{g.center} paramter, while repulsion in \code{g.repulse}. Both can be exhibited 
-#' such that closly related species are generally found with similar range centers (phylogenetic attraction) but just not at the same site (phylogenetic repulsion).  
-#' The function then returns probabilities of of each species across sites and the presence and absences of species based a supplied threshold, \code{th}, which can be
-#' increased to obtain more species at sites and thus increase average site species richness.
+#' @details Simulates a landscape with species (i.e., tree tips)
+#' distributions dependent on a supplied phylogenetic tree.  The
+#' amount and type of structure is determened by the signal parameters
+#' \code{g.center}, \code{g.range} and \code{g.repulse}. Parameters
+#' are based on an Ornstein-Uhlenbeck model of evolution with
+#' stabilizing selection. Values of g=1 indicate no stabilizing
+#' selection and correspond to the Brownian motion model of evolution;
+#' 0<g<1 represents stabilizing selection; and g>1 corresponds to
+#' disruptive selection where phylogenetic signal for the supplied
+#' tree is amplified. See \code{\link{corBlomberg}}.  Communities are
+#' simulated along two gradients where the positions along those
+#' gradients, \code{g.center} and range sizes \code{g.range}, can
+#' exhibit phylogenetic signal. Phylogenetic attraction is simulated
+#' in the \code{g.center} paramter, while repulsion in
+#' \code{g.repulse}. Both can be exhibited such that closly related
+#' species are generally found with similar range centers
+#' (phylogenetic attraction) but just not at the same site
+#' (phylogenetic repulsion).  The function then returns probabilities
+#' of of each species across sites and the presence and absences of
+#' species based a supplied threshold, \code{th}, which can be
+#' increased to obtain more species at sites and thus increase average
+#' site species richness.
 #
 #' @return \code{Y} presence/absence matrix
 #' @return \code{index} spatial coordinates for X and Y (stacked columns)
@@ -51,7 +63,7 @@
 #' @return \code{wd} the denominator for species ranges 
 #' @author M.R. Helmus
 #' @references Helmus M.R. & Ives A.R. (2012). Phylogenetic diversity area curves. Ecology, 93, S31-S43.
-
+#' @importFrom ape vcv corBlomberg
 #' @examples
 #' \dontrun{
 #' tree<-stree(8,type="balanced")       #signal in centers
@@ -68,7 +80,6 @@
 #' 
 #' plot(x=1:dim(kk$Y)[1],y = rowSums(kk$Y), main = "SR",type = "l")
 #' cor(kk$X1)}
-
 scape<-function(tree, scape.size=10, g.center=1, g.range=1, g.repulse=1, wd.all=150, signal.center=TRUE, signal.range=TRUE, same.range=TRUE,repulse=TRUE,center.scale = 1, range.scale = 1, repulse.scale = 1, site.stoch.scale = .5, sd.center=1, sd.range=1,rho=NULL, th=8)
 {
   #deal with the tree

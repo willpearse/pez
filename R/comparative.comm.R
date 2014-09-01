@@ -7,9 +7,12 @@
 #' @param phy phylogeny (in ape::phylo format) of species
 #' @param comm a community matrix (as used in vegan) with species as columns and rows as community samples
 #' @param traits a data.frame of species traits (with row names matching those of 'comm')
-#' @param env a data.frame of environmental data (all continuous variables) with row names matching those of 'comm'
-#' @details Basic checking of whether the input data match up is performed; you need only supply 'comm' and 'phy', nothing else is mandatory.
-#' Subsetting according to communities (rows) and species (columns) is possible - see 'examples' for details.
+#' @param env a data.frame of environmental data (all continuous
+#' variables) with row names matching those of 'comm'
+#' @details Basic checking of whether the input data match up is
+#' performed; you need only supply 'comm' and 'phy', nothing else is
+#' mandatory.  Subsetting according to communities (rows) and species
+#' (columns) is possible - see 'examples' for details.
 #' @return comparative.comm object
 #' @examples \dontrun{
 #' data(laja)
@@ -20,6 +23,7 @@
 #' data[,1:3]
 #' }
 #' @importFrom ape is.rooted cophenetic.phylo
+#' @importFrom ade4 scalewt
 #' @export
 comparative.comm <- function(phy, comm, traits=NULL, env=NULL, warn=TRUE, vcv=TRUE){
   #Assertions and argument handling

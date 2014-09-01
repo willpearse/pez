@@ -12,7 +12,7 @@
 #' data <- comparative.comm(phylocom$phy, phylocom$sample, traits=phylocom$traits)
 #' cc,barplotc(data, c("traitA", "traitB"))
 #' }
-#' @importFrom ade4 newick2phylog
+#' @importFrom ade4 newick2phylog scalewt
 #' @importFrom ape plot.phylo tiplabels
 #' @export
 cc.barplot <- function(data, traits, scaling = FALSE, ranging = TRUE, yranging = NULL, tipsontop=TRUE,ceti = 1, csub = 0, f.phylog = 1/(1 + ncol(values)), clabel.leaves = 0, grid.col = gray(0.85), connect.col = "black",vert.line.col = grey(0.5), vert.line.lty = 1, bar.col = heat.colors(dim(values)[1], alpha = .8), spacing = 2.5,border.col = "black",draw.connecting.lines = FALSE, draw.grid = FALSE, draw.vert.line = TRUE, phylog.lwd=1, ...)

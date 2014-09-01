@@ -1,3 +1,5 @@
+##' @importFrom ape vcv.phylo
+##' @importFrom picante prune.sample
 ##' @importFrom ape compute.brlen
 PCD <- function(samp, tree, PSVmncd=NULL, PSVpool=NULL, reps=10^4)
 {

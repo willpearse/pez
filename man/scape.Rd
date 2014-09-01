@@ -81,16 +81,28 @@ scape(tree, scape.size = 10, g.center = 1, g.range = 1, g.repulse = 1,
 \code{scape} simulates communities that are phylogenetically structured
 }
 \details{
-Simulates a landscape with species (i.e., tree tips) distributions dependent on a supplied phylogenetic tree.
-The amount and type of structure is determened by the signal parameters \code{g.center}, \code{g.range} and \code{g.repulse}. Parameters are
-based on an Ornstein-Uhlenbeck model of evolution with stabilizing selection. Values of g=1 indicate no stabilizing selection and correspond
-to the Brownian motion model of evolution; 0<g<1 represents stabilizing selection; and g>1 corresponds to disruptive selection where
-phylogenetic signal for the supplied tree is amplified. See \code{\link{corBlomberg}}.
-Communities are simulated along two gradients where the positions along those gradients, \code{g.center} and range sizes \code{g.range},
-can exhibit phylogenetic signal. Phylogenetic attraction is simulated in the \code{g.center} paramter, while repulsion in \code{g.repulse}. Both can be exhibited
-such that closly related species are generally found with similar range centers (phylogenetic attraction) but just not at the same site (phylogenetic repulsion).
-The function then returns probabilities of of each species across sites and the presence and absences of species based a supplied threshold, \code{th}, which can be
-increased to obtain more species at sites and thus increase average site species richness.
+Simulates a landscape with species (i.e., tree tips)
+distributions dependent on a supplied phylogenetic tree.  The
+amount and type of structure is determened by the signal parameters
+\code{g.center}, \code{g.range} and \code{g.repulse}. Parameters
+are based on an Ornstein-Uhlenbeck model of evolution with
+stabilizing selection. Values of g=1 indicate no stabilizing
+selection and correspond to the Brownian motion model of evolution;
+0<g<1 represents stabilizing selection; and g>1 corresponds to
+disruptive selection where phylogenetic signal for the supplied
+tree is amplified. See \code{\link{corBlomberg}}.  Communities are
+simulated along two gradients where the positions along those
+gradients, \code{g.center} and range sizes \code{g.range}, can
+exhibit phylogenetic signal. Phylogenetic attraction is simulated
+in the \code{g.center} paramter, while repulsion in
+\code{g.repulse}. Both can be exhibited such that closly related
+species are generally found with similar range centers
+(phylogenetic attraction) but just not at the same site
+(phylogenetic repulsion).  The function then returns probabilities
+of of each species across sites and the presence and absences of
+species based a supplied threshold, \code{th}, which can be
+increased to obtain more species at sites and thus increase average
+site species richness.
 }
 \examples{
 \dontrun{

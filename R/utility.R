@@ -89,34 +89,39 @@ print.ecophyl.regression <- function(x, ...){
     summary(x, ...)
 }
 
-#' @method plot ecophyl.regression
-#' @export
-plot.ecophyl.regression <- function(x, ...){
-    .plot.regression <- function(x, y, observed, randomisations, method=c("quantile", "lm", "mantel"), permute=0, ...){
-        method <- match.arg(method)
-        plot(y ~ x, ...)
-        if(method == "lm"){
-            abline(observed, lwd=3)
-                                        #Easiest way to silence lapply...
-            if(permute>0 && method=="lm")
-                silent<-lapply(randomisations, abline, col="red")
-        }
-        if(method == "quantile"){
-                                        #Check to see if we've got more than one tau value and plot accordingly
-            if(is.null(dim(coef(observed)))){
-                abline(coef(observed), lwd=3)
-                for(j in seq(from=1,length.out=permute))
-                    abline(coef(randomisations[[j]]), col="red")
-            } else {
-                for(j in seq(ncol(coef(observed)))){
-                    abline(coef(observed)[,j], lwd=3)
-                    for(k in seq_along(randomisations))
-                        abline(coef(randomisations[[k]])[,j], col="red")
-                }
+.plot.regression <- function(x, y, observed, randomisations,
+                             method=c("quantile", "lm", "mantel"),
+                             permute=0, ...){
+    method <- match.arg(method)
+    plot(y ~ x, ...)
+    if(method == "lm"){
+        abline(observed, lwd=3)
+                                        # Easiest way to silence
+                                        # lapply...
+        if(permute>0 && method=="lm")
+            silent<-lapply(randomisations, abline, col="red")
+    }
+    if(method == "quantile"){
+                                        # Check to see if we've got
+                                        # more than one tau value and
+                                        # plot accordingly
+        if(is.null(dim(coef(observed)))){
+            abline(coef(observed), lwd=3)
+            for(j in seq(from=1,length.out=permute))
+                abline(coef(randomisations[[j]]), col="red")
+        } else {
+            for(j in seq(ncol(coef(observed)))){
+                abline(coef(observed)[,j], lwd=3)
+                for(k in seq_along(randomisations))
+                    abline(coef(randomisations[[k]])[,j], col="red")
             }
         }
     }
-    
+}
+
+#' @method plot ecophyl.regression
+#' @export
+plot.ecophyl.regression <- function(x, ...){
     if(x$type == "eco.env.regression"){
         #Beware calling without knowing which environmental distance matrix we should be using
         if(!x$altogether) stop("Cannot call 'plot' on an element of an eco.env.regression.list - uses plot(list, no.trait) instead")
@@ -211,8 +216,15 @@ plot.ecophyl.regression.list <- function(x, ...){
 }
 
 
-#Trim a phylogeny (ape work-around, intended to be the same as drop.tip but not returning a nonsense phylogeny)
-#' @export
+##' Trim a phylogeny
+##'
+##' This is an \code{ape} work-around, intended to be the same as
+##' \code{\link{drop.tip}} but not returning a nonsense phylogeny).
+##'
+##' @param tree A \code{phylo} object
+##' @param spp A tip to drop
+##' @return a no-nonsense phylogeny
+##' @export
 drop_tip <- function(tree, spp)
   if(length(setdiff(tree$tip.label, spp)) >0) return(drop.tip(tree, spp)) else return(tree)
 

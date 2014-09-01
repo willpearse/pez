@@ -140,6 +140,7 @@ evenness <- function(data, metric=c("all", "rao", "taxon", "entropy", "cadotte",
   return(output)
 }
 
+#' @importFrom ape write.tree
 #' @importFrom ade4 newick2phylog
 .phylo.entropy <- function(data)
 {
