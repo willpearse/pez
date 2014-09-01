@@ -18,6 +18,8 @@ comparative.comm(phy, comm, traits = NULL, env = NULL, warn = TRUE,
 
 \item{env}{a data.frame of environmental data (all continuous
 variables) with row names matching those of 'comm'}
+
+\item{...}{not currently used}
 }
 \value{
 comparative.comm object

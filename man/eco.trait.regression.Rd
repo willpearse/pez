@@ -17,16 +17,27 @@ taxa.labels, richness, frequency, sample.pool, phylogeny.pool, independentswap, 
 
 \item{permute}{the number of null permutations to perform}
 
-\item{altogether}{use distance matrix based on all traits (default TRUE), or perform separate regressions for each trait}
+\item{altogether}{use distance matrix based on all traits (default
+TRUE), or perform separate regressions for each trait}
+
+\item{...}{additional parameters to pass on to model fitting functions}
 }
 \description{
-\code{eco.trait.regression} runs a regression of ecological community coexistence versus species trait-distances
+\code{eco.trait.regression} runs a regression of ecological
+community coexistence versus species trait-distances
 }
 \details{
 This is extremely unchcked, so beware!
 }
 \note{
-Like the eco.trait and eco.env methods, this is a data-hungry method. Warnings will be generated if any of the methods cannot be fitted properly (the examples below give toy examples of this). In such cases the summary and plot methods of these functions may generate errors; use 'traceback()' to examine where these are coming from, and consider whether you want to be working with the data generating these errors. I am loathe to hide these errors or gloss over them, because they represent the reality of your data!
+Like the eco.trait and eco.env methods, this is a data-hungry
+method. Warnings will be generated if any of the methods cannot be
+fitted properly (the examples below give toy examples of this). In
+such cases the summary and plot methods of these functions may
+generate errors; use 'traceback()' to examine where these are
+coming from, and consider whether you want to be working with the
+data generating these errors. I am loathe to hide these errors or
+gloss over them, because they represent the reality of your data!
 }
 \examples{
 \dontrun{

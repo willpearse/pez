@@ -15,10 +15,13 @@ taxa.labels, richness, frequency, sample.pool, phylogeny.pool, independentswap, 
 (as implemented in 'picante')}
 
 \item{permute}{the number of null permutations to perform}
+
+\item{...}{additional parameters to pass on to model fitting functions}
 }
 \description{
-\code{eco.phy.regression} runs an eco.phy.regression regression, in the sense of Cavender-Bares et al. (2004),
-on a comparative.comm object.
+\code{eco.phy.regression} runs an eco.phy.regression regression, in
+the sense of Cavender-Bares et al. (2004), on a comparative.comm
+object.
 }
 \details{
 This is extremely unchcked, so beware!

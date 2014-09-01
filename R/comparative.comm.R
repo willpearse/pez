@@ -131,6 +131,7 @@ comparative.comm <- function(phy, comm, traits=NULL, env=NULL, warn=TRUE, vcv=TR
 # some useful generics######
 ############################
 
+#' @param ... not currently used
 #' @rdname comparative.comm
 #' @method print comparative.comm
 #' @export

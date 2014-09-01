@@ -116,6 +116,7 @@ funct.phylo.dist.comparative.comm <- function(x, phyloWeight, p, ...) {
 #' @rdname pianka.dist
 #' @family distnaces
 pianka.dist <- function(x, ...) UseMethod("pianka.dist", x)
+#' @rdname pianka.dist
 #' @export
 pianka.dist.matrix <- function(x, env = NULL, ...){
     comm <- x

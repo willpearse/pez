@@ -2,9 +2,12 @@
 \name{pianka.dist}
 \alias{pianka.dist}
 \alias{pianka.dist.comparative.comm}
+\alias{pianka.dist.matrix}
 \title{Make environmental tolerance distance matrices}
 \usage{
 pianka.dist(x, ...)
+
+\method{pianka.dist}{matrix}(x, env = NULL, ...)
 
 \method{pianka.dist}{comparative.comm}(x, alltogether = TRUE, ...)
 }

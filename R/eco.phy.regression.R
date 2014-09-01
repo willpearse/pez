@@ -1,13 +1,15 @@
 #' Run an eco.phy.regression regression (Cavender-Bares et al. 2004)
 #' 
-#' \code{eco.phy.regression} runs an eco.phy.regression regression, in the sense of Cavender-Bares et al. (2004), 
-#' on a comparative.comm object.
+#' \code{eco.phy.regression} runs an eco.phy.regression regression, in
+#' the sense of Cavender-Bares et al. (2004), on a comparative.comm
+#' object.
 #' 
 #' @param data a comparative community ecology object on which to run the regression
 #' @param randomisation what kind of null distributions to compare your data with - one of:
 #' taxa.labels, richness, frequency, sample.pool, phylogeny.pool, independentswap, trialswap
 #' (as implemented in 'picante')
 #' @param permute the number of null permutations to perform
+#' @param ... additional parameters to pass on to model fitting functions
 #' @details This is extremely unchcked, so beware!
 #' @author Will Pearse, Jeannine Cavender-Bares
 #' @examples \dontrun{

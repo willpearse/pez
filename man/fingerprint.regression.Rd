@@ -25,15 +25,26 @@ taxa.labels, richness, frequency, sample.pool, phylogeny.pool, independentswap, 
 \item{evo.method}{how to measure phylogenetic inertia - one of: lambda, delta, kappa, D.c}
 
 \item{evo.permute}{number of permutations of phylogenetic inertia (D.c only)}
+
+\item{...}{additional parameters to pass on to model fitting functions}
 }
 \description{
-\code{fingerprint.regression} calculates traits' phylogenetic inertia, and then plots this as a function of trait similarity among communities
+\code{fingerprint.regression} calculates traits' phylogenetic
+inertia, and then plots this as a function of trait similarity
+among communities
 }
 \details{
 This is extremely unchcked, so beware!
 }
 \note{
-Like the eco.trait and eco.env methods, this is a data-hungry method. Warnings will be generated if any of the methods cannot be fitted properly (the examples below give toy examples of this). In such cases the summary and plot methods of these functions may generate errors; use 'traceback()' to examine where these are coming from, and consider whether you want to be working with the data generating these errors. I am loathe to hide these errors or gloss over them, because they represent the reality of your data!
+Like the eco.trait and eco.env methods, this is a data-hungry
+method. Warnings will be generated if any of the methods cannot be
+fitted properly (the examples below give toy examples of this). In
+such cases the summary and plot methods of these functions may
+generate errors; use 'traceback()' to examine where these are
+coming from, and consider whether you want to be working with the
+data generating these errors. I am loathe to hide these errors or
+gloss over them, because they represent the reality of your data!
 }
 \examples{
 \dontrun{
