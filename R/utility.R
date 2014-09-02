@@ -161,8 +161,8 @@ summary.ecophyl.regression.list <- function(object, ...){
 
     if(x$type == "eco.trait.regression.list"){
         cat("\neco.trait.regression list:\n")
-        for(i in seq(ncol(object$data$traits))){
-            cat("\n\n**", names(object$data$traits)[i], "**\n")
+        for(i in seq(ncol(object$data$data))){
+            cat("\n\n**", names(object$data$data)[i], "**\n")
             summary(x[[i]], ...)
         }
         return()
@@ -182,7 +182,7 @@ print.ecophyl.regression.list <- function(x, ...){
     if(x$type == "eco.trait.regression.list"){
         cat("\neco.trait.regression list:\n")
         cat("Traits:\n")
-        cat(colnames(x$data$traits), sep=", ")
+        cat(colnames(x$data$data), sep=", ")
         cat("\nTo examine each regression of each trait, use something like 'x[[1]]', or 'print(x[[2]])'\n")
         cat("To display all at once, call something like 'summary(regression.list)'\n")
         return()
@@ -206,9 +206,9 @@ plot.ecophyl.regression.list <- function(x, ...){
         eco.matrix <- as.numeric(comm.dist(x$data$comm))
         trait.matrix <- traits.dist(x$data, FALSE)
         if(is.null(which)){
-            for(i in seq(ncol(x$data$traits)))
+            for(i in seq(ncol(x$data$data)))
                 .plot.regression(as.numeric(as.dist(trait.matrix[,,i])), eco.matrix, x$observed, x$randomisations, x$method, x$permute,
-                                 xlab="Trait Distance", ylab="Ecological Co-existnce", main=names(x$data$traits)[i], ...)
+                                 xlab="Trait Distance", ylab="Ecological Co-existnce", main=names(x$data$data)[i], ...)
         } else .plot.regression(as.numeric(as.dist(trait.matrix[,,which])), eco.matrix, x$observed, x$randomisations, x$method, x$permute,
                                 xlab="Trait Distance", ylab="Ecological Co-existnce", ...)
         return()
@@ -260,6 +260,7 @@ summary.phy.structure <- function(object, ...){
         if(!is.null(object$cadotte.pd))
             cat("\tCadotte's expected phylogenetic diversity (cadotte.pd)\n")
         cat("Use something like 'output$psv' to work with each measure\n")
+        cat("...or coef(output) to get a table of metric values\n")
         return()
     }
     #Evenness
@@ -278,10 +279,13 @@ summary.phy.structure <- function(object, ...){
         if(!is.null(object$lambda))
             cat("\tLambda transformation (lambda)\n")
         if(!is.null(object$delta))
-            cat("\t Delta transformation (delta)\n")
+            cat("\tDelta transformation (delta)\n")
         if(!is.null(object$kappa))
             cat("\tKappa transformation (kappa)\n")
+        if(!is.null(object$mpd))
+            cat("\tMean Phylogenetic Distance (mpd)\n")
         cat("Use something like 'output$rao' to work with each measure\n")
+        cat("...or coef(output) to get a table of metric values\n")
         return()
     }
     #Dispersion
@@ -293,7 +297,7 @@ summary.phy.structure <- function(object, ...){
         }
         if(!is.null(object$sesmntd)){
             cat("SESmntd:\n")
-            print(object$sesmmntd)
+            print(object$sesmntd)
         }
         if(!is.null(object$sespd)){
             cat("SESpd:\n")
@@ -308,6 +312,7 @@ summary.phy.structure <- function(object, ...){
             print(object$d)
         }
         cat("Use something like 'output$d' to work with each measure\n")
+        cat("...or coef(output) to get a table of metric values\n")
         return()
     }
     #Dissimilarity
@@ -319,6 +324,8 @@ summary.phy.structure <- function(object, ...){
             cat("\tPCD (pcd)\n")
         if(!is.null(object$phylosor))
             cat("\tPhyloSor (phylosor)\n")
+        if(!is.null(object$comdist))
+            cat("\tComdist (comdist)\n")
         cat("Use something like 'output$unifrac' to work with each measure\n")
         return()
     }
@@ -333,10 +340,28 @@ print.phy.structure <- function(x, ...){
     summary(x)
 }
 
+#' Get coefs of a phylogenetic structure object
+#' @method coef phy.structure
+#' @export
+coef.phy.structure <- function(x, ...){
+    #Shape
+    if(x$type == "dissimilarity")
+      cat("\nCannot produce a simple summary of dissimilarity matrices. Sorry.\n")
+    else
+      return(x$coefs)
+}
+
+
 assemblage.phylogenies <- function(data){
     if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
     subtrees <- vector("list", nrow(data$comm))
     for(i in seq(nrow(data$comm)))
         subtrees[[i]] <- drop_tip(data$phy, rownames(data$comm)[data$comm[i,]!=0])
     return(subtrees)
+}
+
+
+.removeErrors <- function(object) {
+    if(inherits(object, "try-error")) return(NULL)
+    object
 }

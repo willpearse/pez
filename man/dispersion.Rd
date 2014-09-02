@@ -4,14 +4,27 @@
 \title{Calculate dispersion phylogenetic biodiversity metrics across communities}
 \usage{
 dispersion(data, metric = c("all", "sesmpd", "sesmntd", "sespd", "innd", "d"),
-  permute = 1000)
+  permute = 1000, null.model = c("taxa.labels", "richness", "frequency",
+  "sample.pool", "phylogeny.pool", "independentswap", "trialswap"),
+  abundance = FALSE, ...)
 }
 \arguments{
 \item{data}{a \code{comparative.comm} object}
 
-\item{permute}{the number of null permutations to perform}
+\item{permute}{the number of null permutations to perform (default 1000)}
 
 \item{metric}{specify particular metrics to calculate, default is \code{all}}
+
+\item{null.model}{One of "taxa.labels", "richness", "frequency",
+"sample.pool", "phylogeny.pool", "independentswap", or
+"independentswap". These correspond to the null models available in
+picante; only D does not use these null models currently}
+
+\item{abundance}{Whether to use abundance-weighted forms of these
+metrics (default: FALSE)}
+
+\item{...}{additional parameters to be passed to metrics (unlikely
+you will want to use this!)}
 }
 \value{
 a \code{phy.structure} list object of metric values

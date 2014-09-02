@@ -3,17 +3,19 @@
 \alias{dissimilarity}
 \title{Calculate dissimilarity phylogenetic biodiversity metrics across communities}
 \usage{
-dissimilarity(data, metric = c("all", "unifrac", "pcd", "phylosor"),
-  pa = TRUE, permute = 100)
+dissimilarity(data, metric = c("all", "unifrac", "pcd", "phylosor",
+  "comdist"), abundance = TRUE, permute = 100, ...)
 }
 \arguments{
 \item{data}{a \code{comparative.comm} object}
 
 \item{metric}{specify particular metrics to calculate, default is \code{all}}
 
-\item{pa}{If TRUE (default), all metrics are calculated across presence-absence matrices, and species abundances are ignored}
+\item{abundance}{If TRUE (default) metrics are calculated incorporating species abundances (currently only comdist)}
 
 \item{permute}{Number of permutations for metric (currently only for PCD)}
+
+\item{...}{additional parameters to be passed to `metric function(s) you are calling}
 }
 \value{
 a \code{phy.structure} list object of metric values
@@ -22,7 +24,7 @@ a \code{phy.structure} list object of metric values
 \code{dissimilarity} calculates phylogenetic biodiversity metrics
 }
 \details{
-Calculates various metrics of phylogenetic biodiversity that are categorized as \emph{dissimilarity} metrics by Pearse \emph{et al.} (2014)
+Calculates various metrics of phylogenetic biodiversity that are categorized as \emph{dissimilarity} metrics by Pearse \emph{et al.} (2014). WARNING: Phylosor is presented as a distance matrix here, i.e. it is *not* the fraction of shared branch length among communities, but rather '1 - shared branch length'. This means \code{dissimilarity} returns a *distance* object, not a similarity object. This is different from the output of other R packages, but more convenient for us!
 }
 \note{
 This function uses a version of the PCD function, that is not included in \code{picante} and can be slow if \code{metric}="all"
@@ -32,7 +34,7 @@ This function uses a version of the PCD function, that is not included in \code{
 data(laja)
 data <- comparative.comm(invert.tree, river.sites, invert.traits)
 dissimilarity(data)
-dispersion(data, "pcd")
+dissimilarity(data, "pcd")
 }
 }
 \author{
@@ -58,5 +60,10 @@ Kerkhoff A.J., Enquist B.J. & Green J.L. (2008). Microbes on
 mountainsides: Contrasting elevational patterns of bacterial and
 plant diversity. Proceedings of the National Academy of Sciences of
 the United States of America, 105, 11505-11511.
+
+\code{comdist} C.O. Webb, D.D. Ackerly, and
+S.W. Kembel. 2008. Phylocom: software for the analysis of
+phylogenetic community structure and trait
+evolution. Bioinformatics 18:2098-2100.
 }
 

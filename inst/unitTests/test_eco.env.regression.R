@@ -78,6 +78,6 @@ test_that("lm", {
   expect_that(complex.lm$method, equals("lm"))
   expect_that(complex.lm$data, equals(data))
   expect_that(names(complex.lm[[1]]), equals(c("observed", "randomisations", "obs.slope", "rnd.slopes", "method", "permute", "randomisation", "type", "altogether")))
-  expect_that(coef(complex.lm[[1]]$randomisations[[5]]), is_equivalent_to(c(0.845593626265815, -0.17437011303608)))
+  expect_that(coef(complex.lm[[1]]$randomisations[[5]]), is_equivalent_to(c(0.82451792422494, -0.0493811697239564)))
   expect_that(class(complex.lm), equals("ecophyl.regression.list"))
 })

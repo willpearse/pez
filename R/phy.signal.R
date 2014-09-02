@@ -24,24 +24,20 @@ phy.signal <- function(data, traits=TRUE, method=c("lambda", "delta", "kappa")){
   
   #Traits
   if(traits){
-    if(is.null(data$traits)) stop("Need traits to compute phylogenetic signal of traits!")
-    data$traits$this.breaks.pez <- rownames(data$traits)
-    ## FIXME:  are we supposed to look for this.breaks.pez in data$traits?
-    comparative.data <- comparative.data(data$phy, data$traits, data$traits$this.breaks.pez)
-    traits <- numeric(ncol(comparative.data$data))
-    names(traits) <- names(comparative.data$data)
+    traits <- numeric(ncol(data$data))
+    names(traits) <- names(data$data)
     for(i in seq(ncol(comparative.data$data))){
       #I know, this should be a case statement...
       if(method == "lambda"){
-        model <- pgls(comparative.data$data[,1] ~ 1, data=comparative.data, lambda="ML")
+        model <- pgls(data$data[,1] ~ 1, data=data, lambda="ML")
         traits[i] <- summary(model)$param.CI$lambda$opt
       }
       if(method == "delta"){
-        model <- pgls(comparative.data$data[,1] ~ 1, data=comparative.data, delta="ML")
+        model <- pgls(data$data[,1] ~ 1, data=data, delta="ML")
         traits[i] <- summary(model)$param.CI$delta$opt
       }
       if(method == "kappa"){
-        model <- pgls(comparative.data$data[,1] ~ 1, data=comparative.data, kappa="ML")
+        model <- pgls(data$data[,1] ~ 1, data=data, kappa="ML")
         traits[i] <- summary(model)$param.CI$kappa$opt
       }
     }

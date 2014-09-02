@@ -12,6 +12,7 @@
 #' 
 #' @param data a comparative community ecology object
 #' @param metric specify particular metrics to calculate, default is \code{all}
+#' @param ... Additional arguments to passed to metric functions (unlikely you will want this!)
 #' @details Calculates various metrics of phylogenetic biodiversity that are categorized as \emph{evenness} metrics by Pearse \emph{et al.} (2014)
 #' @return a \code{phy.structure} list object of metric values
 #' @author M.R. Helmus, Will Pearse
@@ -44,7 +45,7 @@
 #' @importFrom caper comparative.data pgls summary.pgls coef.pgls
 #' @importFrom ade4 newick2phylog
 #' @export
-evenness <- function(data, metric=c("all", "rao", "taxon", "entropy", "cadotte", "pst", "lambda", "delta", "kappa"))
+evenness <- function(data, metric=c("all", "rao", "taxon", "entropy", "cadotte", "pst", "lambda", "delta", "kappa", "mpd"), ...)
 {
   #Assertions and argument handling
   if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
@@ -56,35 +57,47 @@ evenness <- function(data, metric=c("all", "rao", "taxon", "entropy", "cadotte",
   SR <- rowSums(data$comm>0)
   nsite <- nrow(data$comm)
   nspp <- ncol(data$comm)
+  coefs <- data.frame(row.names=rownames(data$comm))
   output <- list(pse=NULL, rao=NULL, taxon=NULL, entropy=NULL, cadotte=NULL, pst=NULL, delta=NULL)
   
   #Caculate measures
   if(metric == "pse" | metric == "all")
-    output$pse <- pse(data$comm, data$phy)[,1]
+    try(output$pse <- coefs$pse <- pse(data$comm, data$phy)[,1], silent=TRUE)
   
   if(metric == "rao" | metric == "all")
-    output$rao <- raoD(data$comm, data$phy)$Dkk
+    try(output$rao <- coefs$rao <- raoD(data$comm, data$phy)$Dkk, silent=TRUE)
   
-  if(metric == "taxon" | metric == "all"){
-    output$taxon <- taxondive(data$comm, data$vcv)
-  }
-    
+  if(metric == "taxon" | metric == "all")
+    try({
+      output$taxon <- taxondive(data$comm, data$vcv, ...)
+      t <- data.frame(output$taxon$D, output$taxon$Dstar, output$taxon$Lambda, output$taxon$Dplus, output$taxon$SDplus)
+      names(t) <- c("Delta", "DeltaStar", "LambdaPlus", "DeltaPlus", "S.DeltaPlus")
+      coefs <- cbind(coefs, t)
+    }, silent = TRUE)
   
   if(metric == "entropy" | metric == "all")
-    output$entropy <- .phylo.entropy(data)
+    try({
+      output$entropy <- .phylo.entropy(data)
+      coefs$entropy <- output$entropy[!is.na(output$entropy)]
+    }, silent=TRUE)
   
-  if(metric == "cadotte" | metric == "all"){
-    temp <- data.frame(PAE=.pae(data), IAC=.iac(data), Haed=.haed(data), Eaed=.haed(data)/log(rowSums(data$comm)))
-    output$cadotte <- temp[match(rownames(data$comm), rownames(temp)),]
-  }
+  if(metric == "cadotte" | metric == "all")
+    try({
+      output$cadotte <- data.frame(PAE=.pae(data), IAC=.iac(data), Haed=.haed(data), Eaed=.haed(data)/log(rowSums(data$comm)))
+      coefs$PAE <- output$cadotte$PAE
+      coefs$IAC <- output$cadotte$IAC
+      coefs$Haed <- output$cadotte$Haed
+      coefs$Eaed <- output$cadotte$Eaed
+    }, silent=TRUE)
   
-  if(metric == "pst" | metric == "all"){
-    .abund <- data$comm[rowSums(data$comm>0)>1, ]
-    if(length(setdiff(data$phy$tip.label, colnames(.abund))))
-      tree <- drop.tip(data$phy, setdiff(data$phy$tip.label, colnames(.abund))) else tree <- data$phy
-    temp <- .simpson.phylogenetic(data)
-    output$pst <- temp[match(rownames(data$comm), names(temp))]
-  }
+  if(metric == "pst" | metric == "all")
+    try({
+      .abund <- data$comm[rowSums(data$comm>0)>1, ]
+      if(length(setdiff(data$phy$tip.label, colnames(.abund))))
+        tree <- drop.tip(data$phy, setdiff(data$phy$tip.label, colnames(.abund))) else tree <- data$phy
+      temp <- .simpson.phylogenetic(data)
+      output$pst <- coefs$pst <- temp[match(rownames(data$comm), names(temp))]
+    }, silent=TRUE)
   
   if(metric == "lambda" | metric == "all"){
     output$lambda <- list(models=vector("list", nrow(data$comm)), values=numeric(nrow(data$comm)))
@@ -93,13 +106,14 @@ evenness <- function(data, metric=c("all", "rao", "taxon", "entropy", "cadotte",
       if(length(unique(c.data)) > 1){
         c.data <- data.frame(comm=c.data, names=names(c.data))
         c.data <- comparative.data(phy=drop_tip(data$phy, setdiff(data$phy$tip.label, c.data$names)), data=c.data, names.col=names)
-        output$lambda$models[[i]] <- pgls(comm ~ 1, c.data, lambda="ML")
+        output$lambda$models[[i]] <- pgls(comm ~ 1, c.data, lambda="ML", ...)
         output$lambda$values[i] <- summary(output$lambda$models[[i]])$param.CI$lambda$opt
       } else {
         output$lambda$models[[i]] <- NA
         output$lambda$values[i] <- NA
       }
     }
+    coefs$lambda <- output$lambda$values
   }
   
   if(metric == "delta" | metric == "all"){
@@ -109,13 +123,14 @@ evenness <- function(data, metric=c("all", "rao", "taxon", "entropy", "cadotte",
       if(length(unique(c.data)) > 1){
         c.data <- data.frame(comm=c.data, names=names(c.data))
         c.data <- comparative.data(phy=drop_tip(data$phy, setdiff(data$phy$tip.label, c.data$names)), data=c.data, names.col=names)
-        output$delta$models[[i]] <- pgls(comm ~ 1, c.data, delta="ML")
+        output$delta$models[[i]] <- pgls(comm ~ 1, c.data, delta="ML", ...)
         output$delta$values[i] <- summary(output$delta$models[[i]])$param.CI$delta$opt
       } else {
         output$delta$models[[i]] <- NA
         output$delta$values[i] <- NA
       }
     }
+    coefs$delta <- output$delta$values
   }
   
   if(metric == "kappa" | metric == "all"){
@@ -125,17 +140,23 @@ evenness <- function(data, metric=c("all", "rao", "taxon", "entropy", "cadotte",
       if(length(unique(c.data)) > 1){
         c.data <- data.frame(comm=c.data, names=names(c.data))
         c.data <- comparative.data(phy=drop_tip(data$phy, setdiff(data$phy$tip.label, c.data$names)), data=c.data, names.col=names)
-        output$kappa$models[[i]] <- pgls(comm ~ 1, c.data, kappa="ML")
+        output$kappa$models[[i]] <- pgls(comm ~ 1, c.data, kappa="ML", ...)
         output$kappa$values[i] <- summary(output$kappa$models[[i]])$param.CI$kappa$opt
       } else {
         output$kappa$models[[i]] <- NA
         output$kappa$values[i] <- NA
       }
     }
+    coefs$kappa <- output$kappa$values
   }
+
+  if(metric == "mpd" | metric == "all")
+    output$mpd <- coefs$mpd <- try(mpd(data$comm, data$vcv, abundance.weighted=TRUE, ...), silent = TRUE)
+
   
   #Prepare output
   output$type <- "evenness"
+  output$coefs <- coefs
   class(output) <- "phy.structure"
   return(output)
 }
@@ -240,51 +261,70 @@ evenness <- function(data, metric=c("all", "rao", "taxon", "entropy", "cadotte",
   return(hp.sites)
 }
 
+#' @importFrom ape extract.clade
 #' @importFrom caper clade.matrix
-.aed <- function(data, na.rm=TRUE) {
-    #Argument handling
+# Much of this is simplified from the original because we can assume
+#   the order of the components of a comparative.comm
+.aed <- function(data){
+    #Setup
     if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
-    
-    #Internal functions
-    .desc <- function(tree) {
-        t <- clade.matrix(tree)
-        mat <- t$clade.matrix
-        mat <- mat[!apply(mat, 1, function(x) all(x==1)), ]
-        mat <- apply(mat, 1, as.logical)
-        rownames(mat) <- tree$tip.label
-        return(list(mat=mat, edge=t$edge.length))
+    uni.nodes <- data$phy$edge[,2][!data$phy$edge[,2] %in% seq_along(data$phy$tip.label)]
+
+    #Internal AED for each assemblage
+    ..aed <- function(assemblage, tree, uni.nodes, clade.matrix){
+        #Nodal values
+        node.values <- numeric(length(uni.nodes))
+        for(i in seq_along(uni.nodes)){
+            t <- extract.clade(tree, uni.nodes[i])
+            t.abund <- assemblage[names(assemblage) %in% t$tip.label]
+            node.values[i] <- (tree$edge.length[which(tree$edge[,2]==uni.nodes[i])]) / sum(t.abund)
+        }
+        
+        #AED
+        aed <- numeric(length(assemblage))
+        for(i in seq_along(tree$tip.label)){
+            sp <- tree$tip.label[i]
+            nodes <- rownames(clade.matrix)[clade.matrix[,i] == 1]
+            splength <- tree$edge.length[tree$edge[,2] == i]
+            t <- assemblage[i]
+            aed[i] <- sum(node.values[which(uni.nodes %in% nodes)]) + unname(ifelse(t==0,0,splength/t))
+        }
+        return(aed)
     }
-    aed <- function(i){
-        spp <- row.names(desc[[i]]$mat)
-        dAbund <- data$comm[i, spp] * desc[[i]]$mat
-        AED <- colSums(edge.length[[i]] * t(prop.table(dAbund, margin=2)), na.rm=TRUE)
-        AED/data$comm[i, spp]
-    }
-    
-    subtrees <- assemblage.phylogenies(data)
-    desc <- lapply(subtrees, .desc)
-    edge.length <- lapply(desc, function(x) x$edge[as.numeric(colnames(x$mat))])
-    
-    res <- lapply(seq(nrow(data$comm)), aed)
-    names(res) <- rownames(data$comm)
-    return(res)
+
+    #Calculate, neaten, and return
+    aed <- apply(data$comm, 1, ..aed, data$phy, uni.nodes, clade.matrix(data$phy)$clade.matrix[-seq_along(data$phy$tip.label),])
+    rownames(aed) <- data$phy$tip.label
+    colnames(aed) <- rownames(data$comm)
+    aed[aed == Inf | aed == -Inf] <- NA
+    return(aed)
 }
 
+
 #' @importFrom picante pd
-.haed <- function(data, na.rm=TRUE) {
+#' @importFrom picante evol.distinct
+.haed <- function(data){
     #Argument handling
     if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
-    
-    # Recast AED in terms of individuals
-    AED <- .aed(data)
-    PD <- pd(data$comm, data$phy)
-    scaled.AED <- lapply(seq(nrow(data$comm)), function(i) {
-        spp <- names(AED[[i]])        
-        rep(unname(AED[[i]]), sum(data$comm[i, spp])) / PD$PD[i]
-    })
-    res <- sapply(scaled.AED, function(x) -sum(x * log(x)))
-    names(res) <- names(AED)
-    return(res)
+
+    #Setup
+    ed <- evol.distinct(data$phy, "fair.proportion")$w
+    pd <- pd(data$comm, data$phy)$PD
+    aed <- .aed(data)
+
+    #Internal assemblage calc.
+    ..haed <- function(ed, pd.comm, aed.comm, assemblage){
+        s.aed <- rep(aed.comm, assemblage) / pd.comm      
+        haed <- -sum(s.aed * log(s.aed), na.rm=TRUE)
+        return(haed)
+    }
+
+    #Calculate, clean, and return
+    output <- numeric(nrow(data$comm))
+    names(output) <- rownames(data$comm)
+    for(i in seq(nrow(data$comm)))
+        output[i] <- ..haed(ed, pd[i], aed[,i], data$comm[i,])
+    return(output)
 }
 
 #' @importFrom ape cophenetic.phylo 
@@ -354,4 +394,26 @@ evenness <- function(data, metric=c("all", "rao", "taxon", "entropy", "cadotte",
     res <- numer/denom
     names(res) <- rownames(data$comm)
     return(res)
+}
+
+#' @importFrom picante evol.distinct
+.scheiner <- function(data, q=0, abund = TRUE){
+    #Assertions and argument handling
+    if(!inherits(data, "comparative.comm")) stop("'data' must be a comparative community ecology object")
+    
+    #Setup
+    ed <- evol.distinct(data$phy, "fair.proportion")$w
+    pd <- pd(data$comm, data$phy)$PD
+    if(!abund)
+        data$comm <- as.numeric(data$comm > 0)
+    
+    #Calculate scheiner; beware dividing by zero inadvertantly
+    output <- numeric(nrow(data$comm))
+    for(i in seq(nrow(data$comm))){
+        if(q==1)
+            output[i] <- exp(-1*sum(((data$comm[i,]*ed[i])/(sum(data$comm[i,])*pd[i])) * log((data$comm[i,]*ed[i])/(sum(data$comm[i,])*pd[i]))))
+        else
+            output[i] <- sum(((data$comm[i,]*ed[i])/(sum(data$comm[i,])*pd[i]))^q)^(1/(1-q))
+    }
+    return(output)
 }

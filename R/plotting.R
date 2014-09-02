@@ -22,13 +22,13 @@ cc.barplot <- function(data, traits, scaling = FALSE, ranging = TRUE, yranging =
   if (!inherits(data, "comparative.comm"))
     stop("ERROR:", deparse(substitute(data)), "is not of class 'comparative.comm'")
   phylog <- newick2phylog(write.tree(data$phy))
-  if(is.null(data$traits))
+  if(is.null(data$data))
     stop("ERROR:", deparse(substitute(data)), "does not contain traits to plot!")
-  if(any(!traits %in% names(data$traits))){
-    missing <- paste(traits[!traits %in% names(data$traits)], collapse=" ")
+  if(any(!traits %in% names(data$data))){
+    missing <- paste(traits[!traits %in% names(data$data)], collapse=" ")
     stop("ERROR:", missing, "not (a) trait(s) in", deparse(substitute(data)))
   }
-  values <- data$traits[,names(data$traits) %in% traits]
+  values <- data$data[,names(data$data) %in% traits]
   if (!is.numeric(as.matrix(values)))
     stop("ERROR: specified trait(s) not numeric")
   

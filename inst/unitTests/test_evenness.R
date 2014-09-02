@@ -3,6 +3,8 @@
 #Setup
 require(testthat)
 require(picante)
+require(pez)
+require(caper)
 data(phylocom)
 data <- comparative.comm(phylocom$phylo, phylocom$sample, warn=FALSE)
 context("evenness metrics")
@@ -17,6 +19,8 @@ test_that("Rao", {
   expect_that(rao_test$cadotte, equals(NULL))
   expect_that(rao_test$pst, equals(NULL))
   expect_that(rao_test$taxon, equals(NULL))
+  expect_that(rao_test$rao, is_equivalent_to(rao_test$coefs$rao))
+  expect_that(rao_test$mpd, equals(NULL))
 })
 
 test_that("taxon", {
@@ -25,23 +29,16 @@ test_that("taxon", {
   expect_that(taxon_test$rao, equals(NULL))
   expect_that(taxon_test$taxon$Species, is_equivalent_to(c(8, 8, 8, 8, 8, 8)))
   expect_that(names(taxon_test$taxon$Species), equals(rownames(data$comm)))
-  expect_that(taxon_test$taxon$D, is_equivalent_to(c(7.92857142857143, 7.18181818181818, 6.75757575757576, 7.87878787878788, 8.57142857142857, 6.43333333333333)))
-  expect_that(names(taxon_test$taxon$D), equals(rownames(data$comm)))
-  expect_that(taxon_test$taxon$Dstar, is_equivalent_to(c(7.92857142857143, 7.64516129032258, 7.19354838709677, 8.38709677419355, 8.57142857142857, 7.14814814814815)))
-  expect_that(names(taxon_test$taxon$Dstar), equals(rownames(data$comm)))
-  expect_that(taxon_test$taxon$Dplus, is_equivalent_to(c(7.92857142857143, 8, 7.71428571428571, 8.35714285714286, 8.57142857142857, 7.5)))
-  expect_that(names(taxon_test$taxon$Dplus), equals(rownames(data$comm)))
-  expect_that(taxon_test$taxon$sd.Dplus, is_equivalent_to(c(0.370294155321945, 0.370294155321945, 0.370294155321945, 0.370294155321945, 0.370294155321945, 0.370294155321945)))
-  expect_that(taxon_test$taxon$SDplus, is_equivalent_to(c(63.4285714285714, 64, 61.7142857142857, 66.8571428571429, 68.5714285714286, 60)))
-  expect_that(names(taxon_test$taxon$SDplus), equals(rownames(data$comm)))
-  expect_that(taxon_test$taxon$ED, equals(12.1422708618331))
-  expect_that(taxon_test$taxon$EDstar, equals(7.7928007023705))
-  expect_that(taxon_test$taxon$EDplus, equals(8.23333333333333))
-  expect_that(class(taxon_test$taxon), equals("taxondive"))
-  expect_that(names(taxon_test$taxon), equals(c("Species", "D", "Dstar", "Lambda", "Dplus", "sd.Dplus", "SDplus", "ED", "EDstar", "EDplus")))
+  expect_that(taxon_test$taxon, equals(taxondive(data$comm, cophenetic(data$phy))))
   expect_that(taxon_test$entropy, equals(NULL))
   expect_that(taxon_test$cadotte, equals(NULL))
   expect_that(taxon_test$pst, equals(NULL))
+  expect_that(taxon_test$coefs$Delta, is_equivalent_to(taxon_test$taxon$D[1:6]))
+  expect_that(taxon_test$coefs$DeltaStar, is_equivalent_to(taxon_test$taxon$Dstar[1:6]))
+  expect_that(taxon_test$coefs$LambdaPlus, is_equivalent_to(taxon_test$taxon$Lambda[1:6]))
+  expect_that(taxon_test$coefs$DeltaPlus, is_equivalent_to(taxon_test$taxon$Dplus[1:6]))
+  expect_that(taxon_test$coefs$S.DeltaPlus, is_equivalent_to(taxon_test$taxon$SDplus[1:6]))
+  expect_that(taxon_test$mpd, equals(NULL))
 })
 
 test_that("Entropy", {
@@ -52,6 +49,8 @@ test_that("Entropy", {
   expect_that(entropy_test$cadotte, equals(NULL))
   expect_that(entropy_test$pst, equals(NULL))
   expect_that(entropy_test$taxon, equals(NULL))
+  expect_that(entropy_test$entropy, is_equivalent_to(entropy_test$coefs$entropy))
+  expect_that(entropy_test$mpd, equals(NULL))
 })
 
 test_that("Cadotte", {
@@ -60,14 +59,17 @@ test_that("Cadotte", {
   expect_that(cadotte_test$delta, equals(NULL))
   expect_that(cadotte_test$entropy, equals(NULL))
   
-  expect_that(cadotte_test$cadotte$PAE, is_equivalent_to(c(1, 1, 1, 1, 1, 0.978723404255319)))
-  expect_that(cadotte_test$cadotte$IAC, is_equivalent_to(c(0, 0.571428571428571, 0.571428571428571, 0.571428571428571, 0, 1.14285714285714)))
-  expect_that(cadotte_test$cadotte$Haed, is_equivalent_to(c(2.07944154167984, 2.42601513195981, 2.42601513195981, 2.42601513195981, 2.07944154167984, 2.67765404685526)))
-  expect_that(cadotte_test$cadotte$Eaed, is_equivalent_to(c(1, 0.976300309778954, 0.976300309778954, 0.976300309778954, 1, 0.965759553653586)))
+  expect_that(cadotte_test$cadotte$PAE, is_equivalent_to(c(-0.3125, 0, 0.0555555555555556, 0.227272727272727, 0.366666666666667, 0.666666666666667)))
+  expect_that(cadotte_test$cadotte$IAC, is_equivalent_to(c(0.5, 0.75, 0.75, 0.6875, 0.416666666666667, 0.916666666666667)))
+  expect_that(cadotte_test$cadotte$Haed, is_equivalent_to(c(c(2.07944154167984, 2.43261844647745, 2.42601513195981, 2.42601513195981, 2.07944154167984, 2.67765404685526))))
+  expect_that(cadotte_test$cadotte$Eaed, is_equivalent_to(c(1, 0.978957679027899, 0.976300309778954, 
+0.976300309778954, 1, 0.965759553653586)))
   expect_that(rownames(cadotte_test$cadotte), equals(rownames(data$comm)))
   expect_that(colnames(cadotte_test$cadotte), equals(c("PAE", "IAC", "Haed", "Eaed")))
   expect_that(cadotte_test$pst, equals(NULL))
   expect_that(entropy_test$taxon, equals(NULL))
+  expect_that(cadotte_test$cadotte, is_equivalent_to(cadotte_test$coefs[,c("PAE", "IAC", "Haed", "Eaed")]))
+  expect_that(entropy_test$mpd, equals(NULL))
 })
 
 test_that("Pst", {
@@ -78,6 +80,8 @@ test_that("Pst", {
   expect_that(pst_test$cadotte, equals(NULL))
   expect_that(pst_test$pst, is_equivalent_to(c(4.25, 4.94444444444444, 5.83333333333333, 6.94444444444444, 7.75, 7.109375)))
   expect_that(pst_test$taxon, equals(NULL))
+  expect_that(pst_test$pst, is_equivalent_to(pst_test$coefs$pst))
+  expect_that(pst_test$mpd, equals(NULL))
 })
 
 test_that("Delta", {
@@ -94,6 +98,8 @@ test_that("Delta", {
   expect_that(coef(delta_test$delta$models[[2]]), is_equivalent_to(1.5))
   expect_that(delta_test$lambda, equals(NULL))
   expect_that(delta_test$kappa, equals(NULL))
+  expect_that(delta_test$delta$values, is_equivalent_to(delta_test$coefs$delta))
+  expect_that(entropy_test$mpd, equals(NULL))
 })
 
 test_that("Kappa", {
@@ -110,6 +116,8 @@ test_that("Kappa", {
   expect_that(coef(kappa_test$kappa$models[[2]]), is_equivalent_to(1.5))
   expect_that(kappa_test$lambda, equals(NULL))
   expect_that(kappa_test$delta, equals(NULL))
+  expect_that(kappa_test$kappa$values, is_equivalent_to(kappa_test$coefs$kappa))
+  expect_that(entropy_test$mpd, equals(NULL))
 })
 
 test_that("Lambda", {
@@ -126,6 +134,23 @@ test_that("Lambda", {
   expect_that(coef(lambda_test$lambda$models[[2]]), is_equivalent_to(1.5))
   expect_that(lambda_test$kappa, equals(NULL))
   expect_that(lambda_test$delta, equals(NULL))
+  expect_that(lambda_test$lambda$values, is_equivalent_to(lambda_test$coefs$lambda))
+  expect_that(lambda_test$mpd, equals(NULL))
+})
+
+test_that("MPD", {
+  mpd_test <<- evenness(data, "mpd")
+  expect_that(mpd_test$rao, equals(NULL))
+  expect_that(mpd_test$delta, equals(NULL))
+  expect_that(mpd_test$entropy, equals(NULL))
+  expect_that(mpd_test$cadotte, equals(NULL))
+  expect_that(mpd_test$pst, equals(NULL))
+  expect_that(mpd_test$taxon, equals(NULL))
+  expect_that(mpd_test$lambda, equals(NULL))
+  expect_that(lambda_test$kappa, equals(NULL))
+  expect_that(mpd_test$delta, equals(NULL))
+  expect_that(mpd_test$mpd, is_equivalent_to(mpd_test$coefs$mpd))
+  expect_that(mpd_test$mpd, equals(c(c(4.25, 4.94444444444444, 5.83333333333333, 6.94444444444444, 7.75, 7.109375))))
 })
 
 test_that("Each measure is the same as calculated together (where can)", {
@@ -136,4 +161,5 @@ test_that("Each measure is the same as calculated together (where can)", {
   expect_that(cadotte_test$cadotte, equals(all_test$cadotte))
   expect_that(pst_test$pst, equals(all_test$pst))
   expect_that(delta_test$delta, equals(all_test$delta))
+  expect_that(all_test$coefs, equals(coef(all_test)))
 })

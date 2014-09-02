@@ -48,9 +48,9 @@ fingerprint.regression <- function(data, eco.rnd=c("taxa.labels", "richness", "f
   ecology <- eco.trait.regression(data, eco.rnd, eco.permute, eco.method, eco.swap, altogether=FALSE, ...)
   
   #Summarise ecology regressions
-  obs.slopes <- numeric(ncol(data$traits))
-  rnd.slopes <- matrix(ncol=ncol(data$traits), nrow=ecology$permute)
-  for(i in seq(ncol(data$traits))){
+  obs.slopes <- numeric(ncol(data$data))
+  rnd.slopes <- matrix(ncol=ncol(data$data), nrow=ecology$permute)
+  for(i in seq(ncol(data$data))){
     obs.slopes[i] <- ecology[[i]]$obs.slope
     rnd.slopes[,i] <- ecology[[i]]$rnd.slopes
   }

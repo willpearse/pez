@@ -37,7 +37,6 @@ test_that("quantile", {
   expect_that(coef(complex.quantile[[1]]$randomisations[[5]]), is_equivalent_to(matrix(c(0.666666666666667, 0.0634793638092698, 1, 0), nrow=2, ncol=2)))
   expect_that(complex.quantile$type, equals("eco.trait.regression"))
   expect_that(class(complex.quantile), equals("ecophyl.regression.list"))
-
 })
 
 test_that("mantel", {

@@ -5,7 +5,7 @@
 \usage{
 shape(data, metric = c("all", "psv", "psr", "mpd", "pd", "colless", "gamma",
   "taxon", "eigen.sum", "cadotte.pd", "mfpd"), which.eigen = 1,
-  phylogeneticWeight = 0.5, removeErrors = TRUE)
+  phylogeneticWeight = 0.5, removeErrors = TRUE, ...)
 }
 \arguments{
 \item{data}{a \code{comparative.comm} object}
@@ -13,6 +13,8 @@ shape(data, metric = c("all", "psv", "psr", "mpd", "pd", "colless", "gamma",
 \item{metric}{specify particular metrics to calculate, default is \code{all}}
 
 \item{which.eigen}{The eigen vector to calculate for the PhyloEigen metric}
+
+\item{...}{Additional arguments to passed to metric functions (unlikely you will want this!)}
 }
 \value{
 a \code{phy.structure} list object of metric values
