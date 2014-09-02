@@ -9,6 +9,10 @@ phy.signal(data, traits = TRUE, method = c("lambda", "delta", "kappa"))
 \item{data}{a comparative community ecology object on which you want to calculate phylogenetic signal}
 
 \item{traits}{if TRUE (default) calculate phylogenetic signal of species' traits; otherwise calculate it of community abundance}
+
+\item{method}{what kind of signal to calculate, one of: lambda,
+delta, kappa (each corresponding to Pagel's tranformations, see
+references)}
 }
 \value{
 Named numeric vector, where each element is a trait or community.

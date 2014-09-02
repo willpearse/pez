@@ -9,6 +9,9 @@
 #' taxa.labels, richness, frequency, sample.pool, phylogeny.pool, independentswap, trialswap
 #' (as implemented in 'picante')
 #' @param permute the number of null permutations to perform
+#' @param method how to compare distance matrices - one of: quantile
+#' (quantile regression), lim (linear regression), mantel (Mantel
+#' test)
 #' @param ... additional parameters to pass on to model fitting functions
 #' @details This is extremely unchcked, so beware!
 #' @author Will Pearse, Jeannine Cavender-Bares

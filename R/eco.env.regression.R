@@ -11,6 +11,9 @@
 #' @param permute the number of null permutations to perform
 #' @param altogether use distance matrix based on all traits (default
 #' TRUE), or perform separate regressions for each trait
+#' @param method how to compare distance matrices - one of: quantile
+#' (quantile regression), lim (linear regression), mantel (Mantel
+#' test)
 #' @param ... additional arguments to pass on to model fitting functions
 #' @details This is extremely unchcked, so beware!
 #' @note Like the eco.trait and eco.env methods, this is a data-hungry
@@ -33,11 +36,9 @@
 #' @importFrom quantreg rq
 #' @importFrom vegan mantel
 #' @export
-eco.env.regression <- function(data,
-                               randomisation=c("taxa.labels", "richness", "frequency",
+eco.env.regression <- function(data, randomisation=c("taxa.labels", "richness", "frequency",
                                    "sample.pool", "phylogeny.pool", "independentswap", "trialswap"),
-                               permute=0, n.clades=1, method=c("quantile", "lm", "mantel"),
-                               swap.iter=1000, altogether=TRUE, ...){
+                               permute=0, method=c("quantile", "lm", "mantel"), altogether=TRUE, ...){
   #Assertions and argument handling
   if(! inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
   randomisation <- match.arg(randomisation)

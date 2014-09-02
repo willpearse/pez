@@ -3,7 +3,7 @@
 \alias{cc.barplot}
 \title{Plots a barplot of a trait in a comparative community object}
 \usage{
-cc.barplot(data, traits, scaling = FALSE, ranging = TRUE, yranging = NULL,
+cc.barplot(data, trait, scaling = FALSE, ranging = TRUE, yranging = NULL,
   tipsontop = TRUE, ceti = 1, csub = 0, f.phylog = 1/(1 + ncol(values)),
   clabel.leaves = 0, grid.col = gray(0.85), connect.col = "black",
   vert.line.col = grey(0.5), vert.line.lty = 1,
@@ -28,7 +28,7 @@ This may not necessarily be a good thing to do!
 \examples{
 \dontrun{
 data(phylocom)
-data <- comparative.comm(phylocom$phy, phylocom$sample, traits=phylocom$traits)
+data <- comparative.comm(phylocom$phy, phylocom$sample, trait=phylocom$traits)
 cc,barplotc(data, c("traitA", "traitB"))
 }
 }

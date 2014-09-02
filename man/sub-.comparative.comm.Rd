@@ -5,6 +5,22 @@
 \usage{
 \method{[}{comparative.comm}(x, sites, spp, warn = FALSE)
 }
+\arguments{
+\item{x}{\code{comparative.comm} object to be subset}
+
+\item{sites}{numbers of sites to be kept or dropped from \code{x};
+cannot be given as names, but rather numbers. For example,
+\code{x[1:5,]}, or \code{x[-1:-5,]}, but not \code{x[c("site a",
+"site b"),]}.}
+
+\item{spp}{numbers of species to be kept or dropped from
+\code{x}; cannot be given as names, but rather numbers. For
+example, \code{x[,1:5]}, or \code{x[,-1:-5]}, but not
+\code{x[c("sp a", "sp b"),]}.}
+
+\item{warn}{whether to warn if species/sites are dropped when
+creating object (default: TRUE)}
+}
 \description{
 Slice out the species or site that you want from your comparative.comm object
 }

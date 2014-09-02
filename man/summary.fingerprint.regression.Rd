@@ -5,6 +5,11 @@
 \usage{
 \method{summary}{fingerprint.regression}(object, ...)
 }
+\arguments{
+\item{object}{\code{fingerprint.regression} object}
+
+\item{...}{ignored}
+}
 \description{
 Summarise a fingerprint.regression
 }

@@ -1,7 +1,3 @@
-#TO-DO:
-# - subsetting method in documentation?
-#' Make a comparative community ecology object
-#' 
 #' \code{comparative.comm} creates a community comparative ecology object
 #' 
 #' @param phy phylogeny (in ape::phylo format) of species
@@ -9,6 +5,14 @@
 #' @param traits a data.frame of species traits (with row names matching those of 'comm')
 #' @param env a data.frame of environmental data (all continuous
 #' variables) with row names matching those of 'comm'
+#' @param warn whether to warn if species/sites are dropped when
+#' creating object (default: TRUE)
+#' @param vcv whether to calculate variance-covariance matrix and
+#' store in object to save time (but perhaps not memory) for later
+#' calculations (default: TRUE)
+#' @param force.root if phylogeny is unrooted, a root.edge of value
+#' force.root will be added (default: -1, which means this will never
+#' happen). Rarely needed, even more rarely advisable.
 #' @details Basic checking of whether the input data match up is
 #' performed; you need only supply 'comm' and 'phy', nothing else is
 #' mandatory.  Subsetting according to communities (rows) and species
@@ -25,15 +29,15 @@
 #' @importFrom ape is.rooted cophenetic.phylo
 #' @importFrom ade4 scalewt
 #' @export
-comparative.comm <- function(phy, comm, traits=NULL, env=NULL, warn=TRUE, vcv=TRUE){
+comparative.comm <- function(phy, comm, traits=NULL, env=NULL, warn=TRUE, vcv=TRUE, force.root=-1){
   #Assertions and argument handling
   names <- list()
   #Phylogeny
   if(!inherits(phy, "phylo")) 
     stop("'", deparse(substitute(phy)), "' not of class 'phylo'")
   if(! is.rooted(phy)){
-    if(force.root){
-      phy$root.edge <- 1
+    if(force.root != -1){
+      phy$root.edge <- force.root
     } else {
       stop("'", deparse(substitute(phy)), "' is not rooted or has a basal polytomy.")
     }
@@ -131,7 +135,7 @@ comparative.comm <- function(phy, comm, traits=NULL, env=NULL, warn=TRUE, vcv=TR
 ############################
 # some useful generics######
 ############################
-
+#' @param x \code{comparative.comm} object to be printed
 #' @param ... not currently used
 #' @rdname comparative.comm
 #' @method print comparative.comm
@@ -176,6 +180,17 @@ print.comparative.comm <- function(x, ...){
 }
 
 #' Slice out the species or site that you want from your comparative.comm object
+#' @param x \code{comparative.comm} object to be subset
+#' @param sites numbers of sites to be kept or dropped from \code{x};
+#' cannot be given as names, but rather numbers. For example,
+#' \code{x[1:5,]}, or \code{x[-1:-5,]}, but not \code{x[c("site a",
+#' "site b"),]}.
+#' @param spp numbers of species to be kept or dropped from
+#' \code{x}; cannot be given as names, but rather numbers. For
+#' example, \code{x[,1:5]}, or \code{x[,-1:-5]}, but not
+#' \code{x[c("sp a", "sp b"),]}.
+#' @param warn whether to warn if species/sites are dropped when
+#' creating object (default: TRUE)
 #' @export
 "[.comparative.comm" <- function(x, sites, spp, warn=FALSE) {
   #Assertions and setup

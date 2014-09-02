@@ -4,6 +4,9 @@
 #' 
 #' @param data a comparative community ecology object on which you want to calculate phylogenetic signal
 #' @param traits if TRUE (default) calculate phylogenetic signal of species' traits; otherwise calculate it of community abundance
+#' @param method what kind of signal to calculate, one of: lambda,
+#' delta, kappa (each corresponding to Pagel's tranformations, see
+#' references)
 #' @details This may not necessarily be a good thing to do!
 #' You may not have trait or community data where these measures make sense!
 #' @return Named numeric vector, where each element is a trait or community.

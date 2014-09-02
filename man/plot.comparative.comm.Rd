@@ -3,11 +3,12 @@
 \alias{plot.comparative.comm}
 \title{Plots dot-plots of community presence/absence or abundance}
 \usage{
-plot.comparative.comm(x, sites = NULL, abundance = FALSE, dot.cex = NULL,
-  site.col = "black", pch = 20, fraction = 3, x.increment = NULL, ...)
+\method{plot}{comparative.comm}(x, sites = NULL, abundance = FALSE,
+  dot.cex = NULL, site.col = "black", fraction = 3, x.increment = NULL,
+  ...)
 }
 \arguments{
-\item{data}{a comparative community ecology object}
+\item{x}{a comparative community ecology object (\code{comparative.comm})}
 
 \item{sites}{names of sites to plot (default: all); see examples}
 
@@ -20,28 +21,17 @@ plot.comparative.comm(x, sites = NULL, abundance = FALSE, dot.cex = NULL,
 \item{fraction}{fraction of plot window to be taken up with phylogeny; e.g., 3 (default) means phylogeny is 1/3 of plot}
 
 \item{x.increment}{specify exact spacing of points along plot; see examples}
+
+\item{...}{additional arguments passed to plotting functions}
 }
 \value{
 List containing plot.phylo information, as well as the used x.adj values
 }
 \description{
-\code{plot.comparative.comm} plots a barplot of a trait in a comparative community object
+Plots dot-plots of community presence/absence or abundance
 }
 \details{
 Getting the right spacing of dots on the phylogeny may take some playing around with the fraction and x.increment arguments, see below. It may seem a little strange to set point size using a function; however, this gives you much more flexibility when dealing with abundance data, and allows you to transform the data - see the examples
-}
-\examples{
-\dontrun{
-data(phylocom)
-data <- comparative.comm(phylocom$phy, phylocom$sample, traits=phylocom$traits)
-cc.dotplot(data)
-cc.dotplot(data, sites=c("clump1", "clump2a"), fraction=1.5)
-settings <- cc.dotplot(data, sites=c("clump1", "clump2a"), site.col=rainbow(2), fraction=1.5, cex=3)
-cc.dotplot(data, sites=c("clump1", "clump2a"), site.col=rainbow(2), fraction=1.2, x.increment=settings$x.increment/2)
-cc.dotplot(data, sites=c("clump1", "clump2a"), site.col=rainbow(2), fraction=1.2, x.increment=settings$x.increment/2, abundance=TRUE, dot.cex=function(x) 3*x)
-abund.sqrt <- function(x) ifelse(x>0, sqrt(x), 0)
-cc.dotplot(data, sites=c("clump1", "clump2a"), site.col=rainbow(2), fraction=1.2, x.increment=settings$x.increment/2, abundance=TRUE, dot.cex=abund.sqrt)
-}
 }
 \author{
 Will Pearse, Matt Helmus

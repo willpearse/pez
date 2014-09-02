@@ -110,39 +110,43 @@ funct.phylo.dist.comparative.comm <- function(x, phyloWeight, p, ...) {
 #' Make environmental tolerance distance matrices
 #'
 #' @param x an object
-#' @param alltogether see \code{\link{traits.dist}}
-#' @param ... not used
+#' @param ... (ignored)
 #' @export
 #' @rdname pianka.dist
-#' @family distnaces
+#' @family distances
 pianka.dist <- function(x, ...) UseMethod("pianka.dist", x)
+
 #' @rdname pianka.dist
+#' @param env environmental variable to be used to calculate the
+#' distance matrix
 #' @export
 pianka.dist.matrix <- function(x, env = NULL, ...){
-    comm <- x
-    ## FIXME: comm in method, x in generic
-	#Checks and assertions
-	if(!is.numeric(comm)) stop("Need numeric community matrix for Pianaka calculations")
-	if(!is.factor(env)) stop("Pianaka calculations require a factor as the second argument")
-	#Find the proportional occupancy
-	propOcc <- matrix(nrow=ncol(comm), ncol=length(levels(env)))
-	colnames(propOcc) <- levels(env)
-	#Matrices with one row become vectors; this confuses colSums
-	for(j in seq(ncol(propOcc)))
-		if(sum(env==colnames(propOcc)[j])>1) propOcc[,j] <- colSums(comm[env==colnames(propOcc)[j],]) else propOcc[,j] <- comm[env==colnames(propOcc)[j],]
-	propOcc <- apply(propOcc, 2, function(x) x/rowSums(propOcc))
-	#Get the Pianka overlap
-	pianka <- matrix(ncol=ncol(comm), nrow=ncol(comm))
-	#Matrix is symmetrical, so use this to speed things up
-	for(j in seq(from=1, to=ncol(comm)-1)){
-		for(k in seq(from=j+1, to=ncol(comm))){
-			pianka[j,k] <- sum(propOcc[j,] * propOcc[k,]) / sqrt(sum(propOcc[j,]^2) + sum(propOcc[k,]^2))
-			pianka[k,j] <- pianka[j,k]
-		}
-	}
-	return(as.dist(pianka))
+    #Checks and assertions
+    if(!is.numeric(x)) stop("Need numeric community matrix for Pianaka calculations")
+    if(!is.factor(env)) stop("Pianaka calculations require a factor as the second argument")
+    #Find the proportional occupancy
+    propOcc <- matrix(nrow=ncol(x), ncol=length(levels(env)))
+    colnames(propOcc) <- levels(env)
+    #Matrices with one row become vectors; this confuses colSums
+    for(j in seq(ncol(propOcc)))
+        if(sum(env==colnames(propOcc)[j])>1) propOcc[,j] <- colSums(x[env==colnames(propOcc)[j],]) else propOcc[,j] <- x[env==colnames(propOcc)[j],]
+    propOcc <- apply(propOcc, 2, function(x) x/rowSums(propOcc))
+    #Get the Pianka overlap
+    pianka <- matrix(ncol=ncol(x), nrow=ncol(x))
+    #Matrix is symmetrical, so use this to speed things up
+    for(j in seq(from=1, to=ncol(x)-1)){
+        for(k in seq(from=j+1, to=ncol(x))){
+            pianka[j,k] <- sum(propOcc[j,] * propOcc[k,]) / sqrt(sum(propOcc[j,]^2) + sum(propOcc[k,]^2))
+            pianka[k,j] <- pianka[j,k]
+        }
+    }
+    return(as.dist(pianka))
 }
+
 #' @export
+#' @param alltogether whether to calculate distance matrices for all
+#' the environmental variables together (default: TRUE) or calculate
+#' and return each separately
 #' @rdname pianka.dist
 pianka.dist.comparative.comm <- function(x, alltogether = TRUE, ...){
 	#Checks and assertions

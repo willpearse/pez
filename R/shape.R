@@ -1,10 +1,12 @@
 #' Calculate shape phylogenetic biodiversity metrics across communities
 #'
 #' \code{shape} calculates phylogenetic biodiversity metrics
-#'
 #' @param data a \code{comparative.comm} object
 #' @param metric specify particular metrics to calculate, default is \code{all}
 #' @param which.eigen The eigen vector to calculate for the PhyloEigen metric
+#' @param remove.errors suppress errors about metrics that failed to
+#' run (default: TRUE). This will happen for some metrics if you have,
+#' for example, only one species in a community.
 #' @param ... Additional arguments to passed to metric functions (unlikely you will want this!)
 #' @details Calculates various metrics of phylogenetic biodiversity that are categorized as \emph{shape} metrics by Pearse \emph{et al.} (2014)
 #' @return a \code{phy.structure} list object of metric values
@@ -31,18 +33,8 @@
 #' @importFrom apTreeshape as.treeshape as.treeshape.phylo colless tipsubtree
 #' @importFrom ape gammaStat cophenetic.phylo drop.tip
 #' @export
-shape <- function(data,metric=c("all", "psv", "psr", "mpd", "pd","colless", "gamma", "taxon", "eigen.sum","cadotte.pd", "mfpd"),which.eigen=1, phylogeneticWeight = 0.5, removeErrors = TRUE, ...)
-{
-# vecnums chooses the eigenvector to calculate sumvar in Diniz-Filho
-# J.A.F., Cianciaruso M.V., Rangel T.F. & Bini
-# L.M. (2011). Eigenvector estimation of phylogenetic and functional
-# diversity. Functional Ecology, 25, 735-744.
-
-#-------------------- Unused (old?) parameters --------------------
-# @param pa If TRUE (default), all metrics are calculated across
-# presence-absence matrices, and species abundances are ignored
-# @param permute Number of permutations for metric (currently only for PCD)
-    
+shape <- function(data,metric=c("all", "psv", "psr", "mpd", "pd","colless", "gamma", "taxon", "eigen.sum","cadotte.pd", "mfpd"),which.eigen=1, remove.errors = TRUE, ...)
+{    
   #Assertions and argument handling
   if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
   metric <- match.arg(metric)
@@ -110,7 +102,7 @@ shape <- function(data,metric=c("all", "psv", "psr", "mpd", "pd","colless", "gam
       coefs$HED <- output$cadotte.pd$Hed
     }, silent = TRUE)
 
-  if(removeErrors) output <- lapply(output, .removeErrors)
+  if(remove.errors) output <- lapply(output, .removeErrors)
   
   #Prepare output
   output$type <- "shape"

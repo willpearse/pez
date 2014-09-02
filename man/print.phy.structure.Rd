@@ -5,6 +5,12 @@
 \usage{
 \method{print}{phy.structure}(x, ...)
 }
+\arguments{
+\item{x}{\code{phy.structure} object to be printed}
+
+\item{...}{additional arguments to be passed to
+\code{summary.phy.structure} (currently there are none)}
+}
 \description{
 Print a phylogenetic structure object
 }

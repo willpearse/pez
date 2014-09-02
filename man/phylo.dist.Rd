@@ -28,6 +28,9 @@ Other distances: \code{\link{comm.dist}},
   \code{\link{traits.dist.comparative.comm}},
   \code{\link{traits.dist.data.frame}},
   \code{\link{traits.dist.default}};
-  \code{\link{funct.phylo.dist}}
+  \code{\link{funct.phylo.dist}};
+  \code{\link{pianka.dist}},
+  \code{\link{pianka.dist.comparative.comm}},
+  \code{\link{pianka.dist.matrix}}
 }
 

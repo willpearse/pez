@@ -5,7 +5,7 @@
 \usage{
 shape(data, metric = c("all", "psv", "psr", "mpd", "pd", "colless", "gamma",
   "taxon", "eigen.sum", "cadotte.pd", "mfpd"), which.eigen = 1,
-  phylogeneticWeight = 0.5, removeErrors = TRUE, ...)
+  remove.errors = TRUE, ...)
 }
 \arguments{
 \item{data}{a \code{comparative.comm} object}
@@ -13,6 +13,10 @@ shape(data, metric = c("all", "psv", "psr", "mpd", "pd", "colless", "gamma",
 \item{metric}{specify particular metrics to calculate, default is \code{all}}
 
 \item{which.eigen}{The eigen vector to calculate for the PhyloEigen metric}
+
+\item{remove.errors}{suppress errors about metrics that failed to
+run (default: TRUE). This will happen for some metrics if you have,
+for example, only one species in a community.}
 
 \item{...}{Additional arguments to passed to metric functions (unlikely you will want this!)}
 }

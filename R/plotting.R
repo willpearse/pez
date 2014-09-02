@@ -9,13 +9,13 @@
 #' @author Matt Helmus, Will Pearse
 #' @examples \dontrun{
 #' data(phylocom)
-#' data <- comparative.comm(phylocom$phy, phylocom$sample, traits=phylocom$traits)
+#' data <- comparative.comm(phylocom$phy, phylocom$sample, trait=phylocom$traits)
 #' cc,barplotc(data, c("traitA", "traitB"))
 #' }
 #' @importFrom ade4 newick2phylog scalewt
 #' @importFrom ape plot.phylo tiplabels
 #' @export
-cc.barplot <- function(data, traits, scaling = FALSE, ranging = TRUE, yranging = NULL, tipsontop=TRUE,ceti = 1, csub = 0, f.phylog = 1/(1 + ncol(values)), clabel.leaves = 0, grid.col = gray(0.85), connect.col = "black",vert.line.col = grey(0.5), vert.line.lty = 1, bar.col = heat.colors(dim(values)[1], alpha = .8), spacing = 2.5,border.col = "black",draw.connecting.lines = FALSE, draw.grid = FALSE, draw.vert.line = TRUE, phylog.lwd=1, ...)
+cc.barplot <- function(data, trait, scaling = FALSE, ranging = TRUE, yranging = NULL, tipsontop=TRUE,ceti = 1, csub = 0, f.phylog = 1/(1 + ncol(values)), clabel.leaves = 0, grid.col = gray(0.85), connect.col = "black",vert.line.col = grey(0.5), vert.line.lty = 1, bar.col = heat.colors(dim(values)[1], alpha = .8), spacing = 2.5,border.col = "black",draw.connecting.lines = FALSE, draw.grid = FALSE, draw.vert.line = TRUE, phylog.lwd=1, ...)
   
 {
   #Assertions and argument handling
@@ -24,11 +24,11 @@ cc.barplot <- function(data, traits, scaling = FALSE, ranging = TRUE, yranging =
   phylog <- newick2phylog(write.tree(data$phy))
   if(is.null(data$data))
     stop("ERROR:", deparse(substitute(data)), "does not contain traits to plot!")
-  if(any(!traits %in% names(data$data))){
-    missing <- paste(traits[!traits %in% names(data$data)], collapse=" ")
+  if(any(!trait %in% names(data$data))){
+    missing <- paste(trait[!trait %in% names(data$data)], collapse=" ")
     stop("ERROR:", missing, "not (a) trait(s) in", deparse(substitute(data)))
   }
-  values <- data$data[,names(data$data) %in% traits]
+  values <- data$data[,names(data$data) %in% trait]
   if (!is.numeric(as.matrix(values)))
     stop("ERROR: specified trait(s) not numeric")
   
@@ -105,10 +105,7 @@ cc.barplot <- function(data, traits, scaling = FALSE, ranging = TRUE, yranging =
 }
 
 #' Plots dot-plots of community presence/absence or abundance
-#' 
-#' \code{plot.comparative.comm} plots a barplot of a trait in a comparative community object
-#' 
-#' @param data a comparative community ecology object
+#' @param x a comparative community ecology object (\code{comparative.comm})
 #' @param sites names of sites to plot (default: all); see examples
 #' @param abundance make size proportional to species abundance (default: FALSE)
 #' @param dot.cex function to determine point size; see examples, this isn't as terrible-sounding as it seems.
@@ -116,21 +113,12 @@ cc.barplot <- function(data, traits, scaling = FALSE, ranging = TRUE, yranging =
 #' @param fraction fraction of plot window to be taken up with phylogeny; e.g., 3 (default) means phylogeny is 1/3 of plot
 #' @param x.increment specify exact spacing of points along plot; see examples
 #' @details Getting the right spacing of dots on the phylogeny may take some playing around with the fraction and x.increment arguments, see below. It may seem a little strange to set point size using a function; however, this gives you much more flexibility when dealing with abundance data, and allows you to transform the data - see the examples
+#' @param ... additional arguments passed to plotting functions
 #' @return List containing plot.phylo information, as well as the used x.adj values
 #' @author Will Pearse, Matt Helmus
-#' @examples \dontrun{
-#' data(phylocom)
-#' data <- comparative.comm(phylocom$phy, phylocom$sample, traits=phylocom$traits)
-#' cc.dotplot(data)
-#' cc.dotplot(data, sites=c("clump1", "clump2a"), fraction=1.5)
-#' settings <- cc.dotplot(data, sites=c("clump1", "clump2a"), site.col=rainbow(2), fraction=1.5, cex=3)
-#' cc.dotplot(data, sites=c("clump1", "clump2a"), site.col=rainbow(2), fraction=1.2, x.increment=settings$x.increment/2)
-#' cc.dotplot(data, sites=c("clump1", "clump2a"), site.col=rainbow(2), fraction=1.2, x.increment=settings$x.increment/2, abundance=TRUE, dot.cex=function(x) 3*x)
-#' abund.sqrt <- function(x) ifelse(x>0, sqrt(x), 0)
-#' cc.dotplot(data, sites=c("clump1", "clump2a"), site.col=rainbow(2), fraction=1.2, x.increment=settings$x.increment/2, abundance=TRUE, dot.cex=abund.sqrt)
-#' }
+#' @method plot comparative.comm
 #' @export
-plot.comparative.comm <- function(x, sites=NULL, abundance=FALSE, dot.cex=NULL, site.col="black", pch=20, fraction=3, x.increment=NULL, ...){
+plot.comparative.comm <- function(x, sites=NULL, abundance=FALSE, dot.cex=NULL, site.col="black", fraction=3, x.increment=NULL, ...){
   #Assertions and argument checking
   data <- x
   if (!inherits(data, "comparative.comm"))
@@ -166,7 +154,7 @@ plot.comparative.comm <- function(x, sites=NULL, abundance=FALSE, dot.cex=NULL, 
     x.adj <- seq(from=x.adj/2, by=x.adj, length.out=nrow(sites))
   }
   for(i in seq(nrow(sites)))
-    tiplabels(tip=match(colnames(sites), data$phy$tip.label), pch=pch, col=site.col[i], adj=x.adj[i], cex=sites[i,], ...)
+    tiplabels(tip=match(colnames(sites), data$phy$tip.label), col=site.col[i], adj=x.adj[i], cex=sites[i,], ...)
   
   #Invisibly return
   output <- display

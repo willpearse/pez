@@ -228,8 +228,10 @@ plot.ecophyl.regression.list <- function(x, ...){
 drop_tip <- function(tree, spp)
   if(length(setdiff(tree$tip.label, spp)) >0) return(drop.tip(tree, spp)) else return(tree)
 
-#Summarise phylogenetic structure objects
+#' Summarise phylogenetic structure objects
 #' @method summary phy.structure
+#' @param object \code{phy.structure} object to be summarised
+#' @param ... additional arguments (currently there are none)
 #' @export
 summary.phy.structure <- function(object, ...){
     #Argument checking
@@ -335,20 +337,27 @@ summary.phy.structure <- function(object, ...){
 
 #' Print a phylogenetic structure object
 #' @method print phy.structure
+#' @param x \code{phy.structure} object to be printed
+#' @param ... additional arguments to be passed to
+#' \code{summary.phy.structure} (currently there are none)
 #' @export
 print.phy.structure <- function(x, ...){
     summary(x)
 }
 
 #' Get coefs of a phylogenetic structure object
+#' @param object \code{phy.structure} object with coefficients to be
+#' returned
+#' @param ... (ignored)
+#' @note Calling \code{object$coefs} would give you this too!
 #' @method coef phy.structure
 #' @export
-coef.phy.structure <- function(x, ...){
+coef.phy.structure <- function(object, ...){
     #Shape
-    if(x$type == "dissimilarity")
+    if(object$type == "dissimilarity")
       cat("\nCannot produce a simple summary of dissimilarity matrices. Sorry.\n")
     else
-      return(x$coefs)
+      return(object$coefs)
 }
 
 

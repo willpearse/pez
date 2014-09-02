@@ -6,6 +6,19 @@
 \method{plot}{fingerprint.regression}(x, eco = c("slope", "corrected"),
   xlab = "Ecological Trait Coexistence", ylab = "Phylogenetic inertia", ...)
 }
+\arguments{
+\item{x}{\code{fingerprint.regression} object}
+
+\item{eco}{plot the observed slopes ("slope", the default), or the
+median difference between the simulations and the observed values
+('corrected')}
+
+\item{xlab}{label for x-axis (default "Ecological Trait Coexistence")}
+
+\item{ylab}{label for y-axis (default "Phylogenetic inertia")}
+
+\item{...}{additional plotting arguments}
+}
 \description{
 Plot a fingerprint.regression
 }

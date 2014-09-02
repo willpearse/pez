@@ -2,10 +2,10 @@
 \name{comparative.comm}
 \alias{comparative.comm}
 \alias{print.comparative.comm}
-\title{Make a comparative community ecology object}
+\title{\code{comparative.comm} creates a community comparative ecology object}
 \usage{
 comparative.comm(phy, comm, traits = NULL, env = NULL, warn = TRUE,
-  vcv = TRUE)
+  vcv = TRUE, force.root = -1)
 
 \method{print}{comparative.comm}(x, ...)
 }
@@ -18,6 +18,19 @@ comparative.comm(phy, comm, traits = NULL, env = NULL, warn = TRUE,
 
 \item{env}{a data.frame of environmental data (all continuous
 variables) with row names matching those of 'comm'}
+
+\item{warn}{whether to warn if species/sites are dropped when
+creating object (default: TRUE)}
+
+\item{vcv}{whether to calculate variance-covariance matrix and
+store in object to save time (but perhaps not memory) for later
+calculations (default: TRUE)}
+
+\item{force.root}{if phylogeny is unrooted, a root.edge of value
+force.root will be added (default: -1, which means this will never
+happen). Rarely needed, even more rarely advisable.}
+
+\item{x}{\code{comparative.comm} object to be printed}
 
 \item{...}{not currently used}
 }

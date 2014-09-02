@@ -5,6 +5,12 @@
 \usage{
 \method{print}{fingerprint.regression}(x, ...)
 }
+\arguments{
+\item{x}{\code{fingerprint.regression} object}
+
+\item{...}{arguments passed to
+\code{summary.fingerprint.regression} (currently ignored)}
+}
 \description{
 #' Print a fingerprint.regression (...by summarising it...)
 }

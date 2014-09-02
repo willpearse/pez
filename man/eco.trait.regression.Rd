@@ -5,8 +5,8 @@
 \usage{
 eco.trait.regression(data, randomisation = c("taxa.labels", "richness",
   "frequency", "sample.pool", "phylogeny.pool", "independentswap", "trialswap"),
-  permute = 0, method = c("quantile", "lm", "mantel"), swap.iter = 1000,
-  altogether = TRUE, ...)
+  permute = 0, method = c("quantile", "lm", "mantel"), altogether = TRUE,
+  ...)
 }
 \arguments{
 \item{data}{a comparative community ecology object on which to run the regression}
@@ -16,6 +16,10 @@ taxa.labels, richness, frequency, sample.pool, phylogeny.pool, independentswap, 
 (as implemented in 'picante')}
 
 \item{permute}{the number of null permutations to perform}
+
+\item{method}{how to compare distance matrices - one of: quantile
+(quantile regression), lim (linear regression), mantel (Mantel
+test)}
 
 \item{altogether}{use distance matrix based on all traits (default
 TRUE), or perform separate regressions for each trait}

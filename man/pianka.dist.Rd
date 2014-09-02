@@ -14,11 +14,29 @@ pianka.dist(x, ...)
 \arguments{
 \item{x}{an object}
 
-\item{alltogether}{see \code{\link{traits.dist}}}
+\item{...}{(ignored)}
 
-\item{...}{not used}
+\item{env}{environmental variable to be used to calculate the
+distance matrix}
+
+\item{alltogether}{whether to calculate distance matrices for all
+the environmental variables together (default: TRUE) or calculate
+and return each separately}
 }
 \description{
 Make environmental tolerance distance matrices
+}
+\seealso{
+Other distances: \code{\link{comm.dist}},
+  \code{\link{comm.dist.comparative.comm}},
+  \code{\link{comm.dist.matrix}};
+  \code{\link{dist.func.default}},
+  \code{\link{traits.dist}},
+  \code{\link{traits.dist.comparative.comm}},
+  \code{\link{traits.dist.data.frame}},
+  \code{\link{traits.dist.default}};
+  \code{\link{funct.phylo.dist}}; \code{\link{phylo.dist}},
+  \code{\link{phylo.dist.comparative.comm}},
+  \code{\link{phylo.dist.phylo}}
 }
 

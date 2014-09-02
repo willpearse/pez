@@ -3,9 +3,18 @@
 \alias{coef.phy.structure}
 \title{Get coefs of a phylogenetic structure object}
 \usage{
-\method{coef}{phy.structure}(x, ...)
+\method{coef}{phy.structure}(object, ...)
+}
+\arguments{
+\item{object}{\code{phy.structure} object with coefficients to be
+returned}
+
+\item{...}{(ignored)}
 }
 \description{
 Get coefs of a phylogenetic structure object
+}
+\note{
+Calling \code{object$coefs} would give you this too!
 }
 

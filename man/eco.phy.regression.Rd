@@ -16,6 +16,10 @@ taxa.labels, richness, frequency, sample.pool, phylogeny.pool, independentswap, 
 
 \item{permute}{the number of null permutations to perform}
 
+\item{method}{how to compare distance matrices - one of: quantile
+(quantile regression), lim (linear regression), mantel (Mantel
+test)}
+
 \item{...}{additional parameters to pass on to model fitting functions}
 }
 \description{

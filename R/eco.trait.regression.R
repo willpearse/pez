@@ -8,6 +8,9 @@
 #' taxa.labels, richness, frequency, sample.pool, phylogeny.pool, independentswap, trialswap
 #' (as implemented in 'picante')
 #' @param permute the number of null permutations to perform
+#' @param method how to compare distance matrices - one of: quantile
+#' (quantile regression), lim (linear regression), mantel (Mantel
+#' test)
 #' @param altogether use distance matrix based on all traits (default
 #' TRUE), or perform separate regressions for each trait
 #' @param ... additional parameters to pass on to model fitting functions
@@ -33,7 +36,7 @@
 #' @export
 eco.trait.regression <- function(data,
   randomisation=c("taxa.labels", "richness", "frequency", "sample.pool", "phylogeny.pool", "independentswap", "trialswap"),
-  permute=0, method=c("quantile", "lm", "mantel"), swap.iter=1000, altogether=TRUE, ...){
+  permute=0, method=c("quantile", "lm", "mantel"), altogether=TRUE, ...){
 	#Assertions and argument handling
   if(! inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
 	randomisation <- match.arg(randomisation)

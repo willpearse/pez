@@ -51,7 +51,7 @@ EcoPhyl functions work with `comparative community ecology' objects, called \tex
 Below we load EcoPhyl, some example data that comes with it, and then make a comparative.comm object. You can examine the phylogeny ('tree'), community data ('comm'), and trait data ('traits') that went into making dataset for yourself, although all the data types are explained in more detail below.
 
 <<>>=
-library(EcoPhyl)
+library(pez)
 data(EcoPhyl)
 data <- comparative.comm(traits.and.phy$phy, 
                          traits.and.phy$comm, 

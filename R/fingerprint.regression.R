@@ -64,6 +64,9 @@ fingerprint.regression <- function(data, eco.rnd=c("taxa.labels", "richness", "f
 
 #' #' Print a fingerprint.regression (...by summarising it...)
 #' @method print fingerprint.regression
+#' @param x \code{fingerprint.regression} object
+#' @param ... arguments passed to
+#' \code{summary.fingerprint.regression} (currently ignored)
 #' @export
 print.fingerprint.regression <- function(x, ...){
   summary(x, ...)
@@ -71,6 +74,8 @@ print.fingerprint.regression <- function(x, ...){
 
 #' Summarise a fingerprint.regression
 #' @method summary fingerprint.regression
+#' @param object \code{fingerprint.regression} object
+#' @param ... ignored
 #' @export
 summary.fingerprint.regression <- function(object, ...){
   cat("Phylogenetic inertia calculated using", object$evo.method, "(examine with model$evo):\n")
@@ -81,6 +86,13 @@ summary.fingerprint.regression <- function(object, ...){
 
 #' Plot a fingerprint.regression
 #' @method plot fingerprint.regression
+#' @param x \code{fingerprint.regression} object
+#' @param eco plot the observed slopes ("slope", the default), or the
+#' median difference between the simulations and the observed values
+#' ('corrected')
+#' @param xlab label for x-axis (default "Ecological Trait Coexistence")
+#' @param ylab label for y-axis (default "Phylogenetic inertia")
+#' @param ... additional plotting arguments
 #' @export
 plot.fingerprint.regression <- function(x, eco=c("slope", "corrected"), xlab="Ecological Trait Coexistence", ylab="Phylogenetic inertia", ...){
   eco <- match.arg(eco)

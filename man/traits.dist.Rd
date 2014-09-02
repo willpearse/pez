@@ -40,6 +40,9 @@ Other distances: \code{\link{comm.dist}},
   \code{\link{comm.dist.matrix}};
   \code{\link{funct.phylo.dist}}; \code{\link{phylo.dist}},
   \code{\link{phylo.dist.comparative.comm}},
-  \code{\link{phylo.dist.phylo}}
+  \code{\link{phylo.dist.phylo}};
+  \code{\link{pianka.dist}},
+  \code{\link{pianka.dist.comparative.comm}},
+  \code{\link{pianka.dist.matrix}}
 }
 
