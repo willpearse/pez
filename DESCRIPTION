@@ -1,17 +1,20 @@
 Package: pez
 Type: Package
 Title: Phylogenetics for the Environmental Sciences
-Version: 0.2
+Version: 1.0
 Date: 2013-11-15
-Author: Matthew R. Helmus, William D. Pearse
-Maintainer: Will Pearse <wdpearse@umn.edu>
+Author: William D. Pearse, Marc W. Cadotte, Caroline Tucker, Steve Walker,
+    Matthew R. Helmus
+Maintainer: William D. Pearse <wdpearse@umn.edu>
 Description: Eco-phylogenetic and community phylogenetic analyses.
     Keeps community ecological and phylogenetic data matched up and
     comparable using 'comparative.comm' objects. Wrappers for common
-    community phylogenetic indices ('shape', 'evenness', 'dispersion', and
-    'dissimilarity' metrics). Simplified and improved model-based
-    approaches using Phylogenetic Generalised Linear Mixed Models (PGLMM).
-License: GPL-2
+    community phylogenetic indices ('shape', 'evenness', 'dispersion',
+    and 'dissimilarity' metrics). Implementation of Cavender-Bares
+    (2004) correlation of phylogenetic and ecological matrices
+    ('fingerprint.regression'). Simulation of null assemblages,
+    traits, and phylogenies ('scape', 'sim.meta.comm').
+License: GPL-3
 Imports:
     caper,
     picante,
