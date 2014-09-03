@@ -2,6 +2,8 @@
 #Testing all the measures together is somewhat silly, because I can't set the set on anything so the randomisations match.
 #Setup
 #Here's a demo Matt
+require(pez)
+require(picante)
 require(testthat)
 data(phylocom)
 data <- comparative.comm(phylocom$phylo, phylocom$sample, warn=FALSE)
@@ -29,11 +31,14 @@ test_that("INND", {
   expect_that(rownames(innd_test$innd), equals(rownames(data$comm)))
   expect_that(innd_test$coefs, equals(coef(innd_test)))
 })
+#I've checked these values with caper's
 test_that("D", {
   set.seed(123)
   d_test <<- dispersion(data, "d")
-  expect_that(d_test$d, is_equivalent_to(matrix(c(0.245391114795942, 0.0553744718496124, 0.296182917482368, 0.393634696092272, 1.57306330183479, 0.598846457288309, 0.05, 0.023, 0.053, 0.077, 0.915, 0.169, 0.355, 0.476, 0.349, 0.262, 0.001, 0.178), nrow=6, ncol=3)))
-  expect_that(rownames(d_test$d), equals(rownames(data$comm)))
-  expect_that(colnames(d_test$d), equals(c("D.c","P(D.c=1)","P(D.c=0)")))
+  expect_that(d_test$d, equals(structure(c(-1.91147244241933, -1.59620673259184, -1.47692430746261, 
+-0.184587530399159, 1.8475430319446, 1.54405249539692, 0, 0, 
+0, 0.006, 0.997, 0.919, 0.993, 0.991, 0.974, 0.64, 0, 0.003), .Dim = c(6L, 
+3L), .Dimnames = list(c("clump1", "clump2a", "clump2b", "clump4", 
+"even", "random"), c("D", "P(D=1)", "P(D=0)")))))
   expect_that(d_test$coefs, equals(coef(d_test)))
 })

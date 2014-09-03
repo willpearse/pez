@@ -5,7 +5,7 @@
 \title{\code{comparative.comm} creates a community comparative ecology object}
 \usage{
 comparative.comm(phy, comm, traits = NULL, env = NULL, warn = TRUE,
-  vcv = TRUE, force.root = -1)
+  vcv = FALSE, force.root = -1)
 
 \method{print}{comparative.comm}(x, ...)
 }
@@ -24,7 +24,8 @@ creating object (default: TRUE)}
 
 \item{vcv}{whether to calculate variance-covariance matrix and
 store in object to save time (but perhaps not memory) for later
-calculations (default: TRUE)}
+calculations (default: FALSE). Storing a VCV now may cause problems
+if you intend to use this object with the package \code{caper}.}
 
 \item{force.root}{if phylogeny is unrooted, a root.edge of value
 force.root will be added (default: -1, which means this will never

@@ -13,6 +13,8 @@
 #' test)
 #' @param altogether use distance matrix based on all traits (default
 #' TRUE), or perform separate regressions for each trait
+#' @param indep.swap number of independent swap iterations to perform
+#' (if using that randomisation); default is 1000
 #' @param ... additional parameters to pass on to model fitting functions
 #' @details This is extremely unchcked, so beware!
 #' @author Will Pearse, Jeannine Cavender-Bares
@@ -36,7 +38,7 @@
 #' @export
 eco.trait.regression <- function(data,
   randomisation=c("taxa.labels", "richness", "frequency", "sample.pool", "phylogeny.pool", "independentswap", "trialswap"),
-  permute=0, method=c("quantile", "lm", "mantel"), altogether=TRUE, ...){
+  permute=0, method=c("quantile", "lm", "mantel"), altogether=TRUE, indep.swap=1000, ...){
 	#Assertions and argument handling
   if(! inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
 	randomisation <- match.arg(randomisation)
@@ -62,7 +64,7 @@ eco.trait.regression <- function(data,
   	randomisations <- vector(mode="list", length=permute)
   	#This won't execute if permute is 0...
   	for(i in seq(from=1, length.out=permute)){
-            curr.rnd <- .eco.null(data$comm, randomisation)
+            curr.rnd <- .eco.null(data$comm, randomisation, swap.iter=indep.swap)
             rnd.mat <- comm.dist(curr.rnd)
             randomisations[[i]] <- .eco.trait.regression(rnd.mat, traits.matrix, NULL, method, ...)
   	}
@@ -72,7 +74,7 @@ eco.trait.regression <- function(data,
     randomisations <- vector(mode="list", length=ncol(data$data))
     for(i in seq_along(randomisations)) randomisations[[i]] <- vector("list", permute)
     for(i in seq(from=1, length.out=permute)){
-        curr.rnd <- .eco.null(data$comm, randomisation)
+        curr.rnd <- .eco.null(data$comm, randomisation, swap.iter=indep.swap)
         rnd.mat <- comm.dist(curr.rnd)
         for(j in seq(ncol(data$data)))
             randomisations[[j]][[i]] <- .eco.trait.regression(rnd.mat, traits.matrix, j, method, ...)

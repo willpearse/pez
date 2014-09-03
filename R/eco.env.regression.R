@@ -14,6 +14,8 @@
 #' @param method how to compare distance matrices - one of: quantile
 #' (quantile regression), lim (linear regression), mantel (Mantel
 #' test)
+#' @param indep.swap number of independent swap iterations to perform
+#' (if using that randomisation); default is 1000
 #' @param ... additional arguments to pass on to model fitting functions
 #' @details This is extremely unchcked, so beware!
 #' @note Like the eco.trait and eco.env methods, this is a data-hungry
@@ -38,7 +40,7 @@
 #' @export
 eco.env.regression <- function(data, randomisation=c("taxa.labels", "richness", "frequency",
                                    "sample.pool", "phylogeny.pool", "independentswap", "trialswap"),
-                               permute=0, method=c("quantile", "lm", "mantel"), altogether=TRUE, ...){
+                               permute=0, method=c("quantile", "lm", "mantel"), altogether=TRUE, indep.swap=1000, ...){
   #Assertions and argument handling
   if(! inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
   randomisation <- match.arg(randomisation)
@@ -64,7 +66,7 @@ eco.env.regression <- function(data, randomisation=c("taxa.labels", "richness", 
     randomisations <- vector(mode="list", length=permute)
     #This won't execute if permute is 0...
     for(i in seq(from=1, length.out=permute)){
-      curr.rnd <- .eco.null(data$comm, randomisation)
+      curr.rnd <- .eco.null(data$comm, randomisation, swap.iter=indep.swap)
       rnd.mat <- comm.dist(curr.rnd)
       if(any(is.na(rnd.mat))){
         warning("NAs in permuted community matrix; skipping this iteration")
@@ -78,7 +80,7 @@ eco.env.regression <- function(data, randomisation=c("taxa.labels", "richness", 
     randomisations <- vector(mode="list", length=ncol(data$env))
     for(i in seq_along(randomisations)) randomisations[[i]] <- vector("list", permute)
     for(i in seq(from=1, length.out=permute)){
-      curr.rnd <- .eco.null(data$comm, randomisation)
+      curr.rnd <- .eco.null(data$comm, randomisation, swap.iter=indep.swap)
       rnd.mat <- comm.dist(curr.rnd)
       if(any(is.na(rnd.mat))){
         warning("NAs in permuted community matrix; skipping this iteration")

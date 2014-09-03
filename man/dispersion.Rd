@@ -21,7 +21,8 @@ dispersion(data, metric = c("all", "sesmpd", "sesmntd", "sespd", "innd", "d"),
 picante; only D does not use these null models currently}
 
 \item{abundance}{Whether to use abundance-weighted forms of these
-metrics (default: FALSE)}
+metrics (default: FALSE). Doesn't apply to D, which is
+presence/absence only.}
 
 \item{...}{additional parameters to be passed to metrics (unlikely
 you will want to use this!)}
@@ -35,13 +36,10 @@ a \code{phy.structure} list object of metric values
 \details{
 Calculates various metrics of phylogenetic biodiversity
 that are categorized as \emph{dispersion} metrics by Pearse
-\emph{et al.} (2014). All these are defined as dispersion metrics
-in Pearse et al., Dc=0 is the Brownian expectation, Dc=1 is the
-random expectation.
+\emph{et al.} (2014).
 }
 \examples{
 \dontrun{
-data(phylocom)
 data(laja)
 data <- comparative.comm(invert.tree, river.sites, invert.traits)
 dispersion(data)

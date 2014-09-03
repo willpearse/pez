@@ -6,7 +6,7 @@
 eco.env.regression(data, randomisation = c("taxa.labels", "richness",
   "frequency", "sample.pool", "phylogeny.pool", "independentswap", "trialswap"),
   permute = 0, method = c("quantile", "lm", "mantel"), altogether = TRUE,
-  ...)
+  indep.swap = 1000, ...)
 }
 \arguments{
 \item{data}{a comparative community ecology object on which to run the regression}
@@ -23,6 +23,9 @@ TRUE), or perform separate regressions for each trait}
 \item{method}{how to compare distance matrices - one of: quantile
 (quantile regression), lim (linear regression), mantel (Mantel
 test)}
+
+\item{indep.swap}{number of independent swap iterations to perform
+(if using that randomisation); default is 1000}
 
 \item{...}{additional arguments to pass on to model fitting functions}
 }

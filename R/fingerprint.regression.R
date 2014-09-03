@@ -10,7 +10,10 @@
 #' (as implemented in 'picante')
 #' @param eco.method regression to perform - one of: lm, quantile, mantel
 #' @param eco.permute the number of null permutations to perform
-#' @param evo.method how to measure phylogenetic inertia - one of: lambda, delta, kappa.
+#' @param evo.method how to measure phylogenetic inertia - one of:
+#' lambda, delta, kappa.
+#' @param eco.swap number of independent swap iterations to perform
+#' (if using that randomisation); default is 1000
 #' @param ... additional parameters to pass on to model fitting functions
 #' @details This is extremely unchcked, so beware!
 #' @note Like the eco.trait and eco.env methods, this is a data-hungry
@@ -31,7 +34,7 @@
 #' }
 #' @export
 fingerprint.regression <- function(data, eco.rnd=c("taxa.labels", "richness", "frequency", "sample.pool", "phylogeny.pool", "independentswap", "trialswap"),
-  eco.method=c("quantile", "lm", "mantel"), eco.permute=1000, evo.method=c("lambda", "delta", "kappa"), ...){
+  eco.method=c("quantile", "lm", "mantel"), eco.permute=1000, evo.method=c("lambda", "delta", "kappa"), eco.swap=1000, ...){
   #Checks
   if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
   eco.rnd <- match.arg(eco.rnd)
