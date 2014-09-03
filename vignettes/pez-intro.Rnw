@@ -1,0 +1,256 @@
+%\VignetteIndexEntry{EcoPhyl-intro}
+%\VignettePackage{pez}
+%\VignetteEngine{knitr::knitr}
+\documentclass[12pt]{article}
+\usepackage{amssymb,amsmath}
+\usepackage{geometry}
+\geometry{letterpaper}
+\usepackage{graphicx}
+\usepackage{url}
+\usepackage{natbib}
+\usepackage{color} \definecolor{dark-gray}{gray}{0.3}
+\usepackage[colorlinks=true,urlcolor=dark-gray,breaklinks,citecolor=black,linkcolor=black]{hyperref}
+\bibliographystyle{besjournals}
+\title{An introduction to \emph{pez}}
+\author{William D.\ Pearse (wdpearse@umn.edu)}
+\date{\today}
+
+\begin{document}
+\maketitle
+\tableofcontents
+
+\section{Preamble}
+You can install \emph{pez} by typing \texttt{install.packages("pez")},
+and get a listing of the functions in the package by typing
+\texttt{library(help=pez)}. If you find any bugs, or have any feature
+requests for the package, please use
+\href{http://github.com/willpearse/pez/issues}{the online tracker}
+at. Indeed, please contribute to the package using at its
+\href{http://github.com/willpearse/pez/issues}{GitHub site}---help is
+always welcome! If you just can't wait to get the latest version, you
+can install the latest version directly from \emph{GitHub}
+(\texttt{require(devtools);install\_github('willpearse/pez')}).
+
+While \texttt{\emph{pez}} contains much novel code, it relies heavily
+on the \emph{R} ecosystem. Much of the community phylogenetic metric
+functions are wrappers around existing code (detailed in the help
+files for each function); notably \emph{caper} \citep{Orme2013} and
+\emph{picante} \citep{Kembel2010} but many others. Please cite the
+authors of these packages so that their hard-work is rewarded!
+
+\section{Data formats in \emph{pez}}
+\emph{pez} functions work with \emph{comparative community ecology}
+objects, called \texttt{comparative.comm} objects. These are designed
+to help keep phylogenies, community data matrices, species trait data,
+and environmental data all in the same place in a format that makes it
+easy to work with them. They're much less scary than they sound!
+
+Below we load \emph{pez}, some example data that comes with it, and
+then make a \texttt{comparative.comm} object. You can examine the
+phylogeny (\texttt{tree}), community data (\texttt{comm}), and trait
+data (\texttt{data}) that went into making dataset for yourself,
+although all the data types are explained in more detail below. Below
+we use the \citet{Helmus2012} dataset to show \emph{pez}'s features.
+
+<<>>=
+library(pez)
+data(laja)
+data <- comparative.comm(invert.tree, river.sites, invert.traits)
+data
+@
+
+\emph{pez} is conservative; if you give it trait data for only half of
+the species in your community data, the \texttt{comparative.comm}
+object will only contain data on those species that have both trait
+data and community data. The same goes for the phylogeny, and for
+sites with environmental data. \emph{pez} will warn you about the loss
+of species or traits when you print the object to screen, and while
+it's making the comparative.comm object (unless you set the argument
+\texttt{warm=FALSE}).
+
+You can also subset your comparative.comm object to exclude certain
+species or sites, in much the same way you can a
+\texttt{data.frame}. Note that \emph{pez} will not (by default) warn
+you if this operation drops out certain species or sites. For example:
+
+<<>>=
+data[1:5,]
+data[,1:3]
+data[,1:3,warn=TRUE]
+@
+
+\subsection{Phylogenies}
+
+\emph{pez} uses the \texttt{phylo} format in the \texttt{ape} package
+to store phylogenies. You can load your own phylogenies using the ape
+functions \texttt{read.tree} and \texttt{read.nexus}.
+
+\subsection{Community data}
+\emph{pez} uses the same community data format as the \texttt{vegan}
+package: a \texttt{matrix} with sites in the rows and species in the
+columns. The elements of the community matrix can be species
+abundances or presence/absence (1/0). Not all the species in your
+matrix have to be present in a site---there can be empty columns in
+your data. This is particularly important when using the dispersion
+measures (see below). Your data should be named, with row names that
+correspond to sites, and column names that correspond to species.
+\subsection{Trait data}
+Trait data should be a \texttt{data.frame} with row names that
+correspond to the species in the phylogeny, and named columns for each
+separate trait.
+\subsection{Environemntal data}
+Environmental data should be a \texttt{data.frame} with row names that
+correpsond to the sites in your community data, and separate (named)
+columns for each kind of environmental data.
+\section{Plotting and exploring data}
+\emph{pez} comes with a few functions that are intended to make
+exploring your data slightly easier. For instance, you can plot out
+graphs of species abundances in communities
+
+<<>>=
+cc.dotplot(data)
+@
+<<>>=
+plot(data)
+@
+\section{Community phylogenetic metrics}
+\emph{pez} splits community phylogenetic metrics into four functions
+according to the scheme outlined by \citet{Pearse2014review}:
+\texttt{shape}, \texttt{evenness}, \texttt{dispersion}, and
+\texttt{dissimilarity}. Shape metrics measure the structure of an
+community phylogeny, while evenness metrics additionally incorporate
+species abundances. Dispersion metrics calculate examine whether
+phylogenetic biodiversity in an assemblage differs from the
+expectation of random assembly from a given set of species. Finally,
+dissimilarity measures the pairwise difference in phylogenetic
+biodiversity between assemblages.
+
+You can calculate all metrics within a class at the same time (which
+is what we recommend), or you can pick a particular one. Below we show
+how to calculate the metrics, and give examples of how to work with
+their output.
+
+<<>>=
+shape.output <- shape(data)
+coef(shape.output)
+shape.output$mpd
+dissimilarity.output <- dissimilarity(data, metric="phylosor")
+plot(hclust(dissimilarity.output$phylosor))
+@
+
+Note that \emph{phylosor} \citep{Bryant2008} is reported as a
+dissimilarity in \emph{pez}: it's not the fraction of shared branch
+lengths, but $1-fraction shared branch length$. Remember: the function
+is called \texttt{dissimilarity}!
+\section{Eco-evolutionary regression (\emph{pez})}
+\emph{pez} is intended to replace and improve upon earlier Visual
+Basic/C programs called \emph{EcoPhyl}. You can regress the relative
+coexistence of species in your dataset against those species
+phylogenetic (\texttt{eco.phy.regression}) and trait
+(\texttt{eco.trait.regression}) dissimilarity, as well as shared
+habitat preferences based on environmental tolerances
+(\texttt{eco.env.regression}).
+
+<<>>=
+model <- eco.trait.regression(data, method="lm")
+model
+more.complex.model <- eco.trait.regression(data, method="mantel", altogether=FALSE, permute=10)
+more.complex.model
+more.complex.model[[1]]
+plot(eco.phy.regression(data, method="quantile"))
+@
+
+However, the real power in this approach comes from combining
+information about the phylogenetic signal of species traits with the
+output from an \texttt{eco.trait.regression} of those traits. This
+amounts to plotting something about the evolution of those traits
+against their ecology. This sort of approach was first proposed by
+\citet{Cavender-Bares2004} (figure 4), and you can use the
+\texttt{fingerprint.regression} function to carry it out. Originally,
+\citet{Cavender-Bares2004} proposed the use of Mantel regressions
+(\texttt{eco.phy.regression}), but in \emph{pez} you can use measures
+of phylogenetic signal (\texttt{phy.signal}). There's no need to do
+all these steps separately, though:
+
+<<>>=
+model <- fingerprint.regression(data, eco.permute=10)
+plot(model)
+@
+\section{TO-DO: Traits}
+\section{Simulation}
+A good simulation is one that does exactly what you want it to do, and
+\emph{pez} provides a number of simulation functions that may be
+useful to you as (1) tools, or (2) starting points for your own
+simulations.
+
+\texttt{scape} allows you to repeat the analysis of
+\citet{Helmus2012}, simulating the assembly of species across a
+landscape given phylogenetically structured assembly. The parameters
+are complex, but they can generate some useful expected distributions,
+and give you a feel for regional assembly. You'd do well to read the
+paper that generated these models, but here's an example of their use:
+
+<<>>=
+require(ape)
+tree<-stree(8,type="balanced")
+kk<-scape(tree, scape.size=100, g.center=100, g.range=1, g.repulse=1, wd.all=150, signal.center=TRUE, signal.range=FALSE, same.range=FALSE, repulse=FALSE,center.scale = 1, range.scale = 1, repulse.scale = 1, site.stoch.scale = 0, sd.center=3, sd.range=1,rho=NULL, th=20)
+require(plotrix)
+par(mfrow=c(1,Ntip(tree)),mar=c(.1,.1,.1,.1))
+for(j in 1:Ntip(tree)){color2D.matplot(1 - kk$sppXs[,,j]/max(kk$sppXs[,,j]), xlab = "", ylab = "",main = "",border=NA,do.hex=FALSE,axes=FALSE)}
+par(mfrow=c(2,1))
+matplot((kk$X1), type = "l", xlab="gradient",ylab = "probability", main = "Gradient 1",col=rainbow(dim(kk$X1)[2]),lty=1)
+matplot((kk$X2), type = "l", xlab="gradient",ylab = "probability", main = "Gradient 2",col=rainbow(dim(kk$X2)[2]),lty=1)
+@ 
+
+TO-DO: Alternatively, you can model the evolution of species and, at
+the same time, their assembly through a community. The only problem
+here is that the models are much simpler, but hopefully they are
+tunable to your liking!:
+
+TO-DO
+\begin{thebibliography}{6}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\providecommand{\urlprefix}{URL }
+
+\bibitem[{Bryant \emph{et~al.}(2008)Bryant, Lamanna, Morlon, Kerkhoff, Enquist
+  \& Green}]{Bryant2008}
+Bryant, J.A., Lamanna, C., Morlon, H., Kerkhoff, A.J., Enquist, B.J. \& Green,
+  J.L. (2008) Microbes on mountainsides: contrasting elevational patterns of
+  bacterial and plant diversity. \emph{Proceedings of the National Academy of
+  Sciences} \textbf{105}, 11505--11511,
+  \urlprefix\url{http://www.pnas.org/content/105/suppl.1/11505.abstract}.
+
+\bibitem[{Cavender-Bares \emph{et~al.}(2004)Cavender-Bares, Ackerly, Baum \&
+  Bazzaz}]{Cavender-Bares2004}
+Cavender-Bares, J., Ackerly, D.D., Baum, D.a. \& Bazzaz, F.a. (2004)
+  {Phylogenetic overdispersion in Floridian oak communities}. \emph{The
+  American Naturalist} \textbf{163}, 823--43.
+
+\bibitem[{Helmus \& Ives(2012)}]{Helmus2012}
+Helmus, M.R. \& Ives, A.R. (2012) Phylogenetic diversity-area curves.
+  \emph{Ecology} \textbf{93}, S31--S43.
+
+\bibitem[{Kembel \emph{et~al.}(2010)Kembel, Cowan, Helmus, Cornwell, Morlon,
+  Ackerly, Blomberg \& Webb}]{Kembel2010}
+Kembel, S.W., Cowan, P.D., Helmus, M.R., Cornwell, W.K., Morlon, H., Ackerly,
+  D.D., Blomberg, S.P. \& Webb, C.O. (2010) Picante: R tools for integrating
+  phylogenies and ecology. \emph{Bioinformatics} \textbf{26}, 1463--1464.
+
+\bibitem[{Orme \emph{et~al.}(2013)Orme, Freckleton, Thomas, Petzoldt, Fritz,
+  Isaac \& Pearse}]{Orme2013}
+Orme, D., Freckleton, R., Thomas, G., Petzoldt, T., Fritz, S., Isaac, N. \&
+  Pearse, W.D. (2013) \emph{caper: comparative analyses of phylogenetics and
+  evolution in {R}}. \urlprefix\url{http://CRAN.R-project.org/package=caper}, r
+  package version 0.5.2.
+
+\bibitem[{Pearse \emph{et~al.}(2014)Pearse, Cavender-Bares, Puvis \&
+  Helmus}]{Pearse2014review}
+Pearse, W.D., Cavender-Bares, J., Puvis, A. \& Helmus, M.R. (2014) Metrics and
+  models of community phylogenetics. \emph{Modern Phylogenetic Comparative
+  Methods and their Application in Evolutionary Biology---Concepts and
+  Practice} (ed. L.Z. Garamszegi), Springer-Verlag, Berlin, Heidelberg.
+
+\end{thebibliography}
+
+\end{document}

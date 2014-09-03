@@ -106,6 +106,7 @@ site species richness.
 }
 \examples{
 \dontrun{
+require(ape)
 tree<-stree(8,type="balanced")       #signal in centers
 kk<-scape(tree, scape.size=100, g.center=100, g.range=1, g.repulse=1, wd.all=150, signal.center=TRUE, signal.range=FALSE, same.range=FALSE, repulse=FALSE,center.scale = 1, range.scale = 1, repulse.scale = 1, site.stoch.scale = 0, sd.center=3, sd.range=1,rho=NULL, th=20)
 
