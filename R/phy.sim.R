@@ -180,6 +180,10 @@ sim.bd.tr.tree <- function(speciate=0.1, extinction=0.025, time.steps=20, tr.ran
 #' @param species which of the rows in the edge matrix are extant
 #' species
 #' @param extinct which of the tips in the edge matrix are extinct
+#' @param edge.length if given (default NA), a vector to be used to
+#' give edge.length to the phylogeny
+#' @param traits if given (default NA), a vector to be used for traits
+#' ($traits) in the phylogeny
 #' @details This is a bit OTT because you can figure out what's
 #' extinct and extant from the edge matrix itself; I'm just lazy and
 #' this matches onto exactly what my code already does. See

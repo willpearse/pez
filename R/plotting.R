@@ -11,6 +11,7 @@
 #' @return List containing plot.phylo information, as well as the used x.adj values
 #' @author Will Pearse, Matt Helmus
 #' @method plot comparative.comm
+#' @importFrom ape tiplabels plot.phylo
 #' @export
 plot.comparative.comm <- function(x, sites=NULL, abundance=FALSE, dot.cex=NULL, site.col="black", fraction=3, x.increment=NULL, ...){
   #Assertions and argument checking

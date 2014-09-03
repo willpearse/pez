@@ -14,6 +14,12 @@ node, the second the destination}
 species}
 
 \item{extinct}{which of the tips in the edge matrix are extinct}
+
+\item{edge.length}{if given (default NA), a vector to be used to
+give edge.length to the phylogeny}
+
+\item{traits}{if given (default NA), a vector to be used for traits
+($traits) in the phylogeny}
 }
 \value{
 ape::phylo object with random tip.labels
