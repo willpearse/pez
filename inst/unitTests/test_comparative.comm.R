@@ -21,12 +21,11 @@ test_that("comm - phy", {
   
   t <- phylocom$sample
   colnames(t)[1] <- "deliberately wrong"
-  dropping <- comparative.comm(phylocom$phy, t, warn=FALSE)
+  dropping <- comparative.comm(phylocom$phy, t, warn=FALSE, vcv=TRUE)
   expect_that(ncol(dropping$comm), equals(ncol(simple$comm)-1))
   expect_that(nrow(dropping$comm), equals(nrow(simple$comm)))
   expect_that(names(simple), equals(c("phy","comm","data","env","dropped","names","vcv")))
-  expect_that(rownames(simple$vcv), equals(simple$phy$tip.label))
-  expect_that(rownames(simple$vcv), equals(colnames(simple$vcv)))
+  expect_that(rownames(dropping$vcv), equals(colnames(dropping$vcv)))
   expect_true(is.null(simple$data))
   expect_true(is.null(simple$env))
 })
@@ -45,8 +44,6 @@ test_that("comm - phy - traits", {
   expect_that(sort(colnames(traits$comm)), equals(sort(traits$phy$tip.label)))
   expect_that(sort(rownames(traits$data)), equals(sort(traits$phy$tip.label)))
   expect_that(names(traits), equals(names(simple)))
-  expect_that(rownames(traits$vcv), equals(traits$phy$tip.label))
-  expect_that(rownames(traits$vcv), equals(colnames(traits$vcv)))
   expect_true(is.null(traits$env))
 })
 
@@ -67,17 +64,4 @@ test_that("comm - phy - traits - env", {
   expect_that(rownames(env$comm), equals(rownames(env$env)))
   expect_that(sort(rownames(env$data)), equals(sort(env$phy$tip.label)))
   expect_that(names(env), equals(names(simple)))
-  expect_that(rownames(env$vcv), equals(env$phy$tip.label))
-  expect_that(rownames(env$vcv), equals(colnames(env$vcv)))
-})
-
-test_that("compatible with comparative.data", {
-  data(shorebird)
-  t <- matrix(c(rep(1:10,14),1,1), nrow=2, ncol=71)
-  rownames(t) <- c("a", "b")
-  colnames(t) <- shorebird.tree$tip.label
-  t <- comparative.comm(shorebird.tree, t, shorebird.data)
-  model <- pgls(M.Mass ~ F.Mass, data=t)
-  expect_that(class(model), equals("pgls"))
-  expect_that(coef(model), is_equivalent_to(c(-0.417233293028346, 0.86784137162632)))
 })

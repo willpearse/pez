@@ -15,7 +15,11 @@ comm.dist.matrix <- function(x){
 			output[i,j] <- 1 - sum(x[,i]>0 & x[,j]>0) / sum(x[,i]>0 | x[,j]>0)
 		}
 	}
-	return(as.dist(output))
+        if(any(!is.finite(output))){
+            output[!is.finite(output)] <- 1
+            warning("Co-existence matric contains non-overlapping species; treating as maximally dissimilar")
+        }
+        return(as.dist(output))
 }
 #' @export
 #' @rdname comm.dist

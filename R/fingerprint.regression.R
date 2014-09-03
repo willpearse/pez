@@ -10,9 +10,7 @@
 #' (as implemented in 'picante')
 #' @param eco.method regression to perform - one of: lm, quantile, mantel
 #' @param eco.permute the number of null permutations to perform
-#' @param eco.swap the number of independent swaps to perform (if doing so)
-#' @param evo.method how to measure phylogenetic inertia - one of: lambda, delta, kappa, D.c
-#' @param evo.permute number of permutations of phylogenetic inertia (D.c only)
+#' @param evo.method how to measure phylogenetic inertia - one of: lambda, delta, kappa.
 #' @param ... additional parameters to pass on to model fitting functions
 #' @details This is extremely unchcked, so beware!
 #' @note Like the eco.trait and eco.env methods, this is a data-hungry
@@ -33,7 +31,7 @@
 #' }
 #' @export
 fingerprint.regression <- function(data, eco.rnd=c("taxa.labels", "richness", "frequency", "sample.pool", "phylogeny.pool", "independentswap", "trialswap"),
-  eco.method=c("quantile", "lm", "mantel"), eco.permute=1000, eco.swap=1000, evo.method=c("lambda", "delta", "kappa"), evo.permute=1000, ...){
+  eco.method=c("quantile", "lm", "mantel"), eco.permute=1000, evo.method=c("lambda", "delta", "kappa"), ...){
   #Checks
   if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
   eco.rnd <- match.arg(eco.rnd)
@@ -45,7 +43,7 @@ fingerprint.regression <- function(data, eco.rnd=c("taxa.labels", "richness", "f
   evolution <- phy.signal(data, traits=TRUE, method=evo.method)
   
   #Ecology of traits
-  ecology <- eco.trait.regression(data, eco.rnd, eco.permute, eco.method, eco.swap, altogether=FALSE, ...)
+  ecology <- eco.trait.regression(data, eco.rnd, eco.permute, eco.method, altogether=FALSE, ...)
   
   #Summarise ecology regressions
   obs.slopes <- numeric(ncol(data$data))

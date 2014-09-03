@@ -47,24 +47,24 @@ eco.trait.regression <- function(data,
 	eco.matrix <- comm.dist(data$comm)
   if(!is.null(data$data)) traits.matrix <- traits.dist(data, altogether) else stop("'data' must contain trait data for a trait regression!")
 	
-	#Observed eco.trait.regression
+  #Observed eco.trait.regression
   if(altogether)
-	  observed <- .eco.trait.regression(eco.matrix, traits.matrix, NULL, method, ...) else {
+      observed <- .eco.trait.regression(eco.matrix, traits.matrix, NULL, method, ...) else {
       #Do separately for all traits
       observed <- vector("list", ncol(data$data))
       for(i in seq(ncol(data$data)))
-        observed[[i]] <- .eco.trait.regression(eco.matrix, traits.matrix, i, method, ...)
-	  }
+          observed[[i]] <- .eco.trait.regression(eco.matrix, traits.matrix, i, method, ...)
+  }
   
-	#Randomisations
+  #Randomisations
   if(altogether){
     #Using mean of traits
   	randomisations <- vector(mode="list", length=permute)
   	#This won't execute if permute is 0...
   	for(i in seq(from=1, length.out=permute)){
-      curr.rnd <- .eco.null(data$comm, randomisation)
-  		rnd.mat <- comm.dist(curr.rnd)
-  		randomisations[[i]] <- .eco.trait.regression(eco.matrix, traits.matrix, NULL, method, ...)
+            curr.rnd <- .eco.null(data$comm, randomisation)
+            rnd.mat <- comm.dist(curr.rnd)
+            randomisations[[i]] <- .eco.trait.regression(rnd.mat, traits.matrix, NULL, method, ...)
   	}
   } else {
     #Separately for each trait
@@ -72,10 +72,10 @@ eco.trait.regression <- function(data,
     randomisations <- vector(mode="list", length=ncol(data$data))
     for(i in seq_along(randomisations)) randomisations[[i]] <- vector("list", permute)
     for(i in seq(from=1, length.out=permute)){
-      curr.rnd <- .eco.null(data$comm, randomisation)
-      rnd.mat <- comm.dist(curr.rnd)
-      for(j in seq(ncol(data$data)))
-        randomisations[[j]][[i]] <- .eco.trait.regression(eco.matrix, traits.matrix, j, method, ...)
+        curr.rnd <- .eco.null(data$comm, randomisation)
+        rnd.mat <- comm.dist(curr.rnd)
+        for(j in seq(ncol(data$data)))
+            randomisations[[j]][[i]] <- .eco.trait.regression(rnd.mat, traits.matrix, j, method, ...)
     }
   }
   
@@ -101,7 +101,9 @@ eco.trait.regression <- function(data,
 .eco.trait.regression <- function(eco.mat, trait.mat, which.trait=NULL, method=c("quantile", "lm", "mantel"), ...){
   method <- match.arg(method)
   #Check to see if we're doing this across all traits
-  if(!is.null(which.trait)) trait.mat <- as.dist(trait.mat[,,which.trait])
+  # - now we're passing around distance matrices by default you have to be extra careful...
+  if(!is.null(which.trait) & !inherits(trait.mat, "dist"))
+      trait.mat <- as.dist(trait.mat[,,which.trait])
   
   if(method == 'lm')
     model <- lm(as.numeric(eco.mat) ~ as.numeric(trait.mat), ...)

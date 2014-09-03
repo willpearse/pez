@@ -127,8 +127,8 @@ comparative.comm <- function(phy, comm, traits=NULL, env=NULL, warn=TRUE, vcv=FA
                                                                  comm.sites.lost=comm.sites.lost,
                                                                  phy.sp.lost=phy.sp.lost,
                                                                  traits.sp.lost=traits.sp.lost,
-                                                                 env.sites.lost=env.sites.lost), names=names)
-  if(vcv) output$vcv <- cophenetic(phy) else output$vcv <- NULL
+                                                                 env.sites.lost=env.sites.lost), names=names, vcv=NULL)
+  if(vcv) output$vcv <- cophenetic(phy)
   class(output) <- c("comparative.comm", "comparative.data")
   return(output)
 }
