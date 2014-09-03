@@ -28,22 +28,22 @@ phy.signal <- function(data, traits=TRUE, method=c("lambda", "delta", "kappa")){
   #Traits
   if(traits){
     traits <- numeric(ncol(data$data))
-    names(traits) <- names(data$data)
-    for(i in seq(ncol(comparative.data$data))){
+    for(i in seq(ncol(data$data))){
       #I know, this should be a case statement...
       if(method == "lambda"){
-        model <- pgls(data$data[,1] ~ 1, data=data, lambda="ML")
-        traits[i] <- summary(model)$param.CI$lambda$opt
+        model <- pgls(data$data[,i] ~ 1, data=data, lambda="ML")
+        traits[i] <- model$param.CI$lambda$opt
       }
       if(method == "delta"){
-        model <- pgls(data$data[,1] ~ 1, data=data, delta="ML")
-        traits[i] <- summary(model)$param.CI$delta$opt
+        model <- pgls(data$data[,i] ~ 1, data=data, delta="ML")
+        traits[i] <- model$param.CI$delta$opt
       }
       if(method == "kappa"){
-        model <- pgls(data$data[,1] ~ 1, data=data, kappa="ML")
-        traits[i] <- summary(model)$param.CI$kappa$opt
+        model <- pgls(data$data[,i] ~ 1, data=data, kappa="ML")
+        traits[i] <- model$param.CI$kappa$opt
       }
     }
+    names(traits) <- names(data$data)
     return(traits)
   } else {
     #Community composition
@@ -51,21 +51,21 @@ phy.signal <- function(data, traits=TRUE, method=c("lambda", "delta", "kappa")){
     comm$this.breaks.pez <- rownames(comm)
     comparative.data <- comparative.data(data$phy, comm, data$traits$this.breaks.pez)
     communities <- numeric(ncol(comparative.data$data))
-    names(communities) <- names(comparative.data$data)
     for(i in seq(ncol(comparative.data$data))){
       if(method == "lambda"){
-        model <- pgls(comparative.data$data[,1] ~ 1, data=comparative.data, lambda="ML")
+        model <- pgls(comparative.data$data[,i] ~ 1, data=comparative.data, lambda="ML")
         communities[i] <- summary(model)$param.CI$lambda$opt
       }
       if(method == "delta"){
-        model <- pgls(comparative.data$data[,1] ~ 1, data=comparative.data, delta="ML")
+        model <- pgls(comparative.data$data[,i] ~ 1, data=comparative.data, delta="ML")
         communities[i] <- summary(model)$param.CI$delta$opt
       }
       if(method == "kappa"){
-        model <- pgls(comparative.data$data[,1] ~ 1, data=comparative.data, kappa="ML")
+        model <- pgls(comparative.data$data[,i] ~ 1, data=comparative.data, kappa="ML")
         communities[i] <- summary(model)$param.CI$kappa$opt
       }
     }
+    names(communities) <- names(comparative.data$data)
     return(communities)
   }
 }

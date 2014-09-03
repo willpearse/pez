@@ -1,6 +1,7 @@
 #I'm not thoroughly testing the output of the quantile, mantel, etc. methods, because those are maintained by other people
 #Setup
 require(testthat)
+require(picante)
 data(phylocom)
 data <- comparative.comm(phylocom$phy, phylocom$sample, warn=FALSE)
 

@@ -9,7 +9,8 @@
 #' creating object (default: TRUE)
 #' @param vcv whether to calculate variance-covariance matrix and
 #' store in object to save time (but perhaps not memory) for later
-#' calculations (default: TRUE)
+#' calculations (default: FALSE). Storing a VCV now may cause problems
+#' if you intend to use this object with the package \code{caper}.
 #' @param force.root if phylogeny is unrooted, a root.edge of value
 #' force.root will be added (default: -1, which means this will never
 #' happen). Rarely needed, even more rarely advisable.
@@ -29,7 +30,7 @@
 #' @importFrom ape is.rooted cophenetic.phylo
 #' @importFrom ade4 scalewt
 #' @export
-comparative.comm <- function(phy, comm, traits=NULL, env=NULL, warn=TRUE, vcv=TRUE, force.root=-1){
+comparative.comm <- function(phy, comm, traits=NULL, env=NULL, warn=TRUE, vcv=FALSE, force.root=-1){
   #Assertions and argument handling
   names <- list()
   #Phylogeny

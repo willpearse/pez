@@ -1,7 +1,9 @@
 #I'm not thoroughly testing the output of the quantile, mantel, etc. methods, because those are maintained by other people
 # - though perhaps a few worked examples? Might help to check my own code...
 #Setup
+require(pez)
 require(testthat)
+require(picante)
 data(phylocom)
 data <- comparative.comm(phylocom$phylo, phylocom$sample, traits=phylocom$traits, warn=FALSE)
 
@@ -9,7 +11,7 @@ context("fingerprint.regression")
 
 test_that("quantile", {
   set.seed(123)
-  basic.quantile <<- fingerprint.regression(data, eco.permute=100)
+  basic.quantile <<- fingerprint.regression(data=data, eco.permute=100)
   set.seed(123)
   expect_that(basic.quantile$method, equals(fingerprint.regression(data, eco.permute=100)$method))
   expect_that(basic.quantile, is_a("fingerprint.regression"))

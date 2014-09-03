@@ -35,7 +35,7 @@
 fingerprint.regression <- function(data, eco.rnd=c("taxa.labels", "richness", "frequency", "sample.pool", "phylogeny.pool", "independentswap", "trialswap"),
   eco.method=c("quantile", "lm", "mantel"), eco.permute=1000, eco.swap=1000, evo.method=c("lambda", "delta", "kappa"), evo.permute=1000, ...){
   #Checks
-  if(! inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
+  if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
   eco.rnd <- match.arg(eco.rnd)
   evo.method <- match.arg(evo.method)
   eco.method <- match.arg(eco.method)
