@@ -18,7 +18,13 @@
 \begin{document}
 \maketitle
 \tableofcontents
-
+<<include=FALSE>>=
+require(pez)
+require(ape)
+require(plotrix)
+opts_chunk$set(size = 'small')
+options(width=40)
+@ 
 \section{Preamble}
 You can install \emph{pez} by typing \texttt{install.packages("pez")},
 and get a listing of the functions in the package by typing
@@ -52,11 +58,10 @@ data (\texttt{data}) that went into making dataset for yourself,
 although all the data types are explained in more detail below. Below
 we use the \citet{Helmus2012} dataset to show \emph{pez}'s features.
 
-<<>>=
+<<tidy=TRUE>>=
 library(pez)
 data(laja)
 data <- comparative.comm(invert.tree, river.sites, invert.traits)
-data
 @
 
 \emph{pez} is conservative; if you give it trait data for only half of
@@ -73,10 +78,10 @@ species or sites, in much the same way you can a
 \texttt{data.frame}. Note that \emph{pez} will not (by default) warn
 you if this operation drops out certain species or sites. For example:
 
-<<>>=
-data[1:5,]
-data[,1:3]
-data[,1:3,warn=TRUE]
+<<tidy=TRUE>>=
+site.subset <- data[1:5,]
+spp.subset <- data[,1:3]
+spp.subset.warnings <- data[,1:3,warn=TRUE]
 @
 
 \subsection{Phylogenies}
@@ -105,13 +110,11 @@ columns for each kind of environmental data.
 \section{Plotting and exploring data}
 \emph{pez} comes with a few functions that are intended to make
 exploring your data slightly easier. For instance, you can plot out
-graphs of species abundances in communities
+graphs of species abundances in communities (note the use of a
+function in the \texttt{dot.cex} argument).
 
-<<>>=
-cc.dotplot(data)
-@
-<<>>=
-plot(data)
+<<out.width='10cm', tidy=TRUE>>=
+plot(data, abundance=TRUE, dot.cex=function(x) ifelse(x > 0, 2*log10(x), 0))
 @
 \section{Community phylogenetic metrics}
 \emph{pez} splits community phylogenetic metrics into four functions
@@ -130,9 +133,13 @@ is what we recommend), or you can pick a particular one. Below we show
 how to calculate the metrics, and give examples of how to work with
 their output.
 
-<<>>=
+<<tidy=TRUE>>=
 shape.output <- shape(data)
-coef(shape.output)
+#Get all the coefficients
+#coef(shape.output)
+#...or...
+#shape.output$coef
+#...or...
 shape.output$mpd
 dissimilarity.output <- dissimilarity(data, metric="phylosor")
 plot(hclust(dissimilarity.output$phylosor))
@@ -140,8 +147,8 @@ plot(hclust(dissimilarity.output$phylosor))
 
 Note that \emph{phylosor} \citep{Bryant2008} is reported as a
 dissimilarity in \emph{pez}: it's not the fraction of shared branch
-lengths, but $1-fraction shared branch length$. Remember: the function
-is called \texttt{dissimilarity}!
+lengths, but 1- the fraction of shared branch length. Remember: the
+function is called \texttt{dissimilarity}!
 \section{Eco-evolutionary regression (\emph{pez})}
 \emph{pez} is intended to replace and improve upon earlier Visual
 Basic/C programs called \emph{EcoPhyl}. You can regress the relative
@@ -151,13 +158,10 @@ phylogenetic (\texttt{eco.phy.regression}) and trait
 habitat preferences based on environmental tolerances
 (\texttt{eco.env.regression}).
 
-<<>>=
+<<warning=FALSE, tidy=TRUE>>=
 model <- eco.trait.regression(data, method="lm")
-model
 more.complex.model <- eco.trait.regression(data, method="mantel", altogether=FALSE, permute=10)
-more.complex.model
-more.complex.model[[1]]
-plot(eco.phy.regression(data, method="quantile"))
+plot(eco.phy.regression(data, method="quantile"), pch=20)
 @
 
 However, the real power in this approach comes from combining
@@ -172,12 +176,12 @@ against their ecology. This sort of approach was first proposed by
 of phylogenetic signal (\texttt{phy.signal}). There's no need to do
 all these steps separately, though:
 
-<<>>=
+<<warning=FALSE, tidy=TRUE>>=
 model <- fingerprint.regression(data, eco.permute=10)
-plot(model)
 @
-\section{TO-DO: Traits}
+\section{TO-DO: Traitgrams}
 \section{Simulation}
+
 A good simulation is one that does exactly what you want it to do, and
 \emph{pez} provides a number of simulation functions that may be
 useful to you as (1) tools, or (2) starting points for your own
@@ -190,24 +194,25 @@ are complex, but they can generate some useful expected distributions,
 and give you a feel for regional assembly. You'd do well to read the
 paper that generated these models, but here's an example of their use:
 
-<<>>=
-require(ape)
+<<tidy=TRUE>>=
+library(ape)
+library(plotrix)
 tree<-stree(8,type="balanced")
 kk<-scape(tree, scape.size=100, g.center=100, g.range=1, g.repulse=1, wd.all=150, signal.center=TRUE, signal.range=FALSE, same.range=FALSE, repulse=FALSE,center.scale = 1, range.scale = 1, repulse.scale = 1, site.stoch.scale = 0, sd.center=3, sd.range=1,rho=NULL, th=20)
-require(plotrix)
-par(mfrow=c(1,Ntip(tree)),mar=c(.1,.1,.1,.1))
-for(j in 1:Ntip(tree)){color2D.matplot(1 - kk$sppXs[,,j]/max(kk$sppXs[,,j]), xlab = "", ylab = "",main = "",border=NA,do.hex=FALSE,axes=FALSE)}
+par(mfrow=c(1,Ntip(tree)), mar=c(.1,.1,.1,.1))
+for(j in 1:Ntip(tree))
+    color2D.matplot(1 - kk$sppXs[,,j]/max(kk$sppXs[,,j]), xlab = "", ylab = "",main = "",border=NA,do.hex=FALSE,axes=FALSE)
 par(mfrow=c(2,1))
 matplot((kk$X1), type = "l", xlab="gradient",ylab = "probability", main = "Gradient 1",col=rainbow(dim(kk$X1)[2]),lty=1)
 matplot((kk$X2), type = "l", xlab="gradient",ylab = "probability", main = "Gradient 2",col=rainbow(dim(kk$X2)[2]),lty=1)
 @ 
 
-TO-DO: Alternatively, you can model the evolution of species and, at
-the same time, their assembly through a community. The only problem
-here is that the models are much simpler, but hopefully they are
-tunable to your liking!:
+Alternatively, you can model the evolution of species and, at the same
+time, their assembly through a community. The only problem here is
+that the models are much simpler, but hopefully they are tunable to
+your liking! Explore the \texttt{sim.meta.comm} and
+\texttt{sim.meta.phy.comm} functions to find out more.
 
-TO-DO
 \begin{thebibliography}{6}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}

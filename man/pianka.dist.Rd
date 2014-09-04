@@ -26,6 +26,10 @@ and return each separately}
 \description{
 Make environmental tolerance distance matrices
 }
+\details{
+Return's the Pianka's distance; i.e., niche overlap based
+on environemntal tolerances contained within your dataset.
+}
 \seealso{
 Other distances: \code{\link{comm.dist}},
   \code{\link{comm.dist.comparative.comm}},

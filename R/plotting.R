@@ -1,19 +1,47 @@
 #' Plots dot-plots of community presence/absence or abundance
 #' @param x a comparative community ecology object (\code{comparative.comm})
 #' @param sites names of sites to plot (default: all); see examples
-#' @param abundance make size proportional to species abundance (default: FALSE)
-#' @param dot.cex function to determine point size; see examples, this isn't as terrible-sounding as it seems.
-#' @param site.col colours to use when plotting sites; if not same length as number of sites, only the first element is used (no recycling)
-#' @param fraction fraction of plot window to be taken up with phylogeny; e.g., 3 (default) means phylogeny is 1/3 of plot
-#' @param x.increment specify exact spacing of points along plot; see examples
-#' @details Getting the right spacing of dots on the phylogeny may take some playing around with the fraction and x.increment arguments, see below. It may seem a little strange to set point size using a function; however, this gives you much more flexibility when dealing with abundance data, and allows you to transform the data - see the examples
+#' @param abundance make size proportional to species abundance
+#' (default: FALSE)
+#' @param dot.cex function to determine point size; see examples, this
+#' isn't as terrible-sounding as it seems.
+#' @param site.col colours to use when plotting sites; if not same
+#' length as number of sites, only the first element is used (no
+#' recycling)
+#' @param fraction fraction of plot window to be taken up with
+#' phylogeny; e.g., 3 (default) means phylogeny is 1/3 of plot
+#' @param pch pch to be used in plotting of sites
+#' @param x.increment specify exact spacing of points along plot; see
+#' examples
+#' @details Getting the right spacing of dots on the phylogeny may
+#' take some playing around with the fraction and x.increment
+#' arguments, see below. It may seem a little strange to set point
+#' size using a function; however, this gives you much more
+#' flexibility when dealing with abundance data, and allows you to
+#' transform the data - see the examples
 #' @param ... additional arguments passed to plotting functions
-#' @return List containing plot.phylo information, as well as the used x.adj values
+#' @return List containing plot.phylo information, as well as the used
+#' x.adj values
 #' @author Will Pearse, Matt Helmus
 #' @method plot comparative.comm
 #' @importFrom ape tiplabels plot.phylo
+#' @examples \dontrun{
+#' data(laja)
+#' data <- comparative.comm(invert.tree, river.sites, invert.traits)
+#' plot(data)
+#' plot(data, sites=c("AT", "BP"), fraction=1.5)
+#' settings <- plot(data, sites=c("AT", "BP"), site.col=rainbow(2), fraction=1.5)
+#' plot(data, sites=c("AT", "BP"), site.col=rainbow(2), fraction=1.2, x.increment=settings$x.increment/4)
+#' #dot.cex isn't as scary as it sounds...
+#' plot(data, site.col=rainbow(2), fraction=1.2, abundance=TRUE, dot.cex=sqrt)
+#' #...or other trivial variants...
+#' abund.sqrt <- function(x) ifelse(x>0, sqrt(x), 0)
+#' plot(data, sites=c("AT", "BP"), site.col=rainbow(2), fraction=1.2, x.increment=settings$x.increment/4, abundance=TRUE, dot.cex=abund.sqrt)
+#' plot(data, sites=c("AT", "BP"), site.col=rainbow(2), fraction=1.2, x.increment=settings$x.increment/4, abundance=TRUE, dot.cex=function(x) sqrt(x))
+#' 
+#' }
 #' @export
-plot.comparative.comm <- function(x, sites=NULL, abundance=FALSE, dot.cex=NULL, site.col="black", fraction=3, x.increment=NULL, ...){
+plot.comparative.comm <- function(x, sites=NULL, abundance=FALSE, pch=20, dot.cex=NULL, site.col="black", fraction=3, x.increment=NULL, ...){
   #Assertions and argument checking
   data <- x
   if (!inherits(data, "comparative.comm"))
@@ -34,7 +62,7 @@ plot.comparative.comm <- function(x, sites=NULL, abundance=FALSE, dot.cex=NULL, 
   if(!abundance)
     sites <- sites > 0
   if(is.function(dot.cex))
-    sites <- dot.cex(sites)
+    sites <- dot.cex(sites) else sites
   if(length(site.col) != nrow(sites))
     site.col <- rep(site.col[1], nrow(sites))
   
@@ -48,8 +76,11 @@ plot.comparative.comm <- function(x, sites=NULL, abundance=FALSE, dot.cex=NULL, 
     x.adj <- (display$x.lim[2] * fraction) / (nrow(sites) + 2)
     x.adj <- seq(from=x.adj/2, by=x.adj, length.out=nrow(sites))
   }
-  for(i in seq(nrow(sites)))
-    tiplabels(tip=match(colnames(sites), data$phy$tip.label), col=site.col[i], adj=x.adj[i], cex=sites[i,], ...)
+  for(i in seq(nrow(sites))){
+      if(is.function(dot.cex)){
+          tiplabels(tip=match(colnames(sites), data$phy$tip.label), col=site.col[i], adj=x.adj[i], pch=pch, cex=dot.cex(sites[i,]), ...)
+      } else tiplabels(tip=match(colnames(sites), data$phy$tip.label), col=site.col[i], adj=x.adj[i], pch=pch, ...)
+   }
   
   #Invisibly return
   output <- display

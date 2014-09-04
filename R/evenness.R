@@ -29,7 +29,6 @@
 #' @references \code{taxon} Clarke K.R. & Warwick R.M. (1998). A taxonomic distinctness index and its statistical properties. J. Appl. Ecol., 35, 523-531.
 #' @references \code{entropy} Allen B., Kon M. & Bar-Yam Y. (2009). A New Phylogenetic Diversity Measure Generalizing the Shannon Index and Its Application to Phyllostomid Bats. The American Naturalist, 174, 236-243.
 #' @references \code{cadotte} (i.e., \emph{PAE, IAC, Haed, Eaed}) Cadotte M.W., Davies T.J., Regetz J., Kembel S.W., Cleland E. & Oakley T.H. (2010). Phylogenetic diversity metrics for ecological communities: integrating species richness, abundance and evolutionary history. Ecology Letters, 13, 96-105.
-#' @references \code{pst} Hardy O.J. & Senterre B. (2007). Characterizing the phylogenetic structure of communities by an additive partitioning of phylogenetic diversity. Journal of Ecology, 95, 493-506.
 #' @references \code{lambda}
 #' @references \code{delta}
 #' @references \code{kappa}
@@ -45,7 +44,7 @@
 #' @importFrom caper comparative.data pgls summary.pgls coef.pgls
 #' @importFrom ade4 newick2phylog
 #' @export
-evenness <- function(data, metric=c("all", "rao", "taxon", "entropy", "cadotte", "pst", "lambda", "delta", "kappa", "mpd"), ...)
+evenness <- function(data, metric=c("all", "rao", "taxon", "entropy", "cadotte", "lambda", "delta", "kappa", "mpd"), ...)
 {
   #Assertions and argument handling
   if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
@@ -58,7 +57,7 @@ evenness <- function(data, metric=c("all", "rao", "taxon", "entropy", "cadotte",
   nsite <- nrow(data$comm)
   nspp <- ncol(data$comm)
   coefs <- data.frame(row.names=rownames(data$comm))
-  output <- list(pse=NULL, rao=NULL, taxon=NULL, entropy=NULL, cadotte=NULL, pst=NULL, delta=NULL)
+  output <- list(pse=NULL, rao=NULL, taxon=NULL, entropy=NULL, cadotte=NULL, delta=NULL)
   
   #Caculate measures
   if(metric == "pse" | metric == "all")
@@ -89,16 +88,7 @@ evenness <- function(data, metric=c("all", "rao", "taxon", "entropy", "cadotte",
       coefs$Haed <- output$cadotte$Haed
       coefs$Eaed <- output$cadotte$Eaed
     }, silent=TRUE)
-  
-  if(metric == "pst" | metric == "all")
-    try({
-      .abund <- data$comm[rowSums(data$comm>0)>1, ]
-      if(length(setdiff(data$phy$tip.label, colnames(.abund))))
-        tree <- drop.tip(data$phy, setdiff(data$phy$tip.label, colnames(.abund))) else tree <- data$phy
-      temp <- .simpson.phylogenetic(data)
-      output$pst <- coefs$pst <- temp[match(rownames(data$comm), names(temp))]
-    }, silent=TRUE)
-  
+    
   if(metric == "lambda" | metric == "all"){
     output$lambda <- list(models=vector("list", nrow(data$comm)), values=numeric(nrow(data$comm)))
     for(i in seq(nrow(data$comm))){
@@ -197,8 +187,7 @@ evenness <- function(data, metric=c("all", "rao", "taxon", "entropy", "cadotte",
       partial.tree <- drop.tip(data$phy, other.species)
       if (all(partial.tree$edge.length[1] == partial.tree$edge.length) | length(site.species) == 2)
       {
-        #SOMETHING WRONG HERE
-        hp.sites[rownames(data$comm)[i]] <- abs(sum(proportions * log(proportions) * partial.tree$edge.length))
+        hp.sites[i] <- abs(sum(proportions * log(proportions) * partial.tree$edge.length[1]))
         next
       }
       partial.tree <- newick2phylog(write.tree(drop.tip(data$phy, other.species)))
@@ -253,10 +242,11 @@ evenness <- function(data, metric=c("all", "rao", "taxon", "entropy", "cadotte",
                    * log(sum.proportions.desc.leaves)))
     }
     ## putting it all together
-    hp.sites[rownames(data$comm)[i]] <- abs(sum(hp))
+    hp.sites[i] <- abs(sum(hp))
   }
   #Make the 0 values NAs
   hp.sites[hp.sites==0]<-NA
+  names(hp.sites) <- rownames(data$comm)
   ## the end.
   return(hp.sites)
 }

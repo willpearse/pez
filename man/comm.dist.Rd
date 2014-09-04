@@ -17,6 +17,11 @@ comm.dist(x)
 \description{
 Make ecological co-existence matrices
 }
+\details{
+Returns the 1 - co-existence of species. Look at how this
+is calcualted; it incorporates abundances, and if you don't want it
+to do so simply call it on a presence/absensence (1/0) matrix.
+}
 \seealso{
 Other distances: \code{\link{dist.func.default}},
   \code{\link{traits.dist}},

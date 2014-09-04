@@ -1,7 +1,9 @@
 #' Make ecological co-existence matrices
-#'
 #' @param x an object
 #' @export
+#' @details Returns the 1 - co-existence of species. Look at how this
+#' is calcualted; it incorporates abundances, and if you don't want it
+#' to do so simply call it on a presence/absensence (1/0) matrix.
 #' @rdname comm.dist
 #' @family distances
 comm.dist <- function(x) UseMethod("comm.dist", x)
@@ -46,13 +48,6 @@ traits.dist.comparative.comm <- function(x, dist.func = dist.func.default, allto
     if(alltogether){
         return(traits.dist(x$data))
     } else {
-                                        # FIXME: is this change ok?  i
-                                        # radically changed this
-                                        # because i think we should
-                                        # pass around dist objects (or
-                                        # in this case a list of dist
-                                        # objects) --
-                                        # https://github.com/willpearse/pez/issues/2#issuecomment-50240752
         return(sapply(as.data.frame(x$data), dist.func)) 
     }
 }
@@ -97,7 +92,7 @@ phylo.dist.comparative.comm <- function(x, ...) phylo.dist(x$phy)
 funct.phylo.dist <- function(x, phyloWeight, p, ...) UseMethod("funct.phylo.dist", x)
 #' @export
 funct.phylo.dist.comparative.comm <- function(x, phyloWeight, p, ...) {
-                                        #Assertions and argument handling
+    #Assertions and argument handling
     if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
     if(is.null(data$data)) stop("'data' must contain trait data")
     if(phyloWeight < 0 | phyloWeight > 1) stop("'a' must be between 0 and 1")
@@ -117,6 +112,8 @@ funct.phylo.dist.comparative.comm <- function(x, phyloWeight, p, ...) {
 #' @param ... (ignored)
 #' @export
 #' @rdname pianka.dist
+#' @details Return's the Pianka's distance; i.e., niche overlap based
+#' on environemntal tolerances contained within your dataset.
 #' @family distances
 pianka.dist <- function(x, ...) UseMethod("pianka.dist", x)
 

@@ -66,10 +66,7 @@ shape <- function(data,metric=c("all", "psv", "psr", "mpd", "pd","colless", "gam
     }, silent = TRUE)
   
   if(metric == "colless" | metric == "all")
-      try({
-          tree.shape <- as.treeshape(data$phy)
-          output$colless <- coefs$colless <- apply(data$comm, 1, .colless, tree.shape, tree.shape$names)
-      }, silent = TRUE)
+      try(output$colless <- coefs$colless <- .colless(data), silent = TRUE)
   
   
   if(metric == "gamma" | metric == "all")
@@ -83,7 +80,7 @@ shape <- function(data,metric=c("all", "psv", "psr", "mpd", "pd","colless", "gam
   #can happen in the summary output
   if(metric == "taxon" | metric == "all")
       try({
-        output$taxon <- taxondive(data$comm, data$vcv, ...)
+        output$taxon <- taxondive(data$comm, cophenetic(data$phy), ...)
         t <- data.frame(output$taxon$D, output$taxon$Dstar, output$taxon$Lambda, output$taxon$Dplus, output$taxon$SDplus)
         names(t) <- c("Delta", "DeltaStar", "LambdaPlus", "DeltaPlus", "S.DeltaPlus")
         coefs <- cbind(coefs, t)
@@ -113,14 +110,13 @@ shape <- function(data,metric=c("all", "psv", "psr", "mpd", "pd","colless", "gam
 
 #Internal Colless function
 #' @importFrom apTreeshape colless tipsubtree
-.colless <- function(pa.vec,tree,nams)
+.colless <- function(data)
 {
-  if(sum(pa.vec)<3)
-  {
-    return(NA)
-  } else {
-    return(colless(tipsubtree(tree, nams[pa.vec!=0])))
-  }
+    output <- numeric(nrow(data$comm))
+    for(i in seq(nrow(data$comm)))
+        output[i] <- colless(as.treeshape(drop_tip(data$phy, colnames(data$comm)[data$comm[i,]==0])))
+    names(output) <- rownames(data$comm)
+    return(output)
 }
 
 .gamma<-function(pa.vec,tree,nams){

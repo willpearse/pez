@@ -22,7 +22,6 @@
 #' @param sd.range sd \code{\link{rnorm}} for the range sizes, increase to get more variation in range sizes across gradients
 #' @param rho Grafen branch adjustment of phylogenetic tree see \code{\link{corGrafen}}
 #' @param th probability threshold 10^-th above which species are considered present at a site 
-#
 #' @details Simulates a landscape with species (i.e., tree tips)
 #' distributions dependent on a supplied phylogenetic tree.  The
 #' amount and type of structure is determened by the signal parameters
@@ -64,6 +63,7 @@
 #' @author M.R. Helmus
 #' @references Helmus M.R. & Ives A.R. (2012). Phylogenetic diversity area curves. Ecology, 93, S31-S43.
 #' @importFrom ape vcv corBlomberg compute.brlen vcv.phylo
+#' @export``
 #' @examples
 #' \dontrun{
 #' require(ape)

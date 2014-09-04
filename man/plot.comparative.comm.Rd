@@ -4,34 +4,65 @@
 \title{Plots dot-plots of community presence/absence or abundance}
 \usage{
 \method{plot}{comparative.comm}(x, sites = NULL, abundance = FALSE,
-  dot.cex = NULL, site.col = "black", fraction = 3, x.increment = NULL,
-  ...)
+  pch = 20, dot.cex = NULL, site.col = "black", fraction = 3,
+  x.increment = NULL, ...)
 }
 \arguments{
 \item{x}{a comparative community ecology object (\code{comparative.comm})}
 
 \item{sites}{names of sites to plot (default: all); see examples}
 
-\item{abundance}{make size proportional to species abundance (default: FALSE)}
+\item{abundance}{make size proportional to species abundance
+(default: FALSE)}
 
-\item{dot.cex}{function to determine point size; see examples, this isn't as terrible-sounding as it seems.}
+\item{dot.cex}{function to determine point size; see examples, this
+isn't as terrible-sounding as it seems.}
 
-\item{site.col}{colours to use when plotting sites; if not same length as number of sites, only the first element is used (no recycling)}
+\item{site.col}{colours to use when plotting sites; if not same
+length as number of sites, only the first element is used (no
+recycling)}
 
-\item{fraction}{fraction of plot window to be taken up with phylogeny; e.g., 3 (default) means phylogeny is 1/3 of plot}
+\item{fraction}{fraction of plot window to be taken up with
+phylogeny; e.g., 3 (default) means phylogeny is 1/3 of plot}
 
-\item{x.increment}{specify exact spacing of points along plot; see examples}
+\item{pch}{pch to be used in plotting of sites}
+
+\item{x.increment}{specify exact spacing of points along plot; see
+examples}
 
 \item{...}{additional arguments passed to plotting functions}
 }
 \value{
-List containing plot.phylo information, as well as the used x.adj values
+List containing plot.phylo information, as well as the used
+x.adj values
 }
 \description{
 Plots dot-plots of community presence/absence or abundance
 }
 \details{
-Getting the right spacing of dots on the phylogeny may take some playing around with the fraction and x.increment arguments, see below. It may seem a little strange to set point size using a function; however, this gives you much more flexibility when dealing with abundance data, and allows you to transform the data - see the examples
+Getting the right spacing of dots on the phylogeny may
+take some playing around with the fraction and x.increment
+arguments, see below. It may seem a little strange to set point
+size using a function; however, this gives you much more
+flexibility when dealing with abundance data, and allows you to
+transform the data - see the examples
+}
+\examples{
+\dontrun{
+data(laja)
+data <- comparative.comm(invert.tree, river.sites, invert.traits)
+plot(data)
+plot(data, sites=c("AT", "BP"), fraction=1.5)
+settings <- plot(data, sites=c("AT", "BP"), site.col=rainbow(2), fraction=1.5)
+plot(data, sites=c("AT", "BP"), site.col=rainbow(2), fraction=1.2, x.increment=settings$x.increment/4)
+#dot.cex isn't as scary as it sounds...
+plot(data, site.col=rainbow(2), fraction=1.2, abundance=TRUE, dot.cex=sqrt)
+#...or other trivial variants...
+abund.sqrt <- function(x) ifelse(x>0, sqrt(x), 0)
+plot(data, sites=c("AT", "BP"), site.col=rainbow(2), fraction=1.2, x.increment=settings$x.increment/4, abundance=TRUE, dot.cex=abund.sqrt)
+plot(data, sites=c("AT", "BP"), site.col=rainbow(2), fraction=1.2, x.increment=settings$x.increment/4, abundance=TRUE, dot.cex=function(x) sqrt(x))
+
+}
 }
 \author{
 Will Pearse, Matt Helmus

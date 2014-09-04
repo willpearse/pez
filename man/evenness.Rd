@@ -3,7 +3,7 @@
 \alias{evenness}
 \title{Calculate evenness phylogenetic biodiversity metrics across communities}
 \usage{
-evenness(data, metric = c("all", "rao", "taxon", "entropy", "cadotte", "pst",
+evenness(data, metric = c("all", "rao", "taxon", "entropy", "cadotte",
   "lambda", "delta", "kappa", "mpd"), ...)
 }
 \arguments{
@@ -54,8 +54,6 @@ Pearse W.D., Purvis A., Cavender-Bares J. & Helmus M.R. (2014). Metrics and Mode
 \code{entropy} Allen B., Kon M. & Bar-Yam Y. (2009). A New Phylogenetic Diversity Measure Generalizing the Shannon Index and Its Application to Phyllostomid Bats. The American Naturalist, 174, 236-243.
 
 \code{cadotte} (i.e., \emph{PAE, IAC, Haed, Eaed}) Cadotte M.W., Davies T.J., Regetz J., Kembel S.W., Cleland E. & Oakley T.H. (2010). Phylogenetic diversity metrics for ecological communities: integrating species richness, abundance and evolutionary history. Ecology Letters, 13, 96-105.
-
-\code{pst} Hardy O.J. & Senterre B. (2007). Characterizing the phylogenetic structure of communities by an additive partitioning of phylogenetic diversity. Journal of Ecology, 95, 493-506.
 
 \code{lambda}
 
