@@ -63,7 +63,7 @@
 #' @author M.R. Helmus
 #' @references Helmus M.R. & Ives A.R. (2012). Phylogenetic diversity area curves. Ecology, 93, S31-S43.
 #' @importFrom ape vcv corBlomberg compute.brlen vcv.phylo
-#' @export``
+#' @export
 #' @examples
 #' \dontrun{
 #' require(ape)
