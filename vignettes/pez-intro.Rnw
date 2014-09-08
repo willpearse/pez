@@ -179,9 +179,21 @@ all these steps separately, though:
 <<warning=FALSE, tidy=TRUE>>=
 model <- fingerprint.regression(data, eco.permute=10)
 @
-\section{TO-DO: Traitgrams}
+\section{Traitgrams}
 
-
+If $FD_{ij}$ and $PD_{ij}$ are functional and phylogenetic distances
+between species $i$ and $j$, the functional-phylogenetic distance
+between $i$ and $j$ is,
+\begin{equation}
+  \label{eq:1}
+  ((1-a) FD_{ij}^p + a PD_{ij}^p)^{1/p}
+\end{equation}
+This distance matrix can be computed using the \code{funct.phylo.dist}
+function.  For example, using the \code{data} object, $a = 0.5$, and
+$p = 2$, we have,
+<<FPDist>>=
+image(fpd.data <- funct.phylo.dist(data, phyloWeight = 0.5, p = 2))
+@ 
 
 \section{Simulation}
 
