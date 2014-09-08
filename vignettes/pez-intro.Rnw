@@ -122,11 +122,11 @@ according to the scheme outlined by \citet{Pearse2014review}:
 \texttt{shape}, \texttt{evenness}, \texttt{dispersion}, and
 \texttt{dissimilarity}. Shape metrics measure the structure of an
 community phylogeny, while evenness metrics additionally incorporate
-species abundances. Dispersion metrics calculate examine whether
-phylogenetic biodiversity in an assemblage differs from the
-expectation of random assembly from a given set of species. Finally,
-dissimilarity measures the pairwise difference in phylogenetic
-biodiversity between assemblages.
+species abundances. Dispersion metrics examine whether phylogenetic
+biodiversity in an assemblage differs from the expectation of random
+assembly from a given set of species. Finally, dissimilarity measures
+the pairwise difference in phylogenetic biodiversity between
+assemblages.
 
 You can calculate all metrics within a class at the same time (which
 is what we recommend), or you can pick a particular one. Below we show
@@ -180,6 +180,9 @@ all these steps separately, though:
 model <- fingerprint.regression(data, eco.permute=10)
 @
 \section{TO-DO: Traitgrams}
+
+
+
 \section{Simulation}
 
 A good simulation is one that does exactly what you want it to do, and
