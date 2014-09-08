@@ -1,4 +1,4 @@
-%\VignetteIndexEntry{EcoPhyl-intro}
+%\VignetteIndexEntry{pez-intro}
 %\VignettePackage{pez}
 %\VignetteEngine{knitr::knitr}
 \documentclass[12pt]{article}
@@ -22,7 +22,7 @@
 require(pez)
 require(ape)
 require(plotrix)
-opts_chunk$set(size = 'small')
+#opts_chunk$set(size = 'small')
 options(width=40)
 @ 
 \section{Preamble}

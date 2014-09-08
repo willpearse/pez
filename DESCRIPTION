@@ -15,6 +15,7 @@ Description: Eco-phylogenetic and community phylogenetic analyses.
     ('fingerprint.regression'). Simulation of null assemblages,
     traits, and phylogenies ('scape', 'sim.meta.comm').
 License: GPL-3
+VignetteBuilder: knitr
 Imports:
     caper,
     picante,
