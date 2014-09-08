@@ -40,12 +40,11 @@
 #' Mammalian Extinction Risk and Threat Types: a New Measure of
 #' Phylogenetic Signal Strength in Binary Traits. Conservation
 #' Biology, 24, 1042-1051.
-#' @examples \dontrun{
+#' @examples
 #' data(laja)
 #' data <- comparative.comm(invert.tree, river.sites, invert.traits)
-#' dispersion(data)
-#' dispersion(data, 100, "sesmpd")
-#' }
+#' \dontrun{dispersion(data)}
+#' dispersion(data, metric = "sesmpd", permute = 100)
 #' @importFrom caper phylo.d
 #' @importFrom picante ses.mntd ses.mpd ses.pd
 #' @export

@@ -39,12 +39,10 @@ that are categorized as \emph{dispersion} metrics by Pearse
 \emph{et al.} (2014).
 }
 \examples{
-\dontrun{
 data(laja)
 data <- comparative.comm(invert.tree, river.sites, invert.traits)
-dispersion(data)
-dispersion(data, 100, "sesmpd")
-}
+\dontrun{dispersion(data)}
+dispersion(data, metric = "sesmpd", permute = 100)
 }
 \author{
 M.R. Helmus, Will Pearse
