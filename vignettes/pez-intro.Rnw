@@ -188,11 +188,12 @@ between $i$ and $j$ is,
   \label{eq:1}
   ((1-a) FD_{ij}^p + a PD_{ij}^p)^{1/p}
 \end{equation}
-This distance matrix can be computed using the \code{funct.phylo.dist}
-function.  For example, using the \code{data} object, $a = 0.5$, and
+This distance matrix can be computed using the \texttt{funct.phylo.dist}
+function.  For example, using the \texttt{data} object, $a = 0.5$, and
 $p = 2$, we have,
 <<FPDist>>=
-image(fpd.data <- funct.phylo.dist(data, phyloWeight = 0.5, p = 2))
+fpd.data <- funct.phylo.dist(data, phyloWeight = 0.5, p = 2)
+image(as.matrix(fpd.data))
 @ 
 
 \section{Simulation}
