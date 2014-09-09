@@ -16,6 +16,9 @@ Description: Eco-phylogenetic and community phylogenetic analyses.
     traits, and phylogenies ('scape', 'sim.meta.comm').
 License: GPL-3
 VignetteBuilder: knitr
+Suggests:
+    knitr,
+    plotrix
 Imports:
     caper,
     picante,
