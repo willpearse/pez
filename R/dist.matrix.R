@@ -96,7 +96,8 @@ funct.phylo.dist.comparative.comm <- function(x, phyloWeight, p, ...) {
     #Assertions and argument handling
     if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
     if(is.null(data$data)) stop("'data' must contain trait data")
-    if(phyloWeight < 0 | phyloWeight > 1) stop("'a' must be between 0 and 1")
+    if(phyloWeight < 0 | phyloWeight > 1)
+        stop("'phyloWeight' must be between 0 and 1")
     if(!is.numeric(p)) stop("'p' must be a numeric")
     
     FDist <- traits.dist(x)
