@@ -18,7 +18,8 @@ License: GPL-3
 VignetteBuilder: knitr
 Suggests:
     knitr,
-    plotrix
+    plotrix,
+    picante
 Imports:
     caper,
     picante,
