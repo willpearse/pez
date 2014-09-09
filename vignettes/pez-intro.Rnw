@@ -21,7 +21,9 @@
 <<include=FALSE>>=
 require(pez)
 require(ape)
+require(picante)
 require(plotrix)
+require(methods)
 #opts_chunk$set(size = 'small')
 options(width=40)
 @ 
@@ -194,6 +196,11 @@ $p = 2$, we have,
 <<FPDist>>=
 fpd.data <- funct.phylo.dist(data, phyloWeight = 0.5, p = 2)
 image(as.matrix(fpd.data))
+@ %
+We can use these distance matrices in community randomization tests,
+<<sesFPD>>=
+library(picante)
+ses.mpd(data$comm, funct.phylo.dist(data, phyloWeight = 0.5, p = 2))
 @ 
 
 \section{Simulation}
