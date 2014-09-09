@@ -239,3 +239,11 @@ print.comparative.comm <- function(x, ...){
   #Return
 	return(new.x)
 }
+
+##' @export
+dimnames.comparative.comm <- function(x)
+    setNames(dimnames(x$comm), c("communities","species"))
+
+##' @export
+dim.comparative.comm <- function(x) 
+    setNames(dim(x$comm), c("communities","species"))
