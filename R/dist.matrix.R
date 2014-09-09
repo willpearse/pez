@@ -19,7 +19,8 @@ comm.dist.matrix <- function(x){
 	}
         if(any(!is.finite(output))){
             output[!is.finite(output)] <- 1
-            warning("Co-existence matric contains non-overlapping species; treating as maximally dissimilar")
+            warning("Co-existence matrix contains non-overlapping species; ",
+                    "treating as maximally dissimilar")
         }
         return(as.dist(output))
 }
