@@ -24,10 +24,15 @@
 #' @export
 ConDivSim<-function(object, type="traits", n.sim=100, plot = TRUE, disp99 = FALSE){
     #Assertions and argument handling
-    if(!inherits(object, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
+    if(!inherits(object, "comparative.comm"))
+        stop("'data' must be a comparative community ecology object")
     Dist <- NULL
     if(type == "traits")
-        if(is.null(object$traits)) stop("'object' must contain trait data if using a trait matrix") else dist <- as.matrix(dist(object$traits))
+        if(is.null(object$data)) {
+            stop("'object' must contain trait data if using a trait matrix")
+        } else {
+            dist <- as.matrix(dist(object$data))
+        }
     if(type == "phy")
         dist <- cophenetic(object$phy)
     if(is.null(dist))
