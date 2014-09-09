@@ -3,7 +3,7 @@
 \alias{funct.phylo.dist}
 \title{Make functional phylogenetic distance matrix}
 \usage{
-funct.phylo.dist(x, phyloWeight, p, ...)
+funct.phylo.dist(x, phyloWeight, p = 2, ...)
 }
 \arguments{
 \item{x}{a \code{\link{comparative.comm}} object}
@@ -12,8 +12,8 @@ funct.phylo.dist(x, phyloWeight, p, ...)
 \code{a} in Cadotte et al. (2013)}
 
 \item{p}{exponent giving the exponent to use for combining
-functional and phylogenetic distances (\code{p = 2} gives a
-Euclidean combination).}
+functional and phylogenetic distances (the default, \code{p = 2},
+gives a Euclidean combination).}
 
 \item{...}{not currently used}
 }

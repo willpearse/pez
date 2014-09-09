@@ -83,13 +83,13 @@ phylo.dist.comparative.comm <- function(x, ...) phylo.dist(x$phy)
 #' @param phyloWeight phylogenetic weighting parameter (referred to as
 #' \code{a} in Cadotte et al. (2013)
 #' @param p exponent giving the exponent to use for combining
-#' functional and phylogenetic distances (\code{p = 2} gives a
-#' Euclidean combination).
+#' functional and phylogenetic distances (the default, \code{p = 2},
+#' gives a Euclidean combination).
 #' @param ... not currently used
 #' @rdname funct.phylo.dist
 #' @family distances
 #' @export
-funct.phylo.dist <- function(x, phyloWeight, p, ...) UseMethod("funct.phylo.dist", x)
+funct.phylo.dist <- function(x, phyloWeight, p = 2, ...) UseMethod("funct.phylo.dist", x)
 #' @export
 funct.phylo.dist.comparative.comm <- function(x, phyloWeight, p, ...) {
     #Assertions and argument handling
