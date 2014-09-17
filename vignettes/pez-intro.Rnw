@@ -19,12 +19,11 @@
 \maketitle
 \tableofcontents
 <<include=FALSE>>=
+require(plotrix)
 require(pez)
 require(ape)
 require(picante)
-require(plotrix)
 require(methods)
-#opts_chunk$set(size = 'small')
 options(width=40)
 @ 
 \section{Preamble}
@@ -182,7 +181,6 @@ all these steps separately, though:
 model <- fingerprint.regression(data, eco.permute=10)
 @
 \section{Traitgrams}
-
 If $FD_{ij}$ and $PD_{ij}$ are functional and phylogenetic distances
 between species $i$ and $j$, the functional-phylogenetic distance
 between $i$ and $j$ is,
