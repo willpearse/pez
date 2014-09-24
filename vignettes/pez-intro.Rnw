@@ -180,26 +180,53 @@ all these steps separately, though:
 <<warning=FALSE, tidy=TRUE>>=
 model <- fingerprint.regression(data, eco.permute=10)
 @
-\section{Traitgrams}
-If $FD_{ij}$ and $PD_{ij}$ are functional and phylogenetic distances
-between species $i$ and $j$, the functional-phylogenetic distance
-between $i$ and $j$ is,
+\section{Functional phylogenetic distances and traitgrams}
+
+Taxa differ both functionally and phylogenetically, a fact that is
+clearly illustrated using traitgrams.  A traitgram of a
+\texttt{comparative.comm} object can be made using the
+\texttt{traitgram.cc} (a wrapper for the \texttt{traitgram} function in
+\texttt{picante}).  Here is a traitgram for a particular assemblage of
+species against the \texttt{length} trait,
+<<traitgram, warning=FALSE, fig.width=4, fig.height=4.5, dev.args=list(pointsize=8)>>=
+assemblage <- c("Nerophilus", "Hydroptila", "Psorophora",
+                "Simuliidae", "Psychodidae", "Ceratopogon",
+                "Nectopsyche", "Pedomoecus", "Ceratopsyche")
+dataAssemblage <- data[, match(assemblage, dimnames(data)$species)]
+traitgram.cc(dataAssemblage, "length")
+@ %
+\noindent The traitgram plots the phylogenetic time on the y-axis and
+\texttt{length} on the x-axis.  Note that some taxa are very distantly
+related but nevertheless have converged to very similar trait values
+(e.g. Psorophora and Simuliidae), whereas others are closely related
+but functionally very dissimilar (e.g. Nerophilus and Nectopsyche).
+
+\citet{Cadotte2013} argued that distances in this`traitgram space'
+might provide a better indication of ecological differences between
+taxa, than if either function or phylogenetic data were used in
+isolation.  If $FD_{ij}$ and $PD_{ij}$ are functional and phylogenetic
+distances between species $i$ and $j$, the functional-phylogenetic
+distance between $i$ and $j$ is \citep{Cadotte2013},
 \begin{equation}
   \label{eq:1}
-  ((1-a) FD_{ij}^p + a PD_{ij}^p)^{1/p}
+  \left((1-a) FD_{ij}^p + a PD_{ij}^p\right)^{1/p}
 \end{equation}
-This distance matrix can be computed using the \texttt{funct.phylo.dist}
-function.  For example, using the \texttt{data} object, $a = 0.5$, and
+\noindent where $a$ is the phylogenetic weighting parameter and $p$ is
+the exponent for the $p$-norm combination of phylogenetic and
+functional distances (e.g. $p = 2$ gives a Euclidean combination).
+This distance matrix can be computed using the
+\texttt{funct.phylo.dist} function.  For example, for $a = 0.5$, and
 $p = 2$, we have,
 <<FPDist>>=
 fpd.data <- funct.phylo.dist(data, phyloWeight = 0.5, p = 2)
-image(as.matrix(fpd.data))
 @ %
-We can use these distance matrices in community randomization tests,
+\noindent One use of these distance matrices is in community
+randomization tests \citep{Cadotte2013}, an example of which can be
+computed using the following code,
 <<sesFPD>>=
-library(picante)
-ses.mpd(data$comm, funct.phylo.dist(data, phyloWeight = 0.5, p = 2))
-@ 
+ses.mfpd.data <- picante::ses.mpd(data$comm, fpd.data)
+head(ses.mfpd.data)[,c("ntaxa", "mpd.obs", "mpd.obs.p")]
+@ %
 
 \section{Simulation}
 
@@ -252,6 +279,11 @@ Bryant, J.A., Lamanna, C., Morlon, H., Kerkhoff, A.J., Enquist, B.J. \& Green,
 Cavender-Bares, J., Ackerly, D.D., Baum, D.a. \& Bazzaz, F.a. (2004)
   {Phylogenetic overdispersion in Floridian oak communities}. \emph{The
   American Naturalist} \textbf{163}, 823--43.
+
+\bibitem[{Cadotte \emph{et~al.}(2013)Cadotte, Albert \& Walker}]{Cadotte2013}
+  Cadotte, M., Albert, C. \& Walker, S.C. (2013)
+  {The ecology of differences: assessing community assembly with trait
+    and evolutionary distances}. \emph{Ecology Letters} \textbf{16}, 1234--1244.
 
 \bibitem[{Helmus \& Ives(2012)}]{Helmus2012}
 Helmus, M.R. \& Ives, A.R. (2012) Phylogenetic diversity-area curves.
