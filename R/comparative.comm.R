@@ -240,6 +240,7 @@ print.comparative.comm <- function(x, ...){
 	return(new.x)
 }
 
+
 ##' @export
 dimnames.comparative.comm <- function(x)
     setNames(dimnames(x$comm), c("communities","species"))
@@ -247,3 +248,21 @@ dimnames.comparative.comm <- function(x)
 ##' @export
 dim.comparative.comm <- function(x) 
     setNames(dim(x$comm), c("communities","species"))
+
+##' Trait and environmental variable names
+##'
+##' @param object A \code{\link{comparative.comm}} object
+##' @return Names of the traits or environmental variables
+##' @rdname traits
+##' @export
+traits <- function(object) {
+    if(is.null(object$data)) return(NULL)
+    colnames(object$data)
+}
+
+##' @export
+##' @rdname traits
+env <- function(object) {
+    if(is.null(object$env)) return(NULL)
+    colnames(object$env)
+}
