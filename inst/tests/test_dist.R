@@ -7,8 +7,13 @@ test_that("PA comm dist", {
     cc <- comparative.comm(phylocom$phy,
                            ifelse(phylocom$sample, 1, 0),
                            phylocom$traits, warn=FALSE)
+    distByPez  <- comm.dist(cc)
+    expect_that(distByPez[69] , equals(1))
+    expect_that(distByPez[256], equals(0.5))
+    expect_that(distByPez[178], equals(1/3))
+    
     distByHand <- 1-as.dist(crossprod(cc$comm)/(dim(cc)[1] - crossprod(1-cc$comm)))
-    expect_that(comm.dist(cc), equals(distByHand))
+    expect_that(distByPez, is_equivalent_to(distByHand))
 })
 
 ## TODO:  non-PA dist matrix / overlap warning
@@ -21,6 +26,7 @@ test_that("func dist", {
 
 test_that("func phylo dist", {
     cc <- comparative.comm(phylocom$phy, phylocom$sample, phylocom$traits, warn=FALSE)
+    expect_that(funct.phylo.dist(cc, 0.5, 2)[1:6], equals(c(0.19961604238199601169, 0.52213831399923527066, 0.60980426435637358207, 0.56108118570624387900, 0.57849689828881134535, 0.62785217564210749064)))
     aVec <- seq(0, 1, by = 0.2)
     pVec <- 0:4
     PDist <- phylo.dist(cc)
@@ -44,6 +50,6 @@ test_that("traitgram", {
     ccNotrait <- within(cc, data <- NULL)
     expect_that(traitgram.cc(ccNophy), throws_error())
     expect_that(traitgram.cc(ccNotrait), throws_error())
+    cc$data <- princompOne(cc$data)    
     traitgram.cc(cc)
-    ccPCA <- within(cc, data <- princompOne(data))
 })
