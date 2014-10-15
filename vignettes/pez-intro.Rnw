@@ -183,11 +183,11 @@ model <- fingerprint.regression(data, eco.permute=10)
 \section{Functional phylogenetic distances and traitgrams}
 
 Taxa differ both functionally and phylogenetically, a fact that is
-clearly illustrated using traitgrams.  A traitgram of a
-\texttt{comparative.comm} object can be made using the
-\texttt{traitgram.cc} (a wrapper for the \texttt{traitgram} function in
-\texttt{picante}).  Here is a traitgram for a particular assemblage of
-species against the \texttt{length} trait,
+clearly illustrated using traitgrams \citep{Ackerly2009, Evans2009}.
+A traitgram of a \texttt{comparative.comm} object can be made using
+the \texttt{traitgram.cc} (a wrapper for the \texttt{traitgram}
+function in \texttt{picante}).  Here is a traitgram for a particular
+assemblage of species against the \texttt{length} trait,
 <<traitgram, warning=FALSE, fig.width=4, fig.height=4.5, dev.args=list(pointsize=8)>>=
 assemblage <- c("Nerophilus", "Hydroptila", "Psorophora",
                 "Simuliidae", "Psychodidae", "Ceratopogon",
@@ -201,7 +201,7 @@ related but nevertheless have converged to very similar trait values
 (e.g. Psorophora and Simuliidae), whereas others are closely related
 but functionally very dissimilar (e.g. Nerophilus and Nectopsyche).
 
-\citet{Cadotte2013} argued that distances in this`traitgram space'
+\citet{Cadotte2013} argued that distances in this `traitgram space'
 might provide a better indication of ecological differences between
 taxa, than if either function or phylogenetic data were used in
 isolation.  If $FD_{ij}$ and $PD_{ij}$ are functional and phylogenetic
@@ -266,6 +266,11 @@ your liking! Explore the \texttt{sim.meta.comm} and
 \providecommand{\url}[1]{\texttt{#1}}
 \providecommand{\urlprefix}{URL }
 
+\bibitem[{Ackerly(2009)Ackerly}]{Ackerly2009}
+  Ackerly, D. (2009) {Conservatism and diversification of plant functional traits:
+  evolutionary rates versus phylogenetic signal}. \emph{Proc. Natl
+    Acad. Sci.} \textbf{106}, 19699–-19706.
+
 \bibitem[{Bryant \emph{et~al.}(2008)Bryant, Lamanna, Morlon, Kerkhoff, Enquist
   \& Green}]{Bryant2008}
 Bryant, J.A., Lamanna, C., Morlon, H., Kerkhoff, A.J., Enquist, B.J. \& Green,
@@ -285,6 +290,11 @@ Cavender-Bares, J., Ackerly, D.D., Baum, D.a. \& Bazzaz, F.a. (2004)
   {The ecology of differences: assessing community assembly with trait
     and evolutionary distances}. \emph{Ecology Letters} \textbf{16}, 1234--1244.
 
+\bibitem[{Evans \emph{et~al.}(2009)Evans, Smith, Flynn, \& Donoghue}]{Evans2009}
+  Evans, M.E.K., Smith, S.A., Flynn, R.S. \& Donoghue, M.J. (2009) 
+  {Climate, niche evolution, and diversification of the ``Bird-cage'' evening primroses
+(Oenothera, sections Anogra and Kleinia)}. \emph{Am. Nat.} \textbf{173}, 225-–240.
+  
 \bibitem[{Helmus \& Ives(2012)}]{Helmus2012}
 Helmus, M.R. \& Ives, A.R. (2012) Phylogenetic diversity-area curves.
   \emph{Ecology} \textbf{93}, S31--S43.
