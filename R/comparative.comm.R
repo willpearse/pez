@@ -255,14 +255,14 @@ dim.comparative.comm <- function(x)
 ##' @return Names of the traits or environmental variables
 ##' @rdname traits
 ##' @export
-traits <- function(object) {
+traitNames <- function(object) {
     if(is.null(object$data)) return(NULL)
     colnames(object$data)
 }
 
 ##' @export
 ##' @rdname traits
-env <- function(object) {
+envNames <- function(object) {
     if(is.null(object$env)) return(NULL)
     colnames(object$env)
 }
