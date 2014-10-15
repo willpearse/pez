@@ -1,5 +1,6 @@
 require(testthat)
 require(pez)
+require(picante)
 data(phylocom)
 
 test_that("PA comm dist", {
@@ -18,4 +19,31 @@ test_that("func dist", {
     ## TODO:  non-error case
 })
 
-## TODO:  phylo and func-phylo dists
+test_that("func phylo dist", {
+    cc <- comparative.comm(phylocom$phy, phylocom$sample, phylocom$traits, warn=FALSE)
+    aVec <- seq(0, 1, by = 0.2)
+    pVec <- 0:4
+    PDist <- phylo.dist(cc)
+    FDist <- traits.dist(cc)
+    for(a in aVec) {
+        for(p in pVec) {
+            distByHand <- (a*(PDist/max(PDist))^p +
+                           (1-a)*(FDist/max(FDist))^p)^(1/p)
+            expect_that(funct.phylo.dist(cc, a, p), equals(distByHand))
+        }
+    }
+    PDist[] <- PDist/max(PDist)
+    FDist[] <- FDist/max(FDist)
+    expect_that(funct.phylo.dist(cc, 1, 2), is_equivalent_to(PDist))
+    expect_that(funct.phylo.dist(cc, 0, 2), is_equivalent_to(FDist))
+})
+
+test_that("traitgram", {
+    cc <- comparative.comm(phylocom$phy, phylocom$sample, phylocom$traits, warn=FALSE)
+    ccNophy <- within(cc, phy <- NULL)
+    ccNotrait <- within(cc, data <- NULL)
+    expect_that(traitgram.cc(ccNophy), throws_error())
+    expect_that(traitgram.cc(ccNotrait), throws_error())
+    traitgram.cc(cc)
+    ccPCA <- within(cc, data <- princompOne(data))
+})

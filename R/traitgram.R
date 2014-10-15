@@ -25,6 +25,7 @@
 ##' @export
 traitgram.cc <- function(object, trait, moreArgs = NULL, ...) {
     if(is.null(object$data)) stop("must supply trait information")
+    if(is.null(object$phy)) stop("must supply phylogeny")
     if(missing(trait)) {
         if(is.null(dim(object$data))) {
             tt <- object$data

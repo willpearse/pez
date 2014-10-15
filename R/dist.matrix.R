@@ -94,8 +94,8 @@ funct.phylo.dist <- function(x, phyloWeight, p = 2, ...) UseMethod("funct.phylo.
 #' @export
 funct.phylo.dist.comparative.comm <- function(x, phyloWeight, p, ...) {
     #Assertions and argument handling
-    if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
-    if(is.null(data$data)) stop("'data' must contain trait data")
+    if(!inherits(x, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
+    if(is.null(x$data)) stop("'data' must contain trait data")
     if(phyloWeight < 0 | phyloWeight > 1)
         stop("'phyloWeight' must be between 0 and 1")
     if(!is.numeric(p)) stop("'p' must be a numeric")
