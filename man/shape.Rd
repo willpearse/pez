@@ -4,7 +4,7 @@
 \title{Calculate shape phylogenetic biodiversity metrics across communities}
 \usage{
 shape(data, metric = c("all", "psv", "psr", "mpd", "pd", "colless", "gamma",
-  "taxon", "eigen.sum", "cadotte.pd", "mfpd"), which.eigen = 1,
+  "taxon", "eigen.sum", "cadotte.pd", "mntd"), which.eigen = 1,
   remove.errors = TRUE, ...)
 }
 \arguments{

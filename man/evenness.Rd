@@ -4,12 +4,12 @@
 \title{Calculate evenness phylogenetic biodiversity metrics across communities}
 \usage{
 evenness(data, metric = c("all", "rao", "taxon", "entropy", "cadotte",
-  "lambda", "delta", "kappa", "mpd"), ...)
+  "lambda", "delta", "kappa", "mpd", "mntd", "pse", "all-quick"), ...)
 }
 \arguments{
 \item{data}{a comparative community ecology object}
 
-\item{metric}{specify particular metrics to calculate, default is \code{all}}
+\item{metric}{specify particular metrics to calculate, default is \code{all} (\code{all-quick} will calculate everything bar the Pagel metrics and Rao's D, which can be slow)}
 
 \item{...}{Additional arguments to passed to metric functions (unlikely you will want this!)}
 }

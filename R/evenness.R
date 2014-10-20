@@ -11,7 +11,7 @@
 #' \code{evenness} calculates phylogenetic biodiversity metrics
 #' 
 #' @param data a comparative community ecology object
-#' @param metric specify particular metrics to calculate, default is \code{all}
+#' @param metric specify particular metrics to calculate, default is \code{all} (\code{all-quick} will calculate everything bar the Pagel metrics and Rao's D, which can be slow)
 #' @param ... Additional arguments to passed to metric functions (unlikely you will want this!)
 #' @details Calculates various metrics of phylogenetic biodiversity that are categorized as \emph{evenness} metrics by Pearse \emph{et al.} (2014)
 #' @return a \code{phy.structure} list object of metric values
@@ -44,7 +44,7 @@
 #' @importFrom caper comparative.data pgls summary.pgls coef.pgls
 #' @importFrom ade4 newick2phylog
 #' @export
-evenness <- function(data, metric=c("all", "rao", "taxon", "entropy", "cadotte", "lambda", "delta", "kappa", "mpd"), ...)
+evenness <- function(data, metric=c("all", "rao", "taxon", "entropy", "cadotte", "lambda", "delta", "kappa", "mpd", "mntd", "pse", "all-quick"), ...)
 {
   #Assertions and argument handling
   if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
@@ -60,13 +60,13 @@ evenness <- function(data, metric=c("all", "rao", "taxon", "entropy", "cadotte",
   output <- list(pse=NULL, rao=NULL, taxon=NULL, entropy=NULL, cadotte=NULL, delta=NULL)
   
   #Caculate measures
-  if(metric == "pse" | metric == "all")
+  if(metric == "pse" | metric == "all" | metric == "all-quick")
     try(output$pse <- coefs$pse <- pse(data$comm, data$phy)[,1], silent=TRUE)
   
-  if(metric == "rao" | metric == "all")
+  if(metric == "rao" | metric == "all" | metric == "all")
     try(output$rao <- coefs$rao <- raoD(data$comm, data$phy)$Dkk, silent=TRUE)
   
-  if(metric == "taxon" | metric == "all")
+  if(metric == "taxon" | metric == "all" | metric == "all-quick")
     try({
       output$taxon <- taxondive(data$comm, data$vcv, ...)
       t <- data.frame(output$taxon$D, output$taxon$Dstar, output$taxon$Lambda, output$taxon$Dplus, output$taxon$SDplus)
@@ -74,13 +74,13 @@ evenness <- function(data, metric=c("all", "rao", "taxon", "entropy", "cadotte",
       coefs <- cbind(coefs, t)
     }, silent = TRUE)
   
-  if(metric == "entropy" | metric == "all")
+  if(metric == "entropy" | metric == "all" | metric == "all-quick")
     try({
       output$entropy <- .phylo.entropy(data)
       coefs$entropy <- output$entropy[!is.na(output$entropy)]
     }, silent=TRUE)
   
-  if(metric == "cadotte" | metric == "all")
+  if(metric == "cadotte" | metric == "all" | metric == "all-quick")
     try({
       output$cadotte <- data.frame(PAE=.pae(data), IAC=.iac(data), Haed=.haed(data), Eaed=.haed(data)/log(rowSums(data$comm)))
       coefs$PAE <- output$cadotte$PAE
@@ -140,8 +140,11 @@ evenness <- function(data, metric=c("all", "rao", "taxon", "entropy", "cadotte",
     coefs$kappa <- output$kappa$values
   }
 
-  if(metric == "mpd" | metric == "all")
+  if(metric == "mpd" | metric == "all" | metric == "all-quick")
     output$mpd <- coefs$mpd <- try(mpd(data$comm, data$vcv, abundance.weighted=TRUE, ...), silent = TRUE)
+
+  if(metric == "mntd" | metric == "all" | metric == "all-quick")
+    output$mntd <- coefs$mntd <- try(mntd(data$comm, data$vcv, abundance.weighted=TRUE, ...), silent = TRUE)
 
   
   #Prepare output

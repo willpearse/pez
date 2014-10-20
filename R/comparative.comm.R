@@ -2,7 +2,10 @@
 #' 
 #' @param phy phylogeny (in ape::phylo format) of species
 #' @param comm a community matrix (as used in vegan) with species as columns and rows as community samples
-#' @param traits a data.frame of species traits (with row names matching those of 'comm')
+#' @param traits a data.frame of species traits (with row names
+#' matching those of 'comm'). Saved in the \code{data} slot of the
+#' resulting \code{comparative.comm} object for compatibility with the
+#' package \code{caper}.
 #' @param env a data.frame of environmental data (all continuous
 #' variables) with row names matching those of 'comm'
 #' @param warn whether to warn if species/sites are dropped when
@@ -32,7 +35,6 @@
 #' @export
 comparative.comm <- function(phy, comm, traits=NULL, env=NULL, warn=TRUE, vcv=FALSE, force.root=-1){
   #Assertions and argument handling
-  names <- list()
   #Phylogeny
   if(!inherits(phy, "phylo")) 
     stop("'", deparse(substitute(phy)), "' not of class 'phylo'")
@@ -43,28 +45,24 @@ comparative.comm <- function(phy, comm, traits=NULL, env=NULL, warn=TRUE, vcv=FA
       stop("'", deparse(substitute(phy)), "' is not rooted or has a basal polytomy.")
     }
   }
-  names$phy <- deparse(substitute(phy))
   if(any(duplicated(phy$tip.label))) stop('Duplicate tip labels present in phylogeny')
   #Community matrix
   if(! is.matrix(comm)) stop("'", deparse(substitute(comm)), "' must be an object of class 'matrix'.")
   if(is.null(colnames(comm))) stop("'", deparse(substitute(comm)), "' must have column names (preferably species!)")
   if(is.null(rownames(comm))) stop("'", deparse(substitute(comm)), "' must have row names")
   if(any(is.na(comm))) stop("'", deparse(substitute(comm)), "' contains NAs")
-  names$comm <- deparse(substitute(comm))
   #Traits
   if(!is.null(traits)){
     if(! is.data.frame(traits)) stop("'", deparse(substitute(traits)), "' must be an object of class 'data.frame'.")
     if(is.null(colnames(traits))) stop("'", deparse(substitute(traits)), "' must have row names (preferably species!)")
     if(is.null(rownames(traits))) stop("'", deparse(substitute(traits)), "' must have row names")
-    names$data <- deparse(substitute(traits))
-  } else names$data <- NULL
+  }
   #Environment
   if(!is.null(env)){
     if(! is.data.frame(env)) stop("'", deparse(substitute(env)), "' must be an object of class 'data.frame'.")
     if(is.null(colnames(env))) stop("'", deparse(substitute(env)), "' must have row names (preferably sites!)")
     if(is.null(rownames(env))) stop("'", deparse(substitute(env)), "' must have row names")
-    names$env <- deparse(substitute(env))
-  } else names$env <- NULL
+  }
   
   #Create intersection/drop lists and warn
   species.to.keep <- intersect(phy$tip.label, colnames(comm))
@@ -148,35 +146,35 @@ print.comparative.comm <- function(x, ...){
     
     # basic summary data
     cat("Comparative community dataset of", ncol(x$comm), "taxa:\n")
-    cat("Phylogeny:", x$names$phy, "\n")
+    cat("Phylogeny:\n")
     cat("   ", x$phy$Nnode, " internal nodes", sep='')
     if(!is.null(x$vcv)) cat(', VCV matrix present\n') else cat("\n")
-    cat("Community data:", x$names$comm, "\n")
+    cat("Community data:\n")
     cat("    ", nrow(x$comm), " sites, ", ncol(x$comm), " taxa\n")
     
     if(!is.null(x$data)){
-	    cat("Trait data:", x$names$data, "\n")
+	    cat("Trait data:\n")
     	cat("   ", ncol(x$data), " variables\n")
     } else cat("Trait data: None\n")
     
     if(!is.null(x$env)){
-    	cat("Environmental data:", x$names$env, "\n")
+    	cat("Environmental data:\n")
     	cat("   ", nrow(x$env), " sites, ", ncol(x$env), " variables\n")
     } else cat("Environmental data: None\n")
   
 	# report on mismatch on merge
     if(length(x$dropped$phy.sp.lost)>0 | length(x$dropped$comm.sp.lost)>0 | length(x$dropped$data.sp.lost)>0){
   	 cat('Dropped taxa:\n')
-  	 cat('   ', x$names$phy , ' : ', length(x$dropped$phy.sp.lost), '\n')
-  	 cat('   ', x$names$comm , ' : ', length(x$dropped$comm.sp.lost), '\n')
+  	 cat('   phy : ', length(x$dropped$phy.sp.lost), '\n')
+  	 cat('   comm : ', length(x$dropped$comm.sp.lost), '\n')
      if(!is.null(x$data))
-        cat('   ', x$names$data , ' : ', length(x$dropped$data.sp.lost), '\n')
+        cat('   trts : ', length(x$dropped$data.sp.lost), '\n')
     }
   if(length(x$dropped$comm.sites.lost)>0 | length(x$dropped$env.sites.lost)>0){
   	 cat('Dropped sites:\n')
-       cat('   ', x$names$comm , ' : ', length(x$dropped$comm.sites.lost), '\n')
+       cat('   comm : ', length(x$dropped$comm.sites.lost), '\n')
   	 if(!is.null(x$env))
-       cat('   ', x$names$env , ' : ', length(x$dropped$env.sites.lost), '\n')
+       cat('   env : ', length(x$dropped$env.sites.lost), '\n')
   }
 }
 

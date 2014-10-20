@@ -14,7 +14,10 @@ comparative.comm(phy, comm, traits = NULL, env = NULL, warn = TRUE,
 
 \item{comm}{a community matrix (as used in vegan) with species as columns and rows as community samples}
 
-\item{traits}{a data.frame of species traits (with row names matching those of 'comm')}
+\item{traits}{a data.frame of species traits (with row names
+matching those of 'comm'). Saved in the \code{data} slot of the
+resulting \code{comparative.comm} object for compatibility with the
+package \code{caper}.}
 
 \item{env}{a data.frame of environmental data (all continuous
 variables) with row names matching those of 'comm'}
