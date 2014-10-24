@@ -223,7 +223,7 @@ plot.ecophyl.regression.list <- function(x, ...){
 ##'
 ##' @param tree A \code{phylo} object
 ##' @param spp A tip to drop
-##' @return a no-nonsense phylogeny
+##' @return \code{ape::phylo} object
 ##' @export
 drop_tip <- function(tree, spp)
   if(length(setdiff(tree$tip.label, spp)) >0) return(drop.tip(tree, spp)) else return(tree)
@@ -359,16 +359,6 @@ coef.phy.structure <- function(object, ...){
     else
       return(object$coefs)
 }
-
-
-assemblage.phylogenies <- function(data){
-    if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
-    subtrees <- vector("list", nrow(data$comm))
-    for(i in seq(nrow(data$comm)))
-        subtrees[[i]] <- drop_tip(data$phy, rownames(data$comm)[data$comm[i,]!=0])
-    return(subtrees)
-}
-
 
 .removeErrors <- function(object) {
     if(inherits(object, "try-error")) return(NULL)

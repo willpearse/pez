@@ -33,7 +33,7 @@
 #' @importFrom apTreeshape as.treeshape as.treeshape.phylo colless tipsubtree
 #' @importFrom ape gammaStat cophenetic.phylo drop.tip
 #' @export
-shape <- function(data,metric=c("all", "psv", "psr", "mpd", "pd","colless", "gamma", "taxon", "eigen.sum","cadotte.pd", "mntd"),which.eigen=1, remove.errors = TRUE, ...)
+shape <- function(data,metric=c("all", "psv", "psr", "mpd", "pd","colless", "gamma", "taxon", "eigen.sum","cadotte.pd", "mntd"),which.eigen=1, remove.errors = TRUE,  ...)
 {    
   #Assertions and argument handling
   if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")

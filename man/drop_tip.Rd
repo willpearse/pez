@@ -11,7 +11,7 @@ drop_tip(tree, spp)
 \item{spp}{A tip to drop}
 }
 \value{
-a no-nonsense phylogeny
+\code{ape::phylo} object
 }
 \description{
 This is an \code{ape} work-around, intended to be the same as

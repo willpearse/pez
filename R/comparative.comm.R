@@ -247,11 +247,11 @@ dimnames.comparative.comm <- function(x)
 dim.comparative.comm <- function(x) 
     setNames(dim(x$comm), c("communities","species"))
 
-##' Trait and environmental variable names
+##' Describing and manipulating comparativbe.comm objects
 ##'
 ##' @param object A \code{\link{comparative.comm}} object
 ##' @return Names of the traits or environmental variables
-##' @rdname traits
+##' @rdname cc.manip
 ##' @export
 traitNames <- function(object) {
     if(is.null(object$data)) return(NULL)
@@ -259,8 +259,54 @@ traitNames <- function(object) {
 }
 
 ##' @export
-##' @rdname traits
+##' @rdname cc.manip
 envNames <- function(object) {
     if(is.null(object$env)) return(NULL)
     colnames(object$env)
+}
+
+##' @export
+##' @rdname cc.manip
+species <- function(x){
+    if(!inherits(x, "comparative.comm"))
+        stop("'", deparse(substitute(x)), "' not of class 'comparative.comm'")
+    return(colnames(x$comm))
+}
+
+##' @export
+##' @rdname cc.manip
+`species<-` <- function(x, value){
+    if(!inherits(x, "comparative.comm"))
+        stop("'", deparse(substitute(x)), "' not of class 'comparative.comm'")
+    colnames(x$comm) <- value
+    x$phy$tip.label <- value
+    if(!is.null(x$data))
+        rownames(x$data) <- value
+    return(x)
+}
+##' @export
+##' @rdname cc.manip
+sites <- function(x){
+    if(!inherits(x, "comparative.comm"))
+        stop("'", deparse(substitute(x)), "' not of class 'comparative.comm'")
+    return(rownames(x$comm))
+}
+##' @export
+##' @rdname cc.manip
+`sites<-` <- function(x, value){
+    if(!inherits(x, "comparative.comm"))
+        stop("'", deparse(substitute(x)), "' not of class 'comparative.comm'")
+    rownames(x$comm) <- value
+    if(!is.null(x$env))
+        rownames(x$env) <- value
+    return(x)
+}
+##' @export
+##' @rdname cc.manip
+assemblage.phylogenies <- function(data){
+    if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
+    subtrees <- vector("list", nrow(data$comm))
+    for(i in seq(nrow(data$comm)))
+        subtrees[[i]] <- drop_tip(data$phy, rownames(data$comm)[data$comm[i,]!=0])
+    return(subtrees)
 }

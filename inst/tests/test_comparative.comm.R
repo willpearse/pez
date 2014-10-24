@@ -18,6 +18,21 @@ test_that("comm - phy", {
   expect_that(simple[1:3,]$comm[3,], equals(simple$comm[3,]))
   expect_that(simple[,1:3]$comm[1,], equals(simple$comm[1,1:3]))
   expect_that(sort(colnames(simple$comm)), equals(sort(simple$phy$tip.label)))
+
+  t <- simple
+  expect_that(species(t), equals(colnames(simple$comm)))
+  expect_that(species(t), equals(simple$phy$tip.label))
+  species(t) <- letters[1:25]
+  expect_that(species(t), equals(letters[1:25]))
+  species(t)[1:3] <- c("w", "t", "f")
+  expect_that(species(t), equals(c("w","t","f",letters[4:25])))
+  expect_that(sites(t), equals(rownames(simple$comm)))
+  sites(t) <- letters[1:6]
+  expect_that(sites(t), equals(letters[1:6]))
+  sites(t)[1:3] <- c("w", "t", "f")
+  expect_that(sites(t), equals(c("w","t","f",letters[4:6])))
+  expect_true(is.null(envNames(simple)))
+  expect_true(is.null(traitNames(simple)))
   
   t <- phylocom$sample
   colnames(t)[1] <- "deliberately wrong"
@@ -64,4 +79,22 @@ test_that("comm - phy - traits - env", {
   expect_that(rownames(env$comm), equals(rownames(env$env)))
   expect_that(sort(rownames(env$data)), equals(sort(env$phy$tip.label)))
   expect_that(names(env), equals(names(simple)))
+  
+  t <- env
+  expect_that(species(t), equals(colnames(env$comm)))
+  expect_that(species(t), equals(env$phy$tip.label))
+  expect_that(sites(t), equals(rownames(env$env)))
+  expect_that(species(t), equals(rownames(env$data)))
+  species(t) <- letters[1:25]
+  expect_that(species(t), equals(letters[1:25]))
+  species(t)[1:3] <- c("wa", "ta", "fa")
+  expect_that(species(t), equals(c("wa","ta","fa",letters[4:25])))
+  expect_that(sites(t), equals(rownames(env$comm)))
+  expect_that(sites(t), equals(rownames(env$env)))
+  sites(t) <- letters[1:6]
+  expect_that(sites(t), equals(letters[1:6]))
+  sites(t)[1:3] <- c("w", "t", "fa")
+  expect_that(sites(t), equals(c("w","t","fa",letters[4:6])))
+  expect_that(envNames(env), equals(colnames(env$env)))
+  expect_that(traitNames(env), equals(colnames(env$data)))
 })
