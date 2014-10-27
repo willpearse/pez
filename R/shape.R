@@ -2,13 +2,56 @@
 #'
 #' \code{shape} calculates phylogenetic biodiversity metrics
 #' @param data a \code{comparative.comm} object
-#' @param metric specify particular metrics to calculate, default is \code{all}
+#' @param metric specify particular metrics to calculate. Default is ,
+#' default is \code{all-quick}; this calculates everything bar fd.dist
+#' (see notes).
 #' @param which.eigen The eigen vector to calculate for the PhyloEigen metric
+#' @param sqrt.phy If TRUE (default is FALSE) your phylogenetic
+#' distance matrix will be square-rooted; specifying TRUE will force
+#' the square-root transformation on phylogenetic distance matrices
+#' (in the spirit of Leitten and Cornwell, 2014). See `details' for
+#' details about different metric calculations when a distance matrix
+#' is used.
+#' @param traitgram If not NULL (default), a number to be passed to
+#' \code{funct.phylo.dist} (\code{phyloWeight}; the `a' parameter),
+#' causing analysis on a distance matrix reflecting both traits and
+#' phylogeny (0 --> only phylogeny, 1 --> only traits; see
+#' \code{funct.phylo.dist}). If a vector of numbers is given,
+#' \code{shape} iterates across them and returns a \code{data.frame}
+#' with coefficients from each iteration. See `details' for details
+#' about different metric calculations when a distance matrix is used.
+#' @param traitgram.p A value for `p' to be used in conjunction with
+#' \code{traitgram} when calling \code{funct.phylo.dist}.
 #' @param remove.errors suppress errors about metrics that failed to
 #' run (default: TRUE). This will happen for some metrics if you have,
 #' for example, only one species in a community.
-#' @param ... Additional arguments to passed to metric functions (unlikely you will want this!)
-#' @details Calculates various metrics of phylogenetic biodiversity that are categorized as \emph{shape} metrics by Pearse \emph{et al.} (2014)
+#' @param ext.dist Supply an external species-level distance matrix
+#' for use in calculations. See `details' for comments on the use of
+#' distance matrices in different metric calculations.
+#' @param ... Additional arguments to passed to metric functions
+#' (unlikely you will want this!)
+#' @details Calculates various metrics of phylogenetic biodiversity
+#' that are categorized as \emph{shape} metrics by Pearse \emph{et
+#' al.} (2014).
+#' @details Most of these metrics do not involve comparison with some
+#' kind of evolutionary-derived expectation for phylogenetic
+#' shape. Those that do, however, such as PSV or Colless' index, make
+#' no sense unless applied to a phylogenetic distance matrix - their
+#' null expectation *requires* it. Using square-rooted distance
+#' matrices, or distance matrices that incorporate trait information,
+#' can be an excellent thing to do, but (for the above reasons),
+#' \code{pez} won't give you an answer for metrics for which WDP
+#' thinks it makes no sense. PD and cadotte.pd can (...up to you
+#' whether you should!...) be used with a square-rooted distance
+#' matrix, but the results *will be wrong* if you do not have an
+#' ultrametric tree (branch lengths proportional to
+#' time). \code{is.ultrametric(cc.obj$phy)} will check this for you
+#' and unless suppressed you will have received a warning when
+#' createing your \code{comparative.comm} initially; WDP strongly
+#' feels you should only be using ultrametric phylogenies in any case
+#' (but I do welcome code improvements).
+#' @details Some comment about how dist.fd isn't necessarily
+#' functional trait distance...
 #' @return a \code{phy.structure} list object of metric values
 #' @author M.R. Helmus, Will Pearse
 #' @references Pearse W.D., Purvis A., Cavender-Bares J. & Helmus M.R. (2014). Metrics and Models of Community Phylogenetics. In: Modern Phylogenetic Comparative Methods and Their Application in Evolutionary Biology. Springer Berlin Heidelberg, pp. 451-464.
@@ -32,12 +75,41 @@
 #' @importFrom PVR PVRdecomp
 #' @importFrom apTreeshape as.treeshape as.treeshape.phylo colless tipsubtree
 #' @importFrom ape gammaStat cophenetic.phylo drop.tip
+#' @importFrom FD dbFD
 #' @export
-shape <- function(data,metric=c("all", "psv", "psr", "mpd", "pd","colless", "gamma", "taxon", "eigen.sum","cadotte.pd", "mntd"),which.eigen=1, remove.errors = TRUE,  ...)
-{    
+shape <- function(data,metric=c("all-quick", "all", "psv", "psr", "mpd", "mntd", "pd","colless", "gamma", "taxon", "eigen.sum","cadotte.pd", "dist.fd"), sqrt.phy=FALSE, traitgram=NULL, traitgram.p=2, ext.dist=NULL, which.eigen=1, remove.errors = TRUE,  ...)
+{
   #Assertions and argument handling
   if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
   metric <- match.arg(metric)
+  if(sum(c(!is.null(traitgram), sqrt.phy, !is.null(ext.dist))) > 1)
+      stop("Confusion now hath made its masterpiece!\nYou have specified more than one thing to do with a distance matrix.")
+  if(!is.null(traitgram)){
+      if(length(traitgram) > 1){
+          output <- vector("list", length(traitgram))
+          for(i in seq_along(output))
+              output[[i]] <- cbind(coef(Recall(data, metric, sqrt.phy, traitgram=traitgram[i], which.eigen=which.eigen, remove.errors=remove.errors, traitgram.p=traitgram.p, ...)), traitgram[i], sites(data))
+          output <- do.call(rbind, output)
+          names(output)[ncol(output)-1] <- "traitgram"
+          names(output)[ncol(output)] <- "site"
+          rownames(output) <- NULL
+          return(output)
+      } else {
+          dist <- as.matrix(funct.phylo.dist(data, traitgram, traitgram.p))
+          traitgram <- TRUE
+      }      
+  } else traitgram <- FALSE
+  
+  if(!is.null(ext.dist)){
+      if(!inherits(ext.dist, "dist"))
+          stop("'ext.dist' must be a distance matrix")
+      if(attr(ext.dist, "Size") != ncol(data$comm))
+          stop("'ext.dist' must have dimensions matching comparative.comm object's species'")
+      if(!identical(attr(ext.dist, "Labels"), species(data)))
+          warning("'ext.dist' names do not match species data; continuing regardless")
+      dist <- as.matrix(ext.dist)
+      ext.dist <- TRUE
+  } else ext.dist <- FALSE
   
   #Setup
   nspp <- ncol(data$comm)
@@ -45,34 +117,43 @@ shape <- function(data,metric=c("all", "psv", "psr", "mpd", "pd","colless", "gam
   SR <- rowSums(data$comm > 0)
   data$comm[data$comm > 0] <- 1
   coefs <- data.frame(row.names=rownames(data$comm))
-  if(is.null(data$vcv))
-    data$vcv <- cophenetic(data$phy)
-  output <- list(psv=NULL, psr=NULL, mpd=NULL, pd=NULL, pd.ivs=NULL, colless=NULL, gamma=NULL, taxon=NULL, eigen.sum=NULL, cadotte.pd=NULL)
+  if(traitgram==FALSE & ext.dist==FALSE)
+      dist <- cophenetic(data$phy)
+  if(sqrt.phy){
+        if(!is.ultrametric(data$phy))
+            warning("Phylogeny is not ultrametric; see function details")
+      dist <- sqrt(dist)
+      data$phy <- as.phylo(hclust(as.dist(dist)))
+  }
+  #Remove missing species
+  dist <- dist[colSums(data$comm)>0, colSums(data$comm)>0]
+  data <- data[,colSums(data$comm)>0]
+  output <- list(psv=NULL, psr=NULL, mpd=NULL, mntd=NULL, pd=NULL, pd.ivs=NULL, colless=NULL, gamma=NULL, taxon=NULL, eigen.sum=NULL, cadotte.pd=NULL, dist.fd=NULL)
   
   #Calculate measures
-  if(metric == "psv" | metric == "all")
+  if((metric == "psv" | metric == "all" | metric == "all-quick") & (sqrt.phy==FALSE & traitgram==FALSE & ext.dist==FALSE))
     output$psv <- coefs$psv <- try(psd(data$comm, data$phy, ...)[,1], silent = TRUE)
   
-  if(metric == "psr" | metric == "all")
+  if((metric == "psr" | metric == "all" | metric == "all-quick") & (sqrt.phy==FALSE & traitgram==FALSE & ext.dist==FALSE))
     output$psr <- coefs$psr <- try(psd(data$comm, data$phy, ...)[,4], silent = TRUE)
   
-  if(metric == "mpd" | metric == "all")
-    output$mpd <- coefs$mpd <- try(mpd(data$comm, data$vcv, abundance.weighted=FALSE, ...), silent = TRUE)
+  if(metric == "mpd" | metric == "all" | metric == "all-quick")
+    output$mpd <- coefs$mpd <- try(mpd(data$comm, dist, abundance.weighted=FALSE, ...), silent = TRUE)
   
-  if(metric == "pd" | metric == "all")
+  if((metric == "pd" | metric == "all" | metric == "all-quick") & traitgram==FALSE & ext.dist==FALSE)
     try({
       output$pd <- coefs$pd <- pd(data$comm, data$phy, ...)[,1]
       output$pd.ivs <- coefs$pd.ivs <- unname(resid(lm(coefs$pd ~ rowSums(data$comm))))
     }, silent = TRUE)
 
-  if(metric == "mntd" | metric == "all")
-    try(output$mntd <- coefs$mntd <- pd(data$comm, data$phy, ...)[,1], silent = TRUE)
+  if(metric == "mntd" | metric == "all" | metric == "all-quick")
+    try(output$mntd <- coefs$mntd <- mntd(data$comm, dist, abundance.weighted=FALSE, ...), silent = TRUE)
   
-  if(metric == "colless" | metric == "all")
+  if((metric == "colless" | metric == "all" | metric == "all-quick") & (sqrt.phy==FALSE & traitgram==FALSE & ext.dist==FALSE))
       try(output$colless <- coefs$colless <- .colless(data), silent = TRUE)
   
   
-  if(metric == "gamma" | metric == "all")
+  if((metric == "gamma" | metric == "all" | metric == "all-quick") & (sqrt.phy==FALSE & traitgram==FALSE & ext.dist==FALSE))
       try({
           tree.shape <- as.treeshape(data$phy)
           nams <- tree.shape$names
@@ -81,27 +162,46 @@ shape <- function(data,metric=c("all", "psv", "psr", "mpd", "pd","colless", "gam
   
   #Note - I've cut out some here because I think the simplification
   #can happen in the summary output
-  if(metric == "taxon" | metric == "all")
+  if(metric == "taxon" | metric == "all" | metric == "all-quick")
       try({
-        output$taxon <- taxondive(data$comm, cophenetic(data$phy), ...)
+        output$taxon <- taxondive(data$comm, dist, ...)
         t <- data.frame(output$taxon$D, output$taxon$Dstar, output$taxon$Lambda, output$taxon$Dplus, output$taxon$SDplus)
         names(t) <- c("Delta", "DeltaStar", "LambdaPlus", "DeltaPlus", "S.DeltaPlus")
         coefs <- cbind(coefs, t)
       }, silent = TRUE)
   
-  if(metric == "eigen.sum" | metric == "all")
+  if(metric == "eigen.sum" | metric == "all" | metric == "all-quick")
       try({
-          evc <- PVRdecomp(data$phy, ...)@Eigen$vectors
+              #PVRdecomp ignores a phylogeny if given a distance matrix; suppress its warning
+          t <- options("warn")
+          options(warn=-10)
+          evc <- PVRdecomp(data$phy, dist=dist, ...)@Eigen$vectors
+          options(warn=as.numeric(t))
           output$eigen.sum <- coefs$eigen.sum <- apply(data$comm, 1, .eigen.sum, evc, which.eigen)
       }, silent = TRUE)
   
-  if(metric == "cadotte.pd" | metric == "all")
+  if((metric == "cadotte.pd" | metric == "all" | metric == "all-quick") & (sqrt.phy==FALSE & traitgram==FALSE & ext.dist==FALSE))
     try({
       output$cadotte.pd <- data.frame(Eed=.eed(data), Hed=.hed(data))
       coefs$EED <- output$cadotte.pd$Eed
       coefs$HED <- output$cadotte.pd$Hed
-    }, silent = TRUE)
+  }, silent = TRUE)
 
+  if(metric == "dist.fd" | metric == "all")
+      try({
+          if(!is.null(data$data) | traitgram==FALSE | ext.dist==FALSE){
+              t <- dist
+          } else t <- data$data
+          output$dist.fd$output <- capture.output(output$dist.fd <- dbFD(t, data$comm, w.abun=FALSE, messages=TRUE, ...))
+          coefs <- with(output$dist.fd, cbind(coefs, cbind(FRic, FEve, FDiv, FDis, RaoQ)))
+          #Only bother getting CWMs if we have trait data
+          if(!is.null(data$data)){
+              t <- output$dist.fd$CWM
+              colnames(t) <- paste(colnames(t), "cmw", sep=".")
+              coefs$dist.fd <- rbind(coef$dist.fd, t)
+          }
+      }, silent=TRUE)
+    
   if(remove.errors) output <- lapply(output, .removeErrors)
   
   #Prepare output
@@ -122,6 +222,7 @@ shape <- function(data,metric=c("all", "psv", "psr", "mpd", "pd","colless", "gam
     return(output)
 }
 
+#' @importFrom ape gammaStat
 .gamma<-function(pa.vec,tree,nams){
     if(sum(pa.vec)<3){
         return(NA)

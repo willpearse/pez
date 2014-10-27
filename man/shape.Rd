@@ -3,22 +3,49 @@
 \alias{shape}
 \title{Calculate shape phylogenetic biodiversity metrics across communities}
 \usage{
-shape(data, metric = c("all", "psv", "psr", "mpd", "pd", "colless", "gamma",
-  "taxon", "eigen.sum", "cadotte.pd", "mntd"), which.eigen = 1,
-  remove.errors = TRUE, ...)
+shape(data, metric = c("all-quick", "all", "psv", "psr", "mpd", "mntd", "pd",
+  "colless", "gamma", "taxon", "eigen.sum", "cadotte.pd", "dist.fd"),
+  sqrt.phy = FALSE, traitgram = NULL, traitgram.p = 2, ext.dist = NULL,
+  which.eigen = 1, remove.errors = TRUE, ...)
 }
 \arguments{
 \item{data}{a \code{comparative.comm} object}
 
-\item{metric}{specify particular metrics to calculate, default is \code{all}}
+\item{metric}{specify particular metrics to calculate. Default is ,
+default is \code{all-quick}; this calculates everything bar fd.dist
+(see notes).}
 
 \item{which.eigen}{The eigen vector to calculate for the PhyloEigen metric}
+
+\item{sqrt.phy}{If TRUE (default is FALSE) your phylogenetic
+distance matrix will be square-rooted; specifying TRUE will force
+the square-root transformation on phylogenetic distance matrices
+(in the spirit of Leitten and Cornwell, 2014). See `details' for
+details about different metric calculations when a distance matrix
+is used.}
+
+\item{traitgram}{If not NULL (default), a number to be passed to
+\code{funct.phylo.dist} (\code{phyloWeight}; the `a' parameter),
+causing analysis on a distance matrix reflecting both traits and
+phylogeny (0 --> only phylogeny, 1 --> only traits; see
+\code{funct.phylo.dist}). If a vector of numbers is given,
+\code{shape} iterates across them and returns a \code{data.frame}
+with coefficients from each iteration. See `details' for details
+about different metric calculations when a distance matrix is used.}
+
+\item{traitgram.p}{A value for `p' to be used in conjunction with
+\code{traitgram} when calling \code{funct.phylo.dist}.}
 
 \item{remove.errors}{suppress errors about metrics that failed to
 run (default: TRUE). This will happen for some metrics if you have,
 for example, only one species in a community.}
 
-\item{...}{Additional arguments to passed to metric functions (unlikely you will want this!)}
+\item{ext.dist}{Supply an external species-level distance matrix
+for use in calculations. See `details' for comments on the use of
+distance matrices in different metric calculations.}
+
+\item{...}{Additional arguments to passed to metric functions
+(unlikely you will want this!)}
 }
 \value{
 a \code{phy.structure} list object of metric values
@@ -27,7 +54,9 @@ a \code{phy.structure} list object of metric values
 \code{shape} calculates phylogenetic biodiversity metrics
 }
 \details{
-Calculates various metrics of phylogenetic biodiversity that are categorized as \emph{shape} metrics by Pearse \emph{et al.} (2014)
+Calculates various metrics of phylogenetic biodiversity
+that are categorized as \emph{shape} metrics by Pearse \emph{et
+al.} (2014).
 }
 \examples{
 \dontrun{

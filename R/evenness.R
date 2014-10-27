@@ -11,9 +11,51 @@
 #' \code{evenness} calculates phylogenetic biodiversity metrics
 #' 
 #' @param data a comparative community ecology object
-#' @param metric specify particular metrics to calculate, default is \code{all} (\code{all-quick} will calculate everything bar the Pagel metrics and Rao's D, which can be slow)
+#' @param metric specify particular metrics to calculate, default is
+#' \code{all} (\code{all-quick} will calculate everything bar the
+#' Pagel metrics and Rao's D, which can be slow) #' @param sqrt.phy If
+#' TRUE (default is FALSE) your phylogenetic distance matrix will be
+#' square-rooted; specifying TRUE will force the square-root
+#' transformation on phylogenetic distance matrices (in the spirit of
+#' Leitten and Cornwell, 2014). See `details' for details about
+#' different metric calculations when a distance matrix is used.
+#' @param sqrt.phy If TRUE (default is FALSE) your phylogenetic
+#' distance matrix will be square-rooted; specifying TRUE will force
+#' the square-root transformation on phylogenetic distance matrices
+#' (in the spirit of Leitten and Cornwell, 2014). See `details' for
+#' details about different metric calculations when a distance matrix
+#' is used.
+#' @param traitgram If not NULL (default), a number to be passed to
+#' \code{funct.phylo.dist} (\code{phyloWeight}; the `a' parameter),
+#' causing analysis on a distance matrix reflecting both traits and
+#' phylogeny (0-->only phylogeny, 1--> only traits; see
+#' \code{funct.phylo.dist}). If a vector of numbers is given,
+#' \code{shape} iterates across them and returns a \code{data.frame}
+#' with coefficients from each iteration. See `details' for details
+#' about different metric calculations when a distance matrix is used.
+#' @param traitgram.p A value for `p' to be used in conjunction with
+#' \code{traitgram} when calling \code{funct.phylo.dist}.
 #' @param ... Additional arguments to passed to metric functions (unlikely you will want this!)
-#' @details Calculates various metrics of phylogenetic biodiversity that are categorized as \emph{evenness} metrics by Pearse \emph{et al.} (2014)
+#' @details Calculates various metrics of phylogenetic biodiversity
+#' that are categorized as \emph{evenness} metrics by Pearse \emph{et
+#' al.} (2014)
+#' @details Most of these metrics do not involve comparison with some
+#' kind of evolutionary-derived expectation for phylogenetic
+#' shape. Those that do, however, such as PSV or Colless' index, make
+#' no sense unless applied to a phylogenetic distance matrix - their
+#' null expectation *requires* it. Using square-rooted distance
+#' matrices, or distance matrices that incorporate trait information,
+#' can be an excellent thing to do, but (for the above reasons),
+#' \code{pez} won't give you an answer for metrics for which WDP
+#' thinks it makes no sense. PD and cadotte.pd can (...up to you
+#' whether you should!...) be used with a square-rooted distance
+#' matrix, but the results *will be wrong* if you do not have an
+#' ultrametric tree (branch lengths proportional to
+#' time). \code{is.ultrametric(cc.obj$phy)} will check this for you
+#' and unless suppressed you will have received a warning when
+#' createing your \code{comparative.comm} initially; WDP strongly
+#' feels you should only be using ultrametric phylogenies in any case
+#' (but I do welcome code improvements).
 #' @return a \code{phy.structure} list object of metric values
 #' @author M.R. Helmus, Will Pearse
 #' @references Pearse W.D., Purvis A., Cavender-Bares J. & Helmus
@@ -43,44 +85,82 @@
 #' @importFrom vegan taxondive
 #' @importFrom caper comparative.data pgls summary.pgls coef.pgls
 #' @importFrom ade4 newick2phylog
+#' @importFrom FD dbFD
 #' @export
-evenness <- function(data, metric=c("all", "rao", "taxon", "entropy", "cadotte", "lambda", "delta", "kappa", "mpd", "mntd", "pse", "all-quick"), ...)
+evenness <- function(data, metric=c("all-quick", "all", "rao", "taxon", "entropy", "cadotte", "lambda", "delta", "kappa", "mpd", "mntd", "pse", "dist.fd"), sqrt.phy=FALSE, traitgram=NULL, traitgram.p=2, ext.dist=NULL, ...)
 {
   #Assertions and argument handling
   if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
   metric <- match.arg(metric)
+    if(sum(c(!is.null(traitgram), sqrt.phy, !is.null(ext.dist))) > 1)
+      stop("Confusion now hath made its masterpiece!\nYou have specified more than one thing to do with a distance matrix.")
+  if(!is.null(traitgram)){
+      if(length(traitgram) > 1){
+          output <- vector("list", length(traitgram))
+          for(i in seq_along(output))
+              output[[i]] <- cbind(coef(Recall(data, metric, sqrt.phy, traitgram=traitgram[i], traitgram.p=traitgram.p, ...)), traitgram[i], sites(data))
+          output <- do.call(rbind, output)
+          names(output)[ncol(output)-1] <- "traitgram"
+          names(output)[ncol(output)] <- "site"
+          rownames(output) <- NULL
+          return(output)
+      } else {
+          dist <- as.matrix(funct.phylo.dist(data, traitgram, traitgram.p))
+          traitgram <- TRUE
+      }      
+  } else traitgram <- FALSE
+  
+  if(!is.null(ext.dist)){
+      if(!inherits(ext.dist, "dist"))
+          stop("'ext.dist' must be a distance matrix")
+      if(attr(ext.dist, "Size") != ncol(data$comm))
+          stop("'ext.dist' must have dimensions matching comparative.comm object's species'")
+      if(!identical(attr(ext.dist, "Labels"), species(data)))
+          warning("'ext.dist' names do not match species data; continuing regardless")
+      dist <- as.matrix(ext.dist)
+      ext.dist <- TRUE
+  } else ext.dist <- FALSE
   
   #Setup
-  if(is.null(data$vcv))
-    data$vcv <- cophenetic(data$phy)
   SR <- rowSums(data$comm>0)
   nsite <- nrow(data$comm)
   nspp <- ncol(data$comm)
   coefs <- data.frame(row.names=rownames(data$comm))
-  output <- list(pse=NULL, rao=NULL, taxon=NULL, entropy=NULL, cadotte=NULL, delta=NULL)
+  if(traitgram==FALSE & ext.dist==FALSE)
+      dist <- cophenetic(data$phy)
+  if(sqrt.phy){
+      if(!is.ultrametric(data$phy))
+          warning("Phylogeny is not ultrametric; see function details")
+      dist <- sqrt(dist)
+      data$phy <- as.phylo(hclust(as.dist(dist)))
+  }
+  #Remove missing species
+  dist <- dist[colSums(data$comm)>0, colSums(data$comm)>0]
+  data <- data[,colSums(data$comm)>0]
+  output <- list(pse=NULL, rao=NULL, taxon=NULL, entropy=NULL, cadotte=NULL, delta=NULL, mpd=NULL, mntd=NULL, dist.fd=NULL)
   
   #Caculate measures
-  if(metric == "pse" | metric == "all" | metric == "all-quick")
+  if((metric == "pse" | metric == "all" | metric == "all-quick") & (sqrt.phy==FALSE & traitgram==FALSE & ext.dist==FALSE))
     try(output$pse <- coefs$pse <- pse(data$comm, data$phy)[,1], silent=TRUE)
   
-  if(metric == "rao" | metric == "all" | metric == "all")
+  if(metric == "rao" | metric == "all" | metric == "all-quick")
     try(output$rao <- coefs$rao <- raoD(data$comm, data$phy)$Dkk, silent=TRUE)
   
   if(metric == "taxon" | metric == "all" | metric == "all-quick")
     try({
-      output$taxon <- taxondive(data$comm, data$vcv, ...)
+      output$taxon <- taxondive(data$comm, dist, ...)
       t <- data.frame(output$taxon$D, output$taxon$Dstar, output$taxon$Lambda, output$taxon$Dplus, output$taxon$SDplus)
-      names(t) <- c("Delta", "DeltaStar", "LambdaPlus", "DeltaPlus", "S.DeltaPlus")
+      names(t) <- c("taxon.Delta", "taxon.DeltaStar", "taxon.LambdaPlus", "taxon.DeltaPlus", "taxon.S.DeltaPlus")
       coefs <- cbind(coefs, t)
     }, silent = TRUE)
   
-  if(metric == "entropy" | metric == "all" | metric == "all-quick")
+  if((metric == "entropy" | metric == "all" | metric == "all-quick") & (traitgram==FALSE & ext.dist==FALSE))
     try({
       output$entropy <- .phylo.entropy(data)
       coefs$entropy <- output$entropy[!is.na(output$entropy)]
     }, silent=TRUE)
   
-  if(metric == "cadotte" | metric == "all" | metric == "all-quick")
+  if((metric == "cadotte" | metric == "all" | metric == "all-quick") & (traitgram==FALSE & ext.dist==FALSE))
     try({
       output$cadotte <- data.frame(PAE=.pae(data), IAC=.iac(data), Haed=.haed(data), Eaed=.haed(data)/log(rowSums(data$comm)))
       coefs$PAE <- output$cadotte$PAE
@@ -89,7 +169,7 @@ evenness <- function(data, metric=c("all", "rao", "taxon", "entropy", "cadotte",
       coefs$Eaed <- output$cadotte$Eaed
     }, silent=TRUE)
     
-  if(metric == "lambda" | metric == "all"){
+  if((metric == "lambda" | metric == "all") & (sqrt.phy==FALSE & traitgram==FALSE & ext.dist==FALSE)){
     output$lambda <- list(models=vector("list", nrow(data$comm)), values=numeric(nrow(data$comm)))
     for(i in seq(nrow(data$comm))){
       c.data <- data$comm[i,][data$comm[i,] > 0]
@@ -106,7 +186,7 @@ evenness <- function(data, metric=c("all", "rao", "taxon", "entropy", "cadotte",
     coefs$lambda <- output$lambda$values
   }
   
-  if(metric == "delta" | metric == "all"){
+  if((metric == "delta" | metric == "all") & (sqrt.phy==FALSE & traitgram==FALSE & ext.dist==FALSE)){
     output$delta <- list(models=vector("list", nrow(data$comm)), values=numeric(nrow(data$comm)))
     for(i in seq(nrow(data$comm))){
       c.data <- data$comm[i,][data$comm[i,] > 0]
@@ -122,8 +202,8 @@ evenness <- function(data, metric=c("all", "rao", "taxon", "entropy", "cadotte",
     }
     coefs$delta <- output$delta$values
   }
-  
-  if(metric == "kappa" | metric == "all"){
+
+  if((metric == "kappa" | metric == "all") & (sqrt.phy==FALSE & traitgram==FALSE & ext.dist==FALSE)){
     output$kappa <- list(models=vector("list", nrow(data$comm)), values=numeric(nrow(data$comm)))
     for(i in seq(nrow(data$comm))){
       c.data <- data$comm[i,][data$comm[i,] > 0]
@@ -141,11 +221,25 @@ evenness <- function(data, metric=c("all", "rao", "taxon", "entropy", "cadotte",
   }
 
   if(metric == "mpd" | metric == "all" | metric == "all-quick")
-    output$mpd <- coefs$mpd <- try(mpd(data$comm, data$vcv, abundance.weighted=TRUE, ...), silent = TRUE)
+    output$mpd <- coefs$mpd <- try(mpd(data$comm, dist, abundance.weighted=TRUE, ...), silent = TRUE)
 
   if(metric == "mntd" | metric == "all" | metric == "all-quick")
-    output$mntd <- coefs$mntd <- try(mntd(data$comm, data$vcv, abundance.weighted=TRUE, ...), silent = TRUE)
+    output$mntd <- coefs$mntd <- try(mntd(data$comm, dist, abundance.weighted=TRUE, ...), silent = TRUE)
 
+    if(metric == "dist.fd" | metric == "all")
+      try({
+          if(!is.null(data$data) | traitgram==FALSE | ext.dist==FALSE){
+              t <- dist
+          } else t <- data$data
+          output$dist.fd$output <- capture.output(output$dist.fd <- dbFD(t, data$comm, w.abun=TRUE, messages=TRUE, ...))
+          coefs <- with(output$dist.fd, cbind(coefs, cbind(FRic, FEve, FDiv, FDis, RaoQ)))
+          #Only bother getting CWMs if we have trait data
+          if(!is.null(data$data)){
+              t <- output$dist.fd$CWM
+              colnames(t) <- paste(colnames(t), "cmw", sep=".")
+              coefs$dist.fd <- rbind(coef$dist.fd, t)
+          }
+      }, silent=TRUE)
   
   #Prepare output
   output$type <- "evenness"

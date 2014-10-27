@@ -301,6 +301,7 @@ sites <- function(x){
         rownames(x$env) <- value
     return(x)
 }
+
 ##' @export
 ##' @rdname cc.manip
 assemblage.phylogenies <- function(data){
