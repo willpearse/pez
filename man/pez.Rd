@@ -6,13 +6,30 @@
 \alias{pez-package}
 \title{Phylogenetics for the Environmental Sciences}
 \description{
-Eco-phylogenetic and community phylogenetic analyses.  Keeps
-community ecological and phylogenetic data matched up and
-comparable using 'comparative.comm' objects. Wrappers for common
-community phylogenetic indices ('shape', 'evenness', 'dispersion',
-and 'dissimilarity' metrics). Implementation of Cavender-Bares
-(2004) correlation of phylogenetic and ecological matrices
-('fingerprint.regression'). Simulation of null assemblages, traits,
-and phylogenies ('scape', 'sim.meta.comm').
+Analysis and manipulation of eco-phylogenetic datasets containing
+species phylogeny, species traits, community composition, and
+environmental data. Provide the \code{\link{comparative.comm}}
+object to ease data manipulation, and wrappers for common community
+phylogenetic indices grouped according to Pearse et al. 2014:
+\code{\link{shape}}, \code{\link{evenness}},
+\code{\link{dispersion}}, and
+\code{\link{dissimilarity}}. Implementation of Cavender-Bares et
+al. (2004) correlation of phylogenetic and ecological matrices
+(\code{\link{fingerprint.regression}}). Simulation of null
+assemblages, traits, and phylogenies (\code{\link{scape}},
+\code{\link{sim.meta.comm}}).
+}
+\examples{
+\\notrun{
+require(pez)
+data(laja)
+data <- comparative.comm(invert.tree, river.sites, invert.traits, river.env)
+coef(shape(data))
+}
+}
+\references{
+Pearse W.D., Purvis A., Cavender-Bares J. & Helmus M.R. (2014). Metrics and Models of Community Phylogenetics. In: Modern Phylogenetic Comparative Methods and Their Application in Evolutionary Biology. Springer Berlin Heidelberg, pp. 451-464.
+
+Cavender-Bares J., Ackerly D.D., Baum D.A. & Bazzaz F.A. (2004) Phylogenetic overdispersion in Floridian oak communities. The Americant Naturalist 163(6): 823--843.
 }
 

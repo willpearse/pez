@@ -1,40 +1,59 @@
-#' Plot a fingerprint regression (sensu Cavender-Bares et al. 2004 Figure 6)
+#' Regress trait evolution against trait ecology
 #' 
-#' \code{fingerprint.regression} calculates traits' phylogenetic
-#' inertia, and then plots this as a function of trait similarity
-#' among communities
+#' Calculates traits' phylogenetic inertia and regresses this against
+#' trait similarity among co-existing species (sensu Cavender-Bares et
+#' al. 2004 Figure 6)
 #' 
-#' @param data a comparative community ecology object on which to run the analyses
-#' @param eco.rnd null distribution with which to compare your community data - one of:
-#' taxa.labels, richness, frequency, sample.pool, phylogeny.pool, independentswap, trialswap
-#' (as implemented in 'picante')
-#' @param eco.method regression to perform - one of: lm, quantile, mantel
-#' @param eco.permute the number of null permutations to perform
-#' @param evo.method how to measure phylogenetic inertia - one of:
-#' lambda, delta, kappa.
+#' @param data \code{\link{comparative.comm}} for analysis
+#' @param eco.rnd null distribution with which to compare your
+#' community data, one of: \code{taxa.labels} (DEFAULT),
+#' \code{richness}, \code{frequency}, \code{sample.pool},
+#' \code{phylogeny.pool}, \code{independentswap}, \code{trialswap} (as
+#' implemented in \code{\link{picante}})
+#' @param eco.method how to compare distance matrices (only the lower
+#' triangle;), one of: \code{\link{base::lm}} (linear regression),
+#' \code{quantile} (DEFAULT; \code{\link{quantreg::rq}}), \code{mantel}
+#' (\code{\link{vegan::mantel}})
+#' @param evo.method how to measure phylogenetic inertia, one of:
+#' \code{lambda} (default), \code{delta}, \code{kappa}, \code{blom.k};
+#' see \code{\link{phy.signal}}.
 #' @param eco.swap number of independent swap iterations to perform
-#' (if using that randomisation); default is 1000
+#' (if specified in \code{eco.rnd}; DEFAULT 1000)
 #' @param ... additional parameters to pass on to model fitting functions
-#' @details This is extremely unchcked, so beware!
-#' @note Like the eco.trait and eco.env methods, this is a data-hungry
+#' @details While the term `fingerprint regression% is new to pez, the
+#' method is very similar to that employed in Cavender-Bares et
+#' al. 2004 Figure 6. For each trait, the phylogenetic inertia of
+#' species% traits is regressed against their co-occurrence in the
+#' community matrix. Note that Pagel%s $\lambda$, $\delta$, and
+#' \eqn{$\kappa$}{kappa} are used, unlike the original where a mantel test was
+#' employed. Moreover, note also that Pianka's distance (as described
+#' in the manuscript) is used to measure species overlap.
+#' @note Like \code{\link{eco.xxx.regression}}, this is a data-hungry
 #' method. Warnings will be generated if any of the methods cannot be
 #' fitted properly (the examples below give toy examples of this). In
 #' such cases the summary and plot methods of these functions may
-#' generate errors; use 'traceback()' to examine where these are
-#' coming from, and consider whether you want to be working with the
-#' data generating these errors. I am loathe to hide these errors or
-#' gloss over them, because they represent the reality of your data!
-#' @author Will Pearse
+#' generate errors; perhaps using \code{\link{traceback}} to examine
+#' where these are coming from, and consider whether you want to be
+#' working with the data generating these errors. I am loathe to hide
+#' these errors or gloss over them, because they represent the reality
+#' of your data!
+#' @note WDP loves quantile regressions, and advises that you check
+#' different quantiles using the \code{tau} options.
+#' @seealso eco.xxx.regression phy.signal
+#' @author Will Pearse and Jeannine Cavender-Bares
+#' @references Cavender-Bares J., Ackerly D.D., Baum D.A. & Bazzaz F.A. (2004) Phylogenetic overdispersion in Floridian oak communities. The Americant Naturalist 163(6): 823--843.
+#' @references Kembel, S.W., Cowan, P.D., Helmus, M.R., Cornwell, W.K., Morlon, H., Ackerly, D.D., Blomberg, S.P. & Webb, C.O. Picante: R tools for integrating phylogenies and ecology. Bioinformatics 26(11): 1463--1464.
+#' @references Pagel M. Inferring the historical patterns of biological evolution. Nature 401(6756): 877--884.
 #' @examples \dontrun{
-#' data(phylocom)
-#' data <- comparative.comm(phylocom$phy, phylocom$sample, traits=phylocom$traits)
+#' data(laja)
+#' data <- comparative.comm(invert.tree, river.sites, invert.traits, river.env)
 #' fingerprint.regression(data, eco.permute=10)
-#' plot(fingerprint.regression(data, permute=10, method="lm))
+#' plot(fingerprint.regression(data, permute=10, method="lm"))
 #' plot(fingerprint.regression(data, permute=10, method="lm", altogether=FALSE))
 #' }
 #' @export
 fingerprint.regression <- function(data, eco.rnd=c("taxa.labels", "richness", "frequency", "sample.pool", "phylogeny.pool", "independentswap", "trialswap"),
-  eco.method=c("quantile", "lm", "mantel"), eco.permute=1000, evo.method=c("lambda", "delta", "kappa"), eco.swap=1000, ...){
+  eco.method=c("quantile", "lm", "mantel"), eco.permute=1000, evo.method=c("lambda", "delta", "kappa", "blom.k"), eco.swap=1000, ...){
   #Checks
   if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
   eco.rnd <- match.arg(eco.rnd)
@@ -63,12 +82,13 @@ fingerprint.regression <- function(data, eco.rnd=c("taxa.labels", "richness", "f
   return(output)
 }
 
-#' #' Print a fingerprint.regression (...by summarising it...)
+#' Print a fingerprint.regression
 #' @method print fingerprint.regression
 #' @param x \code{fingerprint.regression} object
 #' @param ... arguments passed to
-#' \code{summary.fingerprint.regression} (currently ignored)
+#' \code{\link{summary.fingerprint.regression}} (ignored)
 #' @export
+#' @rdname fingerprint.regression
 print.fingerprint.regression <- function(x, ...){
   summary(x, ...)
 }
@@ -77,6 +97,7 @@ print.fingerprint.regression <- function(x, ...){
 #' @method summary fingerprint.regression
 #' @param object \code{fingerprint.regression} object
 #' @param ... ignored
+#' @rdname fingerprint.regression
 #' @export
 summary.fingerprint.regression <- function(object, ...){
   cat("Phylogenetic inertia calculated using", object$evo.method, "(examine with model$evo):\n")
@@ -88,12 +109,13 @@ summary.fingerprint.regression <- function(object, ...){
 #' Plot a fingerprint.regression
 #' @method plot fingerprint.regression
 #' @param x \code{fingerprint.regression} object
-#' @param eco plot the observed slopes ("slope", the default), or the
+#' @param eco plot the observed slopes (DEFAULT: \code{slope}), or the
 #' median difference between the simulations and the observed values
-#' ('corrected')
+#' (\code{corrected})
 #' @param xlab label for x-axis (default "Ecological Trait Coexistence")
 #' @param ylab label for y-axis (default "Phylogenetic inertia")
 #' @param ... additional plotting arguments
+#' @rdname fingerprint.regression
 #' @export
 plot.fingerprint.regression <- function(x, eco=c("slope", "corrected"), xlab="Ecological Trait Coexistence", ylab="Phylogenetic inertia", ...){
   eco <- match.arg(eco)

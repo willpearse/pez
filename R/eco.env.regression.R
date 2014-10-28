@@ -1,43 +1,8 @@
-#' Run an eco.env.regression regression (Cavender-Bares et al. 2004)
-#' 
-#' \code{eco.env.regression} runs a regression of ecological community
-#' coexistence versus species' trait-distances' overlap based on
-#' environmental tolerances
-#' 
-#' @param data a comparative community ecology object on which to run the regression
-#' @param randomisation what kind of null distributions to compare your data with - one of:
-#' taxa.labels, richness, frequency, sample.pool, phylogeny.pool, independentswap, trialswap
-#' (as implemented in 'picante')
-#' @param permute the number of null permutations to perform
-#' @param altogether use distance matrix based on all traits (default
-#' TRUE), or perform separate regressions for each trait
-#' @param method how to compare distance matrices - one of: quantile
-#' (quantile regression), lim (linear regression), mantel (Mantel
-#' test)
-#' @param indep.swap number of independent swap iterations to perform
-#' (if using that randomisation); default is 1000
-#' @param ... additional arguments to pass on to model fitting functions
-#' @details This is extremely unchcked, so beware!
-#' @note Like the eco.trait and eco.env methods, this is a data-hungry
-#' method. Warnings will be generated if any of the methods cannot be
-#' fitted properly (the examples below give toy examples of this). In
-#' such cases the summary and plot methods of these functions may
-#' generate errors; use 'traceback()' to examine where these are
-#' coming from, and consider whether you want to be working with the
-#' data generating these errors. I am loathe to hide these errors or
-#' gloss over them, because they represent the reality of your data!
-#' @author Will Pearse, Jeannine Cavender-Bares
-#' @examples \dontrun{
-#' data(phylocom)
-#' dummy.env <- data.frame(letters=letters[1:6], repeated=rep("A", 6), row.names=rownames(phylocom$sample))
-#' data <- comparative.comm(phylocom$phy, phylocom$sample, env=dummy.env)
-#' eco.env.regression(data, permute=10)
-#' plot(eco.env.regression(data, permute=10, method="lm))
-#' plot(eco.env.regression(data, permute=10, method="lm", altogether=FALSE))
-#' }
 #' @importFrom quantreg rq
 #' @importFrom vegan mantel
 #' @export
+#' @rdname eco.xxx.regression
+#' @name eco.xxx.regression
 eco.env.regression <- function(data, randomisation=c("taxa.labels", "richness", "frequency",
                                    "sample.pool", "phylogeny.pool", "independentswap", "trialswap"),
                                permute=0, method=c("quantile", "lm", "mantel"), altogether=TRUE, indep.swap=1000, ...){
@@ -103,7 +68,7 @@ eco.env.regression <- function(data, randomisation=c("taxa.labels", "richness", 
       }
       output$altogether <- FALSE
       output$type <- "eco.env.regression.list"
-      class(output) <- "ecophyl.regression.list"
+      class(output) <- "eco.xxx.regression.list"
     }
   output$data <- data
   output$permute<-permute;output$method<-method

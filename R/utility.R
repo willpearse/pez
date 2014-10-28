@@ -55,15 +55,16 @@
   output <- list(observed=observed, randomisations=randomisations, obs.slope=obs.slope, rnd.slopes=rnd.slopes,
                  method=method, permute=permute, randomisation=randomisations)
   if(!is.null(class)) output$type <- class
-  class(output) <- "ecophyl.regression"
+  class(output) <- "eco.xxx.regression"
   return(output)
 }
 
 #Printing summaries of regressions
 #ADD RETURN STATEMENTS FOR FALL-THROUGH LIKE OTHERS
-#' @method summary ecophyl.regression
+#' @method summary eco.xxx.regression
 #' @export
-summary.ecophyl.regression <- function(object, ...){
+#' @rdname eco.xxx.regression
+summary.eco.xxx.regression <- function(object, ...){
     x <- object  ## FIXME:  lazy hack
     cat("\n", x$type, "\n", sep="")
     cat("Method: ", x$method, "\n")
@@ -83,9 +84,10 @@ summary.ecophyl.regression <- function(object, ...){
         print(x$observed) else print(summary(x$observed))
     cat("\n")
 }
-#' @method print ecophyl.regression
+#' @method print eco.xxx.regression
 #' @export
-print.ecophyl.regression <- function(x, ...){
+#' @rdname eco.xxx.regression
+print.eco.xxx.regression <- function(x, ...){
     summary(x, ...)
 }
 
@@ -119,9 +121,10 @@ print.ecophyl.regression <- function(x, ...){
     }
 }
 
-#' @method plot ecophyl.regression
+#' @method plot eco.xxx.regression
 #' @export
-plot.ecophyl.regression <- function(x, ...){
+#' @rdname eco.xxx.regression
+plot.eco.xxx.regression <- function(x, ...){
     if(x$type == "eco.env.regression"){
         #Beware calling without knowing which environmental distance matrix we should be using
         if(!x$altogether) stop("Cannot call 'plot' on an element of an eco.env.regression.list - uses plot(list, no.trait) instead")
@@ -148,7 +151,12 @@ plot.ecophyl.regression <- function(x, ...){
     }
 }
 
-summary.ecophyl.regression.list <- function(object, ...){
+#' List of eco.xxx.regressions
+#' @method summary eco.xxx.regression.list
+#' @export
+#' @rdname eco.xxx.regression.list
+#' @name eco.xxx.regression.list
+summary.eco.xxx.regression.list <- function(object, ...){
     x <- object ## FIXME:  lazy hack
     if(x$type == "eco.env.regression.list"){
         cat("\neco.env.regression list:\n")
@@ -170,7 +178,10 @@ summary.ecophyl.regression.list <- function(object, ...){
 
 }
 
-print.ecophyl.regression.list <- function(x, ...){
+#' @method print eco.xxx.regression.list
+#' @export
+#' @rdname eco.xxx.regression.list
+print.eco.xxx.regression.list <- function(x, ...){
     if(x$type == "eco.env.regression.list"){
         cat("\neco.env.regression list:\n")
         cat("Traits:\n")
@@ -189,7 +200,10 @@ print.ecophyl.regression.list <- function(x, ...){
     }
 }
 
-plot.ecophyl.regression.list <- function(x, ...){
+#' @method plot eco.xxx.regression.list
+#' @export
+#' @rdname eco.xxx.regression.list
+plot.eco.xxx.regression.list <- function(x, ...){
     if(x$type == "eco.env.regression.list"){
         eco.matrix <- as.numeric(comm.dist(x$data$comm))
         env.matrix <- pianka.dist(x$data, FALSE)
@@ -215,23 +229,23 @@ plot.ecophyl.regression.list <- function(x, ...){
     }
 }
 
-
 ##' Trim a phylogeny
 ##'
-##' This is an \code{ape} work-around, intended to be the same as
-##' \code{\link{drop.tip}} but not returning a nonsense phylogeny).
+##' This is a weak wrapper around \code{ape}'s
+##' \code{\link{drop.tip}}. Importantly, if asked to drop no species
+##' from a phylogeny, it will just return the phylogeny (not an empty
+##' phylogeny, as \code{\link{drop.tip}}) will.
 ##'
-##' @param tree A \code{phylo} object
-##' @param spp A tip to drop
-##' @return \code{ape::phylo} object
+##' @param tree An \code{\link{ape::phylo}} object
+##' @param spp A vector of species (one, many, or none) to be removed
+##' from \code{tree}
+##' @return \code{\link{ape::phylo}} object
+##' @seealso ape::drop.tip ape::extract.clade
 ##' @export
 drop_tip <- function(tree, spp)
   if(length(setdiff(tree$tip.label, spp)) >0) return(drop.tip(tree, spp)) else return(tree)
 
-#' Summarise phylogenetic structure objects
 #' @method summary phy.structure
-#' @param object \code{phy.structure} object to be summarised
-#' @param ... additional arguments (currently there are none)
 #' @export
 summary.phy.structure <- function(object, ...){
     #Argument checking
@@ -342,22 +356,11 @@ summary.phy.structure <- function(object, ...){
     cat("No valid phylogenetic structure metrics found.\n")
 }
 
-
-#' Print a phylogenetic structure object
-#' @method print phy.structure
-#' @param x \code{phy.structure} object to be printed
-#' @param ... additional arguments to be passed to
-#' \code{summary.phy.structure} (currently there are none)
 #' @export
 print.phy.structure <- function(x, ...){
     summary(x)
 }
 
-#' Get coefs of a phylogenetic structure object
-#' @param object \code{phy.structure} object with coefficients to be
-#' returned
-#' @param ... (ignored)
-#' @note Calling \code{object$coefs} would give you this too!
 #' @method coef phy.structure
 #' @export
 coef.phy.structure <- function(object, ...){
@@ -371,4 +374,18 @@ coef.phy.structure <- function(object, ...){
 .removeErrors <- function(object) {
     if(inherits(object, "try-error")) return(NULL)
     object
+}
+
+#' Manipulate internals of \code{comparative.comm} object
+#' @export
+#' @rdname cc.manip
+within.comparative.comm <- function(data, expr, ...){
+	
+	parent <- parent.frame()
+	e <- evalq(environment(), data, parent)
+	eval(substitute(expr), e)
+	
+	cc <- as.list(e)
+	class(cc) <- class(data)
+        return(cc)
 }

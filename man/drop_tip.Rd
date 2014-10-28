@@ -6,15 +6,21 @@
 drop_tip(tree, spp)
 }
 \arguments{
-\item{tree}{A \code{phylo} object}
+\item{tree}{An \code{\link{ape::phylo}} object}
 
-\item{spp}{A tip to drop}
+\item{spp}{A vector of species (one, many, or none) to be removed
+from \code{tree}}
 }
 \value{
-\code{ape::phylo} object
+\code{\link{ape::phylo}} object
 }
 \description{
-This is an \code{ape} work-around, intended to be the same as
-\code{\link{drop.tip}} but not returning a nonsense phylogeny).
+This is a weak wrapper around \code{ape}'s
+\code{\link{drop.tip}}. Importantly, if asked to drop no species
+from a phylogeny, it will just return the phylogeny (not an empty
+phylogeny, as \code{\link{drop.tip}}) will.
+}
+\seealso{
+ape::drop.tip ape::extract.clade
 }
 

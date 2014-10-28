@@ -21,6 +21,16 @@
 #' @note No serious checking of user-provided matrices is performed;
 #' this is both useful and dangerous!
 #' @return TODO
+#' @examples \dontrun{
+#' data(laja)
+#' data <- comparative.comm(invert.tree, river.sites, invert.traits)
+#' #Must have all species present in at least one community!
+#' data <- data[,colSums(data$comm) > 0]
+#' sims <- ConDivSim(data)
+#' #...without traits...
+#' sims.phy <- ConDivSim(data, type=NULL)
+#' }
+#' 
 #' @export
 ConDivSim<-function(object, type="traits", n.sim=100, plot = TRUE, disp99 = FALSE){
     #Assertions and argument handling
@@ -70,7 +80,7 @@ ConDivSim<-function(object, type="traits", n.sim=100, plot = TRUE, disp99 = FALS
                           "ExpQ0.75MPD","ExpQ0.95MPD",
                           "ExpQ0.975MPD","ExpQ0.995MPD",
                           "ExpSdMPD")
-    row.names(Randomiz) <- 1:length(SpRich)
+    row.names(Randomiz) <- seq_along(SpRich)
     
     ## calculate the observed mean pairwise distance for the community
     ## (with the unweighted method from mpd in picante, it means only 
@@ -79,12 +89,13 @@ ConDivSim<-function(object, type="traits", n.sim=100, plot = TRUE, disp99 = FALS
     
     ## Loop on the species richness range to calculate the random 
     ## expectations of mean pairwise distance
-    for (k in 1:length(SpRich)){
+    for (k in seq_along(SpRich)){
         
     	# Vector of local richness within the possible range SpRich
     	locrich <- SpRich[k]
         
     	# Create the basic vector of presence
+        browser()
         Vec.Pres <- c(rep(1, locrich), rep(0, NbSp-locrich))
         
         # Estimate the random expectations of mean pairwise distances 
@@ -149,3 +160,133 @@ ConDivSim<-function(object, type="traits", n.sim=100, plot = TRUE, disp99 = FALS
     
     return(Randomiz)
 }
+
+#TODO: NULL
+#
+#' Produces simulated communities based on species attributes
+#' 
+#' \code{trait.asm} calculates phylogenetic biodiversity metrics
+#' 
+#' @param a species attributes (e.g., traits like body size)
+#' @param m number of communities to be simulated
+#' @param meanSR target mean species richness across simulated communities
+#' @param interval adjust to obtain \code{meanSR}
+#' @param exponential use the exponential distribution when simulating communities
+#' @param Pscale adjust this value when not using the exponential distribution in order to scale the species richnesses in the simulated communities
+#' @details Simulates a set of communties based on the supplied attribute (trait) where larger values make it more likely for species to be in the communities.
+#
+#' @return \code{Y} presence/absence matrix
+#' @return \code{P} probabilities
+#' @return \code{a} the supplied trait
+#' @return \code{exponential} if the exponential distribution was used
+#' @return \code{meanSR} supplied \code{meanSR} value
+#' @return \code{std} estimated sd
+#' @author M.R. Helmus
+#' @references Helmus M., Mercado-Silva N. & Vander Zanden M.J. (2013). Subsidies to predators, apparent competition and the phylogenetic structure of prey communities. Oecologia, 173, 997-1007.
+#' @examples
+#' \dontrun{
+#'  data(laja)
+#'  trait.asm(laja$fish.pref)
+#' }
+trait.asm<-function(a, m=1000,meanSR=NULL,interval=c(.001,10),exponential=TRUE,Pscale=1)
+{
+    a<-a[!is.na(a)]
+	  n<-length(a)
+    e<-as.matrix(a)
+    
+  if(!is.null(meanSR)){
+    zz<-function(std,e,m,n,meanSR)
+    {
+      P <- exp(array(e,c(n,m))/std)/exp(max(e)/std)
+      p <- array(P,c(n*m,1))
+      Y <- rbinom(n*m, 1, p)
+      Y <- t(array(Y, c(n,m)))
+      abs(meanSR-mean(rowSums(Y)))
+    }
+    std<-unlist(optimize(zz,interval=interval,n=n,m=m,e=e,meanSR=meanSR))[1]    
+  } else {std<-1}
+
+  #exponential distribution
+  if(exponential)
+  {
+    P <- (exp(array(e,c(n,m))/std)/exp(max(e)/std))
+  } else {
+    #do not use exponential distribution
+    P <- Pscale*array(e,c(n,m))
+  }
+  p <- array(P,c(n*m,1))
+	# convert distribution to presence/absence
+	Y <- rbinom(n*m, 1, p)
+	Y <- t(array(Y, c(n,m)))
+  colnames(Y)<-names(a)
+  return(list(Y=Y,P=P,a=a,exponential=exponential,meanSR=meanSR,std=std))
+}
+
+##' Traitgram for comparative community object
+##'
+##' A wrapper for the \code{\link{traitgram}} function in the
+##' \code{picante} package.
+##'
+##' @param object A \code{\link{comparative.comm}} object.
+##' @param trait Which trait to plot.  If \code{\link{missing}}, use
+##' the first trait.  If a positive \code{\link{numeric}} vector of
+##' \code{\link{length}} one, use the \code{as.integer(trait)}th
+##' trait.  If a \code{\link{numeric}} vector, use it instead of the
+##' trait data in \code{object}.  If a \code{\link{character}} vector
+##' of \code{\link{length}} one, use the trait with that name.  If a
+##' \code{\link{function}} pass the trait data frame through that
+##' function and use the result (\code{\link{princomp.one}} is a
+##' wrapper).  If an \code{\link{expression}}, evaluate that
+##' expression in the environment of the trait data and use the
+##' result.  If a \code{\link{character}} vector, then convert to an
+##' expression and evaluate in the environment of the trait data and
+##' use the result.
+##' @param moreArgs List of more arguments to pass on to \code{trait}
+##' (if its a \code{\link{function}}).
+##' @param ... Additional arguments to be passed on to
+##' \code{\link{traitgram}}.
+##' @return See \code{\link{traitgram}}
+##' @importFrom picante traitgram
+##' @export
+cc.traitgram <- function(object, trait, moreArgs = NULL, ...) {
+    if(is.null(object$data)) stop("must supply trait information")
+    if(is.null(object$phy)) stop("must supply phylogeny")
+    if(missing(trait)) {
+        if(is.null(dim(object$data))) {
+            tt <- object$data
+        } else {
+            tt <- object$data[, 1]
+        }
+    } else if(is.numeric(trait)) {
+        if(length(trait) == 1) {
+            if(trait < 1) stop("trait can't be a negative number")
+            tt <- object$data[, as.integer(trait)]
+        } else {
+            tt <- trait
+        }
+    } else if(is.function(trait)) {
+        tt <- do.call(trait, c(list(object$data), moreArgs))
+    } else if(is.language(trait)) {
+        tt <- with(object$data, eval(trait))
+    } else if(is.character(trait)) {
+        trait <- parse(text = paste(trait, collapse = "; "))
+        tt <- with(object$data, eval(trait))
+    }
+
+    # resolve possible polytomies
+    pp <- multi2di(object$phy)
+
+    # plot
+    traitgram(tt, pp, ...)
+}
+
+##' First axis of a principal components analysis
+##'
+##' A very soft wrapper for \code{\link{princomp}}
+##' 
+##' @param x A matrix-like object
+##' @param ... Arguments to pass on to \code{\link{princomp}}
+##' @return The first axis of a PCA
+##' @rdname cc.traitgram
+##' @export
+princomp.one <- function(x, ...) princomp(x, ...)$scores[,1]

@@ -1,39 +1,51 @@
-#' \code{comparative.comm} creates a community comparative ecology object
+#' Creates a community comparative ecology object, the basis of all
+#' functions in pez
 #' 
-#' @param phy phylogeny (in ape::phylo format) of species
-#' @param comm a community matrix (as used in vegan) with species as columns and rows as community samples
-#' @param traits a data.frame of species traits (with row names
-#' matching those of 'comm'). Saved in the \code{data} slot of the
-#' resulting \code{comparative.comm} object for compatibility with the
-#' package \code{caper}.
-#' @param env a data.frame of environmental data (all continuous
-#' variables) with row names matching those of 'comm'
+#' @param phy phylogeny (in \code{\link{ape::phylo}} format) of
+#' species
+#' @param comm community \code{matrix} (as used in
+#' \code{\link{vegan}}) with species as columns and rows as
+#' communities. Must contain \code{rownames} and \code{colnames}.
+#' @param traits \code{data.frame} of species traits, with
+#' \code{rownames} matching \code{comm}. Saved in the \code{data} slot
+#' of the resulting \code{comparative.comm} object for compatibility
+#' with \code{\link{caper::comparative.data}}.
+#' @param env \code{data.frame} of environmental data with
+#' \code{rownames} matching \code{comm}
 #' @param warn whether to warn if species/sites are dropped when
 #' creating object (default: TRUE)
-#' @param vcv whether to calculate variance-covariance matrix and
-#' store in object to save time (but perhaps not memory) for later
-#' calculations (default: FALSE). Storing a VCV now may cause problems
-#' if you intend to use this object with the package \code{caper}.
-#' @param force.root if phylogeny is unrooted, a root.edge of value
-#' force.root will be added (default: -1, which means this will never
-#' happen). Rarely needed, even more rarely advisable.
+#' @param force.root if \code{phy} is unrooted, a \code{root.edge} of
+#' value force.root will be added (default: -1, which means this will
+#' never happen). Rarely needed, rarely advisable.
 #' @details Basic checking of whether the input data match up is
-#' performed; you need only supply 'comm' and 'phy', nothing else is
-#' mandatory.  Subsetting according to communities (rows) and species
-#' (columns) is possible - see 'examples' for details.
+#' performed; you need only supply \code{comm} and \code{phy}, nothing
+#' else is mandatory. You can manipulate the internals of
+#' \code{comparative.comm}, or use the wrappers inside \code{pez} to
+#' keep everything in order. Examples of these features are given
+#' below; they are described in detailed at \code{\link{cc.manip}}.
 #' @return comparative.comm object
 #' @examples \dontrun{
 #' data(laja)
-#' data <- comparative.comm(invert.tree, river.sites)
-#' data <- comparative.comm(invert.tree, river.sites, invert.traits)
 #' data <- comparative.comm(invert.tree, river.sites, invert.traits, river.env)
-#' data[1:3,]
-#' data[,1:3]
+#' #Subset on species, then sites
+#' data <- data[1:5,]
+#' data <- data[,1:5]
+#' #Site and species can be manipulated
+#' species(data)
+#' sites(data)[1:3] <- c("lovely", "invert", "sites")
+#' #Other data can be viewed
+#' trait.names(data)
+#' env.names(data)
+#' #Get assemblage phylogenies of all sites
+#' assemblage.phylogenies(data)
+#' #Do some manual manipulation of your objects (NOTE: $data for traits)
+#' data$data$new.trait <- sample(letters, nrow(data$comm), replace=TRUE)
 #' }
 #' @importFrom ape is.rooted cophenetic.phylo
 #' @importFrom ade4 scalewt
+#' @seealso plot.comparative.comm cc.manip caper::comparative.data
 #' @export
-comparative.comm <- function(phy, comm, traits=NULL, env=NULL, warn=TRUE, vcv=FALSE, force.root=-1){
+comparative.comm <- function(phy, comm, traits=NULL, env=NULL, warn=TRUE, force.root=-1){
   #Assertions and argument handling
   #Phylogeny
   if(!inherits(phy, "phylo")) 
@@ -112,21 +124,20 @@ comparative.comm <- function(phy, comm, traits=NULL, env=NULL, warn=TRUE, vcv=FA
   comm <- comm[order(rownames(comm)), ]
   comm <- comm[, match(phy$tip.label, colnames(comm))]
   if(!is.null(traits)){
-    traits <- traits[rownames(traits), , drop = FALSE]
+    traits <- traits[match(phy$tip.label, rownames(traits)), , drop = FALSE]
     traits <- traits[, colnames(traits), drop = FALSE]
   }
   if(!is.null(env)){
-    env <- env[rownames(env), , drop = FALSE]
+    env <- env[match(rownames(comm), rownames(env)), , drop = FALSE]
     env <- env[, colnames(env), drop = FALSE]
   }
   
-  #Handle VCV, make output, and return
+  #Makee output, and return
   output <- list(phy=phy, comm=comm, data=traits, env=env, dropped=list(comm.sp.lost = comm.sp.lost,
                                                                  comm.sites.lost=comm.sites.lost,
                                                                  phy.sp.lost=phy.sp.lost,
                                                                  traits.sp.lost=traits.sp.lost,
-                                                                 env.sites.lost=env.sites.lost), names=names, vcv=NULL)
-  if(vcv) output$vcv <- cophenetic(phy)
+                                                                 env.sites.lost=env.sites.lost), names=names)
   class(output) <- c("comparative.comm", "comparative.data")
   return(output)
 }
@@ -148,7 +159,6 @@ print.comparative.comm <- function(x, ...){
     cat("Comparative community dataset of", ncol(x$comm), "taxa:\n")
     cat("Phylogeny:\n")
     cat("   ", x$phy$Nnode, " internal nodes", sep='')
-    if(!is.null(x$vcv)) cat(', VCV matrix present\n') else cat("\n")
     cat("Community data:\n")
     cat("    ", nrow(x$comm), " sites, ", ncol(x$comm), " taxa\n")
     
@@ -178,24 +188,54 @@ print.comparative.comm <- function(x, ...){
   }
 }
 
-#' Slice out the species or site that you want from your comparative.comm object
-#' @param x \code{comparative.comm} object to be subset
+#' Manipulating and examining comparative.comm objects
+#' @param x \code{comparative.comm} object
 #' @param sites numbers of sites to be kept or dropped from \code{x};
-#' cannot be given as names, but rather numbers. For example,
-#' \code{x[1:5,]}, or \code{x[-1:-5,]}, but not \code{x[c("site a",
-#' "site b"),]}.
-#' @param spp numbers of species to be kept or dropped from
-#' \code{x}; cannot be given as names, but rather numbers. For
-#' example, \code{x[,1:5]}, or \code{x[,-1:-5]}, but not
-#' \code{x[c("sp a", "sp b"),]}.
+#' must be given as numbers. For example, \code{x[1:5,]}, or
+#' \code{x[-1:-5,]}, but not \code{x[c("site a", "site b"),]}.
+#' @param spp numbers of species to be kept or dropped from \code{x};
+#' must be given as numbers. For example, \code{x[,1:5]}, or
+#' \code{x[,-1:-5]}, but not \code{x[c("sp a", "sp b"),]}.
 #' @param warn whether to warn if species/sites are dropped when
 #' creating object (default: TRUE)
+#' @details As described in the vignette, we recommend using these
+#' wrappers to manipulate species and site data, as it guarantees that
+#' everything will be kept consistent across all parts of the
+#' \code{\link{comparative.comm}} object. However, remember that you
+#' can manipulate the internal components of a
+#' \code{\link{comparative.comm}} object directly, and this is useful
+#' if you want to play around with traits, add in new data, etc.
+#' @note As described in \code{\link{comparative.comm}}, each
+#' \code{\link{comparative.comm}} object contains a phylogeny
+#' (\code{$phy}) and a site-by-species community matrix (as used in
+#' \code{\link{vegan}}). Optionally, it may contain a
+#' \code{data.frame} of trait data (each row a species, each column a
+#' trait ) *called \code{data}* for compatibility with
+#' \code{\link{caper::comparative.data}}.
+#' @rdname cc.manip
+#' @name cc.manip
+#' @seealso comparative.comm plot.comaparative.comm
+#' @examples
+#' data(laja)
+#' data <- comparative.comm(invert.tree, river.sites, invert.traits, river.env)
+#' #Subset on species, then sites
+#' data <- data[1:5,]
+#' data <- data[,1:5]
+#' #Site and species can be manipulated
+#' species(data)
+#' sites(data)[1:3] <- c("lovely", "invert", "sites")
+#' #Other data can be viewed
+#' trait.names(data)
+#' env.names(data)
+#' #Get assemblage phylogenies of all sites
+#' assemblage.phylogenies(data)
+#' #Do some manual manipulation of your objects (NOTE: $data for traits)
+#' data$data$new.trait <- sample(letters, nrow(data$comm), replace=TRUE)
 #' @export
 "[.comparative.comm" <- function(x, sites, spp, warn=FALSE) {
   #Assertions and setup
   if(!inherits(x, "comparative.comm"))
-    stop("'", substitute(deparse(x)), "' not of class 'comparative.comm'")
-    
+    stop("'", substitute(deparse(x)), "' not of class 'comparative.comm'")    
   
   #Handle species
   if(!missing(spp)){
@@ -238,29 +278,20 @@ print.comparative.comm <- function(x, ...){
 	return(new.x)
 }
 
-
-##' @export
-dimnames.comparative.comm <- function(x)
-    setNames(dimnames(x$comm), c("communities","species"))
-
-##' @export
-dim.comparative.comm <- function(x) 
-    setNames(dim(x$comm), c("communities","species"))
-
-##' Describing and manipulating comparativbe.comm objects
+##' Describing and manipulating comparative.comm objects
 ##'
 ##' @param object A \code{\link{comparative.comm}} object
 ##' @return Names of the traits or environmental variables
 ##' @rdname cc.manip
 ##' @export
-traitNames <- function(object) {
+trait.names <- function(object) {
     if(is.null(object$data)) return(NULL)
     colnames(object$data)
 }
 
 ##' @export
 ##' @rdname cc.manip
-envNames <- function(object) {
+env.names <- function(object) {
     if(is.null(object$env)) return(NULL)
     colnames(object$env)
 }
@@ -302,8 +333,13 @@ sites <- function(x){
     return(x)
 }
 
-##' @export
-##' @rdname cc.manip
+#' Get individual assemblage phylogenies
+#'
+#' @param data A \code{\link{comparative.comm}} object
+#' @return List of \code{\link{ape::phylo}} objects, one for each
+#' assemblage in the \code{data}.
+#' @export
+#' @rdname cc.manip
 assemblage.phylogenies <- function(data){
     if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
     subtrees <- vector("list", nrow(data$comm))

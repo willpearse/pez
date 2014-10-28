@@ -1,24 +1,44 @@
-#' \code{sim.bd.tree} simulate phylogeny under birth/death process
+#' Simulate phylogenies
+#'
+#' Simulate phylogenies under pure birth/death or as a function of
+#' trait evolution
 #' 
 #' @param speciate probability each species will speciate in each
 #' time-step (0-1)
 #' @param extinction probability each species will go extinct in each
 #' time-step (0-1)
 #' @param time.steps number of time-steps for simulation
-#' @details Simuates a phylogeny under the above parameters. There are
-#' two important things to note: (1) speciation is randomised before
-#' extinction, and only one thing can happen to a lineage per timestep
-#' - thus this isn't a fair randomisation, and (2) I'm fairly certain
-#' this code works fine, but particularly weird parameter values could
-#' well cause a crash.
-#' @return ape::phylo object with random tip.labels
+#' @details Two functions that simulate phylogeny; closely related to
+#' \code{\link{sim.meta}} that extend this to simulate meta-community
+#' structure at the same time.
+#' @details \code{sim.bd.tree} simulates a pure birth/death speciation
+#' model. There are two important things to note: (1) speciation is
+#' randomised before extinction, and only one thing can happen to a
+#' lineage per timestep. (2) This code works well for my purposes, but
+#' absurd parameter values can cause the function to crash.
+#' @details \code{sim.bd.tr.tree} is an extension of
+#' \code{sim.bd.tree}, and all its caveats apply to it. It
+#' additionally simulated the evolution of a trait under Brownain
+#' motion (\code{tr.walk}). Species' speciation/extinction rates
+#' change depending on whether they have a trait value similar to
+#' other species (\code{sp.tr}, \code{ext.tr}). When a speciation
+#' event happens, the two daughters split evenly about the ancestor's
+#' trait value, taking values half-way to whatever the nearest
+#' species' value is. To be precise: $p_i_{speciate} = speciate_i +
+#' sp.tr \times min(trait distance)$, $p_i_{extinct} = exinction_i +
+#' ext.tr \times min(trait distance)$, where $i$ denotes each species.
+#' @return \code{\link{ape::phylo}} object with random tip.labels;
+#' trait values if using \code{sim.br.tr.tree}.
 #' @author Will Pearse
+#' @seealso sim.meta scape
 #' @examples \dontrun{
 #' tree <- sim.bd.tree(0.1, 0, 10)
 #' plot(tree)
 #' }
+#' @rdname sim.phy
+#' @name sim.phy
 #' @export
-sim.bd.tree <- function(speciate=0.1, extinction=0.025, time.steps=20){
+sim.bd.phy <- function(speciate=0.1, extinction=0.025, time.steps=20){
     #Setup
     edge <- matrix(c(1,2,1,3), byrow=TRUE, ncol=2)
     species <- c(TRUE, TRUE)
@@ -65,17 +85,9 @@ sim.bd.tree <- function(speciate=0.1, extinction=0.025, time.steps=20){
     return(edge2phylo(edge, species, extinct, edge.length))
 }
 
-#' \code{sim.bd.tr.tree} simulate phylogeny and trait under birth/death process linked to trait evolution
-#' 
-#' @param speciate probability each species will speciate in each
-#' time-step (0-1)
-#' @param extinction probability each species will go extinct in each
-#' time-step (0-1)
-#' @param time.steps number of time-steps for simulation
 #' @param tr.range vector of length two specifying boundaries for
 #' trait values (see notes); initial two species will be at the 25th
-#' and 75th percentiles of this space (which is also the
-#' boundary). See also \code{tr.wrap}
+#' and 75th percentiles of this space. See also \code{tr.wrap}
 #' @param sp.tr speciation rate's interaction with the minimum
 #' distance between a species and the species most similar to it (see
 #' details)
@@ -89,21 +101,10 @@ sim.bd.tree <- function(speciate=0.1, extinction=0.025, time.steps=20){
 #' motion trait evolution.
 #' @param tr.wrap whether to force species' trait values to stay
 #' within the boundary defined by \code{tr.range}; default TRUE.
-#' @details Simuates a phylogeny under the above parameters; an
-#' extension of \code{sim.bd.tree} and all the caveats of that
-#' function apply here. The extension is to include the evolution of a
-#' trait under Brownain motion (\code{tr.walk}; but see below), and to
-#' allow alteration of speciation and extinction based on this
-#' trait. Species have greater or lesser rates of
-#' speciation/extinction depending on whether they have a trait value
-#' similar to other species (\code{sp.tr}, \code{ext.tr}). When a
-#' speciation event happens, the two daughters split evenly about the
-#' ancestor's trait value, taking values half-way to whatever the
-#' nearest specie's value is.
-#' @return ape::phylo object with random tip.labels and traits that correspond to extant species 
 #' @author Will Pearse
+#' @rdname sim.phy
 #' @export
-sim.bd.tr.tree <- function(speciate=0.1, extinction=0.025, time.steps=20, tr.range=c(0,1), sp.tr=2, ext.tr=1, tr.walk=0.2, tr.wrap=TRUE){
+sim.bd.tr.phy <- function(speciate=0.1, extinction=0.025, time.steps=20, tr.range=c(0,1), sp.tr=2, ext.tr=1, tr.walk=0.2, tr.wrap=TRUE){
     #Setup
     edge <- matrix(c(1,2,1,3), byrow=TRUE, ncol=2)
     species <- c(TRUE, TRUE)
@@ -173,25 +174,28 @@ sim.bd.tr.tree <- function(speciate=0.1, extinction=0.025, time.steps=20, tr.ran
     return(edge2phylo(edge, species, extinct, edge.length, traits))
 }
 
-#' \code{edge2phylo} convert a simulated edge matrix to an ape:phylo aobject
+#' Convert a simulated edge matrix to an ape:phylo object
 #' 
-#' @param edge a two-column matrix where the first column is the start
-#' node, the second the destination
-#' @param species which of the rows in the edge matrix are extant
-#' species
-#' @param extinct which of the tips in the edge matrix are extinct
-#' @param edge.length if given (default NA), a vector to be used to
-#' give edge.length to the phylogeny
-#' @param traits if given (default NA), a vector to be used for traits
-#' ($traits) in the phylogeny
-#' @details This is a bit OTT because you can figure out what's
-#' extinct and extant from the edge matrix itself; I'm just lazy and
-#' this matches onto exactly what my code already does. See
-#' sim.bd.tree for use; it's really an internal function.
-#' @return ape::phylo object with random tip.labels
+#' @param e a two-column matrix where the first column is the start
+#' node, the second the destination, as in
+#' \code{\link{ape::phylo$edge}}
+#' @param s which of the rows in the edge matrix represent
+#' extant species
+#' @param e which of the tips in the edge matrix are extinct
+#' (DEFAULT: empty vector, i.e., none)
+#' @param el a vector to be used to give edge.length to the
+#' phylogeny (default NA, i.e., none)
+#' @param t if given (default NA), a vector to be used for traits
+#' (\code{$traits} slot) in the phylogeny
+#' @details This is an internal function for the
+#' \code{\link{sim.phy}} and \code{\link{sim.meta}} function
+#' families, which may be of use to you. Check those functions for
+#' examples of use.
+#' @return \code{\link{ape::phylo}} object
 #' @author Will Pearse
+#' @rdname sim.phy
 #' @export
-edge2phylo <- function(edge, species, extinct=numeric(0), edge.length=NA, traits=NULL){
+edge2phylo <- function(edge, s, e=numeric(0), el=NA, t=NULL){
     spp.no <- sort(c(edge[species,2], extinct))
     spp.edges <- edge[,2] %in% spp.no
     to.change <- matrix(0, nrow=nrow(edge), ncol=ncol(edge))

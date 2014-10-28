@@ -1,31 +1,8 @@
-#' Run an eco.phy.regression regression (Cavender-Bares et al. 2004)
-#' 
-#' \code{eco.phy.regression} runs an eco.phy.regression regression, in
-#' the sense of Cavender-Bares et al. (2004), on a comparative.comm
-#' object.
-#' 
-#' @param data a comparative community ecology object on which to run the regression
-#' @param randomisation what kind of null distributions to compare your data with - one of:
-#' taxa.labels, richness, frequency, sample.pool, phylogeny.pool, independentswap, trialswap
-#' (as implemented in 'picante')
-#' @param permute the number of null permutations to perform
-#' @param method how to compare distance matrices - one of: quantile
-#' (quantile regression), lim (linear regression), mantel (Mantel
-#' test)
-#' @param indep.swap number of independent swap iterations to perform
-#' (if using that randomisation); default is 1000
-#' @param ... additional parameters to pass on to model fitting functions
-#' @details This is extremely unchcked, so beware!
-#' @author Will Pearse, Jeannine Cavender-Bares
-#' @examples \dontrun{
-#' data(phylocom)
-#' data <- comparative.comm(phylocom$phy, phylocom$sample)
-#' eco.phy.regression(data, permute=10)
-#' }
 #' @importFrom ape cophenetic.phylo
 #' @importFrom quantreg rq
 #' @importFrom vegan mantel
 #' @export
+#' @rdname eco.xxx.regression
 eco.phy.regression <- function(data,
   randomisation=c("taxa.labels", "richness", "frequency", "sample.pool", "phylogeny.pool", "independentswap", "trialswap"),
   permute=0, method=c("quantile", "lm", "mantel"), indep.swap=1000, ...){

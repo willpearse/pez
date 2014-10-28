@@ -1,71 +1,55 @@
-#' Calculate a lambda, delta, or kappa for a comparative community ecology dataset
+#' Calculate phylogenetic `signal'
 #' 
-#' \code{classic.phy.signal} calculates Pagel's lambda, delta, or kappa for all community abundances or trait values. Essentially a wrapper around 
-#' 
-#' @param data a comparative community ecology object on which you want to calculate phylogenetic signal
-#' @param traits if TRUE (default) calculate phylogenetic signal of species' traits; otherwise calculate it of community abundance
-#' @param method what kind of signal to calculate, one of: lambda,
-#' delta, kappa (each corresponding to Pagel's tranformations, see
-#' references)
-#' @details This may not necessarily be a good thing to do!
-#' You may not have trait or community data where these measures make sense!
+#' @param data \code{\link{comparative.com}} object
+#' @param method what kind of signal to calculate, one of Pagel's
+#' \eqn{$\lambda$}{lambda} (default), \eqn{$\delta$}{delta}, and
+#' \eqn{$\kappa$}{kappa}, or Blomberg's K.
+#' @details Phylogenetic `signal' is one of those concepts that is
+#' said a lot in community ecology, but rarely is its meaning
+#' thought-through. Think carefully before rushing to report a value
+#' whether: (1) it makes sense to assess phylogenetic `signal' in your
+#' datasets, and (2) what the phrase `phylogenetic signal' actually
+#' means. This code makes use of \code{\link{caper::pgls}} to get
+#' estimates of fit; alternatives that offer more flexibility exist
+#' (see below).
 #' @return Named numeric vector, where each element is a trait or community.
 #' @author Will Pearse, Jeannine Cavender-Bares
 #' @references R. P. Freckleton, P. H. Harvey, and M. Pagel. Phylogenetic analysis and comparative data: A test and review of evidence. American Naturalist, 160:712-726, 2002.
+#' Blomberg S.P., Garland T. & Ives A.R. Testing for phylogenetic signal in comparative data: behavioral traits are more labile. Evolution 57(4): 717--745.
+#' @seealso geiger::fitContinuous geiger::fitDiscrete caper::pgls picante::phylosignal
 #' @examples \dontrun{
-#' data(phylocom)
-#' data <- comparative.comm(phylocom$phy, phylocom$sample, traits=phylocom$traits)
-#' classic.phy.signal(data)
-#' classic.phy.signal(data, traits=FALSE, method="kappa")
+#' data(laja)
+#' data <- comparative.comm(invert.tree, river.sites, invert.traits)
+#' phy.signal(data, "lambda")
+#' 
 #' }
 #' @importFrom caper comparative.data pgls
 #' @export
-phy.signal <- function(data, traits=TRUE, method=c("lambda", "delta", "kappa")){
+phy.signal <- function(data, method=c("lambda", "delta", "kappa", "blom.k")){
   #Assertions and argument handling
   if(! inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
   method <- match.arg(method)
-  
-  #Traits
-  if(traits){
-    traits <- numeric(ncol(data$data))
-    for(i in seq(ncol(data$data))){
+
+  traits <- numeric(ncol(data$data))
+  for(i in seq(ncol(data$data))){
       #I know, this should be a case statement...
       if(method == "lambda"){
-        model <- pgls(data$data[,i] ~ 1, data=data, lambda="ML")
-        traits[i] <- model$param.CI$lambda$opt
+          model <- pgls(data$data[,i] ~ 1, data=data, lambda="ML")
+          traits[i] <- model$param.CI$lambda$opt
       }
       if(method == "delta"){
-        model <- pgls(data$data[,i] ~ 1, data=data, delta="ML")
-        traits[i] <- model$param.CI$delta$opt
+          model <- pgls(data$data[,i] ~ 1, data=data, delta="ML")
+          traits[i] <- model$param.CI$delta$opt
       }
       if(method == "kappa"){
         model <- pgls(data$data[,i] ~ 1, data=data, kappa="ML")
         traits[i] <- model$param.CI$kappa$opt
-      }
     }
-    names(traits) <- names(data$data)
-    return(traits)
-  } else {
-    #Community composition
-    comm <- data.frame(t(data$comm))
-    comm$this.breaks.pez <- rownames(comm)
-    comparative.data <- comparative.data(data$phy, comm, data$traits$this.breaks.pez)
-    communities <- numeric(ncol(comparative.data$data))
-    for(i in seq(ncol(comparative.data$data))){
-      if(method == "lambda"){
-        model <- pgls(comparative.data$data[,i] ~ 1, data=comparative.data, lambda="ML")
-        communities[i] <- summary(model)$param.CI$lambda$opt
+      if(method == "blom.k"){
+          #...better safe than sorry with names...
+          traits[i] <- Kcalc(setNames(data$data[,i],rownames(data$data)), data$phy)
       }
-      if(method == "delta"){
-        model <- pgls(comparative.data$data[,i] ~ 1, data=comparative.data, delta="ML")
-        communities[i] <- summary(model)$param.CI$delta$opt
-      }
-      if(method == "kappa"){
-        model <- pgls(comparative.data$data[,i] ~ 1, data=comparative.data, kappa="ML")
-        communities[i] <- summary(model)$param.CI$kappa$opt
-      }
-    }
-    names(communities) <- names(comparative.data$data)
-    return(communities)
   }
+  names(traits) <- names(data$data)
+  return(traits)
 }

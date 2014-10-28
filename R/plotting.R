@@ -1,5 +1,6 @@
-#' Plots dot-plots of community presence/absence or abundance
-#' @param x a comparative community ecology object (\code{comparative.comm})
+#' Dot-plots of community presence/absence or abundance
+#' 
+#' @param x \code{\link{comparative.comm}} object
 #' @param sites names of sites to plot (default: all); see examples
 #' @param abundance make size proportional to species abundance
 #' (default: FALSE)
@@ -10,18 +11,20 @@
 #' recycling)
 #' @param fraction fraction of plot window to be taken up with
 #' phylogeny; e.g., 3 (default) means phylogeny is 1/3 of plot
-#' @param pch pch to be used in plotting of sites
+#' @param pch plotting character to be used for sites (see
+#' \code{\link{pch}})
 #' @param x.increment specify exact spacing of points along plot; see
 #' examples
-#' @details Getting the right spacing of dots on the phylogeny may
-#' take some playing around with the fraction and x.increment
-#' arguments, see below. It may seem a little strange to set point
-#' size using a function; however, this gives you much more
-#' flexibility when dealing with abundance data, and allows you to
-#' transform the data - see the examples
 #' @param ... additional arguments passed to plotting functions
+#' @details Take a look at the examples: this is (hopefully!) a lot
+#' more straightforward than it might seem. Getting the right spacing
+#' of dots on the phylogeny may take some playing around with the
+#' \code{fraction} and \code{x.increment} arguments. It may seem a
+#' little strange to set point size using a function, however, this
+#' gives you much more flexibility and the ability to (usefully)
+#' transform your data.
 #' @return List containing plot.phylo information, as well as the used
-#' x.adj values
+#' x.adj values (compare with your \code{x.increment})
 #' @author Will Pearse, Matt Helmus
 #' @method plot comparative.comm
 #' @importFrom ape tiplabels plot.phylo

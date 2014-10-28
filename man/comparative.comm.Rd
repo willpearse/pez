@@ -2,37 +2,36 @@
 \name{comparative.comm}
 \alias{comparative.comm}
 \alias{print.comparative.comm}
-\title{\code{comparative.comm} creates a community comparative ecology object}
+\title{Creates a community comparative ecology object, the basis of all
+functions in pez}
 \usage{
 comparative.comm(phy, comm, traits = NULL, env = NULL, warn = TRUE,
-  vcv = FALSE, force.root = -1)
+  force.root = -1)
 
 \method{print}{comparative.comm}(x, ...)
 }
 \arguments{
-\item{phy}{phylogeny (in ape::phylo format) of species}
+\item{phy}{phylogeny (in \code{\link{ape::phylo}} format) of
+species}
 
-\item{comm}{a community matrix (as used in vegan) with species as columns and rows as community samples}
+\item{comm}{community \code{matrix} (as used in
+\code{\link{vegan}}) with species as columns and rows as
+communities. Must contain \code{rownames} and \code{colnames}.}
 
-\item{traits}{a data.frame of species traits (with row names
-matching those of 'comm'). Saved in the \code{data} slot of the
-resulting \code{comparative.comm} object for compatibility with the
-package \code{caper}.}
+\item{traits}{\code{data.frame} of species traits, with
+\code{rownames} matching \code{comm}. Saved in the \code{data} slot
+of the resulting \code{comparative.comm} object for compatibility
+with \code{\link{caper::comparative.data}}.}
 
-\item{env}{a data.frame of environmental data (all continuous
-variables) with row names matching those of 'comm'}
+\item{env}{\code{data.frame} of environmental data with
+\code{rownames} matching \code{comm}}
 
 \item{warn}{whether to warn if species/sites are dropped when
 creating object (default: TRUE)}
 
-\item{vcv}{whether to calculate variance-covariance matrix and
-store in object to save time (but perhaps not memory) for later
-calculations (default: FALSE). Storing a VCV now may cause problems
-if you intend to use this object with the package \code{caper}.}
-
-\item{force.root}{if phylogeny is unrooted, a root.edge of value
-force.root will be added (default: -1, which means this will never
-happen). Rarely needed, even more rarely advisable.}
+\item{force.root}{if \code{phy} is unrooted, a \code{root.edge} of
+value force.root will be added (default: -1, which means this will
+never happen). Rarely needed, rarely advisable.}
 
 \item{x}{\code{comparative.comm} object to be printed}
 
@@ -42,22 +41,37 @@ happen). Rarely needed, even more rarely advisable.}
 comparative.comm object
 }
 \description{
-\code{comparative.comm} creates a community comparative ecology object
+Creates a community comparative ecology object, the basis of all
+functions in pez
 }
 \details{
 Basic checking of whether the input data match up is
-performed; you need only supply 'comm' and 'phy', nothing else is
-mandatory.  Subsetting according to communities (rows) and species
-(columns) is possible - see 'examples' for details.
+performed; you need only supply \code{comm} and \code{phy}, nothing
+else is mandatory. You can manipulate the internals of
+\code{comparative.comm}, or use the wrappers inside \code{pez} to
+keep everything in order. Examples of these features are given
+below; they are described in detailed at \code{\link{cc.manip}}.
 }
 \examples{
 \dontrun{
 data(laja)
-data <- comparative.comm(invert.tree, river.sites)
-data <- comparative.comm(invert.tree, river.sites, invert.traits)
 data <- comparative.comm(invert.tree, river.sites, invert.traits, river.env)
-data[1:3,]
-data[,1:3]
+#Subset on species, then sites
+data <- data[1:5,]
+data <- data[,1:5]
+#Site and species can be manipulated
+species(data)
+sites(data)[1:3] <- c("lovely", "invert", "sites")
+#Other data can be viewed
+trait.names(data)
+env.names(data)
+#Get assemblage phylogenies of all sites
+assemblage.phylogenies(data)
+#Do some manual manipulation of your objects (NOTE: $data for traits)
+data$data$new.trait <- sample(letters, nrow(data$comm), replace=TRUE)
 }
+}
+\seealso{
+plot.comparative.comm cc.manip caper::comparative.data
 }
 

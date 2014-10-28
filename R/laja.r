@@ -16,4 +16,7 @@
 #' phylogenetic structure of prey communities. Oecologia, 173,
 #' 997-1007.
 #' @author M.R. Helmus
+#' @examples
+#' data(laja)
+#' data <- comparative.comm(invert.tree, river.sites, invert.traits, river.env)
 NULL

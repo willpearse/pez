@@ -39,4 +39,15 @@ with categories: 0.005-0.995 = 99\%, 0.025-0.975 = 95\%, 0.05-0.95 = 90\%,
 No serious checking of user-provided matrices is performed;
 this is both useful and dangerous!
 }
+\examples{
+\dontrun{
+data(laja)
+data <- comparative.comm(invert.tree, river.sites, invert.traits)
+#Must have all species present in at least one community!
+data <- data[,colSums(data$comm) > 0]
+sims <- ConDivSim(data)
+#...without traits...
+sims.phy <- ConDivSim(data, type=NULL)
+}
+}
 

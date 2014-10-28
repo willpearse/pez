@@ -43,13 +43,3 @@ test_that("func phylo dist", {
     expect_that(funct.phylo.dist(cc, 1, 2), is_equivalent_to(PDist))
     expect_that(funct.phylo.dist(cc, 0, 2), is_equivalent_to(FDist))
 })
-
-test_that("traitgram", {
-    cc <- comparative.comm(phylocom$phy, phylocom$sample, phylocom$traits, warn=FALSE)
-    ccNophy <- within(cc, phy <- NULL)
-    ccNotrait <- within(cc, data <- NULL)
-    expect_that(traitgram.cc(ccNophy), throws_error())
-    expect_that(traitgram.cc(ccNotrait), throws_error())
-    cc$data <- princompOne(cc$data)    
-    traitgram.cc(cc)
-})

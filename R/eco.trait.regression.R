@@ -1,61 +1,95 @@
-#' Run an eco.trait.regression regression (Cavender-Bares et al. 2004)
+#' eco.xxx.regression 
 #' 
-#' \code{eco.trait.regression} runs a regression of ecological
-#' community coexistence versus species trait-distances
+#' Regression species co-existence against environmental tolerance,
+#' trait similarity, or phylogenetic relatedness.
 #' 
-#' @param data a comparative community ecology object on which to run the regression
-#' @param randomisation what kind of null distributions to compare your data with - one of:
-#' taxa.labels, richness, frequency, sample.pool, phylogeny.pool, independentswap, trialswap
-#' (as implemented in 'picante')
-#' @param permute the number of null permutations to perform
-#' @param method how to compare distance matrices - one of: quantile
-#' (quantile regression), lim (linear regression), mantel (Mantel
-#' test)
+#' @param data \code{\link{comparative.comm}} for analysis
+#' @param randomisation null distribution with which to compare your
+#' community data, one of: \code{taxa.labels} (DEFAULT),
+#' \code{richness}, \code{frequency}, \code{sample.pool},
+#' \code{phylogeny.pool}, \code{independentswap}, \code{trialswap} (as
+#' implemented in \code{\link{picante}})
+#' @param permute the number of null permutations to perform (DEFAULT
+#' 0)
+#' @param method how to compare distance matrices (only the lower
+#' triangle;), one of: \code{\link{base::lm}} (linear regression),
+#' \code{quantile} (DEFAULT; \code{\link{quantreg::rq}}),
+#' \code{mantel} (\code{\link{vegan::mantel}})
 #' @param altogether use distance matrix based on all traits (default
-#' TRUE), or perform separate regressions for each trait
+#' TRUE), or perform separate regressions for each trait (returns a
+#' list, see details)
 #' @param indep.swap number of independent swap iterations to perform
-#' (if using that randomisation); default is 1000
+#' (if specified in \code{randomisation}; DEFAULT 1000)
 #' @param ... additional parameters to pass on to model fitting functions
-#' @details This is extremely unchcked, so beware!
+#' @details These methods are similar to those performed in
+#' Cavender-Bares et al. (2004). Each function regresses the species
+#' co-existence matrix of \code{\link{data}} (calculated using
+#' \code{\link{comm.dist}}) against either species' trait
+#' dissimilarity (\code{\link{eco.trait.regression}}), species'
+#' phylogenetic distance (\code{\link{eco.phy.regression}}), or
+#' species' shared environmental tolerances as measured by Pianka's
+#' distance (\code{\link{eco.env.regression}}).
+#' @details If \code{altogether} is set to \code{FALSE}, each trait or
+#' environemntal variables in your data will have a separate
+#' \code{eco.trait.regression} or \code{eco.env.regression} applied to
+#' it. The functions will return a list of individual regressions; you
+#' can either examine/plot them as a group (see examples below), or
+#' extract an individual regression and work with that. These lists
+#' are of class \code{eco.xxx.regression.list}; a bit messy, but it
+#' does work!...
 #' @author Will Pearse, Jeannine Cavender-Bares
-#' @note Like the eco.trait and eco.env methods, this is a data-hungry
-#' method. Warnings will be generated if any of the methods cannot be
-#' fitted properly (the examples below give toy examples of this). In
-#' such cases the summary and plot methods of these functions may
-#' generate errors; use 'traceback()' to examine where these are
-#' coming from, and consider whether you want to be working with the
-#' data generating these errors. I am loathe to hide these errors or
-#' gloss over them, because they represent the reality of your data!
+#' @note Like \code{\link{fingerprint.regression}}, this is a
+#' data-hungry method. Warnings will be generated if any of the
+#' methods cannot be fitted properly (the examples below give toy
+#' examples of this). In such cases the summary and plot methods of
+#' these functions may generate errors; perhaps using
+#' \code{\link{traceback}} to examine where these are coming from, and
+#' consider whether you want to be working with the data generating
+#' these errors. I am loathe to hide these errors or gloss over them,
+#' because they represent the reality of your data!
+#' @note WDP loves quantile regressions, and advises that you check
+#' different quantiles using the \code{tau} options.
+#' @seealso fingerprint.regression phy.signal
+#' @references Cavender-Bares J., Ackerly D.D., Baum D.A. & Bazzaz F.A. (2004) Phylogenetic overdispersion in Floridian oak communities. The Americant Naturalist 163(6): 823--843.
+#' @references Kembel, S.W., Cowan, P.D., Helmus, M.R., Cornwell, W.K., Morlon, H., Ackerly, D.D., Blomberg, S.P. & Webb, C.O. Picante: R tools for integrating phylogenies and ecology. Bioinformatics 26(11): 1463--1464.
+#' @references Pagel M. Inferring the historical patterns of biological evolution. Nature 401(6756): 877--884.
 #' @examples \dontrun{
-#' data(phylocom)
-#' data <- comparative.comm(phylocom$phy, phylocom$sample, traits=phylocom$traits)
+#' data(laja)
+#' data <- comparative.comm(invert.tree, river.sites, invert.traits, river.env)
 #' eco.trait.regression(data, permute=10)
+#' #Specify additional options
+#' eco.trait.regression(data, tau=c(0.25,0.5,0.75))
 #' plot(eco.trait.regression(data, permute=10, method="lm))
 #' plot(eco.trait.regression(data, permute=10, method="lm", altogether=FALSE))
 #' }
+#' @name eco.xxx.regression
+#' @rdname eco.xxx.regression
 #' @importFrom quantreg rq
 #' @importFrom vegan mantel
 #' @export
 eco.trait.regression <- function(data,
   randomisation=c("taxa.labels", "richness", "frequency", "sample.pool", "phylogeny.pool", "independentswap", "trialswap"),
   permute=0, method=c("quantile", "lm", "mantel"), altogether=TRUE, indep.swap=1000, ...){
-	#Assertions and argument handling
-  if(! inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
-	randomisation <- match.arg(randomisation)
+  #Assertions and argument handling
+  if(!inherits(data, "comparative.comm"))
+      stop("'data' must be a comparative community ecology object")
+  randomisation <- match.arg(randomisation)
   method <- match.arg(method)
-	if(permute < 0) stop("Can't have negative null permutations!")
+  if(permute < 0)
+      stop("Can't have negative null permutations!")
+  if(is.null(data$data))
+      stop("'data' must contain trait data for a trait regression!")	
 	
-	#Setup matrices
-	eco.matrix <- comm.dist(data$comm)
-  if(!is.null(data$data)) traits.matrix <- traits.dist(data, altogether) else stop("'data' must contain trait data for a trait regression!")
-	
+  #Setup matrix
+  eco.matrix <- comm.dist(data$comm)
+  
   #Observed eco.trait.regression
   if(altogether)
-      observed <- .eco.trait.regression(eco.matrix, traits.matrix, NULL, method, ...) else {
+      observed <- .eco.trait.regression(eco.matrix, traits.dist(data$data), method, ...) else {
       #Do separately for all traits
       observed <- vector("list", ncol(data$data))
       for(i in seq(ncol(data$data)))
-          observed[[i]] <- .eco.trait.regression(eco.matrix, traits.matrix, i, method, ...)
+          observed[[i]] <- .eco.trait.regression(eco.matrix, traits.dist(data$data[,i]), method, ...)
   }
   
   #Randomisations
@@ -66,7 +100,7 @@ eco.trait.regression <- function(data,
   	for(i in seq(from=1, length.out=permute)){
             curr.rnd <- .eco.null(data$comm, randomisation, swap.iter=indep.swap)
             rnd.mat <- comm.dist(curr.rnd)
-            randomisations[[i]] <- .eco.trait.regression(rnd.mat, traits.matrix, NULL, method, ...)
+            randomisations[[i]] <- .eco.trait.regression(rnd.mat, traits.dist(data$data), method, ...)
   	}
   } else {
     #Separately for each trait
@@ -77,7 +111,7 @@ eco.trait.regression <- function(data,
         curr.rnd <- .eco.null(data$comm, randomisation, swap.iter=indep.swap)
         rnd.mat <- comm.dist(curr.rnd)
         for(j in seq(ncol(data$data)))
-            randomisations[[j]][[i]] <- .eco.trait.regression(rnd.mat, traits.matrix, j, method, ...)
+            randomisations[[j]][[i]] <- .eco.trait.regression(rnd.mat, traits.dist(data$data[,j]), method, ...)
     }
   }
   
@@ -90,7 +124,7 @@ eco.trait.regression <- function(data,
         output[[i]]$altogether <- altogether
       }
       output$type <- "eco.trait.regression"
-      class(output) <- "ecophyl.regression.list"
+      class(output) <- "eco.xxx.regression.list"
     }
   output$data <- data
   output$altogether <- altogether
@@ -100,12 +134,8 @@ eco.trait.regression <- function(data,
 
 
 #Perform one set of EcoPhy regressions
-.eco.trait.regression <- function(eco.mat, trait.mat, which.trait=NULL, method=c("quantile", "lm", "mantel"), ...){
+.eco.trait.regression <- function(eco.mat, trait.mat, method=c("quantile", "lm", "mantel"), ...){
   method <- match.arg(method)
-  #Check to see if we're doing this across all traits
-  # - now we're passing around distance matrices by default you have to be extra careful...
-  if(!is.null(which.trait) & !inherits(trait.mat, "dist"))
-      trait.mat <- as.dist(trait.mat[,,which.trait])
   
   if(method == 'lm')
     model <- lm(as.numeric(eco.mat) ~ as.numeric(trait.mat), ...)

@@ -19,6 +19,10 @@ the Rio Laja, a phylogenetic tree of the taxa and traits that
 include mean body length and fish feeding preference as in Helmus
 \emph{et al.} 2013.
 }
+\examples{
+data(laja)
+data <- comparative.comm(invert.tree, river.sites, invert.traits, river.env)
+}
 \author{
 M.R. Helmus
 }
