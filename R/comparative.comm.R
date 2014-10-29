@@ -5,7 +5,8 @@
 #' species
 #' @param comm community \code{matrix} (as used in
 #' \code{\link{vegan}}) with species as columns and rows as
-#' communities. Must contain \code{rownames} and \code{colnames}.
+#' communities. Must contain \code{rownames} and \code{colnames}; NAs
+#' are not checked for but probably unwise.
 #' @param traits \code{data.frame} of species traits, with
 #' \code{rownames} matching \code{comm}. Saved in the \code{data} slot
 #' of the resulting \code{comparative.comm} object for compatibility

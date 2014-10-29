@@ -62,7 +62,7 @@ fingerprint.regression <- function(data, eco.rnd=c("taxa.labels", "richness", "f
   if(eco.permute < 2) stop("This method relies on random perumtations; you must have at least 2")
   
   #Evolution of traits
-  evolution <- phy.signal(data, traits=TRUE, method=evo.method)
+  evolution <- phy.signal(data, method=evo.method)
   
   #Ecology of traits
   ecology <- eco.trait.regression(data, eco.rnd, eco.permute, eco.method, altogether=FALSE, ...)

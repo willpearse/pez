@@ -42,14 +42,15 @@ While \texttt{\emph{pez}} contains much novel code, it relies heavily
 on the \emph{R} ecosystem. Much of the community phylogenetic metric
 functions are wrappers around existing code (detailed in the help
 files for each function); notably \emph{caper} \citep{Orme2013} and
-\emph{picante} \citep{Kembel2010} but many others. Please cite the
-authors of these packages so that their hard-work is rewarded!
-
+\emph{picante} \citep{Kembel2010} but many others as well. Please cite
+the authors of these packages in your publications so that their
+hard-work is rewarded!
+\clearpage
 \section{Data formats in \emph{pez}}
-\emph{pez} functions work with \emph{comparative community ecology}
-objects, called \texttt{comparative.comm} objects. These are designed
-to help keep phylogenies, community data matrices, species trait data,
-and environmental data all in the same place in a format that makes it
+\emph{pez} functions work with \texttt{comparative.comm} objects
+(\emph{comparative community ecology}). These are designed to help
+keep phylogenies, community data matrices, species trait data, and
+environmental data all in the same place in a format that makes it
 easy to work with them. They're much less scary than they sound!
 
 Below we load \emph{pez}, some example data that comes with it, and
@@ -62,7 +63,7 @@ we use the \citet{Helmus2012} dataset to show \emph{pez}'s features.
 <<tidy=TRUE>>=
 library(pez)
 data(laja)
-data <- comparative.comm(invert.tree, river.sites, invert.traits)
+data <- comparative.comm(invert.tree, river.sites, invert.traits, river.env)
 @
 
 \emph{pez} is conservative; if you give it trait data for only half of
@@ -76,47 +77,40 @@ it's making the comparative.comm object (unless you set the argument
 
 You can also subset your comparative.comm object to exclude certain
 species or sites, in much the same way you can a
-\texttt{data.frame}. Note that \emph{pez} will not (by default) warn
-you if this operation drops out certain species or sites. For example:
+\texttt{data.frame}. Dropping a site that contained the only instance
+of a species will remove it from dataset, and \emph{pez} will not warn
+you about this unless you specify \texttt{[,,warn=TRUE]}. For example:
 
 <<tidy=TRUE>>=
 site.subset <- data[1:5,]
 spp.subset <- data[,1:3]
-spp.subset.warnings <- data[,1:3,warn=TRUE]
+data[-1,,warn=TRUE]
 @
 
-\subsection{Phylogenies}
+\emph{pez} makes it easier to work with and manipulate datasets. The
+functions \texttt{species} and \texttt{sites} are safe ways of
+manipulating all the parts of your data at the same time. For example:
 
-\emph{pez} uses the \texttt{phylo} format in the \texttt{ape} package
-to store phylogenies. You can load your own phylogenies using the ape
-functions \texttt{read.tree} and \texttt{read.nexus}.
+<<tidy=TRUE>>=
+species(data)[1:2]
+species(data)[1:2] <- c("new", "names")
+sites(data)[1:2] <- c("newer", "names")
+data <- data[, colSums(data$comm) > 5]
+@ 
 
-\subsection{Community data}
-\emph{pez} uses the same community data format as the \texttt{vegan}
-package: a \texttt{matrix} with sites in the rows and species in the
-columns. The elements of the community matrix can be species
-abundances or presence/absence (1/0). Not all the species in your
-matrix have to be present in a site---there can be empty columns in
-your data. This is particularly important when using the dispersion
-measures (see below). Your data should be named, with row names that
-correspond to sites, and column names that correspond to species.
-\subsection{Trait data}
-Trait data should be a \texttt{data.frame} with row names that
-correspond to the species in the phylogeny, and named columns for each
-separate trait.
-\subsection{Environemntal data}
-Environmental data should be a \texttt{data.frame} with row names that
-correpsond to the sites in your community data, and separate (named)
-columns for each kind of environmental data.
-\section{Plotting and exploring data}
-\emph{pez} comes with a few functions that are intended to make
-exploring your data slightly easier. For instance, you can plot out
-graphs of species abundances in communities (note the use of a
-function in the \texttt{dot.cex} argument).
-
-<<out.width='10cm', tidy=TRUE>>=
-plot(data, abundance=TRUE, dot.cex=function(x) ifelse(x > 0, 2*log10(x), 0))
-@
+The final example above showed you can work with the internal
+components of a \texttt{comparative.comm} to get things done quicker,
+in this case removing all species that were only recorded five times
+in the dataset. The help entry for \texttt{cc.manip} contains more
+examples, and \texttt{plot.comparative.comm} is a quick plotting
+tool. While we have provided a number of wrapper functions to make
+life easier, it's easy (and useful) to interact with the underlying
+community ecology (\texttt{\$comm}), phylogeny (\texttt{\$phy}),
+traits (\texttt{\$data}), and environmental (\texttt{\$env})
+data. Adding extra trait data or environmental variables on the fly is
+no problem, but be aware that \emph{pez} cannot check for missing data
+unless you call \texttt{comparative.comm} on something.
+\clearpage
 \section{Community phylogenetic metrics}
 \emph{pez} splits community phylogenetic metrics into four functions
 according to the scheme outlined by \citet{Pearse2014review}:
@@ -130,70 +124,141 @@ the pairwise difference in phylogenetic biodiversity between
 assemblages.
 
 You can calculate all metrics within a class at the same time (which
-is what we recommend), or you can pick a particular one. Below we show
-how to calculate the metrics, and give examples of how to work with
-their output.
+is what we recommend), or you can pick a particular one. The intention
+is to make it easy to work with different community phylogenetic
+metrics, since each captures a different part of the structure of your
+data. Working with \texttt{shape}, \texttt{evenness}, and
+\texttt{dispersion} metrics is exactly the same, so below we only show
+\texttt{shape}.
 
 <<tidy=TRUE>>=
 shape.output <- shape(data)
-#Get all the coefficients
-#coef(shape.output)
-#...or...
-#shape.output$coef
-#...or...
-shape.output$mpd
-dissimilarity.output <- dissimilarity(data, metric="phylosor")
-plot(hclust(dissimilarity.output$phylosor))
+dim(coef(shape.output))
+coef(shape.output)[1:3,1:3]
 @
 
-Note that \emph{phylosor} \citep{Bryant2008} is reported as a
-dissimilarity in \emph{pez}: it's not the fraction of shared branch
-lengths, but 1- the fraction of shared branch length. Remember: the
-function is called \texttt{dissimilarity}!
-\section{Eco-evolutionary regression (\emph{pez})}
-\emph{pez} is intended to replace and improve upon earlier Visual
-Basic/C programs called \emph{EcoPhyl}. You can regress the relative
-coexistence of species in your dataset against those species
-phylogenetic (\texttt{eco.phy.regression}) and trait
-(\texttt{eco.trait.regression}) dissimilarity, as well as shared
-habitat preferences based on environmental tolerances
-(\texttt{eco.env.regression}).
+Both \texttt{shape} and \texttt{evenness} metrics, by default, only
+calculate the \texttt{all-quick} metrics; specifying
+\texttt{metric='all'} will calculate slower metrics such as Pagel's
+$\lambda$. These can take a \emph{very} long time to calculate for
+large datasets! You can also calculate these metrics using functional
+traits, a square-rooted phylogeny \citep[following][]{Letten2014}, or
+any kind of distance matrix you can put together. The argument
+\texttt{traitgram} can be used to set a distance matrix that mixes
+explanatory power from phylogeny and traits, following
+\citet{Cadotte2013} (see below), and you can compare the output of
+different traitgram values. Not all metrics can meaningfully be
+calculated using external distance matrices, traitgrams, or
+square-rooted phylogenies, however.
 
-<<warning=FALSE, tidy=TRUE>>=
-model <- eco.trait.regression(data, method="lm")
-more.complex.model <- eco.trait.regression(data, method="mantel", altogether=FALSE, permute=10)
-plot(eco.phy.regression(data, method="quantile"), pch=20)
-@
+<<tidy=TRUE>>=
+sqrt <- shape(data, sqrt.phy=TRUE)
+traits <- shape(data, traitgram=1) #traits alone
+traits <- shape(data, traitgram=c(0,0.5))#phylogeny and both
+traits <- shape(data, ext.dist=as.dist(cophenetic(data$phy)))
+@ 
 
-However, the real power in this approach comes from combining
-information about the phylogenetic signal of species traits with the
-output from an \texttt{eco.trait.regression} of those traits. This
-amounts to plotting something about the evolution of those traits
-against their ecology. This sort of approach was first proposed by
-\citet{Cavender-Bares2004} (figure 4), and you can use the
-\texttt{fingerprint.regression} function to carry it out. Originally,
-\citet{Cavender-Bares2004} proposed the use of Mantel regressions
-(\texttt{eco.phy.regression}), but in \emph{pez} you can use measures
-of phylogenetic signal (\texttt{phy.signal}). There's no need to do
-all these steps separately, though:
+\texttt{dissimilarity} works slightly differently, because it returns
+a list of distance matrices that describe your community data.
+\emph{phylosor} \citep{Bryant2008} is reported as a dissimilarity in
+\emph{pez}: it's not the fraction of shared branch lengths, but 1- the
+fraction of shared branch length. This is not how it is in other
+packages, but remember: the function is called \texttt{dissimilarity}!
+
+<<tidy=TRUE, fig.width=6, fig.height=4>>=
+dist <- dissimilarity(data, "phylosor")
+plot(hclust(dist$phylosor))
+@ 
+\clearpage
+\section{Eco-evolutionary regression}
+Calculating metric values is useful, but often we want to make
+statistial models. \emph{pez} features a set of regression techniques,
+based on \citet{Cavender-Bares2004} and \citet{Cavender-Bares2006},
+which are described in the helpfiles for \texttt{eco.xxx.regression}
+and \texttt{fingerprint.regression}.
+
+The functions desribed in \texttt{eco.xxx.regression} focus on
+relating the co-occurrence of species to species' phylogenetic
+(\texttt{phy}), trait (\texttt{trait}), and environmental tolerances
+(\texttt{env}). The environmental tolerances are based on Pianka's
+distance and derrived from your \texttt{\$env} data, while the trait
+distances can be based on any distance metric you can define. These
+are useful to explore your data, but also because the trait results
+are used in the \emph{fingerprint regression} described below.
+
+<<tidy=TRUE>>=
+phy <- eco.phy.regression(data, permute=10)
+trait <- eco.trait.regression(data, permute=10, method="quantile", tau=c(0.25,0.5,0.7))
+trait <- eco.trait.regression(data, altogether=FALSE)
+@ 
+
+In the last line above, we calculated separate regressions for each
+trait in our dataset (returning a \texttt{eco.xxx.regression.list}
+object). While this isn't particularly thrilling in this dataset where
+we only have two traits, such a regression forms the basis of the
+\texttt{fingerprint.regression}. In this, we will regress the
+association between species co-occurence and trait similarity for each
+trait against the phylogenetic conservatism of each trait. Which is a
+mouthful, but the papers describing it
+\citep{Cavender-Bares2004,Cavender-Bares2006} go into more
+detail. \emph{pez} does things slightly differently to these original
+papers, in that it uses measures of phylogenetic `signal' instead of
+Mantel tests (\texttt{phy.signal}), and provides more distance matrix
+and regression model options for the link between co-occurrence and
+trait similarity.
+
+\begin{figure}
+  \begin{center}
+    \includegraphics[width=0.5\textwidth]{fingerprint_regression.png}
+    \caption{Overview of a fingerprint regression. A hypothetical
+      trait is shown in each quadrant; the size of the circles
+      represents the numerical value of the trait, and colour of the
+      circles represents hypothetical communites.}
+    \label{fingerprint}
+  \end{center}
+\end{figure}
+
+Figure \ref{fingerprint} may make things clearer. On the horizontal
+axis we move from where there is a positive correlation between
+co-occurrence and each trait's similarity (left) to a negative
+correlation (right). On the vertical axis, traits are arranged
+according to whether they show trait conservation (top) or
+lability/lack of phylogenetic inertia (bottom). Remember: each of your
+traits makes up one data-point in this space, but in figure
+\ref{fingerprint} we have made a cartoon of a single trait in
+different quadrants of the graph to make things clearer. If
+communities are not just assembled \emph{but have also evolved} under
+limiting similarity, traits should tend to lie in the blue
+circle. Above the blue circle, traits have evolved under niche
+conservatism and habitat filtering is taking place across those
+traits. By creating a regression such as this with your data, you are
+directly relating the present-day ecology of species to their
+evolutionary history.
 
 <<warning=FALSE, tidy=TRUE>>=
 model <- fingerprint.regression(data, eco.permute=10)
+
 @
+
+Once you've performed a \emph{fingerprint regression} (the name is new
+to \emph{pez}), you can examine the coefficients of each of the
+\texttt{\$eco} and \texttt{\$evo} slots in your model, which
+correspond to the two axes in figure \ref{fingerprint}.
+\clearpage
 \section{Functional phylogenetic distances and traitgrams}
 
 Taxa differ both functionally and phylogenetically, a fact that is
 clearly illustrated using traitgrams \citep{Ackerly2009, Evans2009}.
 A traitgram of a \texttt{comparative.comm} object can be made using
-the \texttt{traitgram.cc} (a wrapper for the \texttt{traitgram}
+the \texttt{cc.traitgram} (a wrapper for the \texttt{traitgram}
 function in \texttt{picante}).  Here is a traitgram for a particular
 assemblage of species against the \texttt{length} trait,
 <<traitgram, warning=FALSE, fig.width=4, fig.height=4.5, dev.args=list(pointsize=8)>>=
 assemblage <- c("Nerophilus", "Hydroptila", "Psorophora",
                 "Simuliidae", "Psychodidae", "Ceratopogon",
                 "Nectopsyche", "Pedomoecus", "Ceratopsyche")
-dataAssemblage <- data[, match(assemblage, dimnames(data)$species)]
-traitgram.cc(dataAssemblage, "length")
+dataAssemblage <- data[, species(data) %in% assemblage]
+cc.traitgram(dataAssemblage, "length")
 @ %
 \noindent The traitgram plots the phylogenetic time on the y-axis and
 \texttt{length} on the x-axis.  Note that some taxa are very distantly
@@ -226,8 +291,7 @@ computed using the following code,
 <<sesFPD>>=
 ses.mfpd.data <- picante::ses.mpd(data$comm, fpd.data)
 head(ses.mfpd.data)[,c("ntaxa", "mpd.obs", "mpd.obs.p")]
-@ %
-
+@
 \section{Simulation}
 
 A good simulation is one that does exactly what you want it to do, and
@@ -239,27 +303,19 @@ simulations.
 \citet{Helmus2012}, simulating the assembly of species across a
 landscape given phylogenetically structured assembly. The parameters
 are complex, but they can generate some useful expected distributions,
-and give you a feel for regional assembly. You'd do well to read the
-paper that generated these models, but here's an example of their use:
-
-<<tidy=TRUE>>=
-library(ape)
-library(plotrix)
-tree<-stree(8,type="balanced")
-kk<-scape(tree, scape.size=100, g.center=100, g.range=1, g.repulse=1, wd.all=150, signal.center=TRUE, signal.range=FALSE, same.range=FALSE, repulse=FALSE,center.scale = 1, range.scale = 1, repulse.scale = 1, site.stoch.scale = 0, sd.center=3, sd.range=1,rho=NULL, th=20)
-par(mfrow=c(1,Ntip(tree)), mar=c(.1,.1,.1,.1))
-for(j in 1:Ntip(tree))
-    color2D.matplot(1 - kk$sppXs[,,j]/max(kk$sppXs[,,j]), xlab = "", ylab = "",main = "",border=NA,do.hex=FALSE,axes=FALSE)
-par(mfrow=c(2,1))
-matplot((kk$X1), type = "l", xlab="gradient",ylab = "probability", main = "Gradient 1",col=rainbow(dim(kk$X1)[2]),lty=1)
-matplot((kk$X2), type = "l", xlab="gradient",ylab = "probability", main = "Gradient 2",col=rainbow(dim(kk$X2)[2]),lty=1)
-@ 
+and give you a feel for regional assembly.
 
 Alternatively, you can model the evolution of species and, at the same
 time, their assembly through a community. The only problem here is
 that the models are much simpler, but hopefully they are tunable to
-your liking! Explore the \texttt{sim.meta.comm} and
-\texttt{sim.meta.phy.comm} functions to find out more.
+your liking! Explore the \texttt{sim.meta} and \texttt{sim.phy}
+functions to find out more.
+
+Finally, you can also simulate sets of communities under phylogenetic
+and/or trait repulsion, using \texttt{sim.trait.asm}. These
+communities are excellent for use as null models to compare with your
+own data, and as such they take a \texttt{comparative.comm} object as
+an argument to generate communities that match your own data.
 
 \begin{thebibliography}{6}
 \providecommand{\natexlab}[1]{#1}
@@ -279,16 +335,22 @@ Bryant, J.A., Lamanna, C., Morlon, H., Kerkhoff, A.J., Enquist, B.J. \& Green,
   Sciences} \textbf{105}, 11505--11511,
   \urlprefix\url{http://www.pnas.org/content/105/suppl.1/11505.abstract}.
 
-\bibitem[{Cavender-Bares \emph{et~al.}(2004)Cavender-Bares, Ackerly, Baum \&
-  Bazzaz}]{Cavender-Bares2004}
-Cavender-Bares, J., Ackerly, D.D., Baum, D.a. \& Bazzaz, F.a. (2004)
-  {Phylogenetic overdispersion in Floridian oak communities}. \emph{The
-  American Naturalist} \textbf{163}, 823--43.
-
 \bibitem[{Cadotte \emph{et~al.}(2013)Cadotte, Albert \& Walker}]{Cadotte2013}
   Cadotte, M., Albert, C. \& Walker, S.C. (2013)
   {The ecology of differences: assessing community assembly with trait
     and evolutionary distances}. \emph{Ecology Letters} \textbf{16}, 1234--1244.
+
+\bibitem[{Cavender-Bares \emph{et~al.}(2004)Cavender-Bares, Ackerly,
+    Baum \& Bazzaz}]{Cavender-Bares2004} Cavender-Bares, J., Ackerly,
+  D.D., Baum, D.A. \& Bazzaz, F.A. (2004) {Phylogenetic overdispersion
+    in Floridian oak communities}. \emph{The American Naturalist}
+  \textbf{163}, 823--43.
+  
+\bibitem[{Cavender-Bares \emph{et~al.}(2006)Cavender-Bares, Keen, \&
+    Miles}]{Cavender-Bares2004} Cavender-Bares, J., A. Keen \&
+  B. Miles (2006) {Phylogenetic structure of Floridian plant
+    communities depends on taxonomic and spatial scale}. \emph{The
+    American Naturalist} \textbf{87}, S109--S122.
 
 \bibitem[{Evans \emph{et~al.}(2009)Evans, Smith, Flynn, \& Donoghue}]{Evans2009}
   Evans, M.E.K., Smith, S.A., Flynn, R.S. \& Donoghue, M.J. (200)
@@ -306,6 +368,11 @@ Kembel, S.W., Cowan, P.D., Helmus, M.R., Cornwell, W.K., Morlon, H., Ackerly,
   D.D., Blomberg, S.P. \& Webb, C.O. (2010) Picante: R tools for integrating
   phylogenies and ecology. \emph{Bioinformatics} \textbf{26}, 1463--1464.
 
+\bibitem[{Letten \& Cornwell(2014)Letten \& Cornwell}]{Letten2014}
+  Letten, A.D. \& Cornwell, W.K. (2014) Trees, branches and (square)
+  roots: why evolutionary relatedness is not linearly related to
+  functional distance. \emph{Methods in Ecology and Evolution}.
+  
 \bibitem[{Orme \emph{et~al.}(2013)Orme, Freckleton, Thomas, Petzoldt, Fritz,
   Isaac \& Pearse}]{Orme2013}
 Orme, D., Freckleton, R., Thomas, G., Petzoldt, T., Fritz, S., Isaac, N. \&
