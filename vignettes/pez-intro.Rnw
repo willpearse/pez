@@ -243,7 +243,10 @@ model <- fingerprint.regression(data, eco.permute=10)
 Once you've performed a \emph{fingerprint regression} (the name is new
 to \emph{pez}), you can examine the coefficients of each of the
 \texttt{\$eco} and \texttt{\$evo} slots in your model, which
-correspond to the two axes in figure \ref{fingerprint}.
+correspond to the two axes in figure \ref{fingerprint}. Make sure you
+check which traits are where in your graph; not all traits are
+independent, either ecologically or evolutionarily, which could lead
+to bias.
 \clearpage
 \section{Functional phylogenetic distances and traitgrams}
 

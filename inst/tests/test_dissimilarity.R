@@ -53,6 +53,18 @@ test_that("comdist", {
   expect_that(identical(t, comdist_test), is_false())
 })
 
+test_that("Non-standard distance matrices",{
+    data(laja)
+    laja <<- comparative.comm(invert.tree, river.sites, warn=FALSE)
+    sqrt <- dissimilarity(laja, "all", sqrt.phy=TRUE)
+    expect_that(names(sqrt), equals(c("unifrac","pcd","phylosor","comdist", "type")))
+    t <- sqrt(cophenetic(laja$phy))
+    ext.dist <- dissimilarity(laja, "all", ext.dist=as.dist(t))
+    expect_that(ext.dist$comdist, equals(sqrt$comdist))
+    t <- comparative.comm(invert.tree, river.sites, invert.traits)
+    traitgram <- dissimilarity(t, traitgram=1)
+})
+
 test_that("Each measure is the same as calculated together", {
   set.seed(123)
   all_test <- dissimilarity(data)

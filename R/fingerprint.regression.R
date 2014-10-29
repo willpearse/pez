@@ -19,6 +19,8 @@
 #' see \code{\link{phy.signal}}.
 #' @param eco.swap number of independent swap iterations to perform
 #' (if specified in \code{eco.rnd}; DEFAULT 1000)
+#' @param abundance whether to incorporate species' abundances
+#' (default: TRUE)
 #' @param ... additional parameters to pass on to model fitting functions
 #' @details While the term `fingerprint regression% is new to pez, the
 #' method is very similar to that employed in Cavender-Bares et
@@ -53,7 +55,7 @@
 #' }
 #' @export
 fingerprint.regression <- function(data, eco.rnd=c("taxa.labels", "richness", "frequency", "sample.pool", "phylogeny.pool", "independentswap", "trialswap"),
-  eco.method=c("quantile", "lm", "mantel"), eco.permute=1000, evo.method=c("lambda", "delta", "kappa", "blom.k"), eco.swap=1000, ...){
+  eco.method=c("quantile", "lm", "mantel"), eco.permute=1000, evo.method=c("lambda", "delta", "kappa", "blom.k"), eco.swap=1000, abundance=TRUE, ...){
   #Checks
   if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
   eco.rnd <- match.arg(eco.rnd)
@@ -65,6 +67,8 @@ fingerprint.regression <- function(data, eco.rnd=c("taxa.labels", "richness", "f
   evolution <- phy.signal(data, method=evo.method)
   
   #Ecology of traits
+  if(abundance==FALSE)
+      data$comm[data$comm > 1] <- 1
   ecology <- eco.trait.regression(data, eco.rnd, eco.permute, eco.method, altogether=FALSE, ...)
   
   #Summarise ecology regressions
@@ -102,7 +106,7 @@ print.fingerprint.regression <- function(x, ...){
 summary.fingerprint.regression <- function(object, ...){
   cat("Phylogenetic inertia calculated using", object$evo.method, "(examine with model$evo):\n")
   print(summary(object$evo))
-  cat("Ecological coexistence calculated calculated using", object$eco.method, "(examine with model$eco):\n")
+  cat("Community trait similarity calculated calculated using", object$eco.method, "(examine with model$eco):\n")
   print(summary(object$eco$obs.slope))
 }
 
@@ -117,7 +121,7 @@ summary.fingerprint.regression <- function(object, ...){
 #' @param ... additional plotting arguments
 #' @rdname fingerprint.regression
 #' @export
-plot.fingerprint.regression <- function(x, eco=c("slope", "corrected"), xlab="Ecological Trait Coexistence", ylab="Phylogenetic inertia", ...){
+plot.fingerprint.regression <- function(x, eco=c("slope", "corrected"), xlab="Community Trait Similarity", ylab="Phylogenetic inertia", ...){
   eco <- match.arg(eco)
   if(eco == "slope")
     eco <- x$eco$obs.slopes else eco <- x$eco$median.diff

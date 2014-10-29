@@ -64,6 +64,7 @@
 #' @method summary eco.xxx.regression
 #' @export
 #' @rdname eco.xxx.regression
+#' @importFrom quantreg summary.rq print.rq
 summary.eco.xxx.regression <- function(object, ...){
     x <- object  ## FIXME:  lazy hack
     cat("\n", x$type, "\n", sep="")
@@ -81,9 +82,14 @@ summary.eco.xxx.regression <- function(object, ...){
     }
     cat("Observed model summary:\n")
     if(x$method == "mantel")
-        print(x$observed) else print(summary(x$observed))
+        print(x$observed)
+    if(x$method == "quantile")
+        print.rq(x$observed)
+    if(x$method == "lm")
+        print(summary(x$observed))
     cat("\n")
 }
+
 #' @method print eco.xxx.regression
 #' @export
 #' @rdname eco.xxx.regression

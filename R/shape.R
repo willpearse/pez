@@ -1,11 +1,17 @@
-#' Calculate shape phylogenetic biodiversity metrics across communities
+#' Calculate (phylogenetic) shape: examine assemblage composition
 #'
-#' \code{shape} calculates phylogenetic biodiversity metrics
-#' @param data a \code{comparative.comm} object
-#' @param metric specify particular metrics to calculate. Default is ,
-#' default is \code{all-quick}; this calculates everything bar fd.dist
-#' (see notes).
-#' @param which.eigen The eigen vector to calculate for the PhyloEigen metric
+#' @param data \code{\link{comparative.comm}} object
+#' @param metric metrics to calculate. Default (\code{all-quick})
+#' calculates everything bar \code{fd.dist}, \code{all} calculates
+#' everything. Individually call-able metrics are: \code{psv},
+#' \code{psr}, \code{mpd}, \code{mntd}, \code{pd}, \code{colless},
+#' \code{gamma}, \code{taxon}, \code{eigen.sum}, \code{cadotte.pd}, &
+#' \code{dist.fd}. Note that \code{dist.fd} is a trait distance
+#' metric, but will be calculated on the phylogenetic distance matrix
+#' if not traits are supplied, and the external/square-rooted
+#' phylogenetic distance matrix if either is specified.
+#' @param which.eigen The eigen vector to calculate for the PhyloEigen
+#' metric (\code{eigen.sum})
 #' @param sqrt.phy If TRUE (default is FALSE) your phylogenetic
 #' distance matrix will be square-rooted; specifying TRUE will force
 #' the square-root transformation on phylogenetic distance matrices
@@ -33,6 +39,11 @@
 #' @details Calculates various metrics of phylogenetic biodiversity
 #' that are categorized as \emph{shape} metrics by Pearse \emph{et
 #' al.} (2014).
+#' @details As described in Pearse et al. (2014), a shape metric is
+#' one the examines the phylogenetic structure of species present in
+#' each assemblage, ignoring abundances entirely. For completeness,
+#' options are provided to calculate these metrics using species
+#' traits.
 #' @details Most of these metrics do not involve comparison with some
 #' kind of evolutionary-derived expectation for phylogenetic
 #' shape. Those that do, however, such as PSV or Colless' index, make
@@ -43,17 +54,26 @@
 #' \code{pez} won't give you an answer for metrics for which WDP
 #' thinks it makes no sense. PD and cadotte.pd can (...up to you
 #' whether you should!...) be used with a square-rooted distance
-#' matrix, but the results *will be wrong* if you do not have an
-#' ultrametric tree (branch lengths proportional to
-#' time). \code{is.ultrametric(cc.obj$phy)} will check this for you
-#' and unless suppressed you will have received a warning when
-#' createing your \code{comparative.comm} initially; WDP strongly
-#' feels you should only be using ultrametric phylogenies in any case
-#' (but I do welcome code improvements).
-#' @details Some comment about how dist.fd isn't necessarily
-#' functional trait distance...
-#' @return a \code{phy.structure} list object of metric values
+#' matrix, but the results *will always be wrong* if you do not have
+#' an ultrametric tree (branch lengths proportional to time) and you
+#' will be warned about this. WDP strongly feels you should only be
+#' using ultrametric phylogenies in any case, but code to fix this bug
+#' is welcome.
+#' @note As mentioned above, \code{dist.fd} is calculated using a
+#' phylogenetic distance matrix if no trait data are available, or if
+#' you specify \code{sqrt.phy}. It is not calculated by default
+#' because it generates warning messsages (which WDP is loathe to
+#' suppress) which are related to the general tendency for a low rank
+#' of phylogenetic distance matrices. Much ink has been written about
+#' this, and in par this problem is why the \code{eigen.sum} measure
+#' came to be suggested.
+#' @return \code{phy.structure} list object of metric values. Use
+#' \code{coefs} to extract a summary metric table, or examine each
+#' individual metric (which gives more details for each) by calling
+#' \code{print} on the output (i.e., type \code{output} in the example
+#' below).
 #' @author M.R. Helmus, Will Pearse
+#' @seealso evenness dispersion dissimilarity
 #' @references Pearse W.D., Purvis A., Cavender-Bares J. & Helmus M.R. (2014). Metrics and Models of Community Phylogenetics. In: Modern Phylogenetic Comparative Methods and Their Application in Evolutionary Biology. Springer Berlin Heidelberg, pp. 451-464.
 #' @references \code{PSV,PSR} Helmus M.R., Bland T.J., Williams C.K. & Ives A.R. (2007). Phylogenetic measures of biodiversity. American Naturalist, 169, E68-E83.
 #' @references \code{PD} Faith D.P. (1992). Conservation evaluation and phylogenetic diversity. Biological Conservation, 61, 1-10.

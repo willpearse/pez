@@ -20,6 +20,8 @@
 #' list, see details)
 #' @param indep.swap number of independent swap iterations to perform
 #' (if specified in \code{randomisation}; DEFAULT 1000)
+#' @param abundance whether to incorporate species' abundances
+#' (default: TRUE)
 #' @param ... additional parameters to pass on to model fitting functions
 #' @details These methods are similar to those performed in
 #' Cavender-Bares et al. (2004). Each function regresses the species
@@ -69,7 +71,7 @@
 #' @export
 eco.trait.regression <- function(data,
   randomisation=c("taxa.labels", "richness", "frequency", "sample.pool", "phylogeny.pool", "independentswap", "trialswap"),
-  permute=0, method=c("quantile", "lm", "mantel"), altogether=TRUE, indep.swap=1000, ...){
+  permute=0, method=c("quantile", "lm", "mantel"), altogether=TRUE, indep.swap=1000, abundance=TRUE, ...){
   #Assertions and argument handling
   if(!inherits(data, "comparative.comm"))
       stop("'data' must be a comparative community ecology object")
@@ -81,7 +83,9 @@ eco.trait.regression <- function(data,
       stop("'data' must contain trait data for a trait regression!")	
 	
   #Setup matrix
-  eco.matrix <- comm.dist(data$comm)
+  if(abundance==FALSE)
+      data$comm[data$comm>1] <- 1
+  eco.matrix <- as.dist(1-as.matrix(comm.dist(data$comm)))
   
   #Observed eco.trait.regression
   if(altogether)

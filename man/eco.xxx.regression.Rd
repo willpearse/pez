@@ -12,17 +12,17 @@
 eco.env.regression(data, randomisation = c("taxa.labels", "richness",
   "frequency", "sample.pool", "phylogeny.pool", "independentswap", "trialswap"),
   permute = 0, method = c("quantile", "lm", "mantel"), altogether = TRUE,
-  indep.swap = 1000, ...)
+  indep.swap = 1000, abundance = TRUE, ...)
 
 eco.phy.regression(data, randomisation = c("taxa.labels", "richness",
   "frequency", "sample.pool", "phylogeny.pool", "independentswap", "trialswap"),
   permute = 0, method = c("quantile", "lm", "mantel"), indep.swap = 1000,
-  ...)
+  abundance = TRUE, ...)
 
 eco.trait.regression(data, randomisation = c("taxa.labels", "richness",
   "frequency", "sample.pool", "phylogeny.pool", "independentswap", "trialswap"),
   permute = 0, method = c("quantile", "lm", "mantel"), altogether = TRUE,
-  indep.swap = 1000, ...)
+  indep.swap = 1000, abundance = TRUE, ...)
 
 \method{summary}{eco.xxx.regression}(object, ...)
 
@@ -53,6 +53,9 @@ list, see details)}
 
 \item{indep.swap}{number of independent swap iterations to perform
 (if specified in \code{randomisation}; DEFAULT 1000)}
+
+\item{abundance}{whether to incorporate species' abundances
+(default: TRUE)}
 
 \item{...}{additional parameters to pass on to model fitting functions}
 }

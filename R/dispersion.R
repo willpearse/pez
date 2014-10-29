@@ -1,27 +1,62 @@
-#TODO:
-# Carry through arguments
-
-#' Calculate dispersion phylogenetic biodiversity metrics across communities
+#' Calculate (phylogenetic) dispersion: examine assemblages in the
+#' context of a source pools
 #' 
-#' \code{dispersion} calculates phylogenetic biodiversity metrics
-#' 
-#' @param data a \code{comparative.comm} object
-#' @param permute the number of null permutations to perform (default 1000)
-#' @param metric specify particular metrics to calculate, default is \code{all}
-#' @param null.model One of "taxa.labels", "richness", "frequency",
+#' @param data \code{\link{comparative.comm}} object
+#' @param permute number of null permutations to perform (default
+#' 1000)
+#' @param metric default (\code{all}) calculates everything;
+#' individually call-able metrics are: \code{SESmpd}, \code{SESmntd},
+#' \code{SESpd}, \code{innd}, \code{d}.
+#' @param null.model one of "taxa.labels", "richness", "frequency",
 #' "sample.pool", "phylogeny.pool", "independentswap", or
 #' "independentswap". These correspond to the null models available in
-#' picante; only D does not use these null models currently
+#' \code{\link{picante}}; only \code{d} does not use these null models
 #' @param abundance Whether to use abundance-weighted forms of these
 #' metrics (default: FALSE). Doesn't apply to D, which is
 #' presence/absence only.
+#' @param sqrt.phy If TRUE (default is FALSE) your phylogenetic
+#' distance matrix will be square-rooted; specifying TRUE will force
+#' the square-root transformation on phylogenetic distance matrices
+#' (in the spirit of Leitten and Cornwell, 2014). See `details' for
+#' details about different metric calculations when a distance matrix
+#' is used.
+#' @param traitgram If not NULL (default), a number to be passed to
+#' \code{funct.phylo.dist} (\code{phyloWeight}; the `a' parameter),
+#' causing analysis on a distance matrix reflecting both traits and
+#' phylogeny (0 --> only phylogeny, 1 --> only traits; see
+#' \code{funct.phylo.dist}). If a vector of numbers is given,
+#' \code{shape} iterates across them and returns a \code{data.frame}
+#' with coefficients from each iteration. See `details' for details
+#' about different metric calculations when a distance matrix is used.
+#' @param traitgram.p A value for `p' to be used in conjunction with
+#' \code{traitgram} when calling \code{funct.phylo.dist}.
 #' @param ... additional parameters to be passed to metrics (unlikely
 #' you will want to use this!)
-#' @details Calculates various metrics of phylogenetic biodiversity
-#' that are categorized as \emph{dispersion} metrics by Pearse
-#' \emph{et al.} (2014).
+#' @details As described in Pearse et al. (2014), an evenness metric
+#' is one the examines the phylogenetic structure of species present
+#' in each assemblage in the context of a source pool of potentially
+#' present species. Unlike other metrics, the values of a dispersion
+#' metric is *contingent* on the definition of source pool, and
+#' (often) randomisations used to conduct that comparison. For
+#' completeness, options are provided to calculate these metrics using
+#' species traits.
+#' @details Most of these metrics do not involve comparison with some
+#' kind of evolutionary-derived expectation for phylogenetic
+#' shape. Those that do, however, such as D, make no sense unless
+#' applied to a phylogenetic distance matrix - their null expectation
+#' *requires* it. Using square-rooted distance matrices, or distance
+#' matrices that incorporate trait information, can be an excellent
+#' thing to do, but (for the above reasons), \code{pez} won't give you
+#' an answer for metrics for which WDP thinks it makes no sense. SESpd
+#' can (...up to you whether it should!...) be used with a
+#' square-rooted distance matrix, but the results *will always be
+#' wrong* if you do not have an ultrametric tree (branch lengths
+#' proportional to time) and you will be warned about this. WDP
+#' strongly feels you should only be using ultrametric phylogenies in
+#' any case, but code to fix this bug is welcome.
 #' @return a \code{phy.structure} list object of metric values
 #' @author M.R. Helmus, Will Pearse
+#' @seealso shape evenness dissimilarity
 #' @references Pearse W.D., Purvis A., Cavender-Bares J. & Helmus
 #' M.R. (2014). Metrics and Models of Community Phylogenetics. In:
 #' Modern Phylogenetic Comparative Methods and Their Application in
@@ -48,7 +83,7 @@
 #' @importFrom caper phylo.d
 #' @importFrom picante ses.mntd ses.mpd ses.pd
 #' @export
-dispersion <- function(data, metric=c("all", "sesmpd", "sesmntd", "sespd", "innd", "d"), permute=1000, null.model=c("taxa.labels", "richness", "frequency", "sample.pool", "phylogeny.pool", "independentswap", "trialswap"), abundance=FALSE, ...)
+dispersion <- function(data, metric=c("all", "sesmpd", "sesmntd", "sespd", "innd", "d"), permute=1000, null.model=c("taxa.labels", "richness", "frequency", "sample.pool", "phylogeny.pool", "independentswap", "trialswap"), abundance=FALSE, sqrt.phy=FALSE, traitgram=NULL, traitgram.p=2, ext.dist=NULL, ...)
 {
   #Assertions and argument handling
   if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
@@ -56,33 +91,70 @@ dispersion <- function(data, metric=c("all", "sesmpd", "sesmntd", "sespd", "innd
   if(permute < 0) stop("Can't have negative null permutations!")
   null.model <- match.arg(null.model)
   coefs <- data.frame(row.names=rownames(data$comm))
+
+  if(sum(c(!is.null(traitgram), sqrt.phy, !is.null(ext.dist))) > 1)
+      stop("Confusion now hath made its masterpiece!\nYou have specified more than one thing to do with a distance matrix.")
+  if(!is.null(traitgram)){
+      if(length(traitgram) > 1){
+          output <- vector("list", length(traitgram))
+          for(i in seq_along(output))
+              output[[i]] <- cbind(coef(Recall(data, metric=metric, permute=permute, null.model=null.model, abundance=abundance, sqrt.phy=sqrt.phy, traitgram=traitgram[i], traitgram.p=traitgram.p, ext.dist=ext.dist)), traitgram[i], sites(data))
+          output <- do.call(rbind, output)
+          names(output)[ncol(output)-1] <- "traitgram"
+          names(output)[ncol(output)] <- "site"
+          rownames(output) <- NULL
+          return(output)
+      } else {
+          dist <- as.matrix(funct.phylo.dist(data, traitgram, traitgram.p))
+          traitgram <- TRUE
+      }      
+  } else traitgram <- FALSE
+  
+  if(!is.null(ext.dist)){
+      if(!inherits(ext.dist, "dist"))
+          stop("'ext.dist' must be a distance matrix")
+      if(attr(ext.dist, "Size") != ncol(data$comm))
+          stop("'ext.dist' must have dimensions matching comparative.comm object's species'")
+      if(!identical(attr(ext.dist, "Labels"), species(data)))
+          warning("'ext.dist' names do not match species data; continuing regardless")
+      dist <- as.matrix(ext.dist)
+      ext.dist <- TRUE
+  } else ext.dist <- FALSE
   
   #Setup
-  tree.dist <- cophenetic(data$phy)
+  if(traitgram==FALSE & ext.dist==FALSE)
+      dist <- cophenetic(data$phy)
+  if(sqrt.phy){
+        if(!is.ultrametric(data$phy))
+            warning("Phylogeny is not ultrametric; see function details")
+      dist <- sqrt(dist)
+      data$phy <- as.phylo(hclust(as.dist(dist)))
+  }
+  dist <- cophenetic(data$phy)
   output <- list(sesmpd=NULL, sesmntd=NULL, sespd=NULL, innd=NULL, d=NULL)
   
   #Caculate measures
   if(metric == "sesmpd" | metric == "all"){
-    output$sesmpd <- ses.mpd(data$comm,tree.dist, null.model=null.model, abundance.weighted=abundance, ...)
+    output$sesmpd <- ses.mpd(data$comm, dist, null.model=null.model, abundance.weighted=abundance, ...)
     coefs$sesmpd <- output$sesmpd$mpd.obs.z
   }
   
   if(metric == "sesmntd" | metric == "all"){
-    output$sesmntd <- ses.mntd(data$comm,tree.dist, null.model=null.model, abundance.weighted=abundance, ...)
+    output$sesmntd <- ses.mntd(data$comm, dist, null.model=null.model, abundance.weighted=abundance, ...)
     coefs$sesmntd <- output$sesmntd$mntd.obs.z
   }
   
-  if(metric == "sespd" | metric == "all"){
-    output$sespd <- ses.pd(data$comm,data$phy, null.model=null.model, abundance.weighted=abundance, ...)
+  if((metric == "sespd" | metric == "all") & ext.dist==FALSE){
+    output$sespd <- ses.pd(data$comm, data$phy, null.model=null.model, ...)
     coefs$sespd <- output$sespd$pd.obs.z
   }
   
   if(metric == "innd" | metric == "all"){
-    output$innd <- ses.mpd(data$comm,1/tree.dist, null.model=null.model, abundance.weighted=abundance, ...)
+    output$innd <- ses.mpd(data$comm,1/dist, null.model=null.model, abundance.weighted=abundance, ...)
     coefs$innd <- output$innd$mpd.obs.z
   }
   #WARNING: Altering commnity matrix in-place
-  if(metric == "d" | metric == "all"){
+  if((metric == "d" | metric == "all") & (ext.dist=FALSE & sqrt.phy==FALSE)){
     data$comm[data$comm > 0] <- 1
     output$d <- .d(data, traits=FALSE)
     coefs$d <- output$d[,1]

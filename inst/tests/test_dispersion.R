@@ -42,3 +42,21 @@ test_that("D", {
 "even", "random"), c("D", "P(D=1)", "P(D=0)")))))
   expect_that(d_test$coefs, equals(coef(d_test)))
 })
+
+#SESmpd etc. is so unpredictable that tests of the numerical values are almost pointless...
+test_that("Non-standard distance matrices",{
+    data(laja)
+    laja <- comparative.comm(invert.tree, river.sites, invert.traits, river.env)
+    set.seed(123)
+    sqrt <- dispersion(laja, "all", sqrt.phy=TRUE)
+    expect_that(names(coef(sqrt)), equals(c("sesmpd","sesmntd","sespd","innd")))
+    t <- sqrt(cophenetic(laja$phy))
+    set.seed(123)
+    ext.dist <- dispersion(laja, "all", ext.dist=as.dist(t))
+    expect_that(identical(names(coef(sqrt)),names(coef(ext.dist))), is_false())
+    expect_that(coef(sqrt)[,names(coef(ext.dist))], equals(coef(ext.dist)))
+    t <- comparative.comm(invert.tree, river.sites, invert.traits)
+    traitgram <- dispersion(t, traitgram=1)
+    traitgram.group <- dispersion(t, "all", traitgram=c(0,0.5,1))
+    #expect_that(round(coef(traitgram),1), is_equivalent_to(round(traitgram.group[traitgram.group$traitgram==1.0,names(coef(traitgram))],1)))
+})

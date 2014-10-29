@@ -5,7 +5,7 @@
 #' @name eco.xxx.regression
 eco.env.regression <- function(data, randomisation=c("taxa.labels", "richness", "frequency",
                                    "sample.pool", "phylogeny.pool", "independentswap", "trialswap"),
-                               permute=0, method=c("quantile", "lm", "mantel"), altogether=TRUE, indep.swap=1000, ...){
+                               permute=0, method=c("quantile", "lm", "mantel"), altogether=TRUE, indep.swap=1000, abundance=TRUE, ...){
   #Assertions and argument handling
   if(! inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
   randomisation <- match.arg(randomisation)
@@ -13,7 +13,9 @@ eco.env.regression <- function(data, randomisation=c("taxa.labels", "richness", 
   if(permute < 0) stop("Can't have negative null permutations!")
   
   #Setup matrices
-  eco.matrix <- comm.dist(data$comm)
+  if(abundance==FALSE)
+      data$comm[data$comm>1] <- 1
+  eco.matrix <- as.dist(1-as.matrix(comm.dist(data$comm)))
   if(!is.null(data$env)) traits.matrix <- pianka.dist(data, altogether) else stop("'data' must contain environmental data for an environmental regression!")
   
   #Observed eco.env.regression

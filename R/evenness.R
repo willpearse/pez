@@ -1,24 +1,18 @@
-#TODO:
-# Are Delta et al., when calculated here, based on abundances? Worth checking...
-# There is an error message coming from phylo.entropy that is described in its script
-# Could encapsulate phylogenetic signal measures by writing a wrapper and using expression to wrap the correct thing in (if you cared enough...)
-# optimise (? and if can be bothered)
-# mis-match between proportions and partial.tree$edge.length - not introduced by the changes below
-# NEEDED lambda, delta, kappa reference
-
-#' Calculate evenness phylogenetic biodiversity metrics across communities
-#'
-#' \code{evenness} calculates phylogenetic biodiversity metrics
+#' Calculate (phylogenetic) evenness: examine assemblage composition
+#' and abundance
 #' 
-#' @param data a comparative community ecology object
-#' @param metric specify particular metrics to calculate, default is
-#' \code{all} (\code{all-quick} will calculate everything bar the
-#' Pagel metrics and Rao's D, which can be slow) #' @param sqrt.phy If
-#' TRUE (default is FALSE) your phylogenetic distance matrix will be
-#' square-rooted; specifying TRUE will force the square-root
-#' transformation on phylogenetic distance matrices (in the spirit of
-#' Leitten and Cornwell, 2014). See `details' for details about
-#' different metric calculations when a distance matrix is used.
+#' @param data \code{\link{comparative.comm}} object
+#' @param metric default (\code{all-quick}) calculates everything bar
+#' \code{fd.dist} and the Pagel transformations
+#' (\eqn{$\lambda$}{lambda}, \eqn{$\delta$}{delta},
+#' \eqn{$\kappa$}{kappa}). \code{all} calculates
+#' everything. Individually call-able metrics are: \code{rao},
+#' \code{taxon}, \code{entropy}, \code{cadotte}, \code{lambda}, \code{kappa},
+#' \code{delta}, \code{mpd}, \code{mntd}, \code{pse}, &
+#' \code{dist.fd}. Note that \code{dist.fd} is a trait distance
+#' metric, but will be calculated on the phylogenetic distance matrix
+#' if not traits are supplied, and the external/square-rooted
+#' phylogenetic distance matrix if either is specified.
 #' @param sqrt.phy If TRUE (default is FALSE) your phylogenetic
 #' distance matrix will be square-rooted; specifying TRUE will force
 #' the square-root transformation on phylogenetic distance matrices
@@ -35,29 +29,45 @@
 #' about different metric calculations when a distance matrix is used.
 #' @param traitgram.p A value for `p' to be used in conjunction with
 #' \code{traitgram} when calling \code{funct.phylo.dist}.
-#' @param ... Additional arguments to passed to metric functions (unlikely you will want this!)
-#' @details Calculates various metrics of phylogenetic biodiversity
-#' that are categorized as \emph{evenness} metrics by Pearse \emph{et
-#' al.} (2014)
+#' @param ext.dist Supply an external species-level distance matrix
+#' for use in calculations. See `details' for comments on the use of
+#' distance matrices in different metric calculations.
+#' @param ... Additional arguments to passed to metric functions
+#' (unlikely you will want this!)
+#' @details As described in Pearse et al. (2014), an evenness metric
+#' is one the examines the phylogenetic structure of species present
+#' in each assemblage, taking into account their abundances. For
+#' completeness, options are provided to calculate these metrics using
+#' species traits.
 #' @details Most of these metrics do not involve comparison with some
 #' kind of evolutionary-derived expectation for phylogenetic
-#' shape. Those that do, however, such as PSV or Colless' index, make
-#' no sense unless applied to a phylogenetic distance matrix - their
-#' null expectation *requires* it. Using square-rooted distance
-#' matrices, or distance matrices that incorporate trait information,
-#' can be an excellent thing to do, but (for the above reasons),
-#' \code{pez} won't give you an answer for metrics for which WDP
-#' thinks it makes no sense. PD and cadotte.pd can (...up to you
-#' whether you should!...) be used with a square-rooted distance
-#' matrix, but the results *will be wrong* if you do not have an
-#' ultrametric tree (branch lengths proportional to
-#' time). \code{is.ultrametric(cc.obj$phy)} will check this for you
-#' and unless suppressed you will have received a warning when
-#' createing your \code{comparative.comm} initially; WDP strongly
-#' feels you should only be using ultrametric phylogenies in any case
-#' (but I do welcome code improvements).
-#' @return a \code{phy.structure} list object of metric values
+#' shape. Those that do, however, such as PSE, make no sense unless
+#' applied to a phylogenetic distance matrix - their null expectation
+#' *requires* it. Using square-rooted distance matrices, or distance
+#' matrices that incorporate trait information, can be an excellent
+#' thing to do, but (for the above reasons), \code{pez} won't give you
+#' an answer for metrics for which WDP thinks it makes no
+#' sense. \code{cadotte.pd} can (...up to you whether you should!...)
+#' be used with a square-rooted distance matrix, but the results *will
+#' always be wrong* if you do not have an ultrametric tree (branch
+#' lengths proportional to time) and you will be warned about
+#' this. WDP strongly feels you should only be using ultrametric
+#' phylogenies in any case, but code to fix this bug is welcome.
+#' @note As mentioned above, \code{dist.fd} is calculated using a
+#' phylogenetic distance matrix if no trait data are available, or if
+#' you specify \code{sqrt.phy}. It is not calculated by default
+#' because it generates warning messsages (which WDP is loathe to
+#' suppress) which are related to the general tendency for a low rank
+#' of phylogenetic distance matrices. Much ink has been written about
+#' this, and in par this problem is why the \code{eigen.sum} measure
+#' came to be suggested.
+#' @return \code{phy.structure} list object of metric values. Use
+#' \code{coefs} to extract a summary metric table, or examine each
+#' individual metric (which gives more details for each) by calling
+#' \code{print} on the output (i.e., type \code{output} in the example
+#' below).
 #' @author M.R. Helmus, Will Pearse
+#' @seealso shape dispersion dissimilarity
 #' @references Pearse W.D., Purvis A., Cavender-Bares J. & Helmus
 #' M.R. (2014). Metrics and Models of Community Phylogenetics. In:
 #' Modern Phylogenetic Comparative Methods and Their Application in
