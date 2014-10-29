@@ -71,15 +71,10 @@ want half-species (these are individuals), and keeping everything
 in Poisson makes it easier to compare the relative rates of
 everything.
 
-Simulates species moving through a metacommunity. At each
-time-step each cell's next abundance for each species is
-env.quality - current.abundance + stochastic, and a species gets as
-many chances to migrate in each time-step as it has cells (the same
-cell could migrate multiple times). I use a Poisson for everything
-because I don't want half-species (these are individuals, because I
-eventually want to make a phylogeny of these), and keeping
-everything in Poisson makes it easier to compare the relative rates
-of everything.
+\code{sim.meta.phy.comm} As above, but with a simulation of
+phylogeny as well - there are no additional extinction parameters,
+since extinction happens as a natural consequence of ecological
+interactions.
 }
 \note{
 \code{\link{scape}} is a much more sophisticated simulation

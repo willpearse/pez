@@ -1,5 +1,29 @@
 #' Calculate (phylogenetic) dispersion: examine assemblages in the
 #' context of a source pools
+#'
+#' As described in Pearse et al. (2014), an evenness metric is one the
+#' examines the phylogenetic structure of species present in each
+#' assemblage in the context of a source pool of potentially present
+#' species. Unlike other metrics, the values of a dispersion metric is
+#' *contingent* on the definition of source pool, and (often)
+#' randomisations used to conduct that comparison. For completeness,
+#' options are provided to calculate these metrics using species
+#' traits.
+#'
+#' Most of these metrics do not involve comparison with some kind of
+#' evolutionary-derived expectation for phylogenetic shape. Those that
+#' do, however, such as D, make no sense unless applied to a
+#' phylogenetic distance matrix - their null expectation *requires*
+#' it. Using square-rooted distance matrices, or distance matrices
+#' that incorporate trait information, can be an excellent thing to
+#' do, but (for the above reasons), \code{pez} won't give you an
+#' answer for metrics for which WDP thinks it makes no sense. SESpd
+#' can (...up to you whether it should!...) be used with a
+#' square-rooted distance matrix, but the results *will always be
+#' wrong* if you do not have an ultrametric tree (branch lengths
+#' proportional to time) and you will be warned about this. WDP
+#' strongly feels you should only be using ultrametric phylogenies in
+#' any case, but code to fix this bug is welcome.
 #' 
 #' @param data \code{\link{comparative.comm}} object
 #' @param permute number of null permutations to perform (default
@@ -32,28 +56,6 @@
 #' \code{traitgram} when calling \code{funct.phylo.dist}.
 #' @param ... additional parameters to be passed to metrics (unlikely
 #' you will want to use this!)
-#' @details As described in Pearse et al. (2014), an evenness metric
-#' is one the examines the phylogenetic structure of species present
-#' in each assemblage in the context of a source pool of potentially
-#' present species. Unlike other metrics, the values of a dispersion
-#' metric is *contingent* on the definition of source pool, and
-#' (often) randomisations used to conduct that comparison. For
-#' completeness, options are provided to calculate these metrics using
-#' species traits.
-#' @details Most of these metrics do not involve comparison with some
-#' kind of evolutionary-derived expectation for phylogenetic
-#' shape. Those that do, however, such as D, make no sense unless
-#' applied to a phylogenetic distance matrix - their null expectation
-#' *requires* it. Using square-rooted distance matrices, or distance
-#' matrices that incorporate trait information, can be an excellent
-#' thing to do, but (for the above reasons), \code{pez} won't give you
-#' an answer for metrics for which WDP thinks it makes no sense. SESpd
-#' can (...up to you whether it should!...) be used with a
-#' square-rooted distance matrix, but the results *will always be
-#' wrong* if you do not have an ultrametric tree (branch lengths
-#' proportional to time) and you will be warned about this. WDP
-#' strongly feels you should only be using ultrametric phylogenies in
-#' any case, but code to fix this bug is welcome.
 #' @return a \code{phy.structure} list object of metric values
 #' @author M.R. Helmus, Will Pearse
 #' @seealso shape evenness dissimilarity

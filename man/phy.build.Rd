@@ -3,7 +3,8 @@
 \alias{bind.replace}
 \alias{merge.phylo}
 \alias{phy.build}
-\title{Bind missing species into a phylogeny based on taxonomy}
+\title{Build a novel phylogeny from existing data (based on
+phyloGenerator)}
 \usage{
 merge.phylo(tree, species, split = "_")
 
@@ -39,21 +40,21 @@ branch)}
 phylogeny (\code{\link{ape::phylo}})
 }
 \description{
-Bind missing species into a phylogeny based on taxonomy
-
-Bind one phylogeny into another, giving an ultrametric phylogeny
+Build a novel phylogeny from existing data (based on
+phyloGenerator)
 }
 \details{
-Binds missing species into a phylogeny by replacing all
-members of the clade it belongs to with a polytomy. Assumes the
-\code{tip.labels} represent Latin binomials, split by the
-\code{split} argument. This code was originally shipped with
-phyloGenerator - this is the \code{merge} method in that program.
+\code{merge} Binds missing species into a phylogeny by
+replacing all members of the clade it belongs to with a
+polytomy. Assumes the \code{tip.labels} represent Latin binomials,
+split by the \code{split} argument. This code was originally
+shipped with phyloGenerator - this is the \code{merge} method in
+that program.
 
-Binds a phylogeny (donor) into a bigger phylogeny
-('backbone'); useful if you're building a phylogeny a la
-Phylomatic. This code was originally shipped with phyloGenerator -
-this is the \code{merge} method in that program.
+\code{bind.replace} Binds a phylogeny (donor) into a
+bigger phylogeny ('backbone'); useful if you're building a
+phylogeny a la Phylomatic. This code was originally shipped with
+phyloGenerator - this is the \code{merge} method in that program.
 }
 \author{
 Will Pearse
@@ -61,8 +62,6 @@ Will Pearse
 Will Pearse
 }
 \references{
-Pearse W.D. & Purvis A. phyloGenerator: an automated phylogeny generation tool for ecologists. Methods in Ecology and Evolution 4(7): 692--698.
-
 Pearse W.D. & Purvis A. phyloGenerator: an automated phylogeny generation tool for ecologists. Methods in Ecology and Evolution 4(7): 692--698.
 }
 

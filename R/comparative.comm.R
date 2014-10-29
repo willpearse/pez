@@ -1,5 +1,12 @@
 #' Creates a community comparative ecology object, the basis of all
 #' functions in pez
+#'
+#' Basic checking of whether the input data match up is performed; you
+#' need only supply \code{comm} and \code{phy}, nothing else is
+#' mandatory. You can manipulate the internals of
+#' \code{comparative.comm}, or use the wrappers inside \code{pez} to
+#' keep everything in order. Examples of these features are given
+#' below; they are described in detailed at \code{\link{cc.manip}}.
 #' 
 #' @param phy phylogeny (in \code{\link{ape::phylo}} format) of
 #' species
@@ -18,13 +25,13 @@
 #' @param force.root if \code{phy} is unrooted, a \code{root.edge} of
 #' value force.root will be added (default: -1, which means this will
 #' never happen). Rarely needed, rarely advisable.
-#' @details Basic checking of whether the input data match up is
-#' performed; you need only supply \code{comm} and \code{phy}, nothing
-#' else is mandatory. You can manipulate the internals of
-#' \code{comparative.comm}, or use the wrappers inside \code{pez} to
-#' keep everything in order. Examples of these features are given
-#' below; they are described in detailed at \code{\link{cc.manip}}.
+#' @note \code{comparative.comm} is compatible with
+#' \code{\link{caper::comparative.data}}; this means that the slot for
+#' species' trait data is called \code{data}. I appreciate this is
+#' somewhat unwieldy, but hopefully you agree it is helpful in the
+#' long-term.
 #' @return comparative.comm object
+#' @author Will Pearse
 #' @examples \dontrun{
 #' data(laja)
 #' data <- comparative.comm(invert.tree, river.sites, invert.traits, river.env)
@@ -190,6 +197,15 @@ print.comparative.comm <- function(x, ...){
 }
 
 #' Manipulating and examining comparative.comm objects
+#'
+#' As described in the vignette, we recommend using these wrappers to
+#' manipulate species and site data, as it guarantees that everything
+#' will be kept consistent across all parts of the
+#' \code{\link{comparative.comm}} object. However, remember that you
+#' can manipulate the internal components of a
+#' \code{\link{comparative.comm}} object directly, and this is useful
+#' if you want to play around with traits, add in new data, etc.
+#' 
 #' @param x \code{comparative.comm} object
 #' @param sites numbers of sites to be kept or dropped from \code{x};
 #' must be given as numbers. For example, \code{x[1:5,]}, or
@@ -199,13 +215,6 @@ print.comparative.comm <- function(x, ...){
 #' \code{x[,-1:-5]}, but not \code{x[c("sp a", "sp b"),]}.
 #' @param warn whether to warn if species/sites are dropped when
 #' creating object (default: TRUE)
-#' @details As described in the vignette, we recommend using these
-#' wrappers to manipulate species and site data, as it guarantees that
-#' everything will be kept consistent across all parts of the
-#' \code{\link{comparative.comm}} object. However, remember that you
-#' can manipulate the internal components of a
-#' \code{\link{comparative.comm}} object directly, and this is useful
-#' if you want to play around with traits, add in new data, etc.
 #' @note As described in \code{\link{comparative.comm}}, each
 #' \code{\link{comparative.comm}} object contains a phylogeny
 #' (\code{$phy}) and a site-by-species community matrix (as used in
@@ -279,8 +288,6 @@ print.comparative.comm <- function(x, ...){
 	return(new.x)
 }
 
-##' Describing and manipulating comparative.comm objects
-##'
 ##' @param object A \code{\link{comparative.comm}} object
 ##' @return Names of the traits or environmental variables
 ##' @rdname cc.manip
@@ -334,8 +341,6 @@ sites <- function(x){
     return(x)
 }
 
-#' Get individual assemblage phylogenies
-#'
 #' @param data A \code{\link{comparative.comm}} object
 #' @return List of \code{\link{ape::phylo}} objects, one for each
 #' assemblage in the \code{data}.

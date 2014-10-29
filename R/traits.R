@@ -3,10 +3,10 @@
 #' Simulate expectations (under a null model) of mean pairwise distance for 
 #' a set of communities with different species richness.
 #'
-#' If \code{plot == TRUE}, then a surface is drawn giving the
-#' null distribution.  Lighter shades of gray give larger intervals 
-#' with categories: 0.005-0.995 = 99\%, 0.025-0.975 = 95\%, 0.05-0.95 = 90\%,
-#' 0.25-0.75 = 50\%.
+#' @details If \code{plot == TRUE}, then a surface is drawn giving the
+#' null distribution.  Lighter shades of gray give larger intervals
+#' with categories: 0.005-0.995 = 99\%, 0.025-0.975 = 95\%, 0.05-0.95
+#' = 90\%, 0.25-0.75 = 50\%.
 #'
 #' @param object a \code{\link{comparative.comm}} object
 #' @param type character string giving the type of distance matrix on
@@ -224,8 +224,8 @@ trait.asm<-function(a, m=1000,meanSR=NULL,interval=c(.001,10),exponential=TRUE,P
 
 ##' Traitgram for comparative community object
 ##'
-##' A wrapper for the \code{\link{traitgram}} function in the
-##' \code{picante} package.
+##' \code{traitgram.cc} A wrapper for the \code{\link{traitgram}}
+##' function in the \code{picante} package.
 ##'
 ##' @param object A \code{\link{comparative.comm}} object.
 ##' @param trait Which trait to plot.  If \code{\link{missing}}, use
@@ -235,7 +235,7 @@ trait.asm<-function(a, m=1000,meanSR=NULL,interval=c(.001,10),exponential=TRUE,P
 ##' trait data in \code{object}.  If a \code{\link{character}} vector
 ##' of \code{\link{length}} one, use the trait with that name.  If a
 ##' \code{\link{function}} pass the trait data frame through that
-##' function and use the result (\code{\link{princomp.one}} is a
+##' function and use the result (\code{\link{princompOne}} is a
 ##' wrapper).  If an \code{\link{expression}}, evaluate that
 ##' expression in the environment of the trait data and use the
 ##' result.  If a \code{\link{character}} vector, then convert to an
@@ -245,10 +245,10 @@ trait.asm<-function(a, m=1000,meanSR=NULL,interval=c(.001,10),exponential=TRUE,P
 ##' (if its a \code{\link{function}}).
 ##' @param ... Additional arguments to be passed on to
 ##' \code{\link{traitgram}}.
-##' @return See \code{\link{traitgram}}
+##' @return \code{traitgram.cc}: see \code{\link{picante::traitgram}}
 ##' @importFrom picante traitgram
 ##' @export
-cc.traitgram <- function(object, trait, moreArgs = NULL, ...) {
+traitgram.cc <- function(object, trait, moreArgs = NULL, ...) {
     if(is.null(object$data)) stop("must supply trait information")
     if(is.null(object$phy)) stop("must supply phylogeny")
     if(missing(trait)) {
@@ -286,7 +286,7 @@ cc.traitgram <- function(object, trait, moreArgs = NULL, ...) {
 ##' 
 ##' @param x A matrix-like object
 ##' @param ... Arguments to pass on to \code{\link{princomp}}
-##' @return The first axis of a PCA
-##' @rdname cc.traitgram
+##' @return \code{princompOne}: the first axis of a PCA
+##' @rdname traitgram.cc
 ##' @export
-princomp.one <- function(x, ...) princomp(x, ...)$scores[,1]
+princompOne <- function(x, ...) princomp(x, ...)$scores[,1]

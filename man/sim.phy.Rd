@@ -73,14 +73,33 @@ trait evolution
 Convert a simulated edge matrix to an ape:phylo object
 }
 \details{
-Two functions that simulate phylogeny; closely related to
-\code{\link{sim.meta}} that extend this to simulate meta-community
-structure at the same time.
+\code{sim.bd.tree} simulates a pure birth/death speciation
+model. There are two important things to note: (1) speciation is
+randomised before extinction, and only one thing can happen to a
+lineage per timestep. (2) This code works well for my purposes, but
+absurd parameter values can cause the function to crash.
 
-This is an internal function for the
-\code{\link{sim.phy}} and \code{\link{sim.meta}} function
-families, which may be of use to you. Check those functions for
+\code{sim.bd.tr.tree} is an extension of \code{sim.bd.tree}, and
+all its caveats apply to it. It additionally simulated the
+evolution of a trait under Brownain motion
+(\code{tr.walk}). Species' speciation/extinction rates change
+depending on whether they have a trait value similar to other
+species (\code{sp.tr}, \code{ext.tr}). When a speciation event
+happens, the two daughters split evenly about the ancestor's trait
+value, taking values half-way to whatever the nearest species'
+value is. To be precise: \eqn{$p_i_{speciate} = speciate_i + sp.tr
+\times min(trait distance)$}{p(speciate) = speciate +
+sp.tr*min.tr.dist}, \eqn{$p_i_{extinct} = exinction_i + ext.tr
+\times min(trait distance)$}{p(extinct) = extinction +
+ext.tr*min.tr.dist}, where \eqn{$i$}{i} denotes each species.
+
+\code{edge2phylo} is an internal function for the
+\code{\link{sim.phy}} and \code{\link{sim.meta}} function families,
+which may be of use to you. Check those functions' code for
 examples of use.
+
+These functions are closely related to \code{\link{sim.meta}} that
+extend this to simulate meta-community structure at the same time.
 }
 \examples{
 \dontrun{

@@ -32,8 +32,8 @@ a set of communities with different species richness.
 \details{
 If \code{plot == TRUE}, then a surface is drawn giving the
 null distribution.  Lighter shades of gray give larger intervals
-with categories: 0.005-0.995 = 99\%, 0.025-0.975 = 95\%, 0.05-0.95 = 90\%,
-0.25-0.75 = 50\%.
+with categories: 0.005-0.995 = 99\%, 0.025-0.975 = 95\%, 0.05-0.95
+= 90\%, 0.25-0.75 = 50\%.
 }
 \note{
 No serious checking of user-provided matrices is performed;

@@ -42,16 +42,19 @@ never happen). Rarely needed, rarely advisable.}
 comparative.comm object
 }
 \description{
-Creates a community comparative ecology object, the basis of all
-functions in pez
-}
-\details{
-Basic checking of whether the input data match up is
-performed; you need only supply \code{comm} and \code{phy}, nothing
-else is mandatory. You can manipulate the internals of
+Basic checking of whether the input data match up is performed; you
+need only supply \code{comm} and \code{phy}, nothing else is
+mandatory. You can manipulate the internals of
 \code{comparative.comm}, or use the wrappers inside \code{pez} to
 keep everything in order. Examples of these features are given
 below; they are described in detailed at \code{\link{cc.manip}}.
+}
+\note{
+\code{comparative.comm} is compatible with
+\code{\link{caper::comparative.data}}; this means that the slot for
+species' trait data is called \code{data}. I appreciate this is
+somewhat unwieldy, but hopefully you agree it is helpful in the
+long-term.
 }
 \examples{
 \dontrun{
@@ -71,6 +74,9 @@ assemblage.phylogenies(data)
 #Do some manual manipulation of your objects (NOTE: $data for traits)
 data$data$new.trait <- sample(letters, nrow(data$comm), replace=TRUE)
 }
+}
+\author{
+Will Pearse
 }
 \seealso{
 plot.comparative.comm cc.manip caper::comparative.data

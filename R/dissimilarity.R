@@ -1,5 +1,23 @@
 #' Calculate (phylogenetic) dissimilarity: compare assemblages to
 #' one-another
+#'
+#' As described in Pearse et al. (2014), a dissimilarity metric
+#' compares diversity between communities. WARNING: Phylosor is
+#' presented as a distance matrix here, i.e. it is *not* the fraction
+#' of shared branch length among communities, but rather '1 - shared
+#' branch length'. This means \code{dissimilarity} always returns a
+#' *distance* object, not a similarity object; this is a different
+#' convention from other packages.
+#'
+#' Using square-rooted distance matrices, or distance matrices that
+#' incorporate trait information, can be an excellent thing to do, but
+#' (for the above reasons), \code{pez} won't give you an answer for
+#' metrics for which WDP thinks it makes no sense. All results from
+#' this other than \code{comdist} *will always be wrong* if you do not
+#' have an ultrametric tree and square-root (branch lengths
+#' proportional to time) and you will be warned about this. WDP
+#' strongly feels you should only be using ultrametric phylogenies in
+#' any case, but code to fix this bug is welcome.
 #' 
 #' @param data \code{comparative.comm} object
 #' @param metric default (\code{all}) calculates everything;
@@ -11,22 +29,6 @@
 #' for \code{pcd})
 #' @param ... additional parameters to be passed to `metric
 #' function(s) you are calling
-#' @details As described in Pearse et al. (2014), a dissimilarity
-#' metric compares diversity between communities. WARNING: Phylosor is
-#' presented as a distance matrix here, i.e. it is *not* the fraction
-#' of shared branch length among communities, but rather '1 - shared
-#' branch length'. This means \code{dissimilarity} always returns a
-#' *distance* object, not a similarity object; this is a different
-#' convention from other packages.
-#' @details Using square-rooted distance matrices, or distance
-#' matrices that incorporate trait information, can be an excellent
-#' thing to do, but (for the above reasons), \code{pez} won't give you
-#' an answer for metrics for which WDP thinks it makes no sense. All
-#' results from this other than \code{comdist} *will always be wrong*
-#' if you do not have an ultrametric tree and square-root (branch
-#' lengths proportional to time) and you will be warned about
-#' this. WDP strongly feels you should only be using ultrametric
-#' phylogenies in any case, but code to fix this bug is welcome.
 #' @return list object of metric values. A \code{coef} method does not
 #' exist for this function, because there's no nice way to simplify
 #' all the distance matrices. Sorry!

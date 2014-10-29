@@ -2,6 +2,21 @@
 #'
 #' Simulate a meta-community (and the resulting phylogeny) based on
 #' responses to environmental gradients
+#'
+#' \code{sim.meta.comm} simulates species moving through a
+#' metacommunity. At each time-step each cell's next abundance for
+#' each species is \code{env.quality} - \code{current.abundance} +
+#' \code{stochastic}, and a species gets as many chances to migrate in
+#' each time-step as it has cells (the same cell could migrate
+#' multiple times). I use a Poisson for everything because I don't
+#' want half-species (these are individuals), and keeping everything
+#' in Poisson makes it easier to compare the relative rates of
+#' everything.
+#'
+#' \code{sim.meta.phy.comm} As above, but with a simulation of
+#' phylogeny as well - there are no additional extinction parameters,
+#' since extinction happens as a natural consequence of ecological
+#' interactions.
 #' 
 #' @param size the length and width of the meta-community in grid
 #' cells
@@ -22,20 +37,6 @@
 #' calculation. With equal chance, this is taken as either a positive
 #' or a negative number (see details if you're confused as to why this
 #' is Poisson!)
-#' @details \code{sim.meta.comm} simulates species moving through a
-#' metacommunity. At each time-step each cell's next abundance for
-#' each species is \code{env.quality} - \code{current.abundance} +
-#' \code{stochastic}, and a species gets as many chances to migrate in
-#' each time-step as it has cells (the same cell could migrate
-#' multiple times). I use a Poisson for everything because I don't
-#' want half-species (these are individuals), and keeping everything
-#' in Poisson makes it easier to compare the relative rates of
-#' everything.
-#' @details \code{sim.meta.phy.comm} additionally simulates the
-#' phylogeny of these species. Since everything in
-#' \code{sim.meta.comm} automatically will cause species to go extinct
-#' as a result of the ongoing ecology, there are no additional
-#' extinction parameters specified.
 #' @note \code{\link{scape}} is a much more sophisticated simulation
 #' of the biogeography, but requires you to supply a phylogeny. You
 #' pays your money, you makes your choice.
@@ -93,15 +94,6 @@ sim.meta.comm <- function(size=10, n.spp=8, timesteps=10, p.migrate=0.05, env.la
 #' @param p.speciate probabilty that, at each timestep, a species will
 #' speciate. A species can only speciate, migrate, or reproduce if it
 #' has individuals!
-#' @details Simulates species moving through a metacommunity. At each
-#' time-step each cell's next abundance for each species is
-#' env.quality - current.abundance + stochastic, and a species gets as
-#' many chances to migrate in each time-step as it has cells (the same
-#' cell could migrate multiple times). I use a Poisson for everything
-#' because I don't want half-species (these are individuals, because I
-#' eventually want to make a phylogeny of these), and keeping
-#' everything in Poisson makes it easier to compare the relative rates
-#' of everything.
 #' @return List with the species abundances (as a 3D array), the
 #' environmental quality (carrying capacities), the phylogeny of
 #' species (which generates warnings when plotted, don't ask me why!),

@@ -1,6 +1,27 @@
 #' Calculate (phylogenetic) evenness: examine assemblage composition
 #' and abundance
-#' 
+#'
+#'
+#' As described in Pearse et al. (2014), an evenness metric is one the
+#' examines the phylogenetic structure of species present in each
+#' assemblage, taking into account their abundances. For completeness,
+#' options are provided to calculate these metrics using species
+#' traits.
+#'
+#' Most of these metrics do not involve comparison with some kind of
+#' evolutionary-derived expectation for phylogenetic shape. Those that
+#' do, however, such as PSE, make no sense unless applied to a
+#' phylogenetic distance matrix - their null expectation *requires*
+#' it. Using square-rooted distance matrices, or distance matrices
+#' that incorporate trait information, can be an excellent thing to
+#' do, but (for the above reasons), \code{pez} won't give you an
+#' answer for metrics for which WDP thinks it makes no
+#' sense. \code{cadotte.pd} can (...up to you whether you should!...)
+#' be used with a square-rooted distance matrix, but the results *will
+#' always be wrong* if you do not have an ultrametric tree (branch
+#' lengths proportional to time) and you will be warned about
+#' this. WDP strongly feels you should only be using ultrametric
+#' phylogenies in any case, but code to fix this bug is welcome.
 #' @param data \code{\link{comparative.comm}} object
 #' @param metric default (\code{all-quick}) calculates everything bar
 #' \code{fd.dist} and the Pagel transformations
@@ -34,25 +55,6 @@
 #' distance matrices in different metric calculations.
 #' @param ... Additional arguments to passed to metric functions
 #' (unlikely you will want this!)
-#' @details As described in Pearse et al. (2014), an evenness metric
-#' is one the examines the phylogenetic structure of species present
-#' in each assemblage, taking into account their abundances. For
-#' completeness, options are provided to calculate these metrics using
-#' species traits.
-#' @details Most of these metrics do not involve comparison with some
-#' kind of evolutionary-derived expectation for phylogenetic
-#' shape. Those that do, however, such as PSE, make no sense unless
-#' applied to a phylogenetic distance matrix - their null expectation
-#' *requires* it. Using square-rooted distance matrices, or distance
-#' matrices that incorporate trait information, can be an excellent
-#' thing to do, but (for the above reasons), \code{pez} won't give you
-#' an answer for metrics for which WDP thinks it makes no
-#' sense. \code{cadotte.pd} can (...up to you whether you should!...)
-#' be used with a square-rooted distance matrix, but the results *will
-#' always be wrong* if you do not have an ultrametric tree (branch
-#' lengths proportional to time) and you will be warned about
-#' this. WDP strongly feels you should only be using ultrametric
-#' phylogenies in any case, but code to fix this bug is welcome.
 #' @note As mentioned above, \code{dist.fd} is calculated using a
 #' phylogenetic distance matrix if no trait data are available, or if
 #' you specify \code{sqrt.phy}. It is not calculated by default
@@ -81,9 +83,7 @@
 #' @references \code{taxon} Clarke K.R. & Warwick R.M. (1998). A taxonomic distinctness index and its statistical properties. J. Appl. Ecol., 35, 523-531.
 #' @references \code{entropy} Allen B., Kon M. & Bar-Yam Y. (2009). A New Phylogenetic Diversity Measure Generalizing the Shannon Index and Its Application to Phyllostomid Bats. The American Naturalist, 174, 236-243.
 #' @references \code{cadotte} (i.e., \emph{PAE, IAC, Haed, Eaed}) Cadotte M.W., Davies T.J., Regetz J., Kembel S.W., Cleland E. & Oakley T.H. (2010). Phylogenetic diversity metrics for ecological communities: integrating species richness, abundance and evolutionary history. Ecology Letters, 13, 96-105.
-#' @references \code{lambda}
-#' @references \code{delta}
-#' @references \code{kappa}
+#' @references \code{lambda,delta,kappa} Mark Pagel (1999) Inferring the historical patterns of biological evolution. Nature 6756(401): 877--884.
 #' @examples \dontrun{
 #' data(laja)
 #' data <- comparative.comm(invert.tree, river.sites, invert.traits)

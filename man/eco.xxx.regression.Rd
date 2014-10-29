@@ -64,14 +64,23 @@ Regression species co-existence against environmental tolerance,
 trait similarity, or phylogenetic relatedness.
 }
 \details{
-These methods are similar to those performed in
-Cavender-Bares et al. (2004). Each function regresses the species
-co-existence matrix of \code{\link{data}} (calculated using
-\code{\link{comm.dist}}) against either species' trait
-dissimilarity (\code{\link{eco.trait.regression}}), species'
-phylogenetic distance (\code{\link{eco.phy.regression}}), or
-species' shared environmental tolerances as measured by Pianka's
-distance (\code{\link{eco.env.regression}}).
+These methods are similar to those performed in Cavender-Bares et
+al. (2004). Each function regresses the species co-existence matrix
+of \code{\link{data}} (calculated using \code{\link{comm.dist}})
+against either species' trait dissimilarity
+(\code{\link{eco.trait.regression}}), species' phylogenetic
+distance (\code{\link{eco.phy.regression}}), or species' shared
+environmental tolerances as measured by Pianka's distance
+(\code{\link{eco.env.regression}}).
+
+If \code{altogether} is set to \code{FALSE}, each trait or
+environemntal variables in your data will have a separate
+\code{eco.trait.regression} or \code{eco.env.regression} applied to
+it. The functions will return a list of individual regressions; you
+can either examine/plot them as a group (see examples below), or
+extract an individual regression and work with that. These lists
+are of class \code{eco.xxx.regression.list}; a bit messy, but it
+does work!...
 }
 \note{
 Like \code{\link{fingerprint.regression}}, this is a

@@ -1,15 +1,18 @@
-#' Make ecological co-existence matrices
+#' Make co-existence matrices based on phylogeny (and/or) traits, and
+#' community or environemntal overlap
+#' 
 #' @param x an object
+#' @param ... not used
+#' @details \code{comm.dist} returns the 1 - co-existence of
+#' species. Look at how this is calcualted; it incorporates
+#' abundances, and if you don't want it to do so simply call it on a
+#' presence/absensence (1/0) matrix.
+#' @rdname dist.xxx
+#' @name dist.xxx
 #' @export
-#' @details Returns the 1 - co-existence of species. Look at how this
-#' is calcualted; it incorporates abundances, and if you don't want it
-#' to do so simply call it on a presence/absensence (1/0) matrix.
-#' @rdname comm.dist
-#' @family distances
 comm.dist <- function(x) UseMethod("comm.dist", x)
-# - Dispatch on comparative.comm calls the matrix method, which does the work
 #' @export
-#' @rdname comm.dist
+#' @rdname dist.xxx
 comm.dist.matrix <- function(x){
 	output <- matrix(ncol=ncol(x), nrow=ncol(x))
 	for(i in seq(ncol(x))){
@@ -25,24 +28,21 @@ comm.dist.matrix <- function(x){
         return(as.dist(output))
 }
 #' @export
-#' @rdname comm.dist
+#' @rdname dist.xxx
 comm.dist.comparative.comm <- function(x) return(comm.dist(x$comm))
 
-#' Make trait distance matrices
-#'
-#' @param x an object
+#' @details \code{traits.dist} returns the functional trait distance
+#' of species
 #' @param dist.func a function for computing distances.  The default,
 #' \code{dist.func.default}, returns a Euclidean distance of the
 #' scaled and centred data.
 #' @param alltogether should one multivariate distance matrix be
 #' computed for all traits at once (\code{alltogether = TRUE}) or for
 #' each trait at a time (\code{alltogether = FALSE})?
-#' @param ... not used
-#' @rdname traits.dist
-#' @family distances
+#' @rdname dist.xxx
 #' @export
 traits.dist <- function(x, dist.func = dist.func.default, ...) UseMethod("traits.dist", x)
-#' @rdname traits.dist
+#' @rdname dist.xxx
 #' @export
 traits.dist.comparative.comm <- function(x, dist.func = dist.func.default, alltogether = TRUE, ...){
     if(is.null(x$data)) stop("No trait data for which to compute a trait distance matrix")
@@ -53,42 +53,39 @@ traits.dist.comparative.comm <- function(x, dist.func = dist.func.default, allto
     }
 }
 #' @export
-#' @rdname traits.dist
+#' @rdname dist.xxx
 traits.dist.default <- function(x, dist.func = dist.func.default, ...) dist.func(x)
 #' @export
-#' @rdname traits.dist
+#' @rdname dist.xxx
 traits.dist.data.frame <- function(x, dist.func = dist.func.default, ...) dist.func(as.matrix(x))
 #' @export
-#' @rdname traits.dist
+#' @rdname dist.xxx
 dist.func.default <- function(x) dist(scale(x, center=TRUE, scale=TRUE))
 
-#' Make phylogenetic distance matrices
-#'
-#' @param x an object
-#' @param ... not used
+#' @details \code{phylo.dist} returns the phylogenetic (cophenetic)
+#' distance of species
 #' @export
-#' @rdname phylo.dist
-#' @family distances
+#' @rdname dist.xxx
 phylo.dist <- function(x, ...) UseMethod("phylo.dist", x)
 #' @export
-#' @rdname phylo.dist
+#' @rdname dist.xxx
 phylo.dist.phylo <- function(x, ...) as.dist(cophenetic(x))
 #' @export
-#' @rdname phylo.dist
+#' @rdname dist.xxx
 phylo.dist.comparative.comm <- function(x, ...) phylo.dist(x$phy)
 
 
-#' Make functional phylogenetic distance matrix
-#'
-#' @param x a \code{\link{comparative.comm}} object
+#' @details \code{funct.phylo.dist} returns the combined phylogenetic
+#' and trait distances of species, based on the traitgram approach of
+#' Cadotte et al. (2013).
 #' @param phyloWeight phylogenetic weighting parameter (referred to as
 #' \code{a} in Cadotte et al. (2013)
 #' @param p exponent giving the exponent to use for combining
 #' functional and phylogenetic distances (the default, \code{p = 2},
 #' gives a Euclidean combination).
-#' @param ... not currently used
-#' @rdname funct.phylo.dist
-#' @family distances
+#' @details Make functional phylogenetic distance matrix
+#' @references Cadotte M.A., Albert C.H., & Walker S.C. The ecology of differences: assessing community assembly with trait and evolutionary distances. Ecology Letters 16(10): 1234--1244.
+#' @rdname dist.xxx
 #' @export
 funct.phylo.dist <- function(x, phyloWeight, p = 2, ...) UseMethod("funct.phylo.dist", x)
 #' @export
@@ -107,19 +104,17 @@ funct.phylo.dist.comparative.comm <- function(x, phyloWeight, p, ...) {
     (phyloWeight * PDist^p + (1 - phyloWeight) * FDist^p)^(1/p)
 }
 
-
-#' Make environmental tolerance distance matrices
-#'
-#' @param x an object
-#' @param ... (ignored)
+#' @details \code{pianka.dist} returns the environemntal tolerances
+#' distance matrices of species. Based on Pianka's distance (i.e.,
+#' niche overlap based on environmental variables at co-occuring
+#' sites), as defined in Cavender-Bares et al. (2004) - likely not the
+#' original reference!
 #' @export
-#' @rdname pianka.dist
-#' @details Return's the Pianka's distance; i.e., niche overlap based
-#' on environemntal tolerances contained within your dataset.
-#' @family distances
+#' @rdname dist.xxx
+#' @references Cavender-Bares J., Ackerly D.D., Baum D.A. & Bazzaz F.A. (2004) Phylogenetic overdispersion in Floridian oak communities. The Americant Naturalist 163(6): 823--843.
 pianka.dist <- function(x, ...) UseMethod("pianka.dist", x)
 
-#' @rdname pianka.dist
+#' @rdname dist.xxx
 #' @param env environmental variable to be used to calculate the
 #' distance matrix
 #' @export
@@ -150,7 +145,7 @@ pianka.dist.matrix <- function(x, env = NULL, ...){
 #' @param alltogether whether to calculate distance matrices for all
 #' the environmental variables together (default: TRUE) or calculate
 #' and return each separately
-#' @rdname pianka.dist
+#' @rdname dist.xxx
 pianka.dist.comparative.comm <- function(x, alltogether = TRUE, ...){
 	#Checks and assertions
 	if(is.null(x$env)) stop("Cannot calculate Pianka distances without environmental data")

@@ -58,15 +58,27 @@ individual metric (which gives more details for each) by calling
 below).
 }
 \description{
-Calculate (phylogenetic) evenness: examine assemblage composition
-and abundance
+As described in Pearse et al. (2014), an evenness metric is one the
+examines the phylogenetic structure of species present in each
+assemblage, taking into account their abundances. For completeness,
+options are provided to calculate these metrics using species
+traits.
 }
 \details{
-As described in Pearse et al. (2014), an evenness metric
-is one the examines the phylogenetic structure of species present
-in each assemblage, taking into account their abundances. For
-completeness, options are provided to calculate these metrics using
-species traits.
+Most of these metrics do not involve comparison with some kind of
+evolutionary-derived expectation for phylogenetic shape. Those that
+do, however, such as PSE, make no sense unless applied to a
+phylogenetic distance matrix - their null expectation *requires*
+it. Using square-rooted distance matrices, or distance matrices
+that incorporate trait information, can be an excellent thing to
+do, but (for the above reasons), \code{pez} won't give you an
+answer for metrics for which WDP thinks it makes no
+sense. \code{cadotte.pd} can (...up to you whether you should!...)
+be used with a square-rooted distance matrix, but the results *will
+always be wrong* if you do not have an ultrametric tree (branch
+lengths proportional to time) and you will be warned about
+this. WDP strongly feels you should only be using ultrametric
+phylogenies in any case, but code to fix this bug is welcome.
 }
 \note{
 As mentioned above, \code{dist.fd} is calculated using a
@@ -111,11 +123,7 @@ Pearse W.D., Purvis A., Cavender-Bares J. & Helmus M.R. (2014). Metrics and Mode
 
 \code{cadotte} (i.e., \emph{PAE, IAC, Haed, Eaed}) Cadotte M.W., Davies T.J., Regetz J., Kembel S.W., Cleland E. & Oakley T.H. (2010). Phylogenetic diversity metrics for ecological communities: integrating species richness, abundance and evolutionary history. Ecology Letters, 13, 96-105.
 
-\code{lambda}
-
-\code{delta}
-
-\code{kappa}
+\code{lambda,delta,kappa} Mark Pagel (1999) Inferring the historical patterns of biological evolution. Nature 6756(401): 877--884.
 }
 \seealso{
 shape dispersion dissimilarity

@@ -4,7 +4,8 @@
 \alias{plot.fingerprint.regression}
 \alias{print.fingerprint.regression}
 \alias{summary.fingerprint.regression}
-\title{Regress trait evolution against trait ecology}
+\title{Regress trait evolution against trait ecology (following
+Cavender-Bares et al. 2004)}
 \usage{
 fingerprint.regression(data, eco.rnd = c("taxa.labels", "richness",
   "frequency", "sample.pool", "phylogeny.pool", "independentswap", "trialswap"),
@@ -70,22 +71,17 @@ median difference between the simulations and the observed values
 Calculates traits' phylogenetic inertia and regresses this against
 trait similarity among co-existing species (sensu Cavender-Bares et
 al. 2004 Figure 6)
-
-Print a fingerprint.regression
-
-Summarise a fingerprint.regression
-
-Plot a fingerprint.regression
 }
 \details{
-While the term `fingerprint regression% is new to pez, the
-method is very similar to that employed in Cavender-Bares et
-al. 2004 Figure 6. For each trait, the phylogenetic inertia of
-species% traits is regressed against their co-occurrence in the
-community matrix. Note that Pagel%s $\lambda$, $\delta$, and
-\eqn{$\kappa$}{kappa} are used, unlike the original where a mantel test was
-employed. Moreover, note also that Pianka's distance (as described
-in the manuscript) is used to measure species overlap.
+While the term `fingerprint regression' is new to pez, the method
+is very similar to that employed in Cavender-Bares et al. 2004
+Figure 6. For each trait, the phylogenetic inertia of species%
+traits is regressed against their co-occurrence in the community
+matrix. Note that Pagel's \eqn{$\lambda$}{lambda},
+\eqn{$\delta$}{delta}, and \eqn{$\kappa$}{kappa} are used, unlike
+the original where a mantel test was employed. Moreover, note also
+that Pianka's distance (as described in the manuscript) is used to
+measure species overlap.
 }
 \note{
 Like \code{\link{eco.xxx.regression}}, this is a data-hungry

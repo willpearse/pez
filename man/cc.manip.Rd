@@ -55,22 +55,15 @@ List of \code{\link{ape::phylo}} objects, one for each
 assemblage in the \code{data}.
 }
 \description{
-Manipulating and examining comparative.comm objects
-
-Describing and manipulating comparative.comm objects
-
-Get individual assemblage phylogenies
-
-Manipulate internals of \code{comparative.comm} object
-}
-\details{
-As described in the vignette, we recommend using these
-wrappers to manipulate species and site data, as it guarantees that
-everything will be kept consistent across all parts of the
+As described in the vignette, we recommend using these wrappers to
+manipulate species and site data, as it guarantees that everything
+will be kept consistent across all parts of the
 \code{\link{comparative.comm}} object. However, remember that you
 can manipulate the internal components of a
 \code{\link{comparative.comm}} object directly, and this is useful
 if you want to play around with traits, add in new data, etc.
+
+Manipulate internals of \code{comparative.comm} object
 }
 \note{
 As described in \code{\link{comparative.comm}}, each

@@ -5,17 +5,18 @@
 #' \eqn{$\lambda$}{lambda} (default), \eqn{$\delta$}{delta}, and
 #' \eqn{$\kappa$}{kappa}, or Blomberg's K.
 #' @details Phylogenetic `signal' is one of those concepts that is
-#' said a lot in community ecology, but rarely is its meaning
-#' thought-through. Think carefully before rushing to report a value
-#' whether: (1) it makes sense to assess phylogenetic `signal' in your
+#' said a lot in community ecology, but some do not full consider its
+#' meaning. Think carefully before rushing to report a value whether:
+#' (1) it makes sense to assess phylogenetic `signal' in your
 #' datasets, and (2) what the phrase `phylogenetic signal' actually
 #' means. This code makes use of \code{\link{caper::pgls}} to get
 #' estimates of fit; alternatives that offer more flexibility exist
 #' (see below).
 #' @return Named numeric vector, where each element is a trait or community.
 #' @author Will Pearse, Jeannine Cavender-Bares
+#' @references Blomberg S.P., Garland T. & Ives A.R. Testing for phylogenetic signal in comparative data: behavioral traits are more labile. Evolution 57(4): 717--745.
 #' @references R. P. Freckleton, P. H. Harvey, and M. Pagel. Phylogenetic analysis and comparative data: A test and review of evidence. American Naturalist, 160:712-726, 2002.
-#' Blomberg S.P., Garland T. & Ives A.R. Testing for phylogenetic signal in comparative data: behavioral traits are more labile. Evolution 57(4): 717--745.
+#' @references Mark Pagel (1999) Inferring the historical patterns of biological evolution. Nature 6756(401): 877--884.
 #' @seealso geiger::fitContinuous geiger::fitDiscrete caper::pgls picante::phylosignal
 #' @examples \dontrun{
 #' data(laja)

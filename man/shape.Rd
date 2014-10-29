@@ -101,7 +101,7 @@ Pearse W.D., Purvis A., Cavender-Bares J. & Helmus M.R. (2014). Metrics and Mode
 
 \code{colless} Colless D.H. (1982). Review of phylogenetics: the theory and practice of phylogenetic systematics. Systematic Zoology, 31, 100-104.
 
-\code{gamma}
+\code{gamma} Pybus O.G. & Harvey P.H. (2000) Testing macro-evolutionary models using incomplete molecular phylogenies. _Proceedings of the Royal Society of London. Series B. Biological Sciences 267: 2267--2272.
 
 \code{taxon} Clarke K.R. & Warwick R.M. (1998). A taxonomic distinctness index and its statistical properties. J. Appl. Ecol., 35, 523-531.
 

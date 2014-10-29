@@ -109,7 +109,12 @@ community ecology (\texttt{\$comm}), phylogeny (\texttt{\$phy}),
 traits (\texttt{\$data}), and environmental (\texttt{\$env})
 data. Adding extra trait data or environmental variables on the fly is
 no problem, but be aware that \emph{pez} cannot check for missing data
-unless you call \texttt{comparative.comm} on something.
+unless you call \texttt{comparative.comm} on something. I appreciate
+that calling the trait data \texttt{data} seems a little odd; it means
+that \texttt{comparatve.comm} is compatible with the \texttt{caper}
+package. Anything you can do in that (\emph{e.g.}, PGLS regression,
+comparative modelling and simulation) can be done using you data in
+\emph{pez} without modification.
 \clearpage
 \section{Community phylogenetic metrics}
 \emph{pez} splits community phylogenetic metrics into four functions
