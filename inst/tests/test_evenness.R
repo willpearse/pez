@@ -47,21 +47,39 @@ test_that("Entropy", {
           expect_that(entropy_test[[i]], equals(NULL))
 })
 
-test_that("Cadotte", {
-  cadotte_test <<- evenness(data, "cadotte")
-  expect_that(cadotte_test$cadotte$PAE, is_equivalent_to(c(-0.3125, 0, 0.0555555555555556, 0.227272727272727, 0.366666666666667, 0.666666666666667)))
-  expect_that(cadotte_test$cadotte$IAC, is_equivalent_to(c(0.5, 0.75, 0.75, 0.6875, 0.416666666666667, 0.916666666666667)))
-  expect_that(cadotte_test$cadotte$Haed, is_equivalent_to(c(c(2.07944154167984, 2.43261844647745, 2.42601513195981, 2.42601513195981, 2.07944154167984, 2.67765404685526))))
-  expect_that(cadotte_test$cadotte$Eaed, is_equivalent_to(c(1, 0.978957679027899, 0.976300309778954, 
-0.976300309778954, 1, 0.965759553653586)))
-  expect_that(rownames(cadotte_test$cadotte), equals(rownames(data$comm)))
-  expect_that(colnames(cadotte_test$cadotte), equals(c("PAE", "IAC", "Haed", "Eaed")))
-  expect_that(cadotte_test$cadotte, is_equivalent_to(cadotte_test$coefs[,c("PAE", "IAC", "Haed", "Eaed")]))
-  for(i in seq_along(cadotte_test))
-      if(!names(cadotte_test)[i] %in% c("type","coefs","cadotte"))
-          expect_that(cadotte_test[[i]], equals(NULL))
+test_that("PAE", {
+  pae <<- evenness(data, "pae")
+  for(i in seq_along(pae))
+      if(!names(pae)[i] %in% c("type","coefs","pae"))
+          expect_that(pae[[i]], equals(NULL))
+  expect_that(pae$pae, is_equivalent_to(c(-0.3125, 0, 0.0555555555555556, 0.227272727272727, 0.366666666666667, 0.666666666666667)))
 })
 
+test_that("IAC", {
+  iac <<- evenness(data, "iac")
+  for(i in seq_along(iac))
+      if(!names(iac)[i] %in% c("type","coefs","iac"))
+          expect_that(iac[[i]], equals(NULL))
+  expect_that(iac$iac, is_equivalent_to(c(0.5, 0.75, 0.75, 0.6875, 0.416666666666667, 0.916666666666667)))
+})
+
+test_that("Haed", {
+  haed <<- evenness(data, "haed")
+  for(i in seq_along(haed))
+      if(!names(haed)[i] %in% c("type","coefs","Haed"))
+          expect_that(haed[[i]], equals(NULL))
+  expect_that(haed$Haed, is_equivalent_to(c(c(2.07944154167984, 2.43261844647745, 2.42601513195981, 2.42601513195981, 2.07944154167984, 2.67765404685526))))
+})
+
+test_that("Eaed", {
+  eaed <<- evenness(data, "eaed")
+  for(i in seq_along(eaed))
+      if(!names(eaed)[i] %in% c("type","coefs","Eaed"))
+          expect_that(eaed[[i]], equals(NULL))
+    expect_that(eaed$Eaed, is_equivalent_to(c(1, 0.978957679027899, 0.976300309778954, 0.976300309778954, 1, 0.965759553653586)))
+
+})
+  
 test_that("Delta", {
   set.seed(123)
   delta_test <<- evenness(data, "delta")
@@ -127,7 +145,7 @@ test_that("dist FD", {
 
 test_that("Non-standard distance matrices",{
     sqrt <- evenness(laja, "all", sqrt.phy=TRUE)
-    expect_that(names(coef(sqrt)), equals(c("rao","taxon.Delta","taxon.DeltaStar","taxon.LambdaPlus","taxon.DeltaPlus","taxon.S.DeltaPlus","entropy","PAE","IAC","Haed","Eaed","mpd","mntd","FRic","FEve","FDiv","FDis","RaoQ")))
+    expect_that(names(coef(sqrt)), equals(c("rao","taxon.Delta","taxon.DeltaStar","taxon.LambdaPlus","taxon.DeltaPlus","taxon.S.DeltaPlus","entropy","pae","iac","Haed","Eaed","mpd","mntd","FRic","FEve","FDiv","FDis","RaoQ")))
     t <- sqrt(cophenetic(laja$phy))
     ext.dist <- evenness(laja, "all", ext.dist=as.dist(t))
     expect_that(identical(names(coef(sqrt)),names(coef(ext.dist))), is_false())

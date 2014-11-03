@@ -16,24 +16,26 @@
 #' that incorporate trait information, can be an excellent thing to
 #' do, but (for the above reasons), \code{pez} won't give you an
 #' answer for metrics for which WDP thinks it makes no
-#' sense. \code{cadotte.pd} can (...up to you whether you should!...)
-#' be used with a square-rooted distance matrix, but the results *will
-#' always be wrong* if you do not have an ultrametric tree (branch
-#' lengths proportional to time) and you will be warned about
-#' this. WDP strongly feels you should only be using ultrametric
-#' phylogenies in any case, but code to fix this bug is welcome.
+#' sense. \code{pae}, \code{iac}, \code{haead} & \code{eaed} can
+#' (...up to you whether you should!...)  be used with a square-rooted
+#' distance matrix, but the results *will always be wrong* if you do
+#' not have an ultrametric tree (branch lengths proportional to time)
+#' and you will be warned about this. WDP strongly feels you should
+#' only be using ultrametric phylogenies in any case, but code to fix
+#' this bug is welcome.
 #' @param data \code{\link{comparative.comm}} object
 #' @param metric default (\code{all-quick}) calculates everything bar
 #' \code{fd.dist} and the Pagel transformations
 #' (\eqn{$\lambda$}{lambda}, \eqn{$\delta$}{delta},
 #' \eqn{$\kappa$}{kappa}). \code{all} calculates
 #' everything. Individually call-able metrics are: \code{rao},
-#' \code{taxon}, \code{entropy}, \code{cadotte}, \code{lambda}, \code{kappa},
-#' \code{delta}, \code{mpd}, \code{mntd}, \code{pse}, &
-#' \code{dist.fd}. Note that \code{dist.fd} is a trait distance
-#' metric, but will be calculated on the phylogenetic distance matrix
-#' if not traits are supplied, and the external/square-rooted
-#' phylogenetic distance matrix if either is specified.
+#' \code{taxon}, \code{entropy}, \code{pae}, \code{iac}, \code{haed},
+#' \code{eaed}, \code{lambda}, \code{kappa}, \code{delta}, \code{mpd},
+#' \code{mntd}, \code{pse}, & \code{dist.fd}. Note that \code{dist.fd}
+#' is a trait distance metric, but will be calculated on the
+#' phylogenetic distance matrix if not traits are supplied, and the
+#' external/square-rooted phylogenetic distance matrix if either is
+#' specified.
 #' @param sqrt.phy If TRUE (default is FALSE) your phylogenetic
 #' distance matrix will be square-rooted; specifying TRUE will force
 #' the square-root transformation on phylogenetic distance matrices
@@ -82,7 +84,7 @@
 #' @references \code{rao} Webb C.O. (2000). Exploring the phylogenetic structure of ecological communities: An example for rain forest trees. American Naturalist, 156, 145-155.
 #' @references \code{taxon} Clarke K.R. & Warwick R.M. (1998). A taxonomic distinctness index and its statistical properties. J. Appl. Ecol., 35, 523-531.
 #' @references \code{entropy} Allen B., Kon M. & Bar-Yam Y. (2009). A New Phylogenetic Diversity Measure Generalizing the Shannon Index and Its Application to Phyllostomid Bats. The American Naturalist, 174, 236-243.
-#' @references \code{cadotte} (i.e., \emph{PAE, IAC, Haed, Eaed}) Cadotte M.W., Davies T.J., Regetz J., Kembel S.W., Cleland E. & Oakley T.H. (2010). Phylogenetic diversity metrics for ecological communities: integrating species richness, abundance and evolutionary history. Ecology Letters, 13, 96-105.
+#' @references \code{pae,iac,haed,eaed} Cadotte M.W., Davies T.J., Regetz J., Kembel S.W., Cleland E. & Oakley T.H. (2010). Phylogenetic diversity metrics for ecological communities: integrating species richness, abundance and evolutionary history. Ecology Letters, 13, 96-105.
 #' @references \code{lambda,delta,kappa} Mark Pagel (1999) Inferring the historical patterns of biological evolution. Nature 6756(401): 877--884.
 #' @examples \dontrun{
 #' data(laja)
@@ -97,7 +99,7 @@
 #' @importFrom ade4 newick2phylog
 #' @importFrom FD dbFD
 #' @export
-evenness <- function(data, metric=c("all-quick", "all", "rao", "taxon", "entropy", "cadotte", "lambda", "delta", "kappa", "mpd", "mntd", "pse", "dist.fd"), sqrt.phy=FALSE, traitgram=NULL, traitgram.p=2, ext.dist=NULL, ...)
+evenness <- function(data, metric=c("all-quick", "all", "rao", "taxon", "entropy", "pae", "iac", "haed", "eaed", "lambda", "delta", "kappa", "mpd", "mntd", "pse", "dist.fd"), sqrt.phy=FALSE, traitgram=NULL, traitgram.p=2, ext.dist=NULL, ...)
 {
   #Assertions and argument handling
   if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
@@ -153,7 +155,7 @@ evenness <- function(data, metric=c("all-quick", "all", "rao", "taxon", "entropy
   if((metric == "pse" | metric == "all" | metric == "all-quick") & (sqrt.phy==FALSE & traitgram==FALSE & ext.dist==FALSE))
     try(output$pse <- coefs$pse <- pse(data$comm, data$phy)[,1], silent=TRUE)
   
-  if(metric == "rao" | metric == "all" | metric == "all-quick")
+  if((metric == "rao" | metric == "all" | metric == "all-quick") & (ext.dist==FALSE))
     try(output$rao <- coefs$rao <- raoD(data$comm, data$phy)$Dkk, silent=TRUE)
   
   if(metric == "taxon" | metric == "all" | metric == "all-quick")
@@ -169,15 +171,18 @@ evenness <- function(data, metric=c("all-quick", "all", "rao", "taxon", "entropy
       output$entropy <- .phylo.entropy(data)
       coefs$entropy <- output$entropy[!is.na(output$entropy)]
     }, silent=TRUE)
-  
-  if((metric == "cadotte" | metric == "all" | metric == "all-quick") & (traitgram==FALSE & ext.dist==FALSE))
-    try({
-      output$cadotte <- data.frame(PAE=.pae(data), IAC=.iac(data), Haed=.haed(data), Eaed=.haed(data)/log(rowSums(data$comm)))
-      coefs$PAE <- output$cadotte$PAE
-      coefs$IAC <- output$cadotte$IAC
-      coefs$Haed <- output$cadotte$Haed
-      coefs$Eaed <- output$cadotte$Eaed
-    }, silent=TRUE)
+
+  if((metric == "pae" | metric == "all" | metric == "all-quick") & (traitgram==FALSE & ext.dist==FALSE))
+      try(output$pae <- coefs$pae <- .pae(data), silent=TRUE)
+
+  if((metric == "iac" | metric == "all" | metric == "all-quick") & (traitgram==FALSE & ext.dist==FALSE))
+      try(output$iac <- coefs$iac <- .iac(data), silent=TRUE)
+
+  if((metric == "haed" | metric == "all" | metric == "all-quick") & (traitgram==FALSE & ext.dist==FALSE))
+      try(output$Haed <- coefs$Haed <- .haed(data), silent=TRUE)
+
+  if((metric == "eaed" | metric == "all" | metric == "all-quick") & (traitgram==FALSE & ext.dist==FALSE))
+      try(output$Eaed <- coefs$Eaed <- .haed(data)/log(rowSums(data$comm)), silent=TRUE)
     
   if((metric == "lambda" | metric == "all") & (sqrt.phy==FALSE & traitgram==FALSE & ext.dist==FALSE)){
     output$lambda <- list(models=vector("list", nrow(data$comm)), values=numeric(nrow(data$comm)))

@@ -92,19 +92,23 @@ test_that("Eigenvectors", {
   expect_that(eigen.sum$eigen.sum, is_equivalent_to(eigen.sum$coefs$eigen.sum))
   expect_that(options("warn"), is_equivalent_to(warn))
 })
-test_that("Cadotte PD", {
-  cadotte.pd <<- shape(data, "cadotte.pd")
-  for(i in seq_along(cadotte.pd))
-      if(!names(cadotte.pd)[i] %in% c("type","coefs","cadotte.pd"))
-          expect_that(cadotte.pd[[i]], equals(NULL))
-  expect_that(rownames(cadotte.pd$cadotte.pd), equals(rownames(data$comm)))
-  expect_that(colnames(cadotte.pd$cadotte.pd), equals(c("Eed", "Hed")))
-  expect_that(cadotte.pd$cadotte.pd$Eed, equals(c(3.202317, 3.104838, 3.013283, 2.697896, 2.241960, 2.391608), tolerance=0.00001))
-  expect_that(cadotte.pd$cadotte.pd$Hed, equals(c(6.659032, 6.456330, 6.265945, 5.610116, 4.662026, 4.973210), tolerance=0.00001))
-  expect_that(cadotte.pd$cadotte.pd$Eed, is_equivalent_to(cadotte.pd$coefs$EED))
-  expect_that(cadotte.pd$cadotte.pd$Hed, is_equivalent_to(cadotte.pd$coefs$HED))
+test_that("EED", {
+  eed <<- shape(data, "eed")
+  for(i in seq_along(eed))
+      if(!names(eed)[i] %in% c("type","coefs","Eed"))
+          expect_that(eed[[i]], equals(NULL))
+  expect_that(eed$Eed, equals(c(3.202317, 3.104838, 3.013283, 2.697896, 2.241960, 2.391608), tolerance=0.00001))
+  expect_that(eed$Eed, is_equivalent_to(eed$coefs$Eed))
 })
 
+test_that("HED", {
+  hed <<- shape(data, "hed")
+  for(i in seq_along(hed))
+      if(!names(hed)[i] %in% c("type","coefs","Hed"))
+          expect_that(hed[[i]], equals(NULL))
+  expect_that(hed$Hed, equals(setNames(c(6.659032, 6.456330, 6.265945, 5.610116, 4.662026, 4.973210),rownames(data$comm)), tolerance=0.00001))
+  expect_that(hed$Hed, is_equivalent_to(hed$coefs$Hed))
+})
 #Euch. This doesn't work (for biologically valid reasons) and I'm suppressing tests until I can stop filling the screen with nonsense. It's tested again (with trait data) in the following sections...
 test_that("dist FD", {
     data(laja)
@@ -119,7 +123,7 @@ test_that("dist FD", {
 
 test_that("Non-standard distance matrices",{
     sqrt <- shape(laja, "all", sqrt.phy=TRUE)
-    expect_that(names(sqrt), equals(c("psv","psr","mpd","mntd","pd","pd.ivs","colless","gamma","taxon","eigen.sum","cadotte.pd","dist.fd","type","coefs")))
+    expect_that(names(sqrt), equals(c("psv","psr","mpd","mntd","pd","pd.ivs","colless","gamma","taxon","eigen.sum","Eed","Hed","dist.fd","type","coefs")))
     t <- sqrt(cophenetic(laja$phy))
     ext.dist <- shape(laja, "all", ext.dist=as.dist(t))
     expect_that(identical(names(coef(sqrt)),names(coef(ext.dist))), is_false())
@@ -128,21 +132,4 @@ test_that("Non-standard distance matrices",{
     traitgram <- shape(t, traitgram=1)
     traitgram.group <- shape(t, "all", traitgram=c(0,0.5,1))
     expect_that(coef(traitgram), is_equivalent_to(traitgram.group[traitgram.group$traitgram==1.0,names(coef(traitgram))]))
-})
-
-test_that("Each measure is the same as calculated together", {
-  all <- shape(data)
-  expect_that(psv_test$psv, equals(all$psv))
-  expect_that(psr_test$psr, equals(all$psr))
-  expect_that(mpd_test$mpd, equals(all$mpd))
-  expect_that(pd_test$pd, equals(all$pd))
-  expect_that(pd_test$pd.ivs, equals(all$pd.ivs))
-  expect_that(colless_test$colless, equals(all$colless))
-  expect_that(gamma_test$gamma, equals(all$gamma))
-  expect_that(taxon_test$taxon, equals(all$taxon))
-  expect_that(eigen.sum$eigen.sum, equals(all$eigen.sum))
-  expect_that(cadotte.pd$cadotte.pd, equals(all$cadotte.pd))
-  expect_that(names(all), equals(c('psv','psr','mpd','mntd','pd','pd.ivs','colless','gamma','taxon','eigen.sum','cadotte.pd','dist.fd','type','coefs')))
-  expect_that(names(all$coefs), equals(c("psv","psr","mpd","pd","pd.ivs","mntd","colless","gamma","Delta","DeltaStar","LambdaPlus","DeltaPlus","S.DeltaPlus","eigen.sum","EED","HED")))
-  expect_that(all$coefs, equals(coef(all)))
 })

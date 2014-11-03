@@ -5,9 +5,9 @@
 and abundance}
 \usage{
 evenness(data, metric = c("all-quick", "all", "rao", "taxon", "entropy",
-  "cadotte", "lambda", "delta", "kappa", "mpd", "mntd", "pse", "dist.fd"),
-  sqrt.phy = FALSE, traitgram = NULL, traitgram.p = 2, ext.dist = NULL,
-  ...)
+  "pae", "iac", "haed", "eaed", "lambda", "delta", "kappa", "mpd", "mntd",
+  "pse", "dist.fd"), sqrt.phy = FALSE, traitgram = NULL, traitgram.p = 2,
+  ext.dist = NULL, ...)
 }
 \arguments{
 \item{data}{\code{\link{comparative.comm}} object}
@@ -17,12 +17,13 @@ evenness(data, metric = c("all-quick", "all", "rao", "taxon", "entropy",
 (\eqn{$\lambda$}{lambda}, \eqn{$\delta$}{delta},
 \eqn{$\kappa$}{kappa}). \code{all} calculates
 everything. Individually call-able metrics are: \code{rao},
-\code{taxon}, \code{entropy}, \code{cadotte}, \code{lambda}, \code{kappa},
-\code{delta}, \code{mpd}, \code{mntd}, \code{pse}, &
-\code{dist.fd}. Note that \code{dist.fd} is a trait distance
-metric, but will be calculated on the phylogenetic distance matrix
-if not traits are supplied, and the external/square-rooted
-phylogenetic distance matrix if either is specified.}
+\code{taxon}, \code{entropy}, \code{pae}, \code{iac}, \code{haed},
+\code{eaed}, \code{lambda}, \code{kappa}, \code{delta}, \code{mpd},
+\code{mntd}, \code{pse}, & \code{dist.fd}. Note that \code{dist.fd}
+is a trait distance metric, but will be calculated on the
+phylogenetic distance matrix if not traits are supplied, and the
+external/square-rooted phylogenetic distance matrix if either is
+specified.}
 
 \item{sqrt.phy}{If TRUE (default is FALSE) your phylogenetic
 distance matrix will be square-rooted; specifying TRUE will force
@@ -73,12 +74,13 @@ it. Using square-rooted distance matrices, or distance matrices
 that incorporate trait information, can be an excellent thing to
 do, but (for the above reasons), \code{pez} won't give you an
 answer for metrics for which WDP thinks it makes no
-sense. \code{cadotte.pd} can (...up to you whether you should!...)
-be used with a square-rooted distance matrix, but the results *will
-always be wrong* if you do not have an ultrametric tree (branch
-lengths proportional to time) and you will be warned about
-this. WDP strongly feels you should only be using ultrametric
-phylogenies in any case, but code to fix this bug is welcome.
+sense. \code{pae}, \code{iac}, \code{haead} & \code{eaed} can
+(...up to you whether you should!...)  be used with a square-rooted
+distance matrix, but the results *will always be wrong* if you do
+not have an ultrametric tree (branch lengths proportional to time)
+and you will be warned about this. WDP strongly feels you should
+only be using ultrametric phylogenies in any case, but code to fix
+this bug is welcome.
 }
 \note{
 As mentioned above, \code{dist.fd} is calculated using a
@@ -121,7 +123,7 @@ Pearse W.D., Purvis A., Cavender-Bares J. & Helmus M.R. (2014). Metrics and Mode
 
 \code{entropy} Allen B., Kon M. & Bar-Yam Y. (2009). A New Phylogenetic Diversity Measure Generalizing the Shannon Index and Its Application to Phyllostomid Bats. The American Naturalist, 174, 236-243.
 
-\code{cadotte} (i.e., \emph{PAE, IAC, Haed, Eaed}) Cadotte M.W., Davies T.J., Regetz J., Kembel S.W., Cleland E. & Oakley T.H. (2010). Phylogenetic diversity metrics for ecological communities: integrating species richness, abundance and evolutionary history. Ecology Letters, 13, 96-105.
+\code{pae,iac,haed,eaed} Cadotte M.W., Davies T.J., Regetz J., Kembel S.W., Cleland E. & Oakley T.H. (2010). Phylogenetic diversity metrics for ecological communities: integrating species richness, abundance and evolutionary history. Ecology Letters, 13, 96-105.
 
 \code{lambda,delta,kappa} Mark Pagel (1999) Inferring the historical patterns of biological evolution. Nature 6756(401): 877--884.
 }

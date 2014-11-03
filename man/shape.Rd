@@ -4,7 +4,7 @@
 \title{Calculate (phylogenetic) shape: examine assemblage composition}
 \usage{
 shape(data, metric = c("all-quick", "all", "psv", "psr", "mpd", "mntd", "pd",
-  "colless", "gamma", "taxon", "eigen.sum", "cadotte.pd", "dist.fd"),
+  "colless", "gamma", "taxon", "eigen.sum", "eed", "hed", "dist.fd"),
   sqrt.phy = FALSE, traitgram = NULL, traitgram.p = 2, ext.dist = NULL,
   which.eigen = 1, remove.errors = TRUE, ...)
 }
@@ -15,7 +15,7 @@ shape(data, metric = c("all-quick", "all", "psv", "psr", "mpd", "mntd", "pd",
 calculates everything bar \code{fd.dist}, \code{all} calculates
 everything. Individually call-able metrics are: \code{psv},
 \code{psr}, \code{mpd}, \code{mntd}, \code{pd}, \code{colless},
-\code{gamma}, \code{taxon}, \code{eigen.sum}, \code{cadotte.pd}, &
+\code{gamma}, \code{taxon}, \code{eigen.sum}, \code{eed}, \code{hed}, &
 \code{dist.fd}. Note that \code{dist.fd} is a trait distance
 metric, but will be calculated on the phylogenetic distance matrix
 if not traits are supplied, and the external/square-rooted
@@ -107,7 +107,7 @@ Pearse W.D., Purvis A., Cavender-Bares J. & Helmus M.R. (2014). Metrics and Mode
 
 \code{eigen.sum} Diniz-Filho J.A.F., Cianciaruso M.V., Rangel T.F. & Bini L.M. (2011). Eigenvector estimation of phylogenetic and functional diversity. Functional Ecology, 25, 735-744.
 
-\code{cadotte.pd} (i.e., \emph{Eed, Hed}) Cadotte M.W., Davies T.J., Regetz J., Kembel S.W., Cleland E. & Oakley T.H. (2010). Phylogenetic diversity metrics for ecological communities: integrating species richness, abundance and evolutionary history. Ecology Letters, 13, 96-105.
+\code{eed,hed} (i.e., \emph{Eed, Hed}) Cadotte M.W., Davies T.J., Regetz J., Kembel S.W., Cleland E. & Oakley T.H. (2010). Phylogenetic diversity metrics for ecological communities: integrating species richness, abundance and evolutionary history. Ecology Letters, 13, 96-105.
 }
 \seealso{
 evenness dispersion dissimilarity

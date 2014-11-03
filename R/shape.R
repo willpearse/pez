@@ -5,7 +5,7 @@
 #' calculates everything bar \code{fd.dist}, \code{all} calculates
 #' everything. Individually call-able metrics are: \code{psv},
 #' \code{psr}, \code{mpd}, \code{mntd}, \code{pd}, \code{colless},
-#' \code{gamma}, \code{taxon}, \code{eigen.sum}, \code{cadotte.pd}, &
+#' \code{gamma}, \code{taxon}, \code{eigen.sum}, \code{eed}, \code{hed}, &
 #' \code{dist.fd}. Note that \code{dist.fd} is a trait distance
 #' metric, but will be calculated on the phylogenetic distance matrix
 #' if not traits are supplied, and the external/square-rooted
@@ -52,13 +52,13 @@
 #' matrices, or distance matrices that incorporate trait information,
 #' can be an excellent thing to do, but (for the above reasons),
 #' \code{pez} won't give you an answer for metrics for which WDP
-#' thinks it makes no sense. PD and cadotte.pd can (...up to you
-#' whether you should!...) be used with a square-rooted distance
-#' matrix, but the results *will always be wrong* if you do not have
-#' an ultrametric tree (branch lengths proportional to time) and you
-#' will be warned about this. WDP strongly feels you should only be
-#' using ultrametric phylogenies in any case, but code to fix this bug
-#' is welcome.
+#' thinks it makes no sense. \code{pd}, \code{eed} & \code{hed} can
+#' (...up to you whether you should!...) be used with a square-rooted
+#' distance matrix, but the results *will always be wrong* if you do
+#' not have an ultrametric tree (branch lengths proportional to time)
+#' and you will be warned about this. WDP strongly feels you should
+#' only be using ultrametric phylogenies in any case, but code to fix
+#' this bug is welcome.
 #' @note As mentioned above, \code{dist.fd} is calculated using a
 #' phylogenetic distance matrix if no trait data are available, or if
 #' you specify \code{sqrt.phy}. It is not calculated by default
@@ -81,7 +81,7 @@
 #' @references \code{gamma} Pybus O.G. & Harvey P.H. (2000) Testing macro-evolutionary models using incomplete molecular phylogenies. _Proceedings of the Royal Society of London. Series B. Biological Sciences 267: 2267--2272.
 #' @references \code{taxon} Clarke K.R. & Warwick R.M. (1998). A taxonomic distinctness index and its statistical properties. J. Appl. Ecol., 35, 523-531.
 #' @references \code{eigen.sum} Diniz-Filho J.A.F., Cianciaruso M.V., Rangel T.F. & Bini L.M. (2011). Eigenvector estimation of phylogenetic and functional diversity. Functional Ecology, 25, 735-744.
-#' @references \code{cadotte.pd} (i.e., \emph{Eed, Hed}) Cadotte M.W., Davies T.J., Regetz J., Kembel S.W., Cleland E. & Oakley T.H. (2010). Phylogenetic diversity metrics for ecological communities: integrating species richness, abundance and evolutionary history. Ecology Letters, 13, 96-105.
+#' @references \code{eed,hed} (i.e., \emph{Eed, Hed}) Cadotte M.W., Davies T.J., Regetz J., Kembel S.W., Cleland E. & Oakley T.H. (2010). Phylogenetic diversity metrics for ecological communities: integrating species richness, abundance and evolutionary history. Ecology Letters, 13, 96-105.
 #' @examples \dontrun{
 #' data(laja)
 #' data <- comparative.comm(invert.tree, river.sites, invert.traits)
@@ -97,7 +97,7 @@
 #' @importFrom ape gammaStat cophenetic.phylo drop.tip
 #' @importFrom FD dbFD
 #' @export
-shape <- function(data,metric=c("all-quick", "all", "psv", "psr", "mpd", "mntd", "pd","colless", "gamma", "taxon", "eigen.sum","cadotte.pd", "dist.fd"), sqrt.phy=FALSE, traitgram=NULL, traitgram.p=2, ext.dist=NULL, which.eigen=1, remove.errors = TRUE,  ...)
+shape <- function(data,metric=c("all-quick", "all", "psv", "psr", "mpd", "mntd", "pd","colless", "gamma", "taxon", "eigen.sum","eed", "hed", "dist.fd"), sqrt.phy=FALSE, traitgram=NULL, traitgram.p=2, ext.dist=NULL, which.eigen=1, remove.errors = TRUE,  ...)
 {
   #Assertions and argument handling
   if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
@@ -148,7 +148,7 @@ shape <- function(data,metric=c("all-quick", "all", "psv", "psr", "mpd", "mntd",
   #Remove missing species
   dist <- dist[colSums(data$comm)>0, colSums(data$comm)>0]
   data <- data[,colSums(data$comm)>0]
-  output <- list(psv=NULL, psr=NULL, mpd=NULL, mntd=NULL, pd=NULL, pd.ivs=NULL, colless=NULL, gamma=NULL, taxon=NULL, eigen.sum=NULL, cadotte.pd=NULL, dist.fd=NULL)
+  output <- list(psv=NULL, psr=NULL, mpd=NULL, mntd=NULL, pd=NULL, pd.ivs=NULL, colless=NULL, gamma=NULL, taxon=NULL, eigen.sum=NULL, Eed=NULL, Hed=NULL, dist.fd=NULL)
   
   #Calculate measures
   if((metric == "psv" | metric == "all" | metric == "all-quick") & (sqrt.phy==FALSE & traitgram==FALSE & ext.dist==FALSE))
@@ -200,12 +200,11 @@ shape <- function(data,metric=c("all-quick", "all", "psv", "psr", "mpd", "mntd",
           output$eigen.sum <- coefs$eigen.sum <- apply(data$comm, 1, .eigen.sum, evc, which.eigen)
       }, silent = TRUE)
   
-  if((metric == "cadotte.pd" | metric == "all" | metric == "all-quick") & (sqrt.phy==FALSE & traitgram==FALSE & ext.dist==FALSE))
-    try({
-      output$cadotte.pd <- data.frame(Eed=.eed(data), Hed=.hed(data))
-      coefs$EED <- output$cadotte.pd$Eed
-      coefs$HED <- output$cadotte.pd$Hed
-  }, silent = TRUE)
+  if((metric == "eed" | metric == "all" | metric == "all-quick") & (sqrt.phy==FALSE & traitgram==FALSE & ext.dist==FALSE))
+      try(output$Eed <- coefs$Eed <- .eed(data), silent=TRUE)
+
+  if((metric == "hed" | metric == "all" | metric == "all-quick") & (sqrt.phy==FALSE & traitgram==FALSE & ext.dist==FALSE))
+      try(output$Hed <- coefs$Hed <- .hed(data), silent=TRUE)
 
   if(metric == "dist.fd" | metric == "all")
       try({
