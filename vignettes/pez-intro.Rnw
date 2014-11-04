@@ -258,7 +258,7 @@ to bias.
 Taxa differ both functionally and phylogenetically, a fact that is
 clearly illustrated using traitgrams \citep{Ackerly2009, Evans2009}.
 A traitgram of a \texttt{comparative.comm} object can be made using
-the \texttt{cc.traitgram} (a wrapper for the \texttt{traitgram}
+the \texttt{traitgram.cc} (a wrapper for the \texttt{traitgram}
 function in \texttt{picante}).  Here is a traitgram for a particular
 assemblage of species against the \texttt{length} trait,
 <<traitgram, warning=FALSE, fig.width=4, fig.height=4.5, dev.args=list(pointsize=8)>>=
@@ -266,7 +266,7 @@ assemblage <- c("Nerophilus", "Hydroptila", "Psorophora",
                 "Simuliidae", "Psychodidae", "Ceratopogon",
                 "Nectopsyche", "Pedomoecus", "Ceratopsyche")
 dataAssemblage <- data[, species(data) %in% assemblage]
-cc.traitgram(dataAssemblage, "length")
+traitgram.cc(dataAssemblage, "length")
 @ %
 \noindent The traitgram plots the phylogenetic time on the y-axis and
 \texttt{length} on the x-axis.  Note that some taxa are very distantly

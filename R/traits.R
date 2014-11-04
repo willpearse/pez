@@ -273,6 +273,9 @@ traitgram.cc <- function(object, trait, moreArgs = NULL, ...) {
         tt <- with(object$data, eval(trait))
     }
 
+    # need names for traitgram
+    if(is.null(names(tt))) names(tt) <- rownames(object$data)
+
     # resolve possible polytomies
     pp <- multi2di(object$phy)
 
