@@ -49,8 +49,10 @@ ConDivSim<-function(object, type="traits", n.sim=100, plot = TRUE, disp99 = FALS
         if(nrow(type)==length(object$phy$tip.label) & nrow(type)==ncol(type))
             dist <- type else stop("'Provided distance matrix is of incorrect dimension'")
     
+    object$comm <- round(object$comm)
+    if(!all(object$comm %in% c(0L, 1L))) stop("Community data must be presence-absence")
     
-    ## Calculate the observed species richness 
+    ## Calculate the observed species richness
     SpeRich.obs <- rowSums(object$comm)
     Occur.obs <- colSums(object$comm)
 	
@@ -95,7 +97,7 @@ ConDivSim<-function(object, type="traits", n.sim=100, plot = TRUE, disp99 = FALS
     	locrich <- SpRich[k]
         
     	# Create the basic vector of presence
-        browser()
+        # browser()
         Vec.Pres <- c(rep(1, locrich), rep(0, NbSp-locrich))
         
         # Estimate the random expectations of mean pairwise distances 

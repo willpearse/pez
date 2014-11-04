@@ -166,9 +166,9 @@ print.comparative.comm <- function(x, ...){
     # basic summary data
     cat("Comparative community dataset of", ncol(x$comm), "taxa:\n")
     cat("Phylogeny:\n")
-    cat("   ", x$phy$Nnode, " internal nodes", sep='')
+    cat("   ", x$phy$Nnode, " internal nodes\n", sep='')
     cat("Community data:\n")
-    cat("    ", nrow(x$comm), " sites, ", ncol(x$comm), " taxa\n")
+    cat("   ", nrow(x$comm), " sites, ", ncol(x$comm), " taxa\n")
     
     if(!is.null(x$data)){
 	    cat("Trait data:\n")
