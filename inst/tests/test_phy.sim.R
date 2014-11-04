@@ -7,7 +7,7 @@ context("Phylogeny simulation")
 # - no explicit test of edge2phylo because these test it
 test_that("sim.bd.tree", {
     set.seed(123)
-    tree <- sim.bd.tree()
+    tree <- sim.bd.phy()
     expect_that(tree, equals(structure(list(edge = structure(c(5, 5, 6, 6, 7, 7, 1, 6, 7, 
 2, 3, 4), .Dim = c(6L, 2L)), tip.label = c("r_1", "r_2", "r_3", 
 "r_4"), edge.length = c(21, 9, 3, 7, 9, 9), Nnode = 3L, traits = NULL), .Names = c("edge", 
@@ -18,7 +18,7 @@ test_that("sim.bd.tree", {
 
 test_that("sim.bd.tr.tree", {
     set.seed(123)
-    tree <- sim.bd.tr.tree()
+    tree <- sim.bd.tr.phy()
     expect_that(tree, equals(structure(list(edge = structure(c(38, 38, 39, 39, 40, 40, 42, 
 42, 43, 43, 44, 44, 46, 46, 45, 45, 49, 49, 48, 48, 54, 54, 50, 
 50, 55, 55, 53, 53, 56, 56, 57, 57, 59, 59, 60, 60, 41, 41, 52, 

@@ -332,23 +332,23 @@ summary.phy.structure <- function(object, ...){
     if(object$type == "dispersion"){
         cat("\nDispersion metrics:\n")
         if(!is.null(object$sesmpd)){
-            cat("SESmpd:\n")
+            cat("\t SESmpd (sesmpd)\n")
             print(object$sesmpd)
         }
         if(!is.null(object$sesmntd)){
-            cat("SESmntd:\n")
+            cat("\tSESmntd (sesmntd)\n")
             print(object$sesmntd)
         }
         if(!is.null(object$sespd)){
-            cat("SESpd:\n")
+            cat("\tSESpd (sespd)\n")
             print(object$sespd)
         }
         if(!is.null(object$innd)){
-            cat("INND:\n")
+            cat("\tINND (innd)\n")
             print(object$innd)
         }
         if(!is.null(object$d)){
-            cat("D:\n")
+            cat("\tD (d)\n")
             print(object$d)
         }
         cat("Use something like 'output$d' to work with each measure\n")

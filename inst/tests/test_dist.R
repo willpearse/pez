@@ -12,7 +12,7 @@ test_that("PA comm dist", {
     expect_that(distByPez[256], equals(0.5))
     expect_that(distByPez[178], equals(1/3))
     
-    distByHand <- 1-as.dist(crossprod(cc$comm)/(dim(cc)[1] - crossprod(1-cc$comm)))
+    distByHand <- 1-as.dist(crossprod(cc$comm)/(dim(cc$comm)[1] - crossprod(1-cc$comm)))
     expect_that(distByPez, is_equivalent_to(distByHand))
 })
 

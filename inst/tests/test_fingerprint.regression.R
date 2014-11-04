@@ -20,7 +20,7 @@ test_that("quantile", {
   set.seed(123)
   expect_that(basic.quantile$eco$raw, equals(eco.trait.regression(data, "taxa.labels", 100, "quantile", altogether=FALSE)))
   set.seed(123)
-  expect_that(basic.quantile$evo, equals(phy.signal(data, traits=TRUE, method="lambda")))
+  expect_that(basic.quantile$evo, equals(phy.signal(data, method="lambda")))
 })
 
 test_that("lm", {
@@ -33,7 +33,7 @@ test_that("lm", {
   set.seed(123)
   expect_that(basic.lm$eco$raw, equals(eco.trait.regression(data, "richness", 100, "lm", altogether=FALSE)))
   set.seed(123)
-  expect_that(basic.lm$evo, equals(phy.signal(data, traits=TRUE, method="delta")))
+  expect_that(basic.lm$evo, equals(phy.signal(data, method="delta")))
 })
 
 test_that("mantel", {
@@ -46,5 +46,5 @@ test_that("mantel", {
   set.seed(123)
   expect_that(basic.mantel$eco$raw, equals(eco.trait.regression(data, "trialswap", 10, "mantel", altogether=FALSE)))
   set.seed(123)
-  expect_that(basic.mantel$evo, equals(phy.signal(data, traits=TRUE, method="kappa")))
+  expect_that(basic.mantel$evo, equals(phy.signal(data, method="kappa")))
 })

@@ -185,7 +185,7 @@ sim.bd.tr.phy <- function(speciate=0.1, extinction=0.025, time.steps=20, tr.rang
 
 #' Convert a simulated edge matrix to an ape:phylo object
 #' 
-#' @param e a two-column matrix where the first column is the start
+#' @param edge a two-column matrix where the first column is the start
 #' node, the second the destination, as in
 #' \code{\link{ape::phylo$edge}}
 #' @param s which of the rows in the edge matrix represent
@@ -201,14 +201,14 @@ sim.bd.tr.phy <- function(speciate=0.1, extinction=0.025, time.steps=20, tr.rang
 #' @rdname sim.phy
 #' @export
 edge2phylo <- function(edge, s, e=numeric(0), el=NA, t=NULL){
-    spp.no <- sort(c(edge[species,2], extinct))
+    spp.no <- sort(c(edge[s,2], e))
     spp.edges <- edge[,2] %in% spp.no
     to.change <- matrix(0, nrow=nrow(edge), ncol=ncol(edge))
     for(i in seq_along(spp.no))
         to.change[edge >= spp.no[i]] <- to.change[edge >= spp.no[i]] + 1
     edge <- edge - to.change + length(spp.no)
     edge[spp.edges,2] <- seq_along(spp.no)
-    tree <- list(edge=edge, tip.label=paste("r", order(spp.no), sep="_"), edge.length=edge.length, Nnode=length(unique(edge[,1])), traits=traits)
+    tree <- list(edge=edge, tip.label=paste("r", order(spp.no), sep="_"), edge.length=el, Nnode=length(unique(edge[,1])), traits=t)
     class(tree) <- "phylo"
     return(tree)
 }

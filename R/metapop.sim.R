@@ -169,7 +169,7 @@ sim.meta.phy.comm <- function(size=10, n.spp=8, timesteps=10, p.migrate=0.3, env
     
     #Turn into ape::phylo and return
     species <- seq(nrow(edge)) %in% phy.abund.lookup$phy
-    tree <- edge2phylo(edge, species, edge.length=edge.length)
+    tree <- edge2phylo(edge, species, el=edge.length)
     phy.abund.lookup$phy[order(phy.abund.lookup$phy)] <- tree$tip.label
     return(list(species=abundance, environment=env, tree=tree, lookup=phy.abund.lookup))
 }

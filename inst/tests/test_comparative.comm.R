@@ -31,15 +31,15 @@ test_that("comm - phy", {
   expect_that(sites(t), equals(letters[1:6]))
   sites(t)[1:3] <- c("w", "t", "f")
   expect_that(sites(t), equals(c("w","t","f",letters[4:6])))
-  expect_true(is.null(envNames(simple)))
-  expect_true(is.null(traitNames(simple)))
+  expect_true(is.null(env.names(simple)))
+  expect_true(is.null(trait.names(simple)))
   
   t <- phylocom$sample
   colnames(t)[1] <- "deliberately wrong"
-  dropping <- comparative.comm(phylocom$phy, t, warn=FALSE, vcv=TRUE)
+  dropping <- comparative.comm(phylocom$phy, t, warn=FALSE)
   expect_that(ncol(dropping$comm), equals(ncol(simple$comm)-1))
   expect_that(nrow(dropping$comm), equals(nrow(simple$comm)))
-  expect_that(names(simple), equals(c("phy","comm","data","env","dropped","names","vcv")))
+  expect_that(names(simple), equals(c("phy","comm","data","env","dropped","names")))
   expect_that(rownames(dropping$vcv), equals(colnames(dropping$vcv)))
   expect_true(is.null(simple$data))
   expect_true(is.null(simple$env))
@@ -95,6 +95,6 @@ test_that("comm - phy - traits - env", {
   expect_that(sites(t), equals(letters[1:6]))
   sites(t)[1:3] <- c("w", "t", "fa")
   expect_that(sites(t), equals(c("w","t","fa",letters[4:6])))
-  expect_that(envNames(env), equals(colnames(env$env)))
-  expect_that(traitNames(env), equals(colnames(env$data)))
+  expect_that(env.names(env), equals(colnames(env$env)))
+  expect_that(trait.names(env), equals(colnames(env$data)))
 })

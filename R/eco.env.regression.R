@@ -34,7 +34,7 @@ eco.env.regression <- function(data, randomisation=c("taxa.labels", "richness", 
     #This won't execute if permute is 0...
     for(i in seq(from=1, length.out=permute)){
       curr.rnd <- .eco.null(data$comm, randomisation, swap.iter=indep.swap)
-      rnd.mat <- comm.dist(curr.rnd)
+      rnd.mat <- as.dist(1 - as.matrix(comm.dist(curr.rnd)))
       if(any(is.na(rnd.mat))){
         warning("NAs in permuted community matrix; skipping this iteration")
         next()
@@ -48,7 +48,7 @@ eco.env.regression <- function(data, randomisation=c("taxa.labels", "richness", 
     for(i in seq_along(randomisations)) randomisations[[i]] <- vector("list", permute)
     for(i in seq(from=1, length.out=permute)){
       curr.rnd <- .eco.null(data$comm, randomisation, swap.iter=indep.swap)
-      rnd.mat <- comm.dist(curr.rnd)
+      rnd.mat <- as.dist(1 - as.matrix(comm.dist(curr.rnd)))
       if(any(is.na(rnd.mat))){
         warning("NAs in permuted community matrix; skipping this iteration")
         next()

@@ -36,8 +36,8 @@
 #' "independentswap". These correspond to the null models available in
 #' \code{\link{picante}}; only \code{d} does not use these null models
 #' @param abundance Whether to use abundance-weighted forms of these
-#' metrics (default: FALSE). Doesn't apply to D, which is
-#' presence/absence only.
+#' metrics (default: FALSE). D, which is presence/absence only, and so
+#' will not be calculated when \code{TRUE}.
 #' @param sqrt.phy If TRUE (default is FALSE) your phylogenetic
 #' distance matrix will be square-rooted; specifying TRUE will force
 #' the square-root transformation on phylogenetic distance matrices
@@ -156,9 +156,9 @@ dispersion <- function(data, metric=c("all", "sesmpd", "sesmntd", "sespd", "innd
     coefs$innd <- output$innd$mpd.obs.z
   }
   #WARNING: Altering commnity matrix in-place
-  if((metric == "d" | metric == "all") & (ext.dist=FALSE & sqrt.phy==FALSE)){
+  if((metric == "d" | metric == "all") & (ext.dist==FALSE & sqrt.phy==FALSE & abundance==FALSE & traitgram==FALSE)){
     data$comm[data$comm > 0] <- 1
-    output$d <- .d(data, traits=FALSE)
+    output$d <- .d(data)
     coefs$d <- output$d[,1]
   }
   
@@ -170,9 +170,10 @@ dispersion <- function(data, metric=c("all", "sesmpd", "sesmntd", "sespd", "innd
 }
 
 #Interal D calculation. *Heavily* based on D from caper.
+# - placed in here for future compatibility with Dc
 #' @importFrom caper contrCalc VCV.array
 #' @importFrom mvtnorm rmvnorm
-.d <- function(data, permute=1000, traits=TRUE) {
+.d <- function(data, permute=1000) {
   #Checking
   if(! inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
   if (!is.numeric(permute)) (stop("'", permute, "' is not numeric."))

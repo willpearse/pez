@@ -104,7 +104,7 @@ eco.trait.regression <- function(data,
   	#This won't execute if permute is 0...
   	for(i in seq(from=1, length.out=permute)){
             curr.rnd <- .eco.null(data$comm, randomisation, swap.iter=indep.swap)
-            rnd.mat <- comm.dist(curr.rnd)
+            rnd.mat <- as.dist(1 - as.matrix(comm.dist(curr.rnd)))
             randomisations[[i]] <- .eco.trait.regression(rnd.mat, traits.dist(data$data), method, ...)
   	}
   } else {
@@ -114,7 +114,7 @@ eco.trait.regression <- function(data,
     for(i in seq_along(randomisations)) randomisations[[i]] <- vector("list", permute)
     for(i in seq(from=1, length.out=permute)){
         curr.rnd <- .eco.null(data$comm, randomisation, swap.iter=indep.swap)
-        rnd.mat <- comm.dist(curr.rnd)
+        rnd.mat <- as.dist(1 - as.matrix(comm.dist(curr.rnd)))
         for(j in seq(ncol(data$data)))
             randomisations[[j]][[i]] <- .eco.trait.regression(rnd.mat, traits.dist(data$data[,j]), method, ...)
     }
