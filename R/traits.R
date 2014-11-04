@@ -8,7 +8,8 @@
 #' with categories: 0.005-0.995 = 99\%, 0.025-0.975 = 95\%, 0.05-0.95
 #' = 90\%, 0.25-0.75 = 50\%.
 #'
-#' @param object a \code{\link{comparative.comm}} object
+#' @param object a \code{\link{comparative.comm}} object, with
+#' presence-absence community data.
 #' @param type character string giving the type of distance matrix on
 #' which the mean pairwise distance is based. Either "trait" or "phy"
 #' to a phylogenetic or trait-based distance matrix, or an actual

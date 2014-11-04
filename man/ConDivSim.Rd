@@ -7,7 +7,8 @@ ConDivSim(object, type = "traits", n.sim = 100, plot = TRUE,
   disp99 = FALSE)
 }
 \arguments{
-\item{object}{a \code{\link{comparative.comm}} object}
+\item{object}{a \code{\link{comparative.comm}} object, with
+presence-absence community data.}
 
 \item{type}{character string giving the type of distance matrix on
 which the mean pairwise distance is based. Either "trait" or "phy"
