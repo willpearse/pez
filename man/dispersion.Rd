@@ -26,8 +26,8 @@ individually call-able metrics are: \code{SESmpd}, \code{SESmntd},
 \code{\link{picante}}; only \code{d} does not use these null models}
 
 \item{abundance}{Whether to use abundance-weighted forms of these
-metrics (default: FALSE). Doesn't apply to D, which is
-presence/absence only.}
+metrics (default: FALSE). D, which is presence/absence only, and so
+will not be calculated when \code{TRUE}.}
 
 \item{sqrt.phy}{If TRUE (default is FALSE) your phylogenetic
 distance matrix will be square-rooted; specifying TRUE will force

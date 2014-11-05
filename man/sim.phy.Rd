@@ -44,7 +44,7 @@ motion trait evolution.}
 \item{tr.wrap}{whether to force species' trait values to stay
 within the boundary defined by \code{tr.range}; default TRUE.}
 
-\item{e}{a two-column matrix where the first column is the start
+\item{edge}{a two-column matrix where the first column is the start
 node, the second the destination, as in
 \code{\link{ape::phylo$edge}}}
 
