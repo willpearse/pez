@@ -43,9 +43,9 @@ implemented in \code{\link{picante}})}
 0)}
 
 \item{method}{how to compare distance matrices (only the lower
-triangle;), one of: \code{\link{base::lm}} (linear regression),
-\code{quantile} (DEFAULT; \code{\link{quantreg::rq}}),
-\code{mantel} (\code{\link{vegan::mantel}})}
+triangle;), one of: \code{base::\link{lm}} (linear regression),
+\code{quantile} (DEFAULT; \code{quantreg::\link{rq}}),
+\code{mantel} (\code{vegan::\link{mantel}})}
 
 \item{altogether}{use distance matrix based on all traits (default
 TRUE), or perform separate regressions for each trait (returns a

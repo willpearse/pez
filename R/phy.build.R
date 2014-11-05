@@ -1,7 +1,7 @@
 #' Build a novel phylogeny from existing data (based on
 #' phyloGenerator)
 #' 
-#' @param tree \code{\link{ape::phylo}} phylogeny to have those
+#' @param tree \code{ape::\link{phylo}} phylogeny to have those
 #' species inserted into it
 #' @param lookup vector of species names to be bound into the tree if
 #' missing from it
@@ -13,7 +13,7 @@
 #' split by the \code{split} argument. This code was originally
 #' shipped with phyloGenerator - this is the \code{merge} method in
 #' that program.
-#' @return \code{\link{ape::phylo}} phylogeny
+#' @return \code{ape::\link{phylo}} phylogeny
 #' @author Will Pearse
 #' @importFrom ape drop.tip
 #' @rdname phy.build
@@ -41,9 +41,9 @@ merge.phylo <- function(tree, species, split="_"){
     return(tree)
 }
 
-#' @param backbone backbone phylogeny (\code{\link{ape::phylo}}) into
+#' @param backbone backbone phylogeny (\code{ape::\link{phylo}}) into
 #' which the donor is to be bound
-#' @param donor phylogeny (\code{\link{ape::phylo}}) to bound into the
+#' @param donor phylogeny (\code{ape::\link{phylo}}) to bound into the
 #' backbone phylogeny
 #' @param replacing.tip.label the species in the donor phylogeny
 #' that's being replaced by the donor phylogeny
@@ -55,7 +55,7 @@ merge.phylo <- function(tree, species, split="_"){
 #' bigger phylogeny ('backbone'); useful if you're building a
 #' phylogeny a la Phylomatic. This code was originally shipped with
 #' phyloGenerator - this is the \code{merge} method in that program.
-#' @return phylogeny (\code{\link{ape::phylo}})
+#' @return phylogeny (\code{ape::\link{phylo}})
 #' @author Will Pearse
 #' @importFrom ape bind.tree
 #' @rdname phy.build

@@ -11,7 +11,7 @@ merge.phylo(tree, species, split = "_")
 bind.replace(backbone, donor, replacing.tip.label, donor.length = NA)
 }
 \arguments{
-\item{tree}{\code{\link{ape::phylo}} phylogeny to have those
+\item{tree}{\code{ape::\link{phylo}} phylogeny to have those
 species inserted into it}
 
 \item{lookup}{vector of species names to be bound into the tree if
@@ -20,10 +20,10 @@ missing from it}
 \item{split}{the character that splits genus and species names in
 your phylogeny. Default is \code{_}, i.e. Quercus_robur.}
 
-\item{backbone}{backbone phylogeny (\code{\link{ape::phylo}}) into
+\item{backbone}{backbone phylogeny (\code{ape::\link{phylo}}) into
 which the donor is to be bound}
 
-\item{donor}{phylogeny (\code{\link{ape::phylo}}) to bound into the
+\item{donor}{phylogeny (\code{ape::\link{phylo}}) to bound into the
 backbone phylogeny}
 
 \item{replacing.tip.label}{the species in the donor phylogeny
@@ -35,9 +35,9 @@ is followed (or, in plain English, it's put half-way along the
 branch)}
 }
 \value{
-\code{\link{ape::phylo}} phylogeny
+\code{ape::\link{phylo}} phylogeny
 
-phylogeny (\code{\link{ape::phylo}})
+phylogeny (\code{ape::\link{phylo}})
 }
 \description{
 Build a novel phylogeny from existing data (based on

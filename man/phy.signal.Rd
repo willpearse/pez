@@ -24,7 +24,7 @@ said a lot in community ecology, but some do not full consider its
 meaning. Think carefully before rushing to report a value whether:
 (1) it makes sense to assess phylogenetic `signal' in your
 datasets, and (2) what the phrase `phylogenetic signal' actually
-means. This code makes use of \code{\link{caper::pgls}} to get
+means. This code makes use of \code{caper::\link{pgls}} to get
 estimates of fit; alternatives that offer more flexibility exist
 (see below).
 }
@@ -47,6 +47,6 @@ R. P. Freckleton, P. H. Harvey, and M. Pagel. Phylogenetic analysis and comparat
 Mark Pagel (1999) Inferring the historical patterns of biological evolution. Nature 6756(401): 877--884.
 }
 \seealso{
-geiger::fitContinuous geiger::fitDiscrete caper::pgls picante::phylosignal
+fitContinuous fitDiscrete pgls phylosignal
 }
 

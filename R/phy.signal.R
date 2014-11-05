@@ -9,7 +9,7 @@
 #' meaning. Think carefully before rushing to report a value whether:
 #' (1) it makes sense to assess phylogenetic `signal' in your
 #' datasets, and (2) what the phrase `phylogenetic signal' actually
-#' means. This code makes use of \code{\link{caper::pgls}} to get
+#' means. This code makes use of \code{caper::\link{pgls}} to get
 #' estimates of fit; alternatives that offer more flexibility exist
 #' (see below).
 #' @return Named numeric vector, where each element is a trait or community.
@@ -17,7 +17,7 @@
 #' @references Blomberg S.P., Garland T. & Ives A.R. Testing for phylogenetic signal in comparative data: behavioral traits are more labile. Evolution 57(4): 717--745.
 #' @references R. P. Freckleton, P. H. Harvey, and M. Pagel. Phylogenetic analysis and comparative data: A test and review of evidence. American Naturalist, 160:712-726, 2002.
 #' @references Mark Pagel (1999) Inferring the historical patterns of biological evolution. Nature 6756(401): 877--884.
-#' @seealso geiger::fitContinuous geiger::fitDiscrete caper::pgls picante::phylosignal
+#' @seealso fitContinuous fitDiscrete pgls phylosignal
 #' @examples \dontrun{
 #' data(laja)
 #' data <- comparative.comm(invert.tree, river.sites, invert.traits)
