@@ -20,7 +20,7 @@ assemblages, traits, and phylogenies (\code{\link{scape}},
 \code{\link{sim.meta.comm}}).
 }
 \examples{
-\\notrun{
+\dontrun{
 require(pez)
 data(laja)
 data <- comparative.comm(invert.tree, river.sites, invert.traits, river.env)
