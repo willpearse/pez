@@ -29,19 +29,19 @@ use the result.}
 (if its a \code{\link{function}}).}
 
 \item{...}{Additional arguments to be passed on to
-\code{\link{traitgram}}.}
+\code{ape::\link{traitgram}}.}
 
 \item{x}{A matrix-like object}
 
 \item{...}{Arguments to pass on to \code{\link{princomp}}}
 }
 \value{
-\code{traitgram.cc}: see \code{\link{picante::traitgram}}
+\code{traitgram.cc}: see \code{ape::\link{traitgram}}
 
 \code{princompOne}: the first axis of a PCA
 }
 \description{
-\code{traitgram.cc} A wrapper for the \code{\link{traitgram}}
+\code{traitgram.cc} A wrapper for the \code{ape::\link{traitgram}}
 function in the \code{picante} package.
 
 A very soft wrapper for \code{\link{princomp}}

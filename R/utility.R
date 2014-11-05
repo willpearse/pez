@@ -242,11 +242,11 @@ plot.eco.xxx.regression.list <- function(x, ...){
 ##' from a phylogeny, it will just return the phylogeny (not an empty
 ##' phylogeny, as \code{\link{drop.tip}}) will.
 ##'
-##' @param tree An \code{\link{ape::phylo}} object
+##' @param tree An \code{ape::\link{phylo}} object
 ##' @param spp A vector of species (one, many, or none) to be removed
 ##' from \code{tree}
-##' @return \code{\link{ape::phylo}} object
-##' @seealso ape::drop.tip ape::extract.clade
+##' @return \code{ape::\link{phylo}} object
+##' @seealso drop.tip extract.clade
 ##' @export
 drop_tip <- function(tree, spp)
   if(length(setdiff(tree$tip.label, spp)) >0) return(drop.tip(tree, spp)) else return(tree)

@@ -46,7 +46,7 @@ within the boundary defined by \code{tr.range}; default TRUE.}
 
 \item{edge}{a two-column matrix where the first column is the start
 node, the second the destination, as in
-\code{\link{ape::phylo$edge}}}
+\code{ape::\link{phylo}$edge}}
 
 \item{s}{which of the rows in the edge matrix represent
 extant species}
@@ -61,10 +61,10 @@ phylogeny (default NA, i.e., none)}
 (\code{$traits} slot) in the phylogeny}
 }
 \value{
-\code{\link{ape::phylo}} object with random tip.labels;
+\code{ape::\link{phylo}} object with random tip.labels;
 trait values if using \code{sim.br.tr.tree}.
 
-\code{\link{ape::phylo}} object
+\code{ape::\link{phylo}} object
 }
 \description{
 Simulate phylogenies under pure birth/death or as a function of

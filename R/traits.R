@@ -227,7 +227,7 @@ trait.asm<-function(a, m=1000,meanSR=NULL,interval=c(.001,10),exponential=TRUE,P
 
 ##' Traitgram for comparative community object
 ##'
-##' \code{traitgram.cc} A wrapper for the \code{\link{traitgram}}
+##' \code{traitgram.cc} A wrapper for the \code{ape::\link{traitgram}}
 ##' function in the \code{picante} package.
 ##'
 ##' @param object A \code{\link{comparative.comm}} object.
@@ -247,8 +247,8 @@ trait.asm<-function(a, m=1000,meanSR=NULL,interval=c(.001,10),exponential=TRUE,P
 ##' @param moreArgs List of more arguments to pass on to \code{trait}
 ##' (if its a \code{\link{function}}).
 ##' @param ... Additional arguments to be passed on to
-##' \code{\link{traitgram}}.
-##' @return \code{traitgram.cc}: see \code{\link{picante::traitgram}}
+##' \code{ape::\link{traitgram}}.
+##' @return \code{traitgram.cc}: see \code{ape::\link{traitgram}}
 ##' @importFrom picante traitgram
 ##' @export
 traitgram.cc <- function(object, trait, moreArgs = NULL, ...) {
