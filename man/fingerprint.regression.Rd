@@ -29,10 +29,13 @@ community data, one of: \code{taxa.labels} (DEFAULT),
 \code{phylogeny.pool}, \code{independentswap}, \code{trialswap} (as
 implemented in \code{\link{picante}})}
 
+\item{eco.permute}{number of permutations for ecological null model
+(\code{eco.rnd}); default 1000}
+
 \item{eco.method}{how to compare distance matrices (only the lower
-triangle;), one of: \code{base::\link{lm}} (linear regression),
-\code{quantile} (DEFAULT; \code{quantreg::\link{rq}}), \code{mantel}
-(\code{vegan::\link{mantel}})}
+triangle;), one of: \code{\link{lm}} (linear regression),
+\code{quantile} (DEFAULT; \code{\link[quantreg:rq]{rq}}),
+\code{mantel} (\code{\link[vegan:mantel]{mantel}})}
 
 \item{evo.method}{how to measure phylogenetic inertia, one of:
 \code{lambda} (default), \code{delta}, \code{kappa}, \code{blom.k};
@@ -44,18 +47,12 @@ see \code{\link{phy.signal}}.}
 \item{abundance}{whether to incorporate species' abundances
 (default: TRUE)}
 
-\item{...}{additional parameters to pass on to model fitting functions}
+\item{...}{additional parameters to pass on to model fitting
+functions and plotting functions}
 
 \item{x}{\code{fingerprint.regression} object}
-
-\item{...}{arguments passed to
-\code{\link{summary.fingerprint.regression}} (ignored)}
 
 \item{object}{\code{fingerprint.regression} object}
-
-\item{...}{ignored}
-
-\item{x}{\code{fingerprint.regression} object}
 
 \item{eco}{plot the observed slopes (DEFAULT: \code{slope}), or the
 median difference between the simulations and the observed values
@@ -64,8 +61,6 @@ median difference between the simulations and the observed values
 \item{xlab}{label for x-axis (default "Ecological Trait Coexistence")}
 
 \item{ylab}{label for y-axis (default "Phylogenetic inertia")}
-
-\item{...}{additional plotting arguments}
 }
 \description{
 Calculates traits' phylogenetic inertia and regresses this against

@@ -1,50 +1,51 @@
 #' Build a novel phylogeny from existing data (based on
 #' phyloGenerator)
 #' 
-#' @param tree \code{ape::\link{phylo}} phylogeny to have those
+#' @param tree \code{\link[ape:phylo]{phylo}} phylogeny to have those
 #' species inserted into it
-#' @param lookup vector of species names to be bound into the tree if
+#' @param species vector of species names to be bound into the tree if
 #' missing from it
 #' @param split the character that splits genus and species names in
 #' your phylogeny. Default is \code{_}, i.e. Quercus_robur.
-#' @details \code{merge} Binds missing species into a phylogeny by
-#' replacing all members of the clade it belongs to with a
-#' polytomy. Assumes the \code{tip.labels} represent Latin binomials,
-#' split by the \code{split} argument. This code was originally
-#' shipped with phyloGenerator - this is the \code{merge} method in
-#' that program.
-#' @return \code{ape::\link{phylo}} phylogeny
+#' @param ... ignored
+#' @details \code{congeneric.merge} Binds missing species into a
+#' phylogeny by replacing all members of the clade it belongs to with
+#' a polytomy. Assumes the \code{tip.labels} represent Latin
+#' binomials, split by the \code{split} argument. This code was
+#' originally shipped with phyloGenerator - this is the \code{merge}
+#' method in that program.
+#' @return \code{\link[ape:phylo]{phylo}} phylogeny
 #' @author Will Pearse
 #' @importFrom ape drop.tip
 #' @rdname phy.build
 #' @name phy.build
 #' @references Pearse W.D. & Purvis A. phyloGenerator: an automated phylogeny generation tool for ecologists. Methods in Ecology and Evolution 4(7): 692--698.
 #' @export
-merge.phylo <- function(tree, species, split="_"){
-    if(!inherits(phy, "phylo"))
-        stop("'tree' must be a phylogeny")
-    before <- sum(lookup$clean %in% tree$tip.label)
-    for(i in seq(nrow(lookup))){
-        if(!is.null(lookup$clean[i]) & !lookup$clean[i] %in% tree$tip.label){
-            genus <- strsplit(lookup$clean[i], split, fixed=TRUE)[[1]][1]
+congeneric.merge <- function(tree, species, split="_", ...){
+    if(!inherits(x, "phylo"))
+        stop("'x' must be a phylogeny")
+    before <- sum(species %in% tree$tip.label)
+    for(i in seq_along(species)){
+        if(!is.null(species[i]) & !species[i] %in% tree$tip.label){
+            genus <- strsplit(species[i], split, fixed=TRUE)[[1]][1]
             matches <- unique(grep(genus, tree$tip.label, value=TRUE))
             if(length(matches) > 0){
-                tree <- drop.tip(tree, matches[-1])
-                tip.length <- .find.unique.branch.length(tree, matches[1])
-                polytomy <- .make.polytomy(unique(c(matches, lookup$clean[i])), (tip.length/2))
-                tree <- bind.replace(tree, polytomy, matches[1], tip.length)
+                x <- drop.tip(x, matches[-1])
+                tip.length <- .find.unique.branch.length(x, matches[1])
+                polytomy <- .make.polytomy(unique(c(matches, species$clean[i])), (tip.length/2))
+                x <- bind.replace(x, polytomy, matches[1], tip.length)
             }
         }
     }
     cat("\nNumber of species in tree before:", before)
-    cat("\nNumber of species in tree now:   ", sum(lookup$clean %in% tree$tip.label), "\n")
-    return(tree)
+    cat("\nNumber of species in tree now:   ", sum(species %in% tree$tip.label), "\n")
+    return(x)
 }
 
-#' @param backbone backbone phylogeny (\code{ape::\link{phylo}}) into
-#' which the donor is to be bound
-#' @param donor phylogeny (\code{ape::\link{phylo}}) to bound into the
-#' backbone phylogeny
+#' @param backbone backbone phylogeny (\code{\link[ape:phylo]{phylo}})
+#' into which the donor is to be bound
+#' @param donor phylogeny (\code{\link[ape:phylo]{phylo}}) to bound
+#' into the backbone phylogeny
 #' @param replacing.tip.label the species in the donor phylogeny
 #' that's being replaced by the donor phylogeny
 #' @param donor.length how deep the donor phylogeny should be cut into
@@ -55,7 +56,7 @@ merge.phylo <- function(tree, species, split="_"){
 #' bigger phylogeny ('backbone'); useful if you're building a
 #' phylogeny a la Phylomatic. This code was originally shipped with
 #' phyloGenerator - this is the \code{merge} method in that program.
-#' @return phylogeny (\code{ape::\link{phylo}})
+#' @return phylogeny (\code{\link[ape:phylo]{phylo}})
 #' @author Will Pearse
 #' @importFrom ape bind.tree
 #' @rdname phy.build

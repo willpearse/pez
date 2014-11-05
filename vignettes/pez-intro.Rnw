@@ -12,7 +12,7 @@
 \usepackage[colorlinks=true,urlcolor=dark-gray,breaklinks,citecolor=black,linkcolor=black]{hyperref}
 \bibliographystyle{besjournals}
 \title{An introduction to \emph{pez}}
-\author{William D.\ Pearse (wdpearse@umn.edu)}
+\author{W.D.\ Pearse, J.\ Cavender-Bares, \& S.\ Walker}
 \date{\today}
 
 \begin{document}
@@ -178,9 +178,9 @@ plot(hclust(dist$phylosor))
 \section{Eco-evolutionary regression}
 Calculating metric values is useful, but often we want to make
 statistial models. \emph{pez} features a set of regression techniques,
-based on \citet{Cavender-Bares2004} and \citet{Cavender-Bares2006},
-which are described in the helpfiles for \texttt{eco.xxx.regression}
-and \texttt{fingerprint.regression}.
+based on \citet{Cavender-Bares2003}, \citet{Cavender-Bares2004}, and
+\citet{Cavender-Bares2006}, which are described in the helpfiles for
+\texttt{eco.xxx.regression} and \texttt{fingerprint.regression}.
 
 The functions desribed in \texttt{eco.xxx.regression} focus on
 relating the co-occurrence of species to species' phylogenetic
@@ -218,7 +218,22 @@ trait similarity.
     \caption{Overview of a fingerprint regression. A hypothetical
       trait is shown in each quadrant; the size of the circles
       represents the numerical value of the trait, and colour of the
-      circles represents hypothetical communites.}
+      circles represents hypothetical communites. Areas of interest on
+      the diagram are coloured to mirror the discussion in the
+      text. The quadrants are based on the framework of
+      \citetext{Webb2002}, although the axes are continuous following
+      the approach used by \citetext{Cavender-Bares2004}. Trait
+      patterns in the bottom left quadrant can be interpreted as
+      environmental filtering on labile (or phylogenetically
+      convergent) traits. Trait patterns in the top right quadrant may
+      be interpreted as indicative of limiting similarity of
+      phylogenetically conserved traits: these patterns emerge when
+      functionally and phylogenetically similar species co-occur less
+      than expected. Finally, trait patterns in the bottom right
+      quadrant indicate that functionally similar but phylogenetically
+      distantly related species co-occur less than expected. Such a
+      pattern may indicate limiting similarity of distantly related
+      species but may be difficult to interpret. }
     \label{fingerprint}
   \end{center}
 \end{figure}
@@ -251,7 +266,50 @@ to \emph{pez}), you can examine the coefficients of each of the
 correspond to the two axes in figure \ref{fingerprint}. Make sure you
 check which traits are where in your graph; not all traits are
 independent, either ecologically or evolutionarily, which could lead
-to bias.
+to bias. Examine the \texttt{\$eco} and \texttt{\$evo} slots in your
+output to see what it plotted where; you can plot these names by
+provide these two values and \texttt{traits(data)} to the function
+\texttt{text}.
+
+It is worth pausing to consider the interpretation of various
+outcomes. A positive relationship would indicate a combination of
+environmental filtering on functional traits with multiple independent
+origins and limiting similarity of phylogenetically conserved
+functional traits. Note that a non-significant fingerprint regression
+does not indicate that the data are not interpretable. For example,
+traits concentrated in the top left quadrant (red circle) could most
+likely be interpreted in terms of niche conservatism because species
+with phylogenetically and functionally similar traits are found in the
+same habitats or communities. A negative relationship, in contrast,
+would be difficult to interpret because it would indicate a
+combination of niche conservatism (environmental filtering on
+conserved functional traits) and trait patterns of dissimilar labile
+traits within communities that could be generated any number of ways
+or result from stochastic processes.
+
+An important caveat is that multiple processes may contribute to
+observed patterns making interpretation difficult
+\citep{Cavender-Bares2009}. However, examination of which traits
+fall out in different quadrants can help provide functional
+interpretations of community patterns. For example, if disease
+resistance traits are highly conserved and occur in the top right
+quadrant where close relatives do not co-occur in communities, this
+would help implicate Janzen-Connell mechanisms as contributing to the
+community structure; testing such a hypothesis with experimental
+methods would be an important next step. Alternatively, if fire
+tolerance traits were found in the bottom left quadrant, a plausible
+interpretation would be that there had been repeated evolutionary
+origins of fire tolerance traits, and environmental filtering (by
+fire) operated on these phylogenetically convergent traits. Both of
+these scenarios could occur simultaneously and both would help explain
+an overdispersed (or even) pattern of community phylogenetic
+structure. In contrast, if fire tolerance traits appeared in the top
+left quadrant, one would implicate niche conservatism for
+fire-tolerance traits, and it would be reasonable to assume that fire
+acted as an environmental filter causing fire tolerant species to
+assemble in fire-dominated habitats and fire-intolerant species to
+assemble in habitats lacking fire.
+
 \clearpage
 \section{Functional phylogenetic distances and traitgrams}
 
@@ -325,6 +383,7 @@ communities are excellent for use as null models to compare with your
 own data, and as such they take a \texttt{comparative.comm} object as
 an argument to generate communities that match your own data.
 
+\clearpage
 \begin{thebibliography}{6}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
@@ -354,11 +413,22 @@ Bryant, J.A., Lamanna, C., Morlon, H., Kerkhoff, A.J., Enquist, B.J. \& Green,
     in Floridian oak communities}. \emph{The American Naturalist}
   \textbf{163}, 823--43.
   
+\bibitem[{Cavender-Bares \& Wilczek(2003)Cavender-Bares \&
+    Wilczek}]{Cavender-Bares2003} Cavender-Bares, J. \& Wilczek,
+  A. (2003). Integrating micro- and macroevolutionary processes in
+  community ecology. \emph{Ecology}, \textbf{84}, 592-597.
+  
 \bibitem[{Cavender-Bares \emph{et~al.}(2006)Cavender-Bares, Keen, \&
-    Miles}]{Cavender-Bares2004} Cavender-Bares, J., A. Keen \&
+    Miles}]{Cavender-Bares2006} Cavender-Bares, J., A. Keen \&
   B. Miles (2006) {Phylogenetic structure of Floridian plant
     communities depends on taxonomic and spatial scale}. \emph{The
     American Naturalist} \textbf{87}, S109--S122.
+  
+\bibitem[{Cavender-Bares \emph{et~al.}(2009)Cavender-Bares, Kozak,
+    Fine, \& Kembel}]{Cavender-Bares2009} Cavender-Bares, J., Kozak,
+  K., Fine, P. \& Kembel, S. (2009). The merging of community ecology
+  and phylogenetic biology. \emph{Ecology Letters}, \textbf{12},
+  693-715.
 
 \bibitem[{Evans \emph{et~al.}(2009)Evans, Smith, Flynn, \& Donoghue}]{Evans2009}
   Evans, M.E.K., Smith, S.A., Flynn, R.S. \& Donoghue, M.J. (200)
@@ -394,6 +464,11 @@ Pearse, W.D., Cavender-Bares, J., Puvis, A. \& Helmus, M.R. (2014) Metrics and
   models of community phylogenetics. \emph{Modern Phylogenetic Comparative
   Methods and their Application in Evolutionary Biology---Concepts and
   Practice} (ed. L.Z. Garamszegi), Springer-Verlag, Berlin, Heidelberg.
+
+\bibitem[{Webb \emph{et~al.}(2002)Webb, Ackerly, McPeek \&
+    Donoghue}]{Webb2002} Webb, C.O., Ackerly, D.D., McPeek, M.A. \&
+  Donoghue M.J. (2002). Phylogenies and community ecology. \emph{Annual
+  Review of Ecology and Systematics}, \textbf{33}, 475-505.
 
 \end{thebibliography}
 

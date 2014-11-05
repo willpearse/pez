@@ -12,6 +12,13 @@
 
 \method{plot}{eco.xxx.regression.list}(x, ...)
 }
+\arguments{
+\item{object}{\code{eco.xxx.regression.list} object}
+
+\item{...}{additional arguments to plotting functions}
+
+\item{x}{\code{eco.xxx.regression.list} object}
+}
 \description{
 List of eco.xxx.regressions
 }

@@ -92,7 +92,7 @@
 #' evenness(data)
 #' evenness(data, "rao")
 #' }
-#' @importFrom ape cophenetic.phylo drop.tip
+#' @importFrom ape cophenetic.phylo drop.tip is.ultrametric as.phylo
 #' @importFrom picante pse raoD
 #' @importFrom vegan taxondive
 #' @importFrom caper comparative.data pgls summary.pgls coef.pgls

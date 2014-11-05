@@ -8,7 +8,7 @@
 #' keep everything in order. Examples of these features are given
 #' below; they are described in detailed at \code{\link{cc.manip}}.
 #' 
-#' @param phy phylogeny (in \code{ape::\link{phylo}} format) of
+#' @param phy phylogeny (in \code{\link[ape:phylo]{phylo}} format) of
 #' species
 #' @param comm community \code{matrix} (as used in
 #' \code{\link{vegan}}) with species as columns and rows as
@@ -17,7 +17,7 @@
 #' @param traits \code{data.frame} of species traits, with
 #' \code{rownames} matching \code{comm}. Saved in the \code{data} slot
 #' of the resulting \code{comparative.comm} object for compatibility
-#' with \code{caper::\link{comparative.data}}.
+#' with \code{\link[caper:comparative.data]{comparative.data}}.
 #' @param env \code{data.frame} of environmental data with
 #' \code{rownames} matching \code{comm}
 #' @param warn whether to warn if species/sites are dropped when
@@ -26,10 +26,10 @@
 #' value force.root will be added (default: -1, which means this will
 #' never happen). Rarely needed, rarely advisable.
 #' @note \code{comparative.comm} is compatible with
-#' \code{caper::\link{comparative.data}}; this means that the slot for
-#' species' trait data is called \code{data}. I appreciate this is
-#' somewhat unwieldy, but hopefully you agree it is helpful in the
-#' long-term.
+#' \code{\link[caper:comparative.data]{comparative.data}}; this means
+#' that the slot for species' trait data is called \code{data}. I
+#' appreciate this is somewhat unwieldy, but hopefully you agree it is
+#' helpful in the long-term.
 #' @return comparative.comm object
 #' @author Will Pearse
 #' @examples \dontrun{
@@ -221,7 +221,7 @@ print.comparative.comm <- function(x, ...){
 #' \code{\link{vegan}}). Optionally, it may contain a
 #' \code{data.frame} of trait data (each row a species, each column a
 #' trait ) *called \code{data}* for compatibility with
-#' \code{caper::\link{comparative.data}}.
+#' \code{\link[caper:comparative.data]{comparative.data}}.
 #' @rdname cc.manip
 #' @name cc.manip
 #' @seealso comparative.comm plot.comaparative.comm
@@ -289,6 +289,7 @@ print.comparative.comm <- function(x, ...){
 }
 
 ##' @param object A \code{\link{comparative.comm}} object
+##' @param value values to replace \code{object}
 ##' @return Names of the traits or environmental variables
 ##' @rdname cc.manip
 ##' @export
@@ -342,8 +343,8 @@ sites <- function(x){
 }
 
 #' @param data A \code{\link{comparative.comm}} object
-#' @return List of \code{ape::\link{phylo}} objects, one for each
-#' assemblage in the \code{data}.
+#' @return List of \code{\link[ape:phylo]{phylo}} objects, one for
+#' each assemblage in the \code{data}.
 #' @export
 #' @rdname cc.manip
 assemblage.phylogenies <- function(data){

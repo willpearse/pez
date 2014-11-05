@@ -45,6 +45,10 @@ phylogeny (0 --> only phylogeny, 1 --> only traits; see
 with coefficients from each iteration. See `details' for details
 about different metric calculations when a distance matrix is used.}
 
+\item{ext.dist}{Supply an external species-level distance matrix
+for use in calculations. See `details' for comments on the use of
+distance matrices in different metric calculations.}
+
 \item{traitgram.p}{A value for `p' to be used in conjunction with
 \code{traitgram} when calling \code{funct.phylo.dist}.}
 

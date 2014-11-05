@@ -68,16 +68,21 @@
 #' \dontrun{
 #' require(ape)
 #' tree<-stree(8,type="balanced")       #signal in centers
-#' kk<-scape(tree, scape.size=100, g.center=100, g.range=1, g.repulse=1, wd.all=150, signal.center=TRUE, signal.range=FALSE, same.range=FALSE, repulse=FALSE,center.scale = 1, range.scale = 1, repulse.scale = 1, site.stoch.scale = 0, sd.center=3, sd.range=1,rho=NULL, th=20)
+#' kk<-scape(tree, scape.size=100, g.center=100, g.range=1, g.repulse=1, wd.all=150,
+#' signal.center=TRUE, signal.range=FALSE, same.range=FALSE, repulse=FALSE,center.scale = 1,
+#' range.scale = 1, repulse.scale = 1, site.stoch.scale = 0, sd.center=3, sd.range=1,rho=NULL, th=20)
 #'
 #' #Make some plots
 #' require(plotrix)
 #' par(mfrow=c(1,Ntip(tree)),mar=c(.1,.1,.1,.1))
-#' for(j in 1:Ntip(tree)){color2D.matplot(1 - kk$sppXs[,,j]/max(kk$sppXs[,,j]), xlab = "", ylab = "",main = "",border=NA,do.hex=FALSE,axes=FALSE)}
+#' for(j in 1:Ntip(tree)){color2D.matplot(1 - kk$sppXs[,,j]/max(kk$sppXs[,,j]), xlab = "",
+#' ylab = "",main = "",border=NA,do.hex=FALSE,axes=FALSE)}
 #' 
 #' par(mfrow=c(2,1))
-#' matplot((kk$X1), type = "l", xlab="gradient",ylab = "probability", main = "Gradient 1",col=rainbow(dim(kk$X1)[2]),lty=1)
-#' matplot((kk$X2), type = "l", xlab="gradient",ylab = "probability", main = "Gradient 2",col=rainbow(dim(kk$X2)[2]),lty=1)
+#' matplot((kk$X1), type = "l", xlab="gradient",ylab = "probability",
+#' main = "Gradient 1",col=rainbow(dim(kk$X1)[2]),lty=1)
+#' matplot((kk$X2), type = "l", xlab="gradient",ylab = "probability",
+#' main = "Gradient 2",col=rainbow(dim(kk$X2)[2]),lty=1)
 #' 
 #' plot(x=1:dim(kk$Y)[1],y = rowSums(kk$Y), main = "SR",type = "l")
 #' cor(kk$X1)}

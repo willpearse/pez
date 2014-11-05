@@ -46,13 +46,20 @@ creating object (default: TRUE)}
 
 \item{object}{A \code{\link{comparative.comm}} object}
 
+\item{value}{values to replace \code{object}}
+
 \item{data}{A \code{\link{comparative.comm}} object}
+
+\item{expr}{expression to be evaluated within the scope of
+\code{data}}
+
+\item{...}{ignored}
 }
 \value{
 Names of the traits or environmental variables
 
-List of \code{ape::\link{phylo}} objects, one for each
-assemblage in the \code{data}.
+List of \code{\link[ape:phylo]{phylo}} objects, one for
+each assemblage in the \code{data}.
 }
 \description{
 As described in the vignette, we recommend using these wrappers to
@@ -72,7 +79,7 @@ As described in \code{\link{comparative.comm}}, each
 \code{\link{vegan}}). Optionally, it may contain a
 \code{data.frame} of trait data (each row a species, each column a
 trait ) *called \code{data}* for compatibility with
-\code{caper::\link{comparative.data}}.
+\code{\link[caper:comparative.data]{comparative.data}}.
 }
 \examples{
 data(laja)

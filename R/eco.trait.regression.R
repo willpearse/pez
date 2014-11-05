@@ -29,9 +29,9 @@
 #' @param permute the number of null permutations to perform (DEFAULT
 #' 0)
 #' @param method how to compare distance matrices (only the lower
-#' triangle;), one of: \code{base::\link{lm}} (linear regression),
+#' triangle;), one of: \code{\link{lm}} (linear regression),
 #' \code{quantile} (DEFAULT; \code{quantreg::\link{rq}}),
-#' \code{mantel} (\code{vegan::\link{mantel}})
+#' \code{mantel} (\code{\link[vegan:mantel]{mantel}})
 #' @param altogether use distance matrix based on all traits (default
 #' TRUE), or perform separate regressions for each trait (returns a
 #' list, see details)

@@ -1,6 +1,6 @@
 #' Calculate phylogenetic `signal'
 #' 
-#' @param data \code{\link{comparative.com}} object
+#' @param data \code{\link{comparative.comm}} object
 #' @param method what kind of signal to calculate, one of Pagel's
 #' \eqn{$\lambda$}{lambda} (default), \eqn{$\delta$}{delta}, and
 #' \eqn{$\kappa$}{kappa}, or Blomberg's K.
@@ -25,6 +25,7 @@
 #' 
 #' }
 #' @importFrom caper comparative.data pgls
+#' @importFrom picante Kcalc
 #' @export
 phy.signal <- function(data, method=c("lambda", "delta", "kappa", "blom.k")){
   #Assertions and argument handling

@@ -94,7 +94,7 @@
 #' @importFrom vegan taxondive
 #' @importFrom PVR PVRdecomp
 #' @importFrom apTreeshape as.treeshape as.treeshape.phylo colless tipsubtree
-#' @importFrom ape gammaStat cophenetic.phylo drop.tip
+#' @importFrom ape gammaStat cophenetic.phylo drop.tip is.ultrametric as.phylo
 #' @importFrom FD dbFD
 #' @export
 shape <- function(data,metric=c("all-quick", "all", "psv", "psr", "mpd", "mntd", "pd","colless", "gamma", "taxon", "eigen.sum","eed", "hed", "dist.fd"), sqrt.phy=FALSE, traitgram=NULL, traitgram.p=2, ext.dist=NULL, which.eigen=1, remove.errors = TRUE,  ...)

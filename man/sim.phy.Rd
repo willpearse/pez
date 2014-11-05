@@ -46,7 +46,7 @@ within the boundary defined by \code{tr.range}; default TRUE.}
 
 \item{edge}{a two-column matrix where the first column is the start
 node, the second the destination, as in
-\code{ape::\link{phylo}$edge}}
+\code{\link[ape:phylo]{phylo}$edge}}
 
 \item{s}{which of the rows in the edge matrix represent
 extant species}
@@ -61,10 +61,10 @@ phylogeny (default NA, i.e., none)}
 (\code{$traits} slot) in the phylogeny}
 }
 \value{
-\code{ape::\link{phylo}} object with random tip.labels;
-trait values if using \code{sim.br.tr.tree}.
+\code{\link[ape:phylo]{phylo}} object with random
+tip.labels; trait values if using \code{sim.br.tr.tree}.
 
-\code{ape::\link{phylo}} object
+\code{\link[ape:phylo]{phylo}} object
 }
 \description{
 Simulate phylogenies under pure birth/death or as a function of
@@ -87,9 +87,9 @@ depending on whether they have a trait value similar to other
 species (\code{sp.tr}, \code{ext.tr}). When a speciation event
 happens, the two daughters split evenly about the ancestor's trait
 value, taking values half-way to whatever the nearest species'
-value is. To be precise: \eqn{$p_i_{speciate} = speciate_i + sp.tr
+value is. To be precise: \eqn{$p(speciate)_i = speciate_i + sp.tr
 \times min(trait distance)$}{p(speciate) = speciate +
-sp.tr*min.tr.dist}, \eqn{$p_i_{extinct} = exinction_i + ext.tr
+sp.tr*min.tr.dist}, \eqn{$p(extinct)_i = exinction_i + ext.tr
 \times min(trait distance)$}{p(extinct) = extinction +
 ext.tr*min.tr.dist}, where \eqn{$i$}{i} denotes each species.
 

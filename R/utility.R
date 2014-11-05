@@ -62,6 +62,7 @@
 #Printing summaries of regressions
 #ADD RETURN STATEMENTS FOR FALL-THROUGH LIKE OTHERS
 #' @method summary eco.xxx.regression
+#' @param object \code{eco.xxx.regression} object
 #' @export
 #' @rdname eco.xxx.regression
 #' @importFrom quantreg summary.rq print.rq
@@ -91,6 +92,7 @@ summary.eco.xxx.regression <- function(object, ...){
 }
 
 #' @method print eco.xxx.regression
+#' @param x \code{eco.xxx.regression} object
 #' @export
 #' @rdname eco.xxx.regression
 print.eco.xxx.regression <- function(x, ...){
@@ -159,6 +161,8 @@ plot.eco.xxx.regression <- function(x, ...){
 
 #' List of eco.xxx.regressions
 #' @method summary eco.xxx.regression.list
+#' @param object \code{eco.xxx.regression.list} object
+#' @param ... additional arguments to plotting functions
 #' @export
 #' @rdname eco.xxx.regression.list
 #' @name eco.xxx.regression.list
@@ -185,6 +189,7 @@ summary.eco.xxx.regression.list <- function(object, ...){
 }
 
 #' @method print eco.xxx.regression.list
+#' @param x \code{eco.xxx.regression.list} object
 #' @export
 #' @rdname eco.xxx.regression.list
 print.eco.xxx.regression.list <- function(x, ...){
@@ -242,10 +247,10 @@ plot.eco.xxx.regression.list <- function(x, ...){
 ##' from a phylogeny, it will just return the phylogeny (not an empty
 ##' phylogeny, as \code{\link{drop.tip}}) will.
 ##'
-##' @param tree An \code{ape::\link{phylo}} object
+##' @param tree An \code{\link[ape:phylo]{phylo}} object
 ##' @param spp A vector of species (one, many, or none) to be removed
 ##' from \code{tree}
-##' @return \code{ape::\link{phylo}} object
+##' @return \code{\link[ape:phylo]{phylo}} object
 ##' @seealso drop.tip extract.clade
 ##' @export
 drop_tip <- function(tree, spp)
@@ -393,6 +398,9 @@ coef.phy.structure <- function(object, ...){
 }
 
 #' Manipulate internals of \code{comparative.comm} object
+#' @param expr expression to be evaluated within the scope of
+#' \code{data}
+#' @param ... ignored
 #' @export
 #' @rdname cc.manip
 within.comparative.comm <- function(data, expr, ...){

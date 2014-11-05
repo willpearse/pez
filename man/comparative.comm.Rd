@@ -11,7 +11,7 @@ comparative.comm(phy, comm, traits = NULL, env = NULL, warn = TRUE,
 \method{print}{comparative.comm}(x, ...)
 }
 \arguments{
-\item{phy}{phylogeny (in \code{ape::\link{phylo}} format) of
+\item{phy}{phylogeny (in \code{\link[ape:phylo]{phylo}} format) of
 species}
 
 \item{comm}{community \code{matrix} (as used in
@@ -22,7 +22,7 @@ are not checked for but probably unwise.}
 \item{traits}{\code{data.frame} of species traits, with
 \code{rownames} matching \code{comm}. Saved in the \code{data} slot
 of the resulting \code{comparative.comm} object for compatibility
-with \code{caper::\link{comparative.data}}.}
+with \code{\link[caper:comparative.data]{comparative.data}}.}
 
 \item{env}{\code{data.frame} of environmental data with
 \code{rownames} matching \code{comm}}
@@ -51,10 +51,10 @@ below; they are described in detailed at \code{\link{cc.manip}}.
 }
 \note{
 \code{comparative.comm} is compatible with
-\code{caper::\link{comparative.data}}; this means that the slot for
-species' trait data is called \code{data}. I appreciate this is
-somewhat unwieldy, but hopefully you agree it is helpful in the
-long-term.
+\code{\link[caper:comparative.data]{comparative.data}}; this means
+that the slot for species' trait data is called \code{data}. I
+appreciate this is somewhat unwieldy, but hopefully you agree it is
+helpful in the long-term.
 }
 \examples{
 \dontrun{

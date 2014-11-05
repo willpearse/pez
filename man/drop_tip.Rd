@@ -6,13 +6,13 @@
 drop_tip(tree, spp)
 }
 \arguments{
-\item{tree}{An \code{ape::\link{phylo}} object}
+\item{tree}{An \code{\link[ape:phylo]{phylo}} object}
 
 \item{spp}{A vector of species (one, many, or none) to be removed
 from \code{tree}}
 }
 \value{
-\code{ape::\link{phylo}} object
+\code{\link[ape:phylo]{phylo}} object
 }
 \description{
 This is a weak wrapper around \code{ape}'s

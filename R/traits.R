@@ -227,8 +227,9 @@ trait.asm<-function(a, m=1000,meanSR=NULL,interval=c(.001,10),exponential=TRUE,P
 
 ##' Traitgram for comparative community object
 ##'
-##' \code{traitgram.cc} A wrapper for the \code{ape::\link{traitgram}}
-##' function in the \code{picante} package.
+##' \code{traitgram.cc} A wrapper for the
+##' \code{\link[picante:traitgram]{traitgram}} function in the
+##' \code{picante} package.
 ##'
 ##' @param object A \code{\link{comparative.comm}} object.
 ##' @param trait Which trait to plot.  If \code{\link{missing}}, use
@@ -247,9 +248,12 @@ trait.asm<-function(a, m=1000,meanSR=NULL,interval=c(.001,10),exponential=TRUE,P
 ##' @param moreArgs List of more arguments to pass on to \code{trait}
 ##' (if its a \code{\link{function}}).
 ##' @param ... Additional arguments to be passed on to
-##' \code{ape::\link{traitgram}}.
-##' @return \code{traitgram.cc}: see \code{ape::\link{traitgram}}
+##' \code{\link[picante:traitgram]{traitgram}} or \code{prcomp} for
+##' \code{traitgram.cc} and \code{princomOne} respectively.
+##' @return \code{traitgram.cc}: see
+##' \code{\link[picante:traitgram]{traitgram}}
 ##' @importFrom picante traitgram
+##' @importFrom ape multi2di
 ##' @export
 traitgram.cc <- function(object, trait, moreArgs = NULL, ...) {
     if(is.null(object$data)) stop("must supply trait information")
@@ -292,7 +296,6 @@ traitgram.cc <- function(object, trait, moreArgs = NULL, ...) {
 ##' A very soft wrapper for \code{\link{princomp}}
 ##' 
 ##' @param x A matrix-like object
-##' @param ... Arguments to pass on to \code{\link{princomp}}
 ##' @return \code{princompOne}: the first axis of a PCA
 ##' @rdname traitgram.cc
 ##' @export

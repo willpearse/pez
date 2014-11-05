@@ -6,7 +6,7 @@
 phy.signal(data, method = c("lambda", "delta", "kappa", "blom.k"))
 }
 \arguments{
-\item{data}{\code{\link{comparative.com}} object}
+\item{data}{\code{\link{comparative.comm}} object}
 
 \item{method}{what kind of signal to calculate, one of Pagel's
 \eqn{$\lambda$}{lambda} (default), \eqn{$\delta$}{delta}, and

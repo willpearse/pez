@@ -52,6 +52,9 @@
 #' \code{shape} iterates across them and returns a \code{data.frame}
 #' with coefficients from each iteration. See `details' for details
 #' about different metric calculations when a distance matrix is used.
+#' @param ext.dist Supply an external species-level distance matrix
+#' for use in calculations. See `details' for comments on the use of
+#' distance matrices in different metric calculations.
 #' @param traitgram.p A value for `p' to be used in conjunction with
 #' \code{traitgram} when calling \code{funct.phylo.dist}.
 #' @param ... additional parameters to be passed to metrics (unlikely
@@ -84,6 +87,7 @@
 #' dispersion(data, metric = "sesmpd", permute = 100)
 #' @importFrom caper phylo.d
 #' @importFrom picante ses.mntd ses.mpd ses.pd
+#' @importFrom ape is.ultrametric as.phylo
 #' @export
 dispersion <- function(data, metric=c("all", "sesmpd", "sesmntd", "sespd", "innd", "d"), permute=1000, null.model=c("taxa.labels", "richness", "frequency", "sample.pool", "phylogeny.pool", "independentswap", "trialswap"), abundance=FALSE, sqrt.phy=FALSE, traitgram=NULL, traitgram.p=2, ext.dist=NULL, ...)
 {

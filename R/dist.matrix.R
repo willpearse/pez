@@ -37,8 +37,8 @@ comm.dist.comparative.comm <- function(x) return(comm.dist(x$comm))
 #' \code{dist.func.default}, returns a Euclidean distance of the
 #' scaled and centred data.
 #' @param alltogether should one multivariate distance matrix be
-#' computed for all traits at once (\code{alltogether = TRUE}) or for
-#' each trait at a time (\code{alltogether = FALSE})?
+#' computed for all traits at once (DEFAULT; \code{alltogether =
+#' TRUE}) or for each trait at a time (\code{alltogether = FALSE})?
 #' @rdname dist.xxx
 #' @export
 traits.dist <- function(x, dist.func = dist.func.default, ...) UseMethod("traits.dist", x)
@@ -142,9 +142,6 @@ pianka.dist.matrix <- function(x, env = NULL, ...){
 }
 
 #' @export
-#' @param alltogether whether to calculate distance matrices for all
-#' the environmental variables together (default: TRUE) or calculate
-#' and return each separately
 #' @rdname dist.xxx
 pianka.dist.comparative.comm <- function(x, alltogether = TRUE, ...){
 	#Checks and assertions

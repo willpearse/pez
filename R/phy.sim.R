@@ -17,9 +17,9 @@
 #' species (\code{sp.tr}, \code{ext.tr}). When a speciation event
 #' happens, the two daughters split evenly about the ancestor's trait
 #' value, taking values half-way to whatever the nearest species'
-#' value is. To be precise: \eqn{$p_i_{speciate} = speciate_i + sp.tr
+#' value is. To be precise: \eqn{$p(speciate)_i = speciate_i + sp.tr
 #' \times min(trait distance)$}{p(speciate) = speciate +
-#' sp.tr*min.tr.dist}, \eqn{$p_i_{extinct} = exinction_i + ext.tr
+#' sp.tr*min.tr.dist}, \eqn{$p(extinct)_i = exinction_i + ext.tr
 #' \times min(trait distance)$}{p(extinct) = extinction +
 #' ext.tr*min.tr.dist}, where \eqn{$i$}{i} denotes each species.
 #'
@@ -36,8 +36,8 @@
 #' @param extinction probability each species will go extinct in each
 #' time-step (0-1)
 #' @param time.steps number of time-steps for simulation
-#' @return \code{ape::\link{phylo}} object with random tip.labels;
-#' trait values if using \code{sim.br.tr.tree}.
+#' @return \code{\link[ape:phylo]{phylo}} object with random
+#' tip.labels; trait values if using \code{sim.br.tr.tree}.
 #' @author Will Pearse
 #' @seealso sim.meta scape
 #' @examples \dontrun{
@@ -187,7 +187,7 @@ sim.bd.tr.phy <- function(speciate=0.1, extinction=0.025, time.steps=20, tr.rang
 #' 
 #' @param edge a two-column matrix where the first column is the start
 #' node, the second the destination, as in
-#' \code{ape::\link{phylo}$edge}
+#' \code{\link[ape:phylo]{phylo}$edge}
 #' @param s which of the rows in the edge matrix represent
 #' extant species
 #' @param e which of the tips in the edge matrix are extinct
@@ -196,7 +196,7 @@ sim.bd.tr.phy <- function(speciate=0.1, extinction=0.025, time.steps=20, tr.rang
 #' phylogeny (default NA, i.e., none)
 #' @param t if given (default NA), a vector to be used for traits
 #' (\code{$traits} slot) in the phylogeny
-#' @return \code{ape::\link{phylo}} object
+#' @return \code{\link[ape:phylo]{phylo}} object
 #' @author Will Pearse
 #' @rdname sim.phy
 #' @export

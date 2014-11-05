@@ -60,8 +60,8 @@ pianka.dist(x, ...)
 scaled and centred data.}
 
 \item{alltogether}{should one multivariate distance matrix be
-computed for all traits at once (\code{alltogether = TRUE}) or for
-each trait at a time (\code{alltogether = FALSE})?}
+computed for all traits at once (DEFAULT; \code{alltogether =
+TRUE}) or for each trait at a time (\code{alltogether = FALSE})?}
 
 \item{phyloWeight}{phylogenetic weighting parameter (referred to as
 \code{a} in Cadotte et al. (2013)}
@@ -72,10 +72,6 @@ gives a Euclidean combination).}
 
 \item{env}{environmental variable to be used to calculate the
 distance matrix}
-
-\item{alltogether}{whether to calculate distance matrices for all
-the environmental variables together (default: TRUE) or calculate
-and return each separately}
 }
 \description{
 Make co-existence matrices based on phylogeny (and/or) traits, and

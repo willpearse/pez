@@ -43,9 +43,9 @@ implemented in \code{\link{picante}})}
 0)}
 
 \item{method}{how to compare distance matrices (only the lower
-triangle;), one of: \code{base::\link{lm}} (linear regression),
+triangle;), one of: \code{\link{lm}} (linear regression),
 \code{quantile} (DEFAULT; \code{quantreg::\link{rq}}),
-\code{mantel} (\code{vegan::\link{mantel}})}
+\code{mantel} (\code{\link[vegan:mantel]{mantel}})}
 
 \item{altogether}{use distance matrix based on all traits (default
 TRUE), or perform separate regressions for each trait (returns a
@@ -58,6 +58,10 @@ list, see details)}
 (default: TRUE)}
 
 \item{...}{additional parameters to pass on to model fitting functions}
+
+\item{object}{\code{eco.xxx.regression} object}
+
+\item{x}{\code{eco.xxx.regression} object}
 }
 \description{
 Regression species co-existence against environmental tolerance,

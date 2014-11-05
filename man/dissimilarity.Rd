@@ -21,6 +21,29 @@ incorporating species abundances (currently only comdist)}
 \item{permute}{Number of permutations for metric (currently only
 for \code{pcd})}
 
+\item{sqrt.phy}{If TRUE (default is FALSE) your phylogenetic
+distance matrix will be square-rooted; specifying TRUE will force
+the square-root transformation on phylogenetic distance matrices
+(in the spirit of Leitten and Cornwell, 2014). See `details' for
+details about different metric calculations when a distance matrix
+is used.}
+
+\item{traitgram}{If not NULL (default), a number to be passed to
+\code{funct.phylo.dist} (\code{phyloWeight}; the `a' parameter),
+causing analysis on a distance matrix reflecting both traits and
+phylogeny (0 --> only phylogeny, 1 --> only traits; see
+\code{funct.phylo.dist}). If a vector of numbers is given,
+\code{shape} iterates across them and returns a \code{data.frame}
+with coefficients from each iteration. See `details' for details
+about different metric calculations when a distance matrix is used.}
+
+\item{traitgram.p}{A value for `p' to be used in conjunction with
+\code{traitgram} when calling \code{funct.phylo.dist}.}
+
+\item{ext.dist}{Supply an external species-level distance matrix
+for use in calculations. See `details' for comments on the use of
+distance matrices in different metric calculations.}
+
 \item{...}{additional parameters to be passed to `metric
 function(s) you are calling}
 }

@@ -21,10 +21,12 @@
 #' \code{richness}, \code{frequency}, \code{sample.pool},
 #' \code{phylogeny.pool}, \code{independentswap}, \code{trialswap} (as
 #' implemented in \code{\link{picante}})
+#' @param eco.permute number of permutations for ecological null model
+#' (\code{eco.rnd}); default 1000
 #' @param eco.method how to compare distance matrices (only the lower
-#' triangle;), one of: \code{base::\link{lm}} (linear regression),
-#' \code{quantile} (DEFAULT; \code{quantreg::\link{rq}}), \code{mantel}
-#' (\code{vegan::\link{mantel}})
+#' triangle;), one of: \code{\link{lm}} (linear regression),
+#' \code{quantile} (DEFAULT; \code{\link[quantreg:rq]{rq}}),
+#' \code{mantel} (\code{\link[vegan:mantel]{mantel}})
 #' @param evo.method how to measure phylogenetic inertia, one of:
 #' \code{lambda} (default), \code{delta}, \code{kappa}, \code{blom.k};
 #' see \code{\link{phy.signal}}.
@@ -32,7 +34,8 @@
 #' (if specified in \code{eco.rnd}; DEFAULT 1000)
 #' @param abundance whether to incorporate species' abundances
 #' (default: TRUE)
-#' @param ... additional parameters to pass on to model fitting functions
+#' @param ... additional parameters to pass on to model fitting
+#' functions and plotting functions
 #' @note Like \code{\link{eco.xxx.regression}}, this is a data-hungry
 #' method. Warnings will be generated if any of the methods cannot be
 #' fitted properly (the examples below give toy examples of this). In
@@ -91,8 +94,6 @@ fingerprint.regression <- function(data, eco.rnd=c("taxa.labels", "richness", "f
 
 #' @method print fingerprint.regression
 #' @param x \code{fingerprint.regression} object
-#' @param ... arguments passed to
-#' \code{\link{summary.fingerprint.regression}} (ignored)
 #' @export
 #' @rdname fingerprint.regression
 print.fingerprint.regression <- function(x, ...){
@@ -101,7 +102,6 @@ print.fingerprint.regression <- function(x, ...){
 
 #' @method summary fingerprint.regression
 #' @param object \code{fingerprint.regression} object
-#' @param ... ignored
 #' @rdname fingerprint.regression
 #' @export
 summary.fingerprint.regression <- function(object, ...){
@@ -112,13 +112,11 @@ summary.fingerprint.regression <- function(object, ...){
 }
 
 #' @method plot fingerprint.regression
-#' @param x \code{fingerprint.regression} object
 #' @param eco plot the observed slopes (DEFAULT: \code{slope}), or the
 #' median difference between the simulations and the observed values
 #' (\code{corrected})
 #' @param xlab label for x-axis (default "Ecological Trait Coexistence")
 #' @param ylab label for y-axis (default "Phylogenetic inertia")
-#' @param ... additional plotting arguments
 #' @rdname fingerprint.regression
 #' @export
 plot.fingerprint.regression <- function(x, eco=c("slope", "corrected"), xlab="Community Trait Similarity", ylab="Phylogenetic inertia", ...){
