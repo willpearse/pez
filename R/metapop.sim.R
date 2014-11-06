@@ -48,7 +48,7 @@
 #' @author Will Pearse
 #' @rdname sim.meta
 #' @name sim.meta
-#' @seealso sim.phy scape
+#' @seealso \code{\link{sim.phy}} \code{\link{scape}}
 #' @export
 sim.meta.comm <- function(size=10, n.spp=8, timesteps=10, p.migrate=0.05, env.lam=10, abund.lam=5, stoch.lam=1){
     #Setup environment and abundances

@@ -51,7 +51,7 @@
 #' }
 #' @importFrom ape is.rooted cophenetic.phylo
 #' @importFrom ade4 scalewt
-#' @seealso plot.comparative.comm cc.manip comparative.data
+#' @seealso \code{\link{plot.comparative.comm}} \code{\link{cc.manip}} \code{link[caper:comparative.data]{comparative.data}}
 #' @export
 comparative.comm <- function(phy, comm, traits=NULL, env=NULL, warn=TRUE, force.root=-1){
   #Assertions and argument handling

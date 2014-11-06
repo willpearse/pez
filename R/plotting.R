@@ -25,6 +25,7 @@
 #' transform your data.
 #' @return List containing plot.phylo information, as well as the used
 #' x.adj values (compare with your \code{x.increment})
+#' @seealso \code{\link{comparative.comm}} \code{\link{traitgram.cc}}
 #' @author Will Pearse, Matt Helmus
 #' @method plot comparative.comm
 #' @importFrom ape tiplabels plot.phylo

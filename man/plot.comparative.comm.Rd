@@ -71,4 +71,7 @@ x.increment=settings$x.increment/4, abundance=TRUE, dot.cex=function(x) sqrt(x))
 \author{
 Will Pearse, Matt Helmus
 }
+\seealso{
+\code{\link{comparative.comm}} \code{\link{traitgram.cc}}
+}
 

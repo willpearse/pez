@@ -49,7 +49,7 @@ test_that("mantel", {
   expect_that(complex.mantel$data, equals(data))
   expect_that(names(complex.mantel[[1]]), equals(c("observed", "randomisations", "obs.slope", "rnd.slopes", "method", "permute", "randomisation", "type", "altogether")))
   expect_that(complex.mantel[[1]]$observed$statistic, equals(0.944913601878444))
-  expect_that(complex.mantel[[1]]$randomisations[[9]]$statistic, equals(-0.0903839701313383))
+  expect_that(round(complex.mantel[[1]]$randomisations[[9]]$statistic,4), equals(0.067))
   expect_that(complex.mantel$type, equals("eco.env.regression.list"))
   expect_that(class(complex.mantel), equals("eco.xxx.regression.list"))
 })

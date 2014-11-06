@@ -61,7 +61,7 @@
 #' you will want to use this!)
 #' @return a \code{phy.structure} list object of metric values
 #' @author M.R. Helmus, Will Pearse
-#' @seealso shape evenness dissimilarity
+#' @seealso \code{\link{shape}} \code{\link{evenness}} \code{\link{dissimilarity}}
 #' @references Pearse W.D., Purvis A., Cavender-Bares J. & Helmus
 #' M.R. (2014). Metrics and Models of Community Phylogenetics. In:
 #' Modern Phylogenetic Comparative Methods and Their Application in

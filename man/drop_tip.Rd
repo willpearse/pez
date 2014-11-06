@@ -21,6 +21,6 @@ from a phylogeny, it will just return the phylogeny (not an empty
 phylogeny, as \code{\link{drop.tip}}) will.
 }
 \seealso{
-drop.tip extract.clade
+\code{\link[ape:drop.tip]{drop.tip}} \code{\link[ape:extract.clade]{extract.clade}}
 }
 

@@ -87,6 +87,6 @@ Will Pearse
 Will Pearse
 }
 \seealso{
-sim.phy scape
+\code{\link{sim.phy}} \code{\link{scape}}
 }
 

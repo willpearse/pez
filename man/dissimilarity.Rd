@@ -110,6 +110,6 @@ phylogenetic community structure and trait
 evolution. Bioinformatics 18:2098-2100.
 }
 \seealso{
-shape evenness dispersion
+\code{\link{shape}} \code{\link{evenness}} \code{\link{dispersion}}
 }
 

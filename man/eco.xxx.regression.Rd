@@ -122,6 +122,6 @@ Kembel, S.W., Cowan, P.D., Helmus, M.R., Cornwell, W.K., Morlon, H., Ackerly, D.
 Pagel M. Inferring the historical patterns of biological evolution. Nature 401(6756): 877--884.
 }
 \seealso{
-fingerprint.regression phy.signal
+\code{\link{fingerprint.regression}} \code{\link{phy.signal}}
 }
 

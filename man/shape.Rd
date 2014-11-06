@@ -110,6 +110,6 @@ Pearse W.D., Purvis A., Cavender-Bares J. & Helmus M.R. (2014). Metrics and Mode
 \code{eed,hed} (i.e., \emph{Eed, Hed}) Cadotte M.W., Davies T.J., Regetz J., Kembel S.W., Cleland E. & Oakley T.H. (2010). Phylogenetic diversity metrics for ecological communities: integrating species richness, abundance and evolutionary history. Ecology Letters, 13, 96-105.
 }
 \seealso{
-evenness dispersion dissimilarity
+\code{\link{evenness}} \code{\link{dispersion}} \code{\link{dissimilarity}}
 }
 

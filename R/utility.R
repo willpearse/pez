@@ -1,27 +1,14 @@
 #Null models for community data
 #Internal use only; mostly based on picante's code
+#' @importFrom picante randomizeMatrix
 .eco.null <- function(comm, method=c("taxa.labels", "richness", "frequency", "independentswap", "trialswap"), swap.iter=1000){
   #Checks
   method <- match.arg(method)
   
   if(method == "taxa.labels")
-    curr.rnd <- comm[,sample(seq(ncol(comm)))]
-  if(method == "richness"){
-    curr.rnd <- .C("frequency", m = as.numeric(comm), as.integer(nrow(comm)), as.integer(ncol(comm)), PACKAGE = "picante")
-    curr.rnd <- matrix(curr.rnd$m, nrow = nrow(comm), dimnames = list(rownames(comm), colnames(comm)))
-  }
-  if(method == "frequency"){
-    curr.rnd <- .C("richness", m = as.numeric(comm), as.integer(nrow(comm)), as.integer(ncol(comm)), PACKAGE = "picante")
-    curr.rnd <- matrix(curr.rnd$m, nrow = nrow(comm), dimnames = list(rownames(comm), colnames(comm)))
-  }
-  if(method == "independentswap"){
-    curr.rnd <- .C("independentswap", m = as.numeric(comm), as.integer(swap.iter), as.integer(nrow(comm)), as.integer(ncol(comm)), PACKAGE = "picante")
-    curr.rnd <- matrix(curr.rnd$m, nrow = nrow(comm), dimnames = list(rownames(comm), colnames(comm)))
-  }
-  if(method == "trialswap"){
-    curr.rnd <- .C("trialswap", m = as.numeric(comm), as.integer(swap.iter), as.integer(nrow(comm)), as.integer(ncol(comm)), PACKAGE = "picante")
-    curr.rnd <- matrix(curr.rnd$m, nrow = nrow(comm), dimnames = list(rownames(comm), colnames(comm)))
-  }
+    curr.rnd <- comm[,sample(seq(ncol(comm)))] else{
+        curr.rnd <- randomizeMatrix(comm, method)
+    }
   return(curr.rnd)
 }
 
@@ -251,7 +238,7 @@ plot.eco.xxx.regression.list <- function(x, ...){
 ##' @param spp A vector of species (one, many, or none) to be removed
 ##' from \code{tree}
 ##' @return \code{\link[ape:phylo]{phylo}} object
-##' @seealso drop.tip extract.clade
+##' @seealso \code{\link[ape:drop.tip]{drop.tip}} \code{\link[ape:extract.clade]{extract.clade}}
 ##' @export
 drop_tip <- function(tree, spp)
   if(length(setdiff(tree$tip.label, spp)) >0) return(drop.tip(tree, spp)) else return(tree)

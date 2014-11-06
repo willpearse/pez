@@ -73,7 +73,7 @@
 #' \code{print} on the output (i.e., type \code{output} in the example
 #' below).
 #' @author M.R. Helmus, Will Pearse
-#' @seealso evenness dispersion dissimilarity
+#' @seealso \code{\link{evenness}} \code{\link{dispersion}} \code{\link{dissimilarity}}
 #' @references Pearse W.D., Purvis A., Cavender-Bares J. & Helmus M.R. (2014). Metrics and Models of Community Phylogenetics. In: Modern Phylogenetic Comparative Methods and Their Application in Evolutionary Biology. Springer Berlin Heidelberg, pp. 451-464.
 #' @references \code{PSV,PSR} Helmus M.R., Bland T.J., Williams C.K. & Ives A.R. (2007). Phylogenetic measures of biodiversity. American Naturalist, 169, E68-E83.
 #' @references \code{PD} Faith D.P. (1992). Conservation evaluation and phylogenetic diversity. Biological Conservation, 61, 1-10.

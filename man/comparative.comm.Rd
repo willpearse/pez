@@ -79,6 +79,6 @@ data$data$new.trait <- sample(letters, nrow(data$comm), replace=TRUE)
 Will Pearse
 }
 \seealso{
-plot.comparative.comm cc.manip comparative.data
+\code{\link{plot.comparative.comm}} \code{\link{cc.manip}} \code{link[caper:comparative.data]{comparative.data}}
 }
 

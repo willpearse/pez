@@ -51,4 +51,7 @@ sims <- ConDivSim(data)
 sims.phy <- ConDivSim(data, type=NULL)
 }
 }
+\seealso{
+\code{\link{sim.phy}} \code{\link{scape}}
+}
 

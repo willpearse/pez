@@ -47,7 +47,7 @@
 #' of your data!
 #' @note WDP loves quantile regressions, and advises that you check
 #' different quantiles using the \code{tau} options.
-#' @seealso eco.xxx.regression phy.signal
+#' @seealso \code{\link{eco.xxx.regression}} \code{\link{phy.signal}}
 #' @author Will Pearse and Jeannine Cavender-Bares
 #' @references Cavender-Bares J., Ackerly D.D., Baum D.A. & Bazzaz F.A. (2004) Phylogenetic overdispersion in Floridian oak communities. The Americant Naturalist 163(6): 823--843.
 #' @references Kembel, S.W., Cowan, P.D., Helmus, M.R., Cornwell, W.K., Morlon, H., Ackerly, D.D., Blomberg, S.P. & Webb, C.O. Picante: R tools for integrating phylogenies and ecology. Bioinformatics 26(11): 1463--1464.

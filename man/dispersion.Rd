@@ -118,6 +118,6 @@ Phylogenetic Signal Strength in Binary Traits. Conservation
 Biology, 24, 1042-1051.
 }
 \seealso{
-shape evenness dissimilarity
+\code{\link{shape}} \code{\link{evenness}} \code{\link{dissimilarity}}
 }
 

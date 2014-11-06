@@ -52,7 +52,7 @@
 #' exist for this function, because there's no nice way to simplify
 #' all the distance matrices. Sorry!
 #' @author M.R. Helmus, Will Pearse
-#' @seealso shape evenness dispersion
+#' @seealso \code{\link{shape}} \code{\link{evenness}} \code{\link{dispersion}}
 #' @references Pearse W.D., Purvis A., Cavender-Bares J. & Helmus
 #' M.R. (2014). Metrics and Models of Community Phylogenetics. In:
 #' Modern Phylogenetic Comparative Methods and Their Application in

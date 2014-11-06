@@ -21,6 +21,7 @@
 #' @param disp99 Display the 99\% interval?
 #' @note No serious checking of user-provided matrices is performed;
 #' this is both useful and dangerous!
+#' @seealso \code{\link{sim.phy}} \code{\link{scape}}
 #' @return TODO
 #' @examples \dontrun{
 #' data(laja)

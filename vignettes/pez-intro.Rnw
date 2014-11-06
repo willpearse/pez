@@ -34,9 +34,9 @@ requests for the package, please use
 \href{http://github.com/willpearse/pez/issues}{the online tracker}
 at. Indeed, please contribute to the package using at its
 \href{http://github.com/willpearse/pez/issues}{GitHub site}---help is
-always welcome! If you just can't wait to get the latest version, you
-can install the latest version directly from \emph{GitHub}
-(\texttt{require(devtools);install\_github('willpearse/pez')}).
+always welcome! If you need help, please email the
+\href{https://groups.google.com/forum/#!forum/pez_users}{user mailing
+  list}, not one of the developers.
 
 While \texttt{\emph{pez}} contains much novel code, it relies heavily
 on the \emph{R} ecosystem. Much of the community phylogenetic metric
@@ -177,16 +177,16 @@ plot(hclust(dist$phylosor))
 \clearpage
 \section{Eco-evolutionary regression}
 Calculating metric values is useful, but often we want to make
-statistial models. \emph{pez} features a set of regression techniques,
+statistical models. \emph{pez} features a set of regression techniques,
 based on \citet{Cavender-Bares2003}, \citet{Cavender-Bares2004}, and
 \citet{Cavender-Bares2006}, which are described in the helpfiles for
 \texttt{eco.xxx.regression} and \texttt{fingerprint.regression}.
 
-The functions desribed in \texttt{eco.xxx.regression} focus on
+The functions described in \texttt{eco.xxx.regression} focus on
 relating the co-occurrence of species to species' phylogenetic
 (\texttt{phy}), trait (\texttt{trait}), and environmental tolerances
 (\texttt{env}). The environmental tolerances are based on Pianka's
-distance and derrived from your \texttt{\$env} data, while the trait
+distance and derived from your \texttt{\$env} data, while the trait
 distances can be based on any distance metric you can define. These
 are useful to explore your data, but also because the trait results
 are used in the \emph{fingerprint regression} described below.
@@ -202,7 +202,7 @@ trait in our dataset (returning a \texttt{eco.xxx.regression.list}
 object). While this isn't particularly thrilling in this dataset where
 we only have two traits, such a regression forms the basis of the
 \texttt{fingerprint.regression}. In this, we will regress the
-association between species co-occurence and trait similarity for each
+association between species co-occurrence and trait similarity for each
 trait against the phylogenetic conservatism of each trait. Which is a
 mouthful, but the papers describing it
 \citep{Cavender-Bares2004,Cavender-Bares2006} go into more
@@ -218,7 +218,7 @@ trait similarity.
     \caption{Overview of a fingerprint regression. A hypothetical
       trait is shown in each quadrant; the size of the circles
       represents the numerical value of the trait, and colour of the
-      circles represents hypothetical communites. Areas of interest on
+      circles represents hypothetical communities. Areas of interest on
       the diagram are coloured to mirror the discussion in the
       text. The quadrants are based on the framework of
       \citetext{Webb2002}, although the axes are continuous following
@@ -352,7 +352,7 @@ $p = 2$, we have,
 fpd.data <- funct.phylo.dist(data, phyloWeight = 0.5, p = 2)
 @ %
 \noindent One use of these distance matrices is in community
-randomization tests \citep{Cadotte2013}, an example of which can be
+randomisation tests \citep{Cadotte2013}, an example of which can be
 computed using the following code,
 <<sesFPD>>=
 ses.mfpd.data <- picante::ses.mpd(data$comm, fpd.data)
