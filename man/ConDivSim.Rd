@@ -41,15 +41,15 @@ No serious checking of user-provided matrices is performed;
 this is both useful and dangerous!
 }
 \examples{
-\dontrun{
 data(laja)
 data <- comparative.comm(invert.tree, river.sites, invert.traits)
 #Must have all species present in at least one community!
+#...and must be presence-absence data
 data <- data[,colSums(data$comm) > 0]
+data$comm[data$comm>1] <- 1
 sims <- ConDivSim(data)
 #...without traits...
-sims.phy <- ConDivSim(data, type=NULL)
-}
+sims.phy <- ConDivSim(data, type="phy")
 }
 \seealso{
 \code{\link{sim.phy}} \code{\link{scape}}

@@ -105,7 +105,6 @@ increased to obtain more species at sites and thus increase average
 site species richness.
 }
 \examples{
-\dontrun{
 require(ape)
 tree<-stree(8,type="balanced")       #signal in centers
 kk<-scape(tree, scape.size=100, g.center=100, g.range=1, g.repulse=1, wd.all=150,
@@ -125,7 +124,7 @@ matplot((kk$X2), type = "l", xlab="gradient",ylab = "probability",
 main = "Gradient 2",col=rainbow(dim(kk$X2)[2]),lty=1)
 
 plot(x=1:dim(kk$Y)[1],y = rowSums(kk$Y), main = "SR",type = "l")
-cor(kk$X1)}
+cor(kk$X1)
 }
 \author{
 M.R. Helmus

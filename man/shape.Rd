@@ -80,14 +80,12 @@ this, and in par this problem is why the \code{eigen.sum} measure
 came to be suggested.
 }
 \examples{
-\dontrun{
 data(laja)
 data <- comparative.comm(invert.tree, river.sites, invert.traits)
 (output<-shape(data))
 str(output)
 shape(data, "colless")
-shape(data, "eigen.sum", 2)
-}
+shape(data, "eigen.sum", which.eigen=2)
 }
 \author{
 M.R. Helmus, Will Pearse

@@ -32,7 +32,7 @@
 #' helpful in the long-term.
 #' @return comparative.comm object
 #' @author Will Pearse
-#' @examples \dontrun{
+#' @examples
 #' data(laja)
 #' data <- comparative.comm(invert.tree, river.sites, invert.traits, river.env)
 #' #Subset on species, then sites
@@ -48,7 +48,6 @@
 #' assemblage.phylogenies(data)
 #' #Do some manual manipulation of your objects (NOTE: $data for traits)
 #' data$data$new.trait <- sample(letters, nrow(data$comm), replace=TRUE)
-#' }
 #' @importFrom ape is.rooted cophenetic.phylo
 #' @importFrom ade4 scalewt
 #' @seealso \code{\link{plot.comparative.comm}} \code{\link{cc.manip}} \code{link[caper:comparative.data]{comparative.data}}

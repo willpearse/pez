@@ -102,10 +102,8 @@ These functions are closely related to \code{\link{sim.meta}} that
 extend this to simulate meta-community structure at the same time.
 }
 \examples{
-\dontrun{
-tree <- sim.bd.tree(0.1, 0, 10)
+tree <- sim.bd.phy(0.1, 0, 10)
 plot(tree)
-}
 }
 \author{
 Will Pearse

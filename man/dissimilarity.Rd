@@ -73,12 +73,10 @@ strongly feels you should only be using ultrametric phylogenies in
 any case, but code to fix this bug is welcome.
 }
 \examples{
-\dontrun{
 data(laja)
 data <- comparative.comm(invert.tree, river.sites, invert.traits)
-dissimilarity(data)
-dissimilarity(data, "pcd")
-}
+\dontrun{dissimilarity(data)}
+dissimilarity(data, "unifrac")
 }
 \author{
 M.R. Helmus, Will Pearse

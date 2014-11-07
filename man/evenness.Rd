@@ -93,12 +93,10 @@ this, and in par this problem is why the \code{eigen.sum} measure
 came to be suggested.
 }
 \examples{
-\dontrun{
 data(laja)
 data <- comparative.comm(invert.tree, river.sites, invert.traits)
 evenness(data)
 evenness(data, "rao")
-}
 }
 \author{
 M.R. Helmus, Will Pearse

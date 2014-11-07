@@ -82,14 +82,13 @@
 #' @references \code{taxon} Clarke K.R. & Warwick R.M. (1998). A taxonomic distinctness index and its statistical properties. J. Appl. Ecol., 35, 523-531.
 #' @references \code{eigen.sum} Diniz-Filho J.A.F., Cianciaruso M.V., Rangel T.F. & Bini L.M. (2011). Eigenvector estimation of phylogenetic and functional diversity. Functional Ecology, 25, 735-744.
 #' @references \code{eed,hed} (i.e., \emph{Eed, Hed}) Cadotte M.W., Davies T.J., Regetz J., Kembel S.W., Cleland E. & Oakley T.H. (2010). Phylogenetic diversity metrics for ecological communities: integrating species richness, abundance and evolutionary history. Ecology Letters, 13, 96-105.
-#' @examples \dontrun{
+#' @examples
 #' data(laja)
 #' data <- comparative.comm(invert.tree, river.sites, invert.traits)
 #' (output<-shape(data))
 #' str(output)
 #' shape(data, "colless")
-#' shape(data, "eigen.sum", 2)
-#' }
+#' shape(data, "eigen.sum", which.eigen=2)
 #' @importFrom picante psd mpd pd mntd
 #' @importFrom vegan taxondive
 #' @importFrom PVR PVRdecomp
@@ -211,7 +210,7 @@ shape <- function(data,metric=c("all-quick", "all", "psv", "psr", "mpd", "mntd",
           if(!is.null(data$data) | traitgram==FALSE | ext.dist==FALSE){
               t <- dist
           } else t <- data$data
-          output$dist.fd$output <- capture.output(output$dist.fd <- dbFD(t, data$comm, w.abun=FALSE, messages=TRUE, ...))
+          output$dist.fd$output <- capture.output(output$dist.fd <- dbFD(t, data$comm, w.abun=FALSE, messages=TRUE, ...), file=NULL)
           coefs <- with(output$dist.fd, cbind(coefs, cbind(FRic, FEve, FDiv, FDis, RaoQ)))
           #Only bother getting CWMs if we have trait data
           if(!is.null(data$data)){

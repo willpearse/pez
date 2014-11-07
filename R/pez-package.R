@@ -19,11 +19,9 @@
 #' @references Pearse W.D., Purvis A., Cavender-Bares J. & Helmus M.R. (2014). Metrics and Models of Community Phylogenetics. In: Modern Phylogenetic Comparative Methods and Their Application in Evolutionary Biology. Springer Berlin Heidelberg, pp. 451-464.
 #' @references Cavender-Bares J., Ackerly D.D., Baum D.A. & Bazzaz F.A. (2004) Phylogenetic overdispersion in Floridian oak communities. The Americant Naturalist 163(6): 823--843.
 #' @examples
-#' \dontrun{
 #' require(pez)
 #' data(laja)
 #' data <- comparative.comm(invert.tree, river.sites, invert.traits, river.env)
 #' coef(shape(data))
-#' }
 NULL
 

@@ -86,12 +86,11 @@
 #' @references \code{entropy} Allen B., Kon M. & Bar-Yam Y. (2009). A New Phylogenetic Diversity Measure Generalizing the Shannon Index and Its Application to Phyllostomid Bats. The American Naturalist, 174, 236-243.
 #' @references \code{pae,iac,haed,eaed} Cadotte M.W., Davies T.J., Regetz J., Kembel S.W., Cleland E. & Oakley T.H. (2010). Phylogenetic diversity metrics for ecological communities: integrating species richness, abundance and evolutionary history. Ecology Letters, 13, 96-105.
 #' @references \code{lambda,delta,kappa} Mark Pagel (1999) Inferring the historical patterns of biological evolution. Nature 6756(401): 877--884.
-#' @examples \dontrun{
+#' @examples
 #' data(laja)
 #' data <- comparative.comm(invert.tree, river.sites, invert.traits)
 #' evenness(data)
 #' evenness(data, "rao")
-#' }
 #' @importFrom ape cophenetic.phylo drop.tip is.ultrametric as.phylo
 #' @importFrom picante pse raoD
 #' @importFrom vegan taxondive
@@ -246,7 +245,7 @@ evenness <- function(data, metric=c("all-quick", "all", "rao", "taxon", "entropy
           if(!is.null(data$data) | traitgram==FALSE | ext.dist==FALSE){
               t <- dist
           } else t <- data$data
-          output$dist.fd$output <- capture.output(output$dist.fd <- dbFD(t, data$comm, w.abun=TRUE, messages=TRUE, ...))
+          output$dist.fd$output <- capture.output(output$dist.fd <- dbFD(t, data$comm, w.abun=TRUE, messages=TRUE, ...), file=NULL)
           coefs <- with(output$dist.fd, cbind(coefs, cbind(FRic, FEve, FDiv, FDis, RaoQ)))
           #Only bother getting CWMs if we have trait data
           if(!is.null(data$data)){

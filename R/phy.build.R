@@ -21,25 +21,28 @@
 #' @name phy.build
 #' @references Pearse W.D. & Purvis A. phyloGenerator: an automated phylogeny generation tool for ecologists. Methods in Ecology and Evolution 4(7): 692--698.
 #' @export
+#' @examples
+#' tree <- read.tree(text="((a_a:1,b_b:1):1, c_c:2):1;")
+#' tree <- congeneric.merge(tree, c("a_nother", "a_gain", "b_sharp"))
 congeneric.merge <- function(tree, species, split="_", ...){
-    if(!inherits(x, "phylo"))
-        stop("'x' must be a phylogeny")
+    if(!inherits(tree, "phylo"))
+        stop("'tree' must be a phylogeny")
     before <- sum(species %in% tree$tip.label)
     for(i in seq_along(species)){
         if(!is.null(species[i]) & !species[i] %in% tree$tip.label){
             genus <- strsplit(species[i], split, fixed=TRUE)[[1]][1]
             matches <- unique(grep(genus, tree$tip.label, value=TRUE))
             if(length(matches) > 0){
-                x <- drop.tip(x, matches[-1])
-                tip.length <- .find.unique.branch.length(x, matches[1])
-                polytomy <- .make.polytomy(unique(c(matches, species$clean[i])), (tip.length/2))
-                x <- bind.replace(x, polytomy, matches[1], tip.length)
+                tree <- drop.tip(tree, matches[-1])
+                tip.length <- .find.unique.branch.length(tree, matches[1])
+                polytomy <- .make.polytomy(unique(c(matches, species[i])), (tip.length/2))
+                tree <- bind.replace(tree, polytomy, matches[1], tip.length)
             }
         }
     }
     cat("\nNumber of species in tree before:", before)
     cat("\nNumber of species in tree now:   ", sum(species %in% tree$tip.label), "\n")
-    return(x)
+    return(tree)
 }
 
 #' @param backbone backbone phylogeny (\code{\link[ape:phylo]{phylo}})
@@ -54,8 +57,10 @@ congeneric.merge <- function(tree, species, split="_", ...){
 #' branch)
 #' @details \code{bind.replace} Binds a phylogeny (donor) into a
 #' bigger phylogeny ('backbone'); useful if you're building a
-#' phylogeny a la Phylomatic. This code was originally shipped with
-#' phyloGenerator - this is the \code{merge} method in that program.
+#' phylogeny a la Phylomatic. A version of this R code was shipped
+#' with phyloGenerator (Pearse & Purvis 2013). This is really an
+#' internal function for \code{congeneric.merge}, but hopefully it's
+#' of some use to you!
 #' @return phylogeny (\code{\link[ape:phylo]{phylo}})
 #' @author Will Pearse
 #' @importFrom ape bind.tree

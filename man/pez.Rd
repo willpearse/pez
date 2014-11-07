@@ -20,12 +20,10 @@ assemblages, traits, and phylogenies (\code{\link{scape}},
 \code{\link{sim.meta.comm}}).
 }
 \examples{
-\dontrun{
 require(pez)
 data(laja)
 data <- comparative.comm(invert.tree, river.sites, invert.traits, river.env)
 coef(shape(data))
-}
 }
 \references{
 Pearse W.D., Purvis A., Cavender-Bares J. & Helmus M.R. (2014). Metrics and Models of Community Phylogenetics. In: Modern Phylogenetic Comparative Methods and Their Application in Evolutionary Biology. Springer Berlin Heidelberg, pp. 451-464.

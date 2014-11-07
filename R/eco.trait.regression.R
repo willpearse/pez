@@ -56,15 +56,15 @@
 #' @references Cavender-Bares J., Ackerly D.D., Baum D.A. & Bazzaz F.A. (2004) Phylogenetic overdispersion in Floridian oak communities. The Americant Naturalist 163(6): 823--843.
 #' @references Kembel, S.W., Cowan, P.D., Helmus, M.R., Cornwell, W.K., Morlon, H., Ackerly, D.D., Blomberg, S.P. & Webb, C.O. Picante: R tools for integrating phylogenies and ecology. Bioinformatics 26(11): 1463--1464.
 #' @references Pagel M. Inferring the historical patterns of biological evolution. Nature 401(6756): 877--884.
-#' @examples \dontrun{
+#' @examples
 #' data(laja)
+#' #We wouldn't recommend only using ten permutations - this is just for speed!
 #' data <- comparative.comm(invert.tree, river.sites, invert.traits, river.env)
 #' eco.trait.regression(data, permute=10)
 #' #Specify additional options
-#' eco.trait.regression(data, tau=c(0.25,0.5,0.75))
-#' plot(eco.trait.regression(data, permute=10, method="lm))
+#' eco.trait.regression(data, tau=c(0.25,0.5,0.75), permute=10)
+#' plot(eco.trait.regression(data, permute=10, method="lm"))
 #' plot(eco.trait.regression(data, permute=10, method="lm", altogether=FALSE))
-#' }
 #' @name eco.xxx.regression
 #' @rdname eco.xxx.regression
 #' @importFrom quantreg rq

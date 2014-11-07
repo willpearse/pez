@@ -18,12 +18,10 @@
 #' @references R. P. Freckleton, P. H. Harvey, and M. Pagel. Phylogenetic analysis and comparative data: A test and review of evidence. American Naturalist, 160:712-726, 2002.
 #' @references Mark Pagel (1999) Inferring the historical patterns of biological evolution. Nature 6756(401): 877--884.
 #' @seealso fitContinuous fitDiscrete pgls phylosignal
-#' @examples \dontrun{
+#' @examples
 #' data(laja)
 #' data <- comparative.comm(invert.tree, river.sites, invert.traits)
 #' phy.signal(data, "lambda")
-#' 
-#' }
 #' @importFrom caper comparative.data pgls
 #' @importFrom picante Kcalc
 #' @export

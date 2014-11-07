@@ -66,7 +66,6 @@
 #' @importFrom ape vcv corBlomberg compute.brlen vcv.phylo
 #' @export
 #' @examples
-#' \dontrun{
 #' require(ape)
 #' tree<-stree(8,type="balanced")       #signal in centers
 #' kk<-scape(tree, scape.size=100, g.center=100, g.range=1, g.repulse=1, wd.all=150,
@@ -86,7 +85,7 @@
 #' main = "Gradient 2",col=rainbow(dim(kk$X2)[2]),lty=1)
 #' 
 #' plot(x=1:dim(kk$Y)[1],y = rowSums(kk$Y), main = "SR",type = "l")
-#' cor(kk$X1)}
+#' cor(kk$X1)
 scape<-function(tree, scape.size=10, g.center=1, g.range=1, g.repulse=1, wd.all=150, signal.center=TRUE, signal.range=TRUE, same.range=TRUE,repulse=TRUE,center.scale = 1, range.scale = 1, repulse.scale = 1, site.stoch.scale = .5, sd.center=1, sd.range=1,rho=NULL, th=8)
 {
   #deal with the tree

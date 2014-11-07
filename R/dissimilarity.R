@@ -73,12 +73,11 @@
 #' S.W. Kembel. 2008. Phylocom: software for the analysis of
 #' phylogenetic community structure and trait
 #' evolution. Bioinformatics 18:2098-2100.
-#' @examples \dontrun{
+#' @examples
 #' data(laja)
 #' data <- comparative.comm(invert.tree, river.sites, invert.traits)
-#' dissimilarity(data)
-#' dissimilarity(data, "pcd")
-#' }
+#' \dontrun{dissimilarity(data)}
+#' dissimilarity(data, "unifrac")
 #' @importFrom picante unifrac phylosor pcd comdist
 #' @importFrom ape is.ultrametric as.phylo
 #' @export

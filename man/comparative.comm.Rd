@@ -57,7 +57,6 @@ appreciate this is somewhat unwieldy, but hopefully you agree it is
 helpful in the long-term.
 }
 \examples{
-\dontrun{
 data(laja)
 data <- comparative.comm(invert.tree, river.sites, invert.traits, river.env)
 #Subset on species, then sites
@@ -73,7 +72,6 @@ env.names(data)
 assemblage.phylogenies(data)
 #Do some manual manipulation of your objects (NOTE: $data for traits)
 data$data$new.trait <- sample(letters, nrow(data$comm), replace=TRUE)
-}
 }
 \author{
 Will Pearse

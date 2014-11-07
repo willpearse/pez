@@ -29,12 +29,9 @@ estimates of fit; alternatives that offer more flexibility exist
 (see below).
 }
 \examples{
-\dontrun{
 data(laja)
 data <- comparative.comm(invert.tree, river.sites, invert.traits)
 phy.signal(data, "lambda")
-
-}
 }
 \author{
 Will Pearse, Jeannine Cavender-Bares

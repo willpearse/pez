@@ -55,8 +55,14 @@ method in that program.
 
 \code{bind.replace} Binds a phylogeny (donor) into a
 bigger phylogeny ('backbone'); useful if you're building a
-phylogeny a la Phylomatic. This code was originally shipped with
-phyloGenerator - this is the \code{merge} method in that program.
+phylogeny a la Phylomatic. A version of this R code was shipped
+with phyloGenerator (Pearse & Purvis 2013). This is really an
+internal function for \code{congeneric.merge}, but hopefully it's
+of some use to you!
+}
+\examples{
+tree <- read.tree(text="((a_a:1,b_b:1):1, c_c:2):1;")
+tree <- congeneric.merge(tree, c("a_nother", "a_gain", "b_sharp"))
 }
 \author{
 Will Pearse

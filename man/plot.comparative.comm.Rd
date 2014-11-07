@@ -50,7 +50,6 @@ gives you much more flexibility and the ability to (usefully)
 transform your data.
 }
 \examples{
-\dontrun{
 data(laja)
 data <- comparative.comm(invert.tree, river.sites, invert.traits)
 plot(data)
@@ -66,7 +65,6 @@ plot(data, sites=c("AT", "BP"), site.col=rainbow(2), fraction=1.2,
 x.increment=settings$x.increment/4, abundance=TRUE, dot.cex=abund.sqrt)
 plot(data, sites=c("AT", "BP"), site.col=rainbow(2), fraction=1.2,
 x.increment=settings$x.increment/4, abundance=TRUE, dot.cex=function(x) sqrt(x))
-}
 }
 \author{
 Will Pearse, Matt Helmus

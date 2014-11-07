@@ -93,13 +93,10 @@ WDP loves quantile regressions, and advises that you check
 different quantiles using the \code{tau} options.
 }
 \examples{
-\dontrun{
 data(laja)
 data <- comparative.comm(invert.tree, river.sites, invert.traits, river.env)
 fingerprint.regression(data, eco.permute=10)
 plot(fingerprint.regression(data, permute=10, method="lm"))
-plot(fingerprint.regression(data, permute=10, method="lm", altogether=FALSE))
-}
 }
 \author{
 Will Pearse and Jeannine Cavender-Bares

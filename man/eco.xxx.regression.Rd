@@ -101,15 +101,14 @@ WDP loves quantile regressions, and advises that you check
 different quantiles using the \code{tau} options.
 }
 \examples{
-\dontrun{
 data(laja)
+#We wouldn't recommend only using ten permutations - this is just for speed!
 data <- comparative.comm(invert.tree, river.sites, invert.traits, river.env)
 eco.trait.regression(data, permute=10)
 #Specify additional options
-eco.trait.regression(data, tau=c(0.25,0.5,0.75))
-plot(eco.trait.regression(data, permute=10, method="lm))
+eco.trait.regression(data, tau=c(0.25,0.5,0.75), permute=10)
+plot(eco.trait.regression(data, permute=10, method="lm"))
 plot(eco.trait.regression(data, permute=10, method="lm", altogether=FALSE))
-}
 }
 \author{
 Will Pearse, Jeannine Cavender-Bares

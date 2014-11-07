@@ -23,16 +23,16 @@
 #' this is both useful and dangerous!
 #' @seealso \code{\link{sim.phy}} \code{\link{scape}}
 #' @return TODO
-#' @examples \dontrun{
+#' @examples
 #' data(laja)
 #' data <- comparative.comm(invert.tree, river.sites, invert.traits)
 #' #Must have all species present in at least one community!
+#' #...and must be presence-absence data
 #' data <- data[,colSums(data$comm) > 0]
+#' data$comm[data$comm>1] <- 1
 #' sims <- ConDivSim(data)
 #' #...without traits...
-#' sims.phy <- ConDivSim(data, type=NULL)
-#' }
-#' 
+#' sims.phy <- ConDivSim(data, type="phy")
 #' @export
 ConDivSim<-function(object, type="traits", n.sim=100, plot = TRUE, disp99 = FALSE){
     #Assertions and argument handling

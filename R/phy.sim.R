@@ -40,10 +40,9 @@
 #' tip.labels; trait values if using \code{sim.br.tr.tree}.
 #' @author Will Pearse
 #' @seealso sim.meta scape
-#' @examples \dontrun{
-#' tree <- sim.bd.tree(0.1, 0, 10)
+#' @examples
+#' tree <- sim.bd.phy(0.1, 0, 10)
 #' plot(tree)
-#' }
 #' @rdname sim.phy
 #' @name sim.phy
 #' @export

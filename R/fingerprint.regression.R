@@ -52,13 +52,11 @@
 #' @references Cavender-Bares J., Ackerly D.D., Baum D.A. & Bazzaz F.A. (2004) Phylogenetic overdispersion in Floridian oak communities. The Americant Naturalist 163(6): 823--843.
 #' @references Kembel, S.W., Cowan, P.D., Helmus, M.R., Cornwell, W.K., Morlon, H., Ackerly, D.D., Blomberg, S.P. & Webb, C.O. Picante: R tools for integrating phylogenies and ecology. Bioinformatics 26(11): 1463--1464.
 #' @references Pagel M. Inferring the historical patterns of biological evolution. Nature 401(6756): 877--884.
-#' @examples \dontrun{
+#' @examples
 #' data(laja)
 #' data <- comparative.comm(invert.tree, river.sites, invert.traits, river.env)
 #' fingerprint.regression(data, eco.permute=10)
 #' plot(fingerprint.regression(data, permute=10, method="lm"))
-#' plot(fingerprint.regression(data, permute=10, method="lm", altogether=FALSE))
-#' }
 #' @export
 fingerprint.regression <- function(data, eco.rnd=c("taxa.labels", "richness", "frequency", "sample.pool", "phylogeny.pool", "independentswap", "trialswap"),
   eco.method=c("quantile", "lm", "mantel"), eco.permute=1000, evo.method=c("lambda", "delta", "kappa", "blom.k"), eco.swap=1000, abundance=TRUE, ...){
