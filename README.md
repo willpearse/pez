@@ -1,4 +1,4 @@
-Phylogenetics for the Environmental Sciences [![Build Status](https://magnum.travis-ci.com/willpearse/pez.svg?token=czK5e3fpn4qAcZp6RZhV&branch=master)](https://magnum.travis-ci.com/willpearse/pez)
+Phylogenetics for the Environmental Sciences [![Build Status](https://travis-ci.org/willpearse/pez.svg)](https://travis-ci.org/willpearse/pez)
 ============================================
 William D. Pearse, Marc W. Cadotte, Caroline Tucker, Steve Walker, and Matthew R. Helmus (wdpearse@umn.edu)
 
