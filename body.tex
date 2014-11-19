@@ -45,10 +45,10 @@ processes that generate species and their traits
 statistical tools and software code to implement them
 \citep[\emph{e.g.},][]{Kembel2010}. This code is disparate and handles
 data differently, making routine data analyses challenging. In many
-cases, the statistics are also not formally implemented in a software
-package and are available only as supplementary materials to
-papers. Without active (public) maintenance, these valuable techniques
-are effectively lost to the scientific community.
+cases, methods are not formally implemented in a software package and
+are available only as supplementary materials to papers. Without
+active (public) maintenance, these valuable techniques are effectively
+lost to the scientific community.
 
 \emph{pez} provides an \emph{R} \citep{R2014} class
 (\emph{comparative.comm}) that integrates phylogenetic, community,
@@ -96,8 +96,11 @@ separate aspects eco-phylogenetic structure \citep{Cadotte2010}.
 \begin{table*}
   \processtable{Overview of some of the functions available in \emph{pez}.\label{metricTable}}
   {\begin{tabular}{p{2.5cm} p{15cm}}\toprule
-      Function & Description\\\midrule
+      Function(s) & Description\\\midrule
       \emph{comparative.comm} & Stores community, phylogenetic, environmental, and species trait data\\
+      \emph{shape}, \emph{evenness}, \emph{dispersion}, \emph{dissimilarity}
+
+
       \emph{shape} & Calculates \emph{PSV} \citep{Helmus2007}, \emph{PSR} \citep{Helmus2007}, \emph{PD} \& \emph{MPD} \citep{Faith1992}, Colless' Index \citep{Colless1982}, $\gamma$ \citep{Pybus2000}, $\Delta$ \citep{Warwick1995}, $E_{ED}$ \& $H_{ed}$ \citep{Cadotte2010}, phylo-eigenvectors \citep{Diniz-Filho2011}\\
       \emph{evenness} & Calculates $\Delta$ \citep{Warwick1995}, Phylogenetic Entropy \citep{Allen2009}, \emph{PAE}, \emph{IAC}, $H_{aed}$, \& $E_{aed}$ \citep{Cadotte2010}, Rao's quadratic entropy \citep{Rao1982a}, $\lambda$ \citep{Pagel1999}, $\delta$ \citep{Pagel1999}, $\kappa$ \citep{Pagel1999}\\
       \emph{dispersion} & Calculates $SES_{MPD}$/\emph{NRI} \citep{Webb2002,Kembel2009}, $SES_{MNTD}/\emph{NTI}$ \citep{Webb2002,Kembel2009}, \emph{INND} \citep{Ness2011}, \emph{D} \citep{Fritz2010}\\

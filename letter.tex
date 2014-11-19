@@ -1,0 +1,59 @@
+\documentclass[fontsize=12pt, paper=a4]{scrlttr2}
+\usepackage[english]{babel}
+\usepackage[parfill]{parskip}  
+\usepackage{geometry}
+\usepackage{url}
+
+\setkomavar{fromname}{Will Pearse}
+\setkomavar{fromaddress}{Department of Ecology, Evolution and Behavior\\University of Minnesota\\St. Paul, MN 55108, USA}
+
+\setkomavar{signature}{Will Pearse}
+\renewcommand{\raggedsignature}{\raggedright} % make the signature ragged right
+\makeatletter
+\@setplength{refvpos}{\useplength{toaddrvpos}}
+\makeatother
+
+\setkomavar{subject}{Submission of ``\emph{pez}: Phylogenetics for the Environmental Sciences}
+\KOMAoptions{fromalign=left, fromlogo=false, addrfield=no,
+backaddress=no,  subject=left,foldmarks=no,
+fromphone=no,fromemail=true,fromalign=right,pagenumber=no}
+\setkomavar{fromemail}{wdpearse@umn.edu}
+\begin{document}
+\begin{letter}
+
+\opening{To whom it may concern,}\enlargethispage{8\baselineskip}
+
+I am writing to ask you to consider the manuscript `\emph{pez:
+  Phylogenetics for the Environmental Sciences}', for publication in
+\emph{Bioinformatics}. The manuscript describes an \emph{R} package
+(\emph{pez}) that integrates and facilitates the analysis and
+simulation of evolutionary and ecological data.
+
+An ever-increasing number of ecologists test hypotheses using
+phylogenetic data, but there is no unified data structure or interface
+that integrates diverse data-types. Moreover, there are a number of
+statistical methods that, despite their popularity, have not been
+formally released as software packages and as such are patchily and
+inconsistently implemened. \emph{pez} solves the first of these
+problems and goes some way to addressing the second, while also
+integrating a number of existing methods under a common interface. It
+is my hope that \emph{pez} will more tightly integrate the
+computational development of the field of eco-phylogenetics, ensuring
+the fragmentation I believe \emph{pez} to have reversed will not
+recur.
+
+I feel this manuscript is best-suited to \emph{Bioinformatics} because
+many conceptually related \emph{R} packages (\emph{e.g.},
+\emph{picante} and \emph{geiger}) have been published there. The
+package has been developed using modern, open software development
+techniques, which I feel your journal is well-placed to
+review. Potentially suitable reviewers include Scott Chamberlain
+(XXX), Stephen Kembell (XXX), and David Orme
+(\url{d.orme@imperial.ac.uk}, who have expertise implementing
+statistical methods similar to those in \emph{pez}.
+
+\closing{Thank you for your time, and I look forward to hearing from
+  you,\vspace{20pt}}
+
+\end{letter}
+\end{document}
