@@ -27,8 +27,12 @@
 #' @export
 phy.signal <- function(data, method=c("lambda", "delta", "kappa", "blom.k")){
   #Assertions and argument handling
-  if(! inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
+  if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
   method <- match.arg(method)
+  if(is.null(data$data))
+      stop("'data' must contain traits to calculate phylogenetic signal (of traits...!)")
+  if(any(!sapply(data$data, is.numeric)))
+      warning("'data' not all trait values are continuous\n\tinterpret signal of discrete data with caution; may also generate errors")
 
   traits <- numeric(ncol(data$data))
   for(i in seq(ncol(data$data))){
