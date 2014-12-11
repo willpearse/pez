@@ -99,13 +99,7 @@ dissimilarity <- function(data, metric=c("all", "unifrac", "pcd", "phylosor", "c
   } else traitgram <- FALSE
   
   if(!is.null(ext.dist)){
-      if(!inherits(ext.dist, "dist"))
-          stop("'ext.dist' must be a distance matrix")
-      if(attr(ext.dist, "Size") != ncol(data$comm))
-          stop("'ext.dist' must have dimensions matching comparative.comm object's species'")
-      if(!identical(attr(ext.dist, "Labels"), species(data)))
-          warning("'ext.dist' names do not match species data; continuing regardless")
-      dist <- as.matrix(ext.dist)
+      dist <- .check.ext.dist(ext.dist, species(data), ncol(data$comm))
       ext.dist <- TRUE
   } else ext.dist <- FALSE
   

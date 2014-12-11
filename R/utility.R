@@ -400,3 +400,13 @@ within.comparative.comm <- function(data, expr, ...){
 	class(cc) <- class(data)
         return(cc)
 }
+
+.check.ext.dist <- function(ext.dist, species, n.sites){
+    if(!inherits(ext.dist, "dist"))
+          stop("'ext.dist' must be a distance matrix")
+      if(attr(ext.dist, "Size") != n.sites)
+          stop("'ext.dist' must have dimensions matching comparative.comm object's species'")
+      if(!identical(attr(ext.dist, "Labels"), species))
+          warning("'ext.dist' names do not match species data; continuing regardless")
+    return(as.matrix(ext.dist))
+}
