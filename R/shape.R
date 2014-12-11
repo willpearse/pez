@@ -91,7 +91,6 @@
 #' shape(data, "eigen.sum", which.eigen=2)
 #' @importFrom picante psd mpd pd mntd
 #' @importFrom vegan taxondive
-#' @importFrom PVR PVRdecomp
 #' @importFrom apTreeshape as.treeshape as.treeshape.phylo colless tipsubtree
 #' @importFrom ape gammaStat cophenetic.phylo drop.tip is.ultrametric as.phylo
 #' @importFrom FD dbFD
@@ -181,22 +180,22 @@ shape <- function(data,metric=c("all-quick", "all", "psv", "psr", "mpd", "mntd",
   
   #Note - I've cut out some here because I think the simplification
   #can happen in the summary output
-  if(metric == "taxon" | metric == "all" | metric == "all-quick")
+  if(metric == "taxon" | metric == "all" | metric == "all-quick"){
       try({
         output$taxon <- taxondive(data$comm, dist, ...)
         t <- data.frame(output$taxon$D, output$taxon$Dstar, output$taxon$Lambda, output$taxon$Dplus, output$taxon$SDplus)
         names(t) <- c("Delta", "DeltaStar", "LambdaPlus", "DeltaPlus", "S.DeltaPlus")
         coefs <- cbind(coefs, t)
       }, silent = TRUE)
+  }
   
   if(metric == "eigen.sum" | metric == "all" | metric == "all-quick")
       try({
-              #PVRdecomp ignores a phylogeny if given a distance matrix; suppress its warning
-          t <- options("warn")
-          options(warn=-10)
-          evc <- PVRdecomp(data$phy, dist=dist, ...)@Eigen$vectors
-          options(warn=as.numeric(t))
-          output$eigen.sum <- coefs$eigen.sum <- apply(data$comm, 1, .eigen.sum, evc, which.eigen)
+          eigen <- -0.5 * dist
+          l <- matrix(1/nrow(eigen), nrow=nrow(eigen), ncol=ncol(eigen))
+          eigen <- (diag(nrow(eigen)) - l) %*% eigen %*% (diag(nrow(eigen)) - l)
+          eigen <- eigen(eigen, symmetric=TRUE)$vectors
+          output$eigen.sum <- coefs$eigen.sum <- apply(data$comm, 1, .eigen.sum, eigen, which.eigen)
       }, silent = TRUE)
   
   if((metric == "eed" | metric == "all" | metric == "all-quick") & (sqrt.phy==FALSE & traitgram==FALSE & ext.dist==FALSE))

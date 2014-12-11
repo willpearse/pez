@@ -80,17 +80,13 @@ test_that("Taxon", {
   expect_that(taxon_test$coefs$S.DeltaPlus, is_equivalent_to(taxon_test$taxon$SDplus[1:6]))
 })
 test_that("Eigenvectors", {
-  set.seed(123)
-  warn <- options("warn")
   eigen.sum <<- shape(data, "eigen.sum")
   for(i in seq_along(eigen.sum))
       if(!names(eigen.sum)[i] %in% c("type","coefs","eigen.sum"))
           expect_that(eigen.sum[[i]], equals(NULL))
   expect_that(eigen.sum$eigen.sum, is_equivalent_to(c(1.85989806057967e-32, 9.80257655161354e-05, 0.0580509448862977, 0.0456171567606935, 0.0434666292330911, 0.0476659578856296)))
-  set.seed(123)
   expect_that(shape(data, "eigen.sum", which.eigen=2)$eigen.sum, is_equivalent_to(c(3.30159419037812e-32, 0.082086748214039, 0.0137252988148037, 0.0415764004365078, 0.0384905400587625, 0.0452932152543931)))
   expect_that(eigen.sum$eigen.sum, is_equivalent_to(eigen.sum$coefs$eigen.sum))
-  expect_that(options("warn"), is_equivalent_to(warn))
 })
 test_that("EED", {
   eed <<- shape(data, "eed")
