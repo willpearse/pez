@@ -96,6 +96,8 @@ species(data)[1:2]
 species(data)[1:2] <- c("new", "names")
 sites(data)[1:2] <- c("newer", "names")
 data <- data[, colSums(data$comm) > 5]
+traits(data)$new.trait <- rep("nonsense", nrow(traits(data)))
+traits(data)$new.trait <- NULL
 @ 
 
 The final example above showed you can work with the internal
@@ -103,18 +105,21 @@ components of a \texttt{comparative.comm} to get things done quicker,
 in this case removing all species that were only recorded five times
 in the dataset. The help entry for \texttt{cc.manip} contains more
 examples, and \texttt{plot.comparative.comm} is a quick plotting
-tool. While we have provided a number of wrapper functions to make
-life easier, it's easy (and useful) to interact with the underlying
-community ecology (\texttt{\$comm}), phylogeny (\texttt{\$phy}),
-traits (\texttt{\$data}), and environmental (\texttt{\$env})
-data. Adding extra trait data or environmental variables on the fly is
-no problem, but be aware that \emph{pez} cannot check for missing data
-unless you call \texttt{comparative.comm} on something. I appreciate
-that calling the trait data \texttt{data} seems a little odd; it means
-that \texttt{comparatve.comm} is compatible with the \texttt{caper}
-package. Anything you can do in that (\emph{e.g.}, PGLS regression,
-comparative modelling and simulation) can be done using you data in
-\emph{pez} without modification.
+tool. We have also provided the \texttt{comm},
+\texttt{phy}(/\texttt{tree}), \texttt{traits}, and \texttt{env}
+wrappers to examine and manipulate the community matrix, phylogeny,
+trait data, and environmental data, slots in your
+\texttt{comparative.comm} objects. We give some examples above, and
+you can find more in the help file for \texttt{cc.manip}. By using
+these wrappers, as opposed to interacting directly with the slots in
+your \texttt{comparative.comm} object, you ensure your species and
+sites remain consistent across your data, and make your code a little
+easier to read. Internally, your trait data are stored in the
+\texttt{data} slow; this means that \texttt{comparatve.comm} is
+compatible with the \texttt{caper} package. Anything you can do in
+that (\emph{e.g.}, PGLS regression, comparative modelling and
+simulation) can be done using you data in \emph{pez} without
+modification.
 \clearpage
 \section{Community phylogenetic metrics}
 \emph{pez} splits community phylogenetic metrics into four functions

@@ -200,10 +200,12 @@ print.comparative.comm <- function(x, ...){
 #' As described in the vignette, we recommend using these wrappers to
 #' manipulate species and site data, as it guarantees that everything
 #' will be kept consistent across all parts of the
-#' \code{\link{comparative.comm}} object. However, remember that you
-#' can manipulate the internal components of a
-#' \code{\link{comparative.comm}} object directly, and this is useful
-#' if you want to play around with traits, add in new data, etc.
+#' \code{\link{comparative.comm}} object. With them, you can drop
+#' species, sites, and work directly with each part of your data. You
+#' an also manipulate your \code{\link{comparative.comm}} object's
+#' \code{phy}, \code{data}, \code{env}, and \code{comm} slots directly
+#' if you wish, but altering the object directly yourself runs the
+#' risk of things getting unsynchronised.
 #' 
 #' @param x \code{comparative.comm} object
 #' @param sites numbers of sites to be kept or dropped from \code{x};
@@ -238,8 +240,13 @@ print.comparative.comm <- function(x, ...){
 #' env.names(data)
 #' #Get assemblage phylogenies of all sites
 #' assemblage.phylogenies(data)
-#' #Do some manual manipulation of your objects (NOTE: $data for traits)
-#' data$data$new.trait <- sample(letters, nrow(data$comm), replace=TRUE)
+#' #Add some trait/env data in
+#' traits(data)$new.trait <- sample(letters, nrow(comm(data)), replace=TRUE)
+#' env(data)$new.env <- sample(letters, ncol(comm(data)), replace=TRUE)
+#' #Manipulate/check phylogeny and community matrix
+#' phy(data) #...tree(data) works too...
+#' comm(data)[1,3] <- 3
+#' comm(data) <- comm(data)[-3,]
 #' @export
 "[.comparative.comm" <- function(x, sites, spp, warn=FALSE) {
   #Assertions and setup
@@ -249,7 +256,8 @@ print.comparative.comm <- function(x, ...){
   #Handle species
   if(!missing(spp)){
     if(is.null(spp)) stop("Null indices not permitted on comparative community data objects")
-    spp.to.keep <- colnames(x$comm)[spp]
+    if(is.numeric(spp) | is.logical(spp))
+        spp.to.keep <- colnames(x$comm)[spp] else spp.to.keep <- intersect(species(x),spp)
     comm <- x$comm[, spp.to.keep]
     phy <- drop_tip(x$phy, setdiff(x$phy$tip.label, spp.to.keep))
     if(!is.null(x$data))
@@ -260,7 +268,8 @@ print.comparative.comm <- function(x, ...){
   #Handle sites
   if(!missing(sites)){
     if(is.null(sites)) stop("Null indices not permitted on comparative community data objects")
-    sites.to.keep <- rownames(new.x$comm)[sites]
+    if(is.numeric(sites) | is.logical(sites))
+        sites.to.keep <- rownames(x$comm)[sites] else sites.to.keep <- intersect(sites(x),sites)
     comm <- new.x$comm[sites.to.keep, ]
     if(!is.null(x$env))
       env <- new.x$env[sites.to.keep, ] else env <- new.x$env
@@ -340,6 +349,82 @@ sites <- function(x){
         rownames(x$env) <- value
     return(x)
 }
+
+##' @export
+##' @rdname cc.manip
+`traits<-` <- function(x, value){
+    if(!inherits(x, "comparative.comm"))
+        stop("'", deparse(substitute(x)), "' not of class 'comparative.comm'")
+    x$data <- value
+    return(comparative.comm(x$phy, x$comm, x$data, x$env))
+}
+
+##' @export
+##' @rdname cc.manip
+traits <- function(x){
+    if(!inherits(x, "comparative.comm"))
+        stop("'", deparse(substitute(x)), "' not of class 'comparative.comm'")
+    return(x$data)
+}
+
+##' @export
+##' @rdname cc.manip
+`env<-` <- function(x, value){
+    if(!inherits(x, "comparative.comm"))
+        stop("'", deparse(substitute(x)), "' not of class 'comparative.comm'")
+    x$env <- value
+    return(comparative.comm(x$phy, x$comm, x$data, x$env))
+}
+
+##' @export
+##' @rdname cc.manip
+env <- function(x){
+    if(!inherits(x, "comparative.comm"))
+        stop("'", deparse(substitute(x)), "' not of class 'comparative.comm'")
+    return(x$env)
+}
+
+##' @export
+##' @rdname cc.manip
+`comm<-` <- function(x, value){
+    if(!inherits(x, "comparative.comm"))
+        stop("'", deparse(substitute(x)), "' not of class 'comparative.comm'")
+    x$comm <- value
+    return(comparative.comm(x$phy, x$comm, x$data, x$env))
+}
+
+##' @export
+##' @rdname cc.manip
+comm <- function(x){
+    if(!inherits(x, "comparative.comm"))
+        stop("'", deparse(substitute(x)), "' not of class 'comparative.comm'")
+    return(x$comm)
+}
+
+##' @export
+##' @rdname cc.manip
+tree <- function(x){
+    if(!inherits(x, "comparative.comm"))
+        stop("'", deparse(substitute(x)), "' not of class 'comparative.comm'")
+    return(x$phy)
+}
+
+##' @export
+##' @rdname cc.manip
+phy <- tree
+
+##' @export
+##' @rdname cc.manip
+`tree<-` <- function(x, value){
+    if(!inherits(x, "comparative.comm"))
+        stop("'", deparse(substitute(x)), "' not of class 'comparative.comm'")
+    x$phy <- value
+    return(comparative.comm(x$phy, x$comm, x$data, x$env))
+}
+
+##' @export
+##' @rdname cc.manip
+`phy<-` <- `tree<-`
 
 #' @param data A \code{\link{comparative.comm}} object
 #' @return List of \code{\link[ape:phylo]{phylo}} objects, one for
