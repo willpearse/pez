@@ -52,9 +52,9 @@ tree(x)
 
 phy(x)
 
-phy(x) <- value
-
 tree(x) <- value
+
+phy(x) <- value
 
 assemblage.phylogenies(data)
 
