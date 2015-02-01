@@ -5,7 +5,7 @@
 \usage{
 \method{plot}{comparative.comm}(x, sites = NULL, abundance = FALSE,
   pch = 20, dot.cex = NULL, site.col = "black", fraction = 3,
-  x.increment = NULL, ...)
+  x.increment = NULL, show.tip.label = FALSE, ...)
 }
 \arguments{
 \item{x}{\code{\link{comparative.comm}} object}
@@ -30,6 +30,9 @@ phylogeny; e.g., 3 (default) means phylogeny is 1/3 of plot}
 
 \item{x.increment}{specify exact spacing of points along plot; see
 examples}
+
+\item{show.tip.label}{whether to plot species names on phylogeney
+(default: \code{FALSE})}
 
 \item{...}{additional arguments passed to plotting functions}
 }

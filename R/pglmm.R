@@ -324,7 +324,8 @@
 #' hist(b1, xlab = "b1", main = "b1 among species")
 #'
 #' par(mfrow = c(1, 1), las = 1, mar = c(4, 4, 2, 2) - 0.1)
-#' color2D.matplot(Y, ylab = "species", xlab = "sites", main = "abundance")
+#' if(require(plotrix))
+#'     color2D.matplot(Y, ylab = "species", xlab = "sites", main = "abundance")
 #' 
 #' # Transform data matrices into "long" form, and generate a data frame
 #' YY <- matrix(Y, nrow = nspp * nsite, ncol = 1)
@@ -394,7 +395,7 @@
 #' verbose = FALSE)
 #' 
 #' # lmer
-#' if(require(lme4))
+#' if(require(lme4)){
 #' summary(glmer(Y ~ X + (1 | sp) + (0 + X | sp), data=dat, family =
 #' "binomial"))
 #' 

@@ -15,6 +15,8 @@
 #' \code{\link{pch}})
 #' @param x.increment specify exact spacing of points along plot; see
 #' examples
+#' @param show.tip.label whether to plot species names on phylogeney
+#' (default: \code{FALSE})
 #' @param ... additional arguments passed to plotting functions
 #' @details Take a look at the examples: this is (hopefully!) a lot
 #' more straightforward than it might seem. Getting the right spacing
@@ -46,7 +48,7 @@
 #' plot(data, sites=c("AT", "BP"), site.col=rainbow(2), fraction=1.2,
 #' x.increment=settings$x.increment/4, abundance=TRUE, dot.cex=function(x) sqrt(x))
 #' @export
-plot.comparative.comm <- function(x, sites=NULL, abundance=FALSE, pch=20, dot.cex=NULL, site.col="black", fraction=3, x.increment=NULL, ...){
+plot.comparative.comm <- function(x, sites=NULL, abundance=FALSE, pch=20, dot.cex=NULL, site.col="black", fraction=3, x.increment=NULL, show.tip.label=FALSE, ...){
   #Assertions and argument checking
   data <- x
   if (!inherits(data, "comparative.comm"))
@@ -72,8 +74,8 @@ plot.comparative.comm <- function(x, sites=NULL, abundance=FALSE, pch=20, dot.ce
     site.col <- rep(site.col[1], nrow(sites))
   
   #Plot phylogeny and dots
-  display <- plot(data$phy, show.tip.label=FALSE, plot=FALSE, no.margin=TRUE, ...)
-  plot(data$phy, show.tip.label=FALSE, x.lim=c(0, display$x.lim[2] * fraction), no.margin=TRUE, ...)
+  display <- plot(data$phy, show.tip.label=show.tip.label, plot=FALSE, no.margin=TRUE, ...)
+  plot(data$phy, x.lim=c(0, display$x.lim[2] * fraction), no.margin=TRUE, show.tip.label=show.tip.label, ...)
   if(!is.null(x.increment)){
     if(length(x.increment) != nrow(sites))
       stop("ERROR:", deparse(substitute(x.increment)), "'s length does not match the number of sites to be plotted") else x.adj <- x.increment

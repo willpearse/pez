@@ -266,7 +266,9 @@ is emphatically a feature, not a bug! Bear in mind that
 \code{species(c.c.obj)} will return your species (for argument
 \code{sp}), \code{comm(c.c.obj)} your community (site) data (for
 argument \code{site}), and \code{cophenetic(tree(c.c.obj))} your
-phylogenetic covariacne matrix.
+phylogenetic covariacne matrix. The examples below are extremely
+thorough and really help explain the method; please take a look at
+them.
 }
 \examples{
 ## Structure of examples:
@@ -333,7 +335,6 @@ re.c, re.d, re.f, re.g), REML = TRUE, verbose = TRUE, s2.init=.1)
 #########################################################
 #Second section; detailed simulation and analysis #######
 #########################################################
-if(require(lme4) & require(plotrix)){
 # Generate simulated data for nspp species and nsite sites
 nspp <- 15
 nsite <- 10
@@ -405,7 +406,8 @@ hist(b0, xlab = "b0", main = "b0 among species")
 hist(b1, xlab = "b1", main = "b1 among species")
 
 par(mfrow = c(1, 1), las = 1, mar = c(4, 4, 2, 2) - 0.1)
-color2D.matplot(Y, ylab = "species", xlab = "sites", main = "abundance")
+if(require(plotrix))
+    color2D.matplot(Y, ylab = "species", xlab = "sites", main = "abundance")
 
 # Transform data matrices into "long" form, and generate a data frame
 YY <- matrix(Y, nrow = nspp * nsite, ncol = 1)
@@ -450,6 +452,10 @@ plot(z.binary)
 # on species slopes using a likelihood ratio test
 # communityPGLMM.binary.LRT(z.binary, re.number = 4)$Pr
 
+# The rest of these tests are not run to save CRAN server time;
+# - please take a look at them because they're very useful!
+\dontrun{
+
 # extract the predicted values of Y
 communityPGLMM.predicted.values(z.binary, show.plot = TRUE)
 
@@ -463,7 +469,6 @@ communityPGLMM.matrix.structure(Y ~ X, data = dat, family =
 "binomial", sp = dat$sp, site = dat$site, random.effects =
 list(re.1))
 
-\dontrun{
 # compare results to glmer() when the model contains no
 # phylogenetic covariance among species; the results should be
 # similar.
@@ -472,6 +477,7 @@ site = dat$site, random.effects = list(re.1, re.3), REML = FALSE,
 verbose = FALSE)
 
 # lmer
+if(require(lme4)){
 summary(glmer(Y ~ X + (1 | sp) + (0 + X | sp), data=dat, family =
 "binomial"))
 
@@ -487,7 +493,7 @@ summary(lmer(Y ~ X + (1 | sp) + (0 + X | sp), data=dat, REML = FALSE))
 }
 }
 \author{
-Anthony R. Ives, very minor documentation changes (errors?...) from Will Pearse
+Anthony R. Ives, cosmetic changes by Will Pearse
 }
 \references{
 Ives, A. R. and M. R. Helmus. 2011. Generalized linear
