@@ -282,7 +282,7 @@ them.
 #First section; brief summary of models and their use####
 #########################################################
 ## Model structures from Ives & Helmus (2011)
-# dat = data set for regression (note: *note* an comparative.comm object)
+# dat = data set for regression (note: *not* an comparative.comm object)
 # nspp = number of species
 # nsite = number of sites
 # Vphy = phylogenetic covariance matrix for species

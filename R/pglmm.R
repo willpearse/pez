@@ -200,7 +200,7 @@
 #' #First section; brief summary of models and their use####
 #' #########################################################
 #' ## Model structures from Ives & Helmus (2011)
-#' # dat = data set for regression (note: *note* an comparative.comm object)
+#' # dat = data set for regression (note: *not* an comparative.comm object)
 #' # nspp = number of species
 #' # nsite = number of sites
 #' # Vphy = phylogenetic covariance matrix for species
@@ -324,7 +324,6 @@
 #' hist(b1, xlab = "b1", main = "b1 among species")
 #'
 #' par(mfrow = c(1, 1), las = 1, mar = c(4, 4, 2, 2) - 0.1)
-#' color2D.matplot(Y, ylab = "species", xlab = "sites", main = "abundance")
 #' if(require(plotrix))
 #'     color2D.matplot(Y, ylab = "species", xlab = "sites", main = "abundance")
 #' 
@@ -418,8 +417,6 @@ communityPGLMM <- function(formula, data = list(), family = "gaussian", sp = NUL
 	random.effects = list(), REML = TRUE, s2.init = NULL, B.init = NULL, reltol = 10^-6, maxit = 500, 
 	tol.pql = 10^-6, maxit.pql = 200, verbose = FALSE) {
 
-	require(Matrix)
-
 	if (family == "gaussian") 
 		z <- communityPGLMM.gaussian(formula = formula, data = data, sp = sp, site = site, random.effects = random.effects, 
 			REML = REML, s2.init = s2.init, B.init = B.init, reltol = reltol, maxit = maxit, 
@@ -449,7 +446,6 @@ communityPGLMM <- function(formula, data = list(), family = "gaussian", sp = NUL
 communityPGLMM.gaussian <- function(formula, data = list(), family = "gaussian", sp = NULL, 
 	site = NULL, random.effects = list(), REML = TRUE, s2.init = NULL, B.init = NULL, reltol = 10^-8, 
 	maxit = 500, verbose = FALSE) {
-	require(Matrix)
 
 	# Begin pglmm.LL
 	plmm.LL <- function(par, X, Y, Zt, St, nested = NULL, REML, verbose) {
@@ -784,8 +780,6 @@ communityPGLMM.gaussian <- function(formula, data = list(), family = "gaussian",
 communityPGLMM.binary <- function(formula, data = list(), family = "binomial", sp = NULL, site = NULL, 
 	random.effects = list(), REML = TRUE, s2.init = 0.25, B.init = NULL, reltol = 10^-5, maxit = 40, 
 	tol.pql = 10^-6, maxit.pql = 200, verbose = FALSE) {
-	library(Matrix)
-
 	plmm.binary.V <- function(par, Zt, St, mu, nested) {
 
 		if (!is.null(St)) {
@@ -1372,8 +1366,6 @@ communityPGLMM.binary.LRT <- function(x, re.number = 0, ...) {
 #' @export
 communityPGLMM.matrix.structure <- function(formula, data = list(), family = "binomial", sp = NULL, 
 	site = NULL, random.effects = list(), ss = 1) {
-	library(Matrix)
-
 	plmm.binary.V.test <- function(par, Zt, St, X, nestedsp = NULL, nestedsite = NULL) {
 		n <- nrow(X)
 
@@ -1534,27 +1526,27 @@ if (is.null(sp) | is.null(site))
 #' in \code{\link{print.default}}
 #' @param object communityPGLMM object to be summarised
 #' @export
-summary.communityPGLMM <- function(x, digits = max(3, getOption("digits") - 3), ...) {
-	if (x$family == "gaussian") {
-		if (x$REML == TRUE) 
+summary.communityPGLMM <- function(object, digits = max(3, getOption("digits") - 3), ...) {
+	if (object$family == "gaussian") {
+		if (object$REML == TRUE) 
 			cat("Linear mixed model fit by restricted maximum likelihood")
 		else cat("Linear mixed model fit by maximum likelihood")
 	}
-	if (x$family == "binomial") {
-		if (x$REML == TRUE) 
+	if (object$family == "binomial") {
+		if (object$REML == TRUE) 
 			cat("Generalized linear mixed model for binary data fit by restricted maximum likelihood")
 		else cat("Generalized linear mixed model for binary data fit by maximum likelihood")
 	}
 
 	cat("\n\nCall:")
-	print(x$formula)
+	print(object$formula)
 	cat("\n")
 
-	if (x$family == "gaussian") {
+	if (object$family == "gaussian") {
 
-		logLik = x$logLik
-		AIC = x$AIC
-		BIC = x$BIC
+		logLik = object$logLik
+		AIC = object$AIC
+		BIC = object$BIC
 
 		names(logLik) = "logLik"
 		names(AIC) = "AIC"
@@ -1562,24 +1554,24 @@ summary.communityPGLMM <- function(x, digits = max(3, getOption("digits") - 3), 
 		print(c(logLik, AIC, BIC), digits = digits)
 	}
 	cat("\nRandom effects:\n")
-	w <- data.frame(Variance = matrix(c(x$s2r, x$s2n, x$s2resid), ncol = 1), Std.Dev = matrix(c(x$s2r^0.5, 
-		x$s2n^0.5, x$s2resid^0.5), ncol = 1))
+	w <- data.frame(Variance = matrix(c(object$s2r, object$s2n, object$s2resid), ncol = 1), Std.Dev = matrix(c(object$s2r^0.5, 
+		object$s2n^0.5, object$s2resid^0.5), ncol = 1))
 
 	re.names <- NULL
-	if (length(x$s2r) > 0) 
-		for (i in 1:length(x$s2r)) re.names <- c(re.names, paste("non-nested ", i, sep = ""))
+	if (length(object$s2r) > 0) 
+		for (i in 1:length(object$s2r)) re.names <- c(re.names, paste("non-nested ", i, sep = ""))
 
-	if (length(x$s2n) > 0) 
-		for (i in 1:length(x$s2n)) re.names <- c(re.names, paste("nested ", i, sep = ""))
+	if (length(object$s2n) > 0) 
+		for (i in 1:length(object$s2n)) re.names <- c(re.names, paste("nested ", i, sep = ""))
 
-	if (x$family == "gaussian") 
+	if (object$family == "gaussian") 
 		re.names <- c(re.names, "residual")
 
 	row.names(w) <- re.names
 	print(w, digits = digits)
 
 	cat("\nFixed effects:\n")
-	coef <- data.frame(Value = x$B, Std.Error = x$B.se, Zscore = x$B.zscore, Pvalue = x$B.pvalue)
+	coef <- data.frame(Value = object$B, Std.Error = object$B.se, Zscore = object$B.zscore, Pvalue = object$B.pvalue)
 	printCoefmat(coef, P.values = TRUE, has.Pvalue = TRUE)
 	cat("\n")
 }
@@ -1598,10 +1590,6 @@ print.communityPGLMM <- function(x, digits = max(3, getOption("digits") - 3), ..
 #' @importFrom plotrix color2D.matplot
 #' @export
 plot.communityPGLMM <- function(x, digits = max(3, getOption("digits") - 3), ...) {
-	if (!require(plotrix)) {
-		stop("The 'plotrix' package is required to plot images from this function")
-	}
-
 	W <- data.frame(Y = x$Y, sp = x$sp, site = x$site)
 	Y <- reshape(W, v.names = "Y", idvar = "sp", timevar = "site", direction = "wide")
 	Y <- Y[, 2:dim(Y)[2]]
@@ -1641,10 +1629,6 @@ communityPGLMM.predicted.values <- function(x, show.plot = TRUE, ...) {
 	}
 
 	if (show.plot == TRUE) {
-		if (!require(plotrix)) {
-			stop("The 'plotrix' package is required to plot images from this function")
-		}
-
 		W <- data.frame(Y = predicted.values, sp = x$sp, site = x$site)
 		Y <- reshape(W, v.names = "Y", idvar = "sp", timevar = "site", direction = "wide")
 		Y <- Y[, 2:dim(Y)[2]]
