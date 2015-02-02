@@ -324,6 +324,7 @@
 #' hist(b1, xlab = "b1", main = "b1 among species")
 #'
 #' par(mfrow = c(1, 1), las = 1, mar = c(4, 4, 2, 2) - 0.1)
+#' color2D.matplot(Y, ylab = "species", xlab = "sites", main = "abundance")
 #' if(require(plotrix))
 #'     color2D.matplot(Y, ylab = "species", xlab = "sites", main = "abundance")
 #' 
@@ -409,16 +410,27 @@
 #' summary(lmer(Y ~ X + (1 | sp) + (0 + X | sp), data=dat, REML = FALSE))
 #' }
 #' }
-communityPGLMM <- function(formula, data = list(), family = "gaussian", sp = NULL, site = NULL, random.effects = list(), REML = TRUE, s2.init = NULL, B.init = NULL, reltol = 10^-6, maxit = 500, tol.pql = 10^-6, maxit.pql = 200, 
- 	verbose = FALSE) {
+
+
+######Main PGLMM Function
+                                                                                                                  
+communityPGLMM <- function(formula, data = list(), family = "gaussian", sp = NULL, site = NULL, 
+	random.effects = list(), REML = TRUE, s2.init = NULL, B.init = NULL, reltol = 10^-6, maxit = 500, 
+	tol.pql = 10^-6, maxit.pql = 200, verbose = FALSE) {
+
+	require(Matrix)
+
 	if (family == "gaussian") 
 		z <- communityPGLMM.gaussian(formula = formula, data = data, sp = sp, site = site, random.effects = random.effects, 
-			REML = REML, s2.init = s2.init, B.init = B.init, reltol = reltol, maxit = maxit, verbose = verbose)
+			REML = REML, s2.init = s2.init, B.init = B.init, reltol = reltol, maxit = maxit, 
+			verbose = verbose)
 	if (family == "binomial") {
-		s2.init <- 0.25
+
+		if (is.null(s2.init)) 
+			s2.init <- 0.25
 		z <- communityPGLMM.binary(formula = formula, data = data, sp = sp, site = site, random.effects = random.effects, 
-			REML = REML, s2.init = s2.init, B.init = B.init, reltol = reltol, maxit = maxit, tol.pql = tol.pql, 
-			maxit.pql = maxit.pql, verbose = verbose)
+			REML = REML, s2.init = s2.init, B.init = B.init, reltol = reltol, maxit = maxit, 
+			tol.pql = tol.pql, maxit.pql = maxit.pql, verbose = verbose)
 	}
 	if (!is.element(family, c("gaussian", "binomial"))) 
 		cat("\nSorry, but only binomial (binary) and gaussian options exist at this time")
@@ -434,10 +446,13 @@ communityPGLMM <- function(formula, data = list(), family = "gaussian", sp = NUL
 #' @importClassesFrom Matrix RsparseMatrix dsCMatrix
 #' @importMethodsFrom Matrix t solve %*% determinant diag
 #' @export
-communityPGLMM.gaussian <- function(formula, data = list(), family = "gaussian", sp = NULL, site = NULL, 
-	random.effects = list(), REML = TRUE, s2.init = NULL, B.init = NULL, reltol = 10^-8, maxit = 500, verbose = FALSE) {
+communityPGLMM.gaussian <- function(formula, data = list(), family = "gaussian", sp = NULL, 
+	site = NULL, random.effects = list(), REML = TRUE, s2.init = NULL, B.init = NULL, reltol = 10^-8, 
+	maxit = 500, verbose = FALSE) {
+	require(Matrix)
+
 	# Begin pglmm.LL
-	plmm.LL <- function(par, X, Y, Zt, St, nestedsp = NULL, nestedsite = NULL, REML, verbose) {
+	plmm.LL <- function(par, X, Y, Zt, St, nested = NULL, REML, verbose) {
 		n <- dim(X)[1]
 		p <- dim(X)[2]
 
@@ -456,10 +471,10 @@ communityPGLMM.gaussian <- function(formula, data = list(), family = "gaussian",
 			q.nonNested <- 0
 			sr <- NULL
 		}
-		if (is.null(nestedsp[[1]])) {
+		if (is.null(nested[[1]])) {
 			q.Nested <- 0
 		} else {
-			q.Nested <- length(nestedsp)
+			q.Nested <- length(nested)
 		}
 
 		if (q.Nested == 0) {
@@ -477,7 +492,7 @@ communityPGLMM.gaussian <- function(formula, data = list(), family = "gaussian",
 		} else {
 			A <- as(diag(n), "dsCMatrix")
 			for (j in 1:q.Nested) {
-				A <- A + sn[j]^2 * kronecker(nestedsite[[j]], nestedsp[[j]])
+				A <- A + sn[j]^2 * nested[[j]]
 			}
 			iA <- solve(A)
 			if (q.nonNested > 0) {
@@ -503,7 +518,7 @@ communityPGLMM.gaussian <- function(formula, data = list(), family = "gaussian",
 		} else {
 			logdetV <- -determinant(iV)$modulus[1]
 			if (is.infinite(logdetV)) 
-				logdetV <- -2 * sum(log(diag(chol(iV, pivot = TRUE))))
+				logdetV <- -2 * sum(log(diag(chol(iV, pivot = T))))
 			if (is.infinite(logdetV)) 
 				return(10^10)
 		}
@@ -512,14 +527,15 @@ communityPGLMM.gaussian <- function(formula, data = list(), family = "gaussian",
 		if (REML == TRUE) {
 			# concentrated REML likelihood function
 			s2.conc <- t(H) %*% iV %*% H/(n - p)
-			LL <- 0.5 * ((n - p) * log(s2.conc) + logdetV + (n - p) + log(determinant(t(X) %*% iV %*% X)$modulus[1]))
+			LL <- 0.5 * ((n - p) * log(s2.conc) + logdetV + (n - p) + determinant(t(X) %*% iV %*% 
+				X)$modulus[1])
 		} else {
 			# concentrated ML likelihood function
 			s2.conc <- t(H) %*% iV %*% H/n
 			LL <- 0.5 * (n * log(s2.conc) + logdetV + n)
 		}
 
-		if (verbose == TRUE) 
+		if (verbose == T) 
 			show(c(as.numeric(LL), par))
 		return(as.numeric(LL))
 	}
@@ -532,15 +548,15 @@ communityPGLMM.gaussian <- function(formula, data = list(), family = "gaussian",
 	nsite <- nlevels(site)
 
 	# order data first by site, second by species
-	sp.order <- order(sp)
-	data <- data[sp.order, ]
-	sp <- sp[sp.order]
-	site <- site[sp.order]
+	# sp.order <- order(sp)
+# data <- data[sp.order, ]
+# sp <- sp[sp.order]
+# site <- site[sp.order]
 
-	site.order <- order(site)
-	data <- data[site.order, ]
-	sp <- sp[site.order]
-	site <- site[site.order]
+	# site.order <- order(site)
+	# data <- data[site.order, ]
+# sp <- sp[site.order]
+# site <- site[site.order]
 
 	mf <- model.frame(formula = formula, data = data)
 	X <- model.matrix(attr(mf, "terms"), data = mf)
@@ -551,8 +567,7 @@ communityPGLMM.gaussian <- function(formula, data = list(), family = "gaussian",
 
 	Ztt <- list(NULL)
 	St.lengths <- array(0, q)
-	nestedsp <- list(NULL)
-	nestedsite <- list(NULL)
+	nested <- list(NULL)
 	ii <- 0
 	jj <- 0
 
@@ -587,16 +602,17 @@ communityPGLMM.gaussian <- function(formula, data = list(), family = "gaussian",
 					stop("Nested terms can only be for intercepts")
 				nestedsp.j <- re.i[[3]]
 				nestedsite.j <- diag(nsite)
+				nested.j <- as(kronecker(nestedsite.j, nestedsp.j), "dgCMatrix")
 			}
 			if (setequal(levels(re.i[[2]]), levels(site)) && all(re.i[[2]] == site)) {
 				if (length(re.i[[1]]) > 1) 
 					stop("Nested terms can only be for intercepts")
 				nestedsp.j <- diag(nspp)
 				nestedsite.j <- re.i[[3]]
+				nested.j <- as(kronecker(nestedsite.j, nestedsp.j), "dgCMatrix")
 			}
 			jj <- jj + 1
-			nestedsp[[jj]] <- nestedsp.j
-			nestedsite[[jj]] <- nestedsite.j
+			nested[[jj]] <- nested.j
 		}
 	}
 	q.nonNested <- ii
@@ -639,10 +655,11 @@ communityPGLMM.gaussian <- function(formula, data = list(), family = "gaussian",
 	s <- as.vector(array(s2.init^0.5, dim = c(1, q)))
 
 	if (q > 1) {
-		opt <- optim(fn = plmm.LL, par = s, X = X, Y = Y, Zt = Zt, St = St, nestedsp = nestedsp, nestedsite = nestedsite, 
-			REML = REML, verbose = verbose, method = "Nelder-Mead", control = list(maxit = maxit, reltol = reltol))
+		opt <- optim(fn = plmm.LL, par = s, X = X, Y = Y, Zt = Zt, St = St, nested = nested, 
+			REML = REML, verbose = verbose, method = "Nelder-Mead", control = list(maxit = maxit, 
+				reltol = reltol))
 	} else {
-		opt <- optim(fn = plmm.LL, par = s, X = X, Y = Y, Zt = Zt, St = St, nestedsp = nestedsp, nestedsite = nestedsite, 
+		opt <- optim(fn = plmm.LL, par = s, X = X, Y = Y, Zt = Zt, St = St, nested = nested, 
 			REML = REML, verbose = verbose, method = "L-BFGS-B", control = list(maxit = maxit))
 
 	}
@@ -664,10 +681,10 @@ communityPGLMM.gaussian <- function(formula, data = list(), family = "gaussian",
 		q.nonNested <- 0
 		sr <- NULL
 	}
-	if (is.null(nestedsp[[1]])) {
+	if (is.null(nested[[1]])) {
 		q.Nested <- 0
 	} else {
-		q.Nested <- length(nestedsp)
+		q.Nested <- length(nested)
 	}
 	if (q.Nested == 0) {
 		sn <- NULL
@@ -683,7 +700,7 @@ communityPGLMM.gaussian <- function(formula, data = list(), family = "gaussian",
 	} else {
 		A <- as(diag(n), "dsCMatrix")
 		for (j in 1:q.Nested) {
-			A <- A + sn[j]^2 * kronecker(nestedsite[[j]], nestedsp[[j]])
+			A <- A + sn[j]^2 * nested[[j]]
 		}
 		iA <- solve(A)
 		if (q.nonNested > 0) {
@@ -709,7 +726,7 @@ communityPGLMM.gaussian <- function(formula, data = list(), family = "gaussian",
 	} else {
 		logdetV <- -determinant(iV)$modulus[1]
 		if (is.infinite(logdetV)) 
-			logdetV <- -2 * sum(log(diag(chol(iV, pivot = TRUE))))
+			logdetV <- -2 * sum(log(diag(chol(iV, pivot = T))))
 		if (is.infinite(logdetV)) 
 			return(10^10)
 	}
@@ -732,7 +749,8 @@ communityPGLMM.gaussian <- function(formula, data = list(), family = "gaussian",
 	B.pvalue <- 2 * pnorm(abs(B/B.se), lower.tail = FALSE)
 
 	if (REML == TRUE) {
-		logLik <- -0.5 * (n - p) * log(2 * pi) + 0.5 * log(determinant(t(X) %*% X)$modulus[1]) - LL
+		logLik <- -0.5 * (n - p) * log(2 * pi) + 0.5 * determinant(t(X) %*% X)$modulus[1] - 
+			LL
 	} else {
 		logLik <- -0.5 * n * log(2 * pi) - LL
 	}
@@ -740,15 +758,16 @@ communityPGLMM.gaussian <- function(formula, data = list(), family = "gaussian",
 	AIC <- -2 * logLik + 2 * k
 	BIC <- -2 * logLik + k * (log(n) - log(pi))
 
-	results <- list(formula = formula, data = data, family = family, random.effects = random.effects, B = B, 
-		B.se = B.se, B.cov = B.cov, B.zscore = B.zscore, B.pvalue = B.pvalue, ss = ss, s2r = s2r, s2n = s2n, 
-		s2resid = s2resid, logLik = logLik, AIC = AIC, BIC = BIC, REML = REML, s2.init = s2.init, B.init = B.init, 
-		Y = Y, X = X, H = H, iV = iV, mu = NULL, nestedsp = nestedsp, nestedsite = nestedsite, sp = sp, site = site, 
-		Zt = Zt, St = St, convcode = opt$convergence, niter = opt$counts)
+	results <- list(formula = formula, data = data, family = family, random.effects = random.effects, 
+		B = B, B.se = B.se, B.cov = B.cov, B.zscore = B.zscore, B.pvalue = B.pvalue, ss = ss, 
+		s2r = s2r, s2n = s2n, s2resid = s2resid, logLik = logLik, AIC = AIC, BIC = BIC, REML = REML, 
+		s2.init = s2.init, B.init = B.init, Y = Y, X = X, H = H, iV = iV, mu = NULL, nested = nested, 
+		sp = sp, site = site, Zt = Zt, St = St, convcode = opt$convergence, niter = opt$counts)
 
 	class(results) <- "communityPGLMM"
 	results
 }
+
 
 ######################################################
 ######################################################
@@ -762,10 +781,12 @@ communityPGLMM.gaussian <- function(formula, data = list(), family = "gaussian",
 #' @importClassesFrom Matrix dsCMatrix RsparseMatrix
 #' @importMethodsFrom Matrix t solve %*% determinant diag
 #' @export
-communityPGLMM.binary <- function(formula, data = list(), family = "binomial", sp = NULL, site = NULL, random.effects = list(), 
-	REML = TRUE, s2.init = 0.25, B.init = NULL, reltol = 10^-5, maxit = 40, tol.pql = 10^-6, maxit.pql = 200, 
-	verbose = FALSE) {
-	plmm.binary.V <- function(par, Zt, St, mu, nestedsp = NULL, nestedsite = NULL) {
+communityPGLMM.binary <- function(formula, data = list(), family = "binomial", sp = NULL, site = NULL, 
+	random.effects = list(), REML = TRUE, s2.init = 0.25, B.init = NULL, reltol = 10^-5, maxit = 40, 
+	tol.pql = 10^-6, maxit.pql = 200, verbose = FALSE) {
+	library(Matrix)
+
+	plmm.binary.V <- function(par, Zt, St, mu, nested) {
 
 		if (!is.null(St)) {
 			q.nonNested <- dim(St)[1]
@@ -781,11 +802,6 @@ communityPGLMM.binary <- function(formula, data = list(), family = "binomial", s
 		} else {
 			q.nonNested <- 0
 			sr <- NULL
-		}
-		if (is.null(nestedsp[[1]])) {
-			q.Nested <- 0
-		} else {
-			q.Nested <- length(nestedsp)
 		}
 
 		if (q.Nested == 0) {
@@ -800,7 +816,7 @@ communityPGLMM.binary <- function(formula, data = list(), family = "binomial", s
 		} else {
 			A <- iW
 			for (j in 1:q.Nested) {
-				A <- A + sn[j]^2 * kronecker(nestedsite[[j]], nestedsp[[j]])
+				A <- A + sn[j]^2 * nested[[j]]
 			}
 		}
 		if (q.nonNested > 0) {
@@ -812,7 +828,7 @@ communityPGLMM.binary <- function(formula, data = list(), family = "binomial", s
 	}
 	# End plmm.binary.V
 	
-	plmm.binary.iV <- function(par, Zt, St, mu, nestedsp = NULL, nestedsite = NULL) {
+	plmm.binary.iV <- function(par, Zt, St, mu, nested) {
 
 		if (!is.null(St)) {
 			q.nonNested <- dim(St)[1]
@@ -829,10 +845,11 @@ communityPGLMM.binary <- function(formula, data = list(), family = "binomial", s
 			q.nonNested <- 0
 			sr <- NULL
 		}
-		if (is.null(nestedsp[[1]])) {
+
+		if (is.null(nested[[1]])) {
 			q.Nested <- 0
 		} else {
-			q.Nested <- length(nestedsp)
+			q.Nested <- length(nested)
 		}
 
 		if (q.Nested == 0) {
@@ -848,11 +865,12 @@ communityPGLMM.binary <- function(formula, data = list(), family = "binomial", s
 			# Woodbury identity
 			iV <- iA - iA %*% U %*% solve(Ishort + Ut.iA.U) %*% Ut %*% iA
 		} else {
-			A <- diag(as.vector((mu * (1 - mu))^-1))
+			A <- as(diag(as.vector((mu * (1 - mu))^-1)), "dgCMatrix")
 			for (j in 1:q.Nested) {
-				A <- A + sn[j]^2 * kronecker(nestedsite[[j]], nestedsp[[j]])
+				A <- A + sn[j]^2 * nested[[j]]
 			}
 			iA <- solve(A)
+
 			if (q.nonNested > 0) {
 				Ishort <- as(diag(nrow(Ut)), "dsCMatrix")
 				Ut.iA.U <- Ut %*% iA %*% U
@@ -865,9 +883,7 @@ communityPGLMM.binary <- function(formula, data = list(), family = "binomial", s
 	}
 	# End plmm.binary.iV
 	
-	plmm.binary.logdetV <- function(par, Zt, St, mu, nestedsp = NULL, nestedsite = NULL, X = X) {
-		n <- dim(X)[1]
-		p <- dim(X)[2]
+	plmm.binary.logdetV <- function(par, Zt, St, mu, nested) {
 
 		if (!is.null(St)) {
 			q.nonNested <- dim(St)[1]
@@ -884,10 +900,11 @@ communityPGLMM.binary <- function(formula, data = list(), family = "binomial", s
 			q.nonNested <- 0
 			sr <- NULL
 		}
-		if (is.null(nestedsp[[1]])) {
+
+		if (is.null(nested[[1]])) {
 			q.Nested <- 0
 		} else {
-			q.Nested <- length(nestedsp)
+			q.Nested <- length(nested)
 		}
 
 		if (q.Nested == 0) {
@@ -904,9 +921,9 @@ communityPGLMM.binary <- function(formula, data = list(), family = "binomial", s
 			if (is.infinite(logdetV)) 
 				logdetV <- 2 * sum(log(diag(chol(Ishort + Ut.iA.U)))) - determinant(iA)$modulus[1]
 		} else {
-			A <- diag(as.vector((mu * (1 - mu))^-1))
+			A <- as(diag(as.vector((mu * (1 - mu))^-1)), "dsCMatrix")
 			for (j in 1:q.Nested) {
-				A <- A + sn[j]^2 * kronecker(nestedsite[[j]], nestedsp[[j]])
+				A <- A + sn[j]^2 * nested[[j]]
 			}
 			iA <- solve(A)
 			if (q.nonNested > 0) {
@@ -918,7 +935,7 @@ communityPGLMM.binary <- function(formula, data = list(), family = "binomial", s
 			}
 			logdetV <- -determinant(iV)$modulus[1]
 			if (is.infinite(logdetV)) 
-				logdetV <- -2 * sum(log(diag(chol(iV, pivot = TRUE))))
+				logdetV <- -2 * sum(log(diag(chol(iV, pivot = T))))
 			if (is.infinite(logdetV)) 
 				return(list(iV = NULL, logdetV = NULL))
 		}
@@ -928,21 +945,21 @@ communityPGLMM.binary <- function(formula, data = list(), family = "binomial", s
 	# End plmm.binary.logdetV
 	
 	# Begin pglmm.binary.LL
-	plmm.binary.LL <- function(par, H, X, Zt, St, mu, nestedsp = NULL, nestedsite = NULL, REML = TRUE, verbose = FALSE) {
+	plmm.binary.LL <- function(par, H, X, Zt, St, mu, nested, REML = TRUE, verbose = FALSE) {
 		par <- abs(par)
 		n <- dim(H)[1]
 		p <- dim(H)[2]
 
-		iV <- plmm.binary.iV(par = par, Zt = Zt, St = St, mu = mu, nestedsp = nestedsp, nestedsite = nestedsite)
-		logdetV <- plmm.binary.logdetV(par = par, Zt = Zt, St = St, mu = mu, nestedsp = nestedsp, nestedsite = nestedsite, X = X)
+		iV <- plmm.binary.iV(par = par, Zt = Zt, St = St, mu = mu, nested = nested)
+		logdetV <- plmm.binary.logdetV(par = par, Zt = Zt, St = St, mu = mu, nested = nested)
 		if (REML == TRUE) {
 			# REML likelihood function
-			LL <- 0.5 * (logdetV + t(H) %*% iV %*% H + log(determinant(t(X) %*% iV %*% X)$modulus[1]))
+			LL <- 0.5 * (logdetV + t(H) %*% iV %*% H + determinant(t(X) %*% iV %*% X)$modulus[1])
 		} else {
 			# ML likelihood function
 			LL <- 0.5 * (logdetV + t(H) %*% iV %*% H)
 		}
-		if (verbose == TRUE) 
+		if (verbose == T) 
 			show(c(as.numeric(LL), par))
 
 		return(as.numeric(LL))
@@ -957,15 +974,15 @@ if (is.null(sp) | is.null(site))
 	nsite <- nlevels(site)
 
 	# order data first by site, second by species
-	sp.order <- order(sp)
-	data <- data[sp.order, ]
-	sp <- sp[sp.order]
-	site <- site[sp.order]
+	# sp.order <- order(sp)
+# data <- data[sp.order, ]
+# sp <- sp[sp.order]
+# site <- site[sp.order]
 
-	site.order <- order(site)
-	data <- data[site.order, ]
-	sp <- sp[site.order]
-	site <- site[site.order]
+	# site.order <- order(site)
+	# data <- data[site.order, ]
+# sp <- sp[site.order]
+# site <- site[site.order]
 
 	mf <- model.frame(formula = formula, data = data)
 	X <- model.matrix(attr(mf, "terms"), data = mf)
@@ -976,11 +993,9 @@ if (is.null(sp) | is.null(site))
 
 	Ztt <- list(NULL)
 	St.lengths <- array(0, q)
-	nestedsp <- list(NULL)
-	nestedsite <- list(NULL)
+	nested <- list(NULL)
 	ii <- 0
 	jj <- 0
-
 	for (i in 1:q) {
 		re.i <- re[[i]]
 		# non-nested terms
@@ -1012,16 +1027,17 @@ if (is.null(sp) | is.null(site))
 					stop("Nested terms can only be for intercepts")
 				nestedsp.j <- re.i[[3]]
 				nestedsite.j <- diag(nsite)
+				nested.j <- as(kronecker(nestedsite.j, nestedsp.j), "dgCMatrix")
 			}
 			if (setequal(levels(re.i[[2]]), levels(site)) && all(re.i[[2]] == site)) {
 				if (length(re.i[[1]]) > 1) 
 					stop("Nested terms can only be for intercepts")
 				nestedsp.j <- diag(nspp)
 				nestedsite.j <- re.i[[3]]
+				nested.j <- as(kronecker(nestedsite.j, nestedsp.j), "dgCMatrix")
 			}
 			jj <- jj + 1
-			nestedsp[[jj]] <- nestedsp.j
-			nestedsite[[jj]] <- nestedsite.j
+			nested[[jj]] <- nested.j
 		}
 	}
 	q.nonNested <- ii
@@ -1051,7 +1067,8 @@ if (is.null(sp) | is.null(site))
 		warning("B.init not correct length, so computed B.init using glm()")
 	}
 	if ((is.null(B.init) | (!is.null(B.init) & length(B.init) != p))) {
-		B.init <- t(matrix(glm(formula = formula, data = data, family = binomial)$coefficients, ncol = p))
+		B.init <- t(matrix(glm(formula = formula, data = data, family = binomial)$coefficients, 
+			ncol = p))
 	} else {
 		B.init <- matrix(B.init, ncol = 1)
 	}
@@ -1071,8 +1088,8 @@ if (is.null(sp) | is.null(site))
 	iteration <- 0
 	exitflag <- 0
 	rcondflag <- 0
-	while (((t(est.ss - oldest.ss) %*% (est.ss - oldest.ss) > tol.pql^2) | (t(est.B - oldest.B) %*% (est.B - 
-		oldest.B) > tol.pql^2)) & (iteration <= maxit.pql)) {
+	while (((t(est.ss - oldest.ss) %*% (est.ss - oldest.ss) > tol.pql^2) | (t(est.B - oldest.B) %*% 
+		(est.B - oldest.B) > tol.pql^2)) & (iteration <= maxit.pql)) {
 
 		iteration <- iteration + 1
 		oldest.ss <- est.ss
@@ -1080,13 +1097,16 @@ if (is.null(sp) | is.null(site))
 
 		est.B.m <- B
 		oldest.B.m <- matrix(10^6, nrow = length(est.B))
+		iteration.m <- 0
 
 		# mean component
-		while ((t(est.B.m - oldest.B.m) %*% (est.B.m - oldest.B.m) > tol.pql^2) & (iteration <= maxit.pql)) {
+		while ((t(est.B.m - oldest.B.m) %*% (est.B.m - oldest.B.m) > tol.pql^2) & (iteration.m <= 
+			maxit.pql)) {
+			iteration.m <- iteration.m + 1
 
 			oldest.B.m <- est.B.m
 
-			iV <- plmm.binary.iV(par = ss, Zt = Zt, St = St, mu = mu, nestedsp = nestedsp, nestedsite = nestedsite)
+			iV <- plmm.binary.iV(par = ss, Zt = Zt, St = St, mu = mu, nested = nested)
 
 			Z <- X %*% B + b + (Y - mu)/(mu * (1 - mu))
 			denom <- t(X) %*% iV %*% X
@@ -1094,7 +1114,7 @@ if (is.null(sp) | is.null(site))
 			B <- solve(denom, num)
 			B <- as.matrix(B)
 
-			V <- plmm.binary.V(par = ss, Zt = Zt, St = St, mu = mu, nestedsp = nestedsp, nestedsite = nestedsite)
+			V <- plmm.binary.V(par = ss, Zt = Zt, St = St, mu = mu, nested = nested)
 			iW <- diag(as.vector((mu * (1 - mu))^-1))
 			C <- V - iW
 			b <- C %*% iV %*% (Z - X %*% B)
@@ -1110,12 +1130,12 @@ if (is.null(sp) | is.null(site))
 		Z <- X %*% B + b + (Y - mu)/(mu * (1 - mu))
 		H <- Z - X %*% B
 		if (q > 1) {
-			opt <- optim(fn = plmm.binary.LL, par = ss, H = H, X = X, Zt = Zt, St = St, mu = mu, nestedsp = nestedsp, 
-				nestedsite = nestedsite, REML = REML, verbose = verbose, method = "Nelder-Mead", control = list(maxit = maxit, 
+			opt <- optim(fn = plmm.binary.LL, par = ss, H = H, X = X, Zt = Zt, St = St, mu = mu, 
+				nested = nested, REML = REML, verbose = verbose, method = "Nelder-Mead", control = list(maxit = maxit, 
 					reltol = reltol))
 		} else {
-			opt <- optim(fn = plmm.binary.LL, par = ss, H = H, X = X, Zt = Zt, St = St, mu = mu, nestedsp = nestedsp, 
-				nestedsite = nestedsite, REML = REML, verbose = verbose, method = "L-BFGS-B", control = list(maxit = maxit))
+			opt <- optim(fn = plmm.binary.LL, par = ss, H = H, X = X, Zt = Zt, St = St, mu = mu, 
+				nested = nested, REML = REML, verbose = verbose, method = "L-BFGS-B", control = list(maxit = maxit))
 		}
 		ss <- abs(opt$par)
 		LL <- opt$value
@@ -1144,11 +1164,11 @@ if (is.null(sp) | is.null(site))
 	B.zscore <- B/B.se
 	B.pvalue <- 2 * pnorm(abs(B/B.se), lower.tail = FALSE)
 
-	results <- list(formula = formula, data = data, family = family, random.effects = random.effects, B = B, 
-		B.se = B.se, B.cov = B.cov, B.zscore = B.zscore, B.pvalue = B.pvalue, ss = ss, s2r = s2r, s2n = s2n, 
-		s2resid = NULL, logLik = NULL, AIC = NULL, BIC = NULL, REML = REML, s2.init = s2.init, B.init = B.init, 
-		Y = Y, X = X, H = H, iV = iV, mu = mu, nestedsp = nestedsp, nestedsite = nestedsite, sp = sp, site = site, 
-		Zt = Zt, St = St, convcode = opt$convergence, niter = opt$counts)
+	results <- list(formula = formula, data = data, family = family, random.effects = random.effects, 
+		B = B, B.se = B.se, B.cov = B.cov, B.zscore = B.zscore, B.pvalue = B.pvalue, ss = ss, 
+		s2r = s2r, s2n = s2n, s2resid = NULL, logLik = NULL, AIC = NULL, BIC = NULL, REML = REML, 
+		s2.init = s2.init, B.init = B.init, Y = Y, X = X, H = H, iV = iV, mu = mu, nested, sp = sp, 
+		site = site, Zt = Zt, St = St, convcode = opt$convergence, niter = opt$counts)
 	class(results) <- "communityPGLMM"
 	results
 	return(results)
@@ -1171,7 +1191,7 @@ if (is.null(sp) | is.null(site))
 #' @export
 communityPGLMM.binary.LRT <- function(x, re.number = 0, ...) {
 
-	plmm.binary.iV <- function(par, Zt, St, mu, nestedsp = NULL, nestedsite = NULL) {
+	plmm.binary.iV <- function(par, Zt, St, mu, nested = NULL) {
 
 		if (!is.null(St)) {
 			q.nonNested <- dim(St)[1]
@@ -1188,10 +1208,10 @@ communityPGLMM.binary.LRT <- function(x, re.number = 0, ...) {
 			q.nonNested <- 0
 			sr <- NULL
 		}
-		if (is.null(nestedsp[[1]])) {
+		if (is.null(nested[[1]])) {
 			q.Nested <- 0
 		} else {
-			q.Nested <- length(nestedsp)
+			q.Nested <- length(nested)
 		}
 
 		if (q.Nested == 0) {
@@ -1207,9 +1227,9 @@ communityPGLMM.binary.LRT <- function(x, re.number = 0, ...) {
 			# Woodbury identity
 			iV <- iA - iA %*% U %*% solve(Ishort + Ut.iA.U) %*% Ut %*% iA
 		} else {
-			A <- diag(as.vector((mu * (1 - mu))^-1))
+			A <- as(diag(as.vector((mu * (1 - mu))^-1)), "dgCMatrix")
 			for (j in 1:q.Nested) {
-				A <- A + sn[j]^2 * kronecker(nestedsite[[j]], nestedsp[[j]])
+				A <- A + sn[j]^2 * nested[[j]]
 			}
 			iA <- solve(A)
 			if (q.nonNested > 0) {
@@ -1224,9 +1244,7 @@ communityPGLMM.binary.LRT <- function(x, re.number = 0, ...) {
 	}
 	# End plmm.binary.iV
 	
-	plmm.binary.logdetV <- function(par, Zt, St, mu, X, nestedsp = NULL, nestedsite = NULL) {
-		n <- dim(X)[1]
-		p <- dim(X)[2]
+	plmm.binary.logdetV <- function(par, Zt, St, mu, nested = NULL) {
 
 		if (!is.null(St)) {
 			q.nonNested <- dim(St)[1]
@@ -1243,10 +1261,10 @@ communityPGLMM.binary.LRT <- function(x, re.number = 0, ...) {
 			q.nonNested <- 0
 			sr <- NULL
 		}
-		if (is.null(nestedsp[[1]])) {
+		if (is.null(nested[[1]])) {
 			q.Nested <- 0
 		} else {
-			q.Nested <- length(nestedsp)
+			q.Nested <- length(nested)
 		}
 
 		if (q.Nested == 0) {
@@ -1263,9 +1281,9 @@ communityPGLMM.binary.LRT <- function(x, re.number = 0, ...) {
 			if (is.infinite(logdetV)) 
 				logdetV <- 2 * sum(log(diag(chol(Ishort + Ut.iA.U)))) - determinant(iA)$modulus[1]
 		} else {
-			A <- diag(as.vector((mu * (1 - mu))^-1))
+			A <- as(diag(as.vector((mu * (1 - mu))^-1)), "dgCMatrix")
 			for (j in 1:q.Nested) {
-				A <- A + sn[j]^2 * kronecker(nestedsite[[j]], nestedsp[[j]])
+				A <- A + sn[j]^2 * nested[[j]]
 			}
 			iA <- solve(A)
 			if (q.nonNested > 0) {
@@ -1277,7 +1295,7 @@ communityPGLMM.binary.LRT <- function(x, re.number = 0, ...) {
 			}
 			logdetV <- -determinant(iV)$modulus[1]
 			if (is.infinite(logdetV)) 
-				logdetV <- -2 * sum(log(diag(chol(iV, pivot = TRUE))))
+				logdetV <- -2 * sum(log(diag(chol(iV, pivot = T))))
 			if (is.infinite(logdetV)) 
 				return(list(iV = NULL, logdetV = NULL))
 		}
@@ -1287,22 +1305,22 @@ communityPGLMM.binary.LRT <- function(x, re.number = 0, ...) {
 	# End plmm.binary.logdetV
 	
 	# Begin pglmm.binary.LL
-	plmm.binary.LL <- function(par, H, X, Zt, St, mu, nestedsp = NULL, nestedsite = NULL, REML = TRUE, verbose = FALSE) {
+	plmm.binary.LL <- function(par, H, X, Zt, St, mu, nested = NULL, REML = TRUE, verbose = FALSE) {
 		par <- abs(par)
 		n <- dim(H)[1]
 		p <- dim(H)[2]
 
-		iV <- plmm.binary.iV(par = par, Zt = Zt, St = St, mu = mu, nestedsp = nestedsp, nestedsite = nestedsite)
-		logdetV <- plmm.binary.logdetV(par = par, Zt = Zt, St = St, mu = mu, nestedsp = nestedsp, nestedsite = nestedsite, X=X)
+		iV <- plmm.binary.iV(par = par, Zt = Zt, St = St, mu = mu, nested = nested)
+		logdetV <- plmm.binary.logdetV(par = par, Zt = Zt, St = St, mu = mu, nested = nested)
 		if (REML == TRUE) {
 			# REML likelihood function
-			LL <- 0.5 * (logdetV + t(H) %*% iV %*% H + log(determinant(t(X) %*% iV %*% X)$modulus[1]))
+			LL <- 0.5 * (logdetV + t(H) %*% iV %*% H + determinant(t(X) %*% iV %*% X)$modulus[1])
 		} else {
 			# ML likelihood function
 			s2.conc <- t(H) %*% iV %*% H/(n - p)
 			LL <- 0.5 * (logdetV + t(H) %*% iV %*% H)
 		}
-		if (verbose == TRUE) 
+		if (verbose == T) 
 			show(c(as.numeric(LL), par))
 
 		return(as.numeric(LL))
@@ -1318,23 +1336,25 @@ communityPGLMM.binary.LRT <- function(x, re.number = 0, ...) {
 	par[re.number] <- 0
 	df <- length(re.number)
 
-	LL <- plmm.binary.LL(par = x$ss, H = x$H, X = x$X, Zt = x$Zt, St = x$St, mu = x$mu, nestedsp = x$nestedsp, 
-		nestedsite = x$nestedsite, REML = x$REML)
+	LL <- plmm.binary.LL(par = x$ss, H = x$H, X = x$X, Zt = x$Zt, St = x$St, mu = x$mu, nested = x$nested, 
+		REML = x$REML)
 	if (x$REML == TRUE) {
-		logLik <- -0.5 * (n - p - 1) * log(2 * pi) + 0.5 * log(determinant(t(x$X) %*% x$X)$modulus[1]) - LL
+		logLik <- -0.5 * (n - p - 1) * log(2 * pi) + 0.5 * determinant(t(x$X) %*% x$X)$modulus[1] - 
+			LL
 	} else {
 		logLik <- -0.5 * n * log(2 * pi) - LL
 	}
 
-	LL0 <- plmm.binary.LL(par = par, H = x$H, X = x$X, Zt = x$Zt, St = x$St, mu = x$mu, nestedsp = x$nestedsp, 
-		nestedsite = x$nestedsite, REML = x$REML)
+	LL0 <- plmm.binary.LL(par = par, H = x$H, X = x$X, Zt = x$Zt, St = x$St, mu = x$mu, nested = x$nested, 
+		REML = x$REML)
 	if (x$REML == TRUE) {
-		logLik0 <- -0.5 * (n - p - 1) * log(2 * pi) + 0.5 * log(determinant(t(x$X) %*% x$X)$modulus[1]) - LL0
+		logLik0 <- -0.5 * (n - p - 1) * log(2 * pi) + 0.5 * determinant(t(x$X) %*% x$X)$modulus[1] - 
+			LL0
 	} else {
 		logLik0 <- -0.5 * n * log(2 * pi) - LL0
 	}
 
-	P.H0.s2 <- pchisq(2 * (logLik - logLik0), df = df, lower.tail = FALSE)/2
+	P.H0.s2 <- pchisq(2 * (logLik - logLik0), df = df, lower.tail = F)/2
 	return(list(LR = logLik - logLik0, df = df, Pr = P.H0.s2))
 }
 
@@ -1350,8 +1370,10 @@ communityPGLMM.binary.LRT <- function(x, re.number = 0, ...) {
 #' @param ss which of the \code{random.effects} to produce
 #' @rdname pglmm
 #' @export
-communityPGLMM.matrix.structure <- function(formula, data = list(), family = "binomial", sp = NULL, site = NULL, 
-	random.effects = list(), ss = 1) {
+communityPGLMM.matrix.structure <- function(formula, data = list(), family = "binomial", sp = NULL, 
+	site = NULL, random.effects = list(), ss = 1) {
+	library(Matrix)
+
 	plmm.binary.V.test <- function(par, Zt, St, X, nestedsp = NULL, nestedsite = NULL) {
 		n <- nrow(X)
 
@@ -1494,9 +1516,11 @@ if (is.null(sp) | is.null(site))
 		St <- NULL
 	}
 
-	V <- plmm.binary.V.test(par = array(ss, c(1, q)), Zt = Zt, St = St, X = X, nestedsp = nestedsp, nestedsite = nestedsite)
+	V <- plmm.binary.V.test(par = array(ss, c(1, q)), Zt = Zt, St = St, X = X, nestedsp = nestedsp, 
+		nestedsite = nestedsite)
 	return(V)
 }
+
 
 
 ######################################################
@@ -1510,27 +1534,27 @@ if (is.null(sp) | is.null(site))
 #' in \code{\link{print.default}}
 #' @param object communityPGLMM object to be summarised
 #' @export
-summary.communityPGLMM <- function(object, digits = max(3, getOption("digits") - 3), ...) {
-	if (object$family == "gaussian") {
-		if (object$REML == TRUE) 
+summary.communityPGLMM <- function(x, digits = max(3, getOption("digits") - 3), ...) {
+	if (x$family == "gaussian") {
+		if (x$REML == TRUE) 
 			cat("Linear mixed model fit by restricted maximum likelihood")
 		else cat("Linear mixed model fit by maximum likelihood")
 	}
-	if (object$family == "binomial") {
-		if (object$REML == TRUE) 
+	if (x$family == "binomial") {
+		if (x$REML == TRUE) 
 			cat("Generalized linear mixed model for binary data fit by restricted maximum likelihood")
 		else cat("Generalized linear mixed model for binary data fit by maximum likelihood")
 	}
 
 	cat("\n\nCall:")
-	print(object$formula)
+	print(x$formula)
 	cat("\n")
 
-	if (object$family == "gaussian") {
+	if (x$family == "gaussian") {
 
-		logLik = object$logLik
-		AIC = object$AIC
-		BIC = object$BIC
+		logLik = x$logLik
+		AIC = x$AIC
+		BIC = x$BIC
 
 		names(logLik) = "logLik"
 		names(AIC) = "AIC"
@@ -1538,24 +1562,24 @@ summary.communityPGLMM <- function(object, digits = max(3, getOption("digits") -
 		print(c(logLik, AIC, BIC), digits = digits)
 	}
 	cat("\nRandom effects:\n")
-	w <- data.frame(Variance = matrix(c(object$s2r, object$s2n, object$s2resid), ncol = 1), Std.Dev = matrix(c(object$s2r^0.5, 
-		object$s2n^0.5, object$s2resid^0.5), ncol = 1))
+	w <- data.frame(Variance = matrix(c(x$s2r, x$s2n, x$s2resid), ncol = 1), Std.Dev = matrix(c(x$s2r^0.5, 
+		x$s2n^0.5, x$s2resid^0.5), ncol = 1))
 
 	re.names <- NULL
-	if (length(object$s2r) > 0) 
-		for (i in 1:length(object$s2r)) re.names <- c(re.names, paste("non-nested ", i, sep = ""))
+	if (length(x$s2r) > 0) 
+		for (i in 1:length(x$s2r)) re.names <- c(re.names, paste("non-nested ", i, sep = ""))
 
-	if (length(object$s2n) > 0) 
-		for (i in 1:length(object$s2n)) re.names <- c(re.names, paste("nested ", i, sep = ""))
+	if (length(x$s2n) > 0) 
+		for (i in 1:length(x$s2n)) re.names <- c(re.names, paste("nested ", i, sep = ""))
 
-	if (object$family == "gaussian") 
+	if (x$family == "gaussian") 
 		re.names <- c(re.names, "residual")
 
 	row.names(w) <- re.names
 	print(w, digits = digits)
 
 	cat("\nFixed effects:\n")
-	coef <- data.frame(Value = object$B, Std.Error = object$B.se, Zscore = object$B.zscore, Pvalue = object$B.pvalue)
+	coef <- data.frame(Value = x$B, Std.Error = x$B.se, Zscore = x$B.zscore, Pvalue = x$B.pvalue)
 	printCoefmat(coef, P.values = TRUE, has.Pvalue = TRUE)
 	cat("\n")
 }
@@ -1574,10 +1598,16 @@ print.communityPGLMM <- function(x, digits = max(3, getOption("digits") - 3), ..
 #' @importFrom plotrix color2D.matplot
 #' @export
 plot.communityPGLMM <- function(x, digits = max(3, getOption("digits") - 3), ...) {
+	if (!require(plotrix)) {
+		stop("The 'plotrix' package is required to plot images from this function")
+	}
+
 	W <- data.frame(Y = x$Y, sp = x$sp, site = x$site)
 	Y <- reshape(W, v.names = "Y", idvar = "sp", timevar = "site", direction = "wide")
 	Y <- Y[, 2:dim(Y)[2]]
+
 	par(mfrow = c(1, 1), las = 1, mar = c(4, 4, 2, 2) - 0.1)
+
 	color2D.matplot(Y, ylab = "species", xlab = "sites", main = "Observed values")
 }
 
@@ -1611,10 +1641,15 @@ communityPGLMM.predicted.values <- function(x, show.plot = TRUE, ...) {
 	}
 
 	if (show.plot == TRUE) {
+		if (!require(plotrix)) {
+			stop("The 'plotrix' package is required to plot images from this function")
+		}
+
 		W <- data.frame(Y = predicted.values, sp = x$sp, site = x$site)
 		Y <- reshape(W, v.names = "Y", idvar = "sp", timevar = "site", direction = "wide")
 		Y <- Y[, 2:dim(Y)[2]]
 		par(mfrow = c(1, 1), las = 1, mar = c(4, 4, 2, 2) - 0.1)
+
 		color2D.matplot(Y, ylab = "species", xlab = "sites", main = "Predicted values")
 	}
 	return(predicted.values)
