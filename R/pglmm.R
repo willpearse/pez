@@ -1118,7 +1118,11 @@ if (is.null(sp) | is.null(site))
 			est.B.m <- B
 			if (verbose == TRUE) 
 				show(c(iteration, B))
-		}
+		  
+      if(any(is.nan(B))){
+				stop("Estimation of B failed. Check for lack of variation in Y. You could try with a smaller s2.init, but this might not help.")
+			}
+    }
 
 		# variance component
 		Z <- X %*% B + b + (Y - mu)/(mu * (1 - mu))
