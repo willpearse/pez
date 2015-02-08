@@ -1165,7 +1165,7 @@ if (is.null(sp) | is.null(site))
 	results <- list(formula = formula, data = data, family = family, random.effects = random.effects, 
 		B = B, B.se = B.se, B.cov = B.cov, B.zscore = B.zscore, B.pvalue = B.pvalue, ss = ss, 
 		s2r = s2r, s2n = s2n, s2resid = NULL, logLik = NULL, AIC = NULL, BIC = NULL, REML = REML, 
-		s2.init = s2.init, B.init = B.init, Y = Y, X = X, H = H, iV = iV, mu = mu, nested, sp = sp, 
+		s2.init = s2.init, B.init = B.init, Y = Y, X = X, H = H, iV = iV, mu = mu, nested = nested, sp = sp, 
 		site = site, Zt = Zt, St = St, convcode = opt$convergence, niter = opt$counts)
 	class(results) <- "communityPGLMM"
 	results
@@ -1330,9 +1330,12 @@ communityPGLMM.binary.LRT <- function(x, re.number = 0, ...) {
 
 	n <- dim(x$X)[1]
 	p <- dim(x$X)[2]
-	par <- x$ss
-	par[re.number] <- 0
 	df <- length(re.number)
+
+	
+	q.nonNested <- length(x$ss) - length(x$nested)
+	ss0 <- x$ss
+	ss0[re.number] <- 0
 
 	LL <- plmm.binary.LL(par = x$ss, H = x$H, X = x$X, Zt = x$Zt, St = x$St, mu = x$mu, nested = x$nested, 
 		REML = x$REML)
@@ -1343,7 +1346,7 @@ communityPGLMM.binary.LRT <- function(x, re.number = 0, ...) {
 		logLik <- -0.5 * n * log(2 * pi) - LL
 	}
 
-	LL0 <- plmm.binary.LL(par = par, H = x$H, X = x$X, Zt = x$Zt, St = x$St, mu = x$mu, nested = x$nested, 
+	LL0 <- plmm.binary.LL(par = ss0, H = x$H, X = x$X, Zt = x$Zt, St = x$St, mu = x$mu, nested = x$nested, 
 		REML = x$REML)
 	if (x$REML == TRUE) {
 		logLik0 <- -0.5 * (n - p - 1) * log(2 * pi) + 0.5 * determinant(t(x$X) %*% x$X)$modulus[1] - 
