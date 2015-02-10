@@ -12,7 +12,7 @@
 \usepackage[colorlinks=true,urlcolor=dark-gray,breaklinks,citecolor=black,linkcolor=black]{hyperref}
 \bibliographystyle{besjournals}
 \title{An introduction to \emph{pez}}
-\author{WD Pearse, M Cadotte, J Cavender-Bares, AR Ives,\\C Tucker, S Walker, \& MR Helmus}
+\author{WD Pearse, MW Cadotte, J Cavender-Bares, AR Ives,\\C Tucker, S Walker, \& MR Helmus}
 \date{\today}
 
 \begin{document}
