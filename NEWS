@@ -1,0 +1,5 @@
+2015-02-10	Version 1.0-0
+
+* pglmm.R - created, examples added to vignette
+* comparative.comm.R - added wrappers 
+* shape.R - removed PVR package dependency
