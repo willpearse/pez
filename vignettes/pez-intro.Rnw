@@ -12,7 +12,7 @@
 \usepackage[colorlinks=true,urlcolor=dark-gray,breaklinks,citecolor=black,linkcolor=black]{hyperref}
 \bibliographystyle{besjournals}
 \title{An introduction to \emph{pez}}
-\author{W.D.\ Pearse, J.\ Cavender-Bares, \& S.C.\ Walker}
+\author{WD Pearse, M Cadotte, J Cavender-Bares, AR Ives,\\C Tucker, S Walker, \& MR Helmus}
 \date{\today}
 
 \begin{document}
@@ -363,6 +363,127 @@ computed using the following code,
 ses.mfpd.data <- picante::ses.mpd(data$comm, fpd.data)
 head(ses.mfpd.data)[,c("ntaxa", "mpd.obs", "mpd.obs.p")]
 @
+
+\section{Phylogenetic Generalised Linear Models (PGLMMs)}
+
+Phylogenetic Generalised Linear Models (PGLMMs) are powerful tools
+that permit detailed tests of what structures ecological
+communities. They were originally intended to examine phylogenetic
+patterns in community composition, sensitivity to environmental
+gradients (and variation in species' sensitivity based on trait data),
+and species co-occurrence \citep{Ives2011}. They were later extended
+to model interaction networks \citep{Rafferty2013}, and both of these
+methods are flexibly implemented in \emph{pez} such that they can take
+any kind of correlation structure, whether it be among species or
+among sites (\emph{e.g.}, spatial auto-correlation). Both species
+occurrence and abundance can be modelled, depending on the error
+\texttt{family} specified.
+
+What follows is a simple example of how to simulate, and then analyse,
+the most basic kind of PGLMM. The help file for PGLMM is quite
+thorough; the first section provides a helpful reference for how to
+quickly fit different kinds of models once you are familiar with the
+approach. What follows is a greatly condensed version of the second
+section; the help file contains much more information of why and how
+each step of the simulation works.
+
+<<<pglmmSim, tidy=TRUE>>=
+# Basic parameters
+nspp <- 15; nsite <- 10
+# Fixed effects
+beta0 <- beta1 <- 0
+# Random effects' magnitudes
+sd.B0 <- sd.B1 <- 1
+
+# Generate environmental site variable
+X <- matrix(1:nsite, nrow=1, ncol=nsite)
+X <- (X - mean(X))/sd(X)
+
+# Simulate phylogeny
+phy <- compute.brlen(rtree(nspp), method = "Grafen", power = 0.5)
+# Standardise phy. covariance matrix
+Vphy <- vcv(phy); Vphy <- Vphy/(det(Vphy)^(1/nspp))
+
+# Generate phylogenetic signal in parameters
+iD <- t(chol(Vphy))
+b0 <- beta0 + iD %*% rnorm(nspp, sd = sd.B0)
+b1 <- beta1 + iD %*% rnorm(nspp, sd = sd.B1)
+
+#Simulate presences
+y <- matrix(outer(b0, array(1, dim = c(1, nsite))), nrow = nspp, ncol = nsite) + matrix(outer(b1, X), nrow = nspp, ncol = nsite)
+e <- rnorm(nspp * nsite, sd = 0)
+y <- y + matrix(e, nrow = nspp, ncol = nsite)
+y <- matrix(y, nrow = nspp * nsite, ncol = 1)    
+Y <- rbinom(n = length(y), size = 1, prob = exp(y)/(1 + exp(y)))
+Y <- matrix(Y, nrow = nspp, ncol = nsite)
+
+#Neat up the data to show structure
+rownames(Y) <- 1:nspp; colnames(Y) <- 1:nsite
+@ 
+
+Arguably the most important thing for you to understand about the
+above is what \texttt{Y} represents: it is a matrix where each species
+has its own row, and each site its own column (see the final
+line). Were we to take the transpose of it (\texttt{t}), it would be
+the same format as a \texttt{comparative.comm}'s community matrix.
+
+We will now transform that data such that it is in a `long
+format'---each element in the community matrix will become a row in a
+\texttt{data.frame} and we will perform a regression (a PGLMM, to be
+precise!) on that data.
+
+<<pglmmModel, tidy=TRUE>>=
+# Transform data into 'long' format
+# - Occurrence data
+YY <- matrix(Y, nrow = nspp * nsite, ncol = 1)
+# - Environmental (site) data
+XX <- matrix(kronecker(X, matrix(1, nrow = nspp, ncol = 1)), nrow = nspp * nsite, ncol = 1)
+site <- matrix(kronecker(1:nsite, matrix(1, nrow = nspp, ncol = 1)), nrow = nspp * nsite, ncol = 1)
+sp <- matrix(kronecker(matrix(1, nrow = nsite, ncol = 1), 1:nspp), nrow = nspp * nsite, ncol = 1)
+# - Make data.frame with all data
+dat <- data.frame(Y = YY, X = XX, site = as.factor(site), sp = as.factor(sp))
+
+# Setup random effects
+# - 1: random intercept - species independent
+re.1 <- list(1, sp = dat$sp, covar = diag(nspp))
+# - 2: random intercept - species phylogenetically covary
+re.2 <- list(1, sp = dat$sp, covar = Vphy)
+# - 3: random slope - species independent
+re.3 <- list(dat$X, sp = dat$sp, covar = diag(nspp))
+# - 4: random intercept - species covary
+re.4 <- list(dat$X, sp = dat$sp, covar = Vphy)   
+# (Random effect for site)
+re.site <- list(1, site = dat$site, covar = diag(nsite))
+
+# Fit model!
+model <- communityPGLMM(Y ~ X, data = dat, family = "binomial", sp = dat$sp, site = dat$site, random.effects = list(re.1, re.2, re.3, re.4), REML = TRUE, verbose = FALSE)
+@ 
+
+There are three steps: transforming the data (as discussed above),
+setting up the random effects, and finally fitting the model. Fitting
+the model is comparatively easy; make sure you specify your random
+effects, and if you're modelling presence/absence data set the
+\texttt{family} to \texttt{binomial} as you might in any GLM.
+
+The random effects describe how likely species are to occur in the
+sites based on a regression of the environmental variable we simulated
+in the first step. There are random effects for the intercept of the
+regression (split into independent and phylogenetically shared
+variance for each species) and the slope of their relationship (also
+with phylogenetic and non-phylogenetic components). There is also a
+random effect for site-level variation. The first section of the help
+file (\texttt{?pglmm}) gives examples of how to set up other kinds of
+hypotheses involving species traits. These map onto the original
+\citet{Ives2011} paper that describes PGLMMs.
+
+Your choice of random effects determines the hypotheses you are
+testing with your data---PGLMMs are attractive mostly because of this
+flexibility. If you are confused over what random effects to fit, go
+back to the original papers \citep{Ives2011,Rafferty2013}, and maybe
+check a more recent (but basic) overview
+\citep{Pearse2014review}. Powerful methods mean you get to make
+powerful choices about what you analyse: this is a good thing!
+
 \section{Simulation}
 
 A good simulation is one that does exactly what you want it to do, and
@@ -378,7 +499,7 @@ and give you a feel for regional assembly.
 
 Alternatively, you can model the evolution of species and, at the same
 time, their assembly through a community. The only problem here is
-that the models are much simpler, but hopefully they are tunable to
+that the models are much simpler, but hopefully they are tune-able to
 your liking! Explore the \texttt{sim.meta} and \texttt{sim.phy}
 functions to find out more.
 
@@ -445,6 +566,11 @@ Bryant, J.A., Lamanna, C., Morlon, H., Kerkhoff, A.J., Enquist, B.J. \& Green,
 Helmus, M.R. \& Ives, A.R. (2012) Phylogenetic diversity-area curves.
   \emph{Ecology} \textbf{93}, S31--S43.
 
+\bibitem[{Ives \& Helmus(2011)}]{Ives2011} Ives, A.R. \& Helmus,
+  M.R. (2011) Generalized linear mixed models for phylogenetic
+  analyses of community structure \emph{Ecological Monographs}
+  \textbf{81}, 511--525.  
+  
 \bibitem[{Kembel \emph{et~al.}(2010)Kembel, Cowan, Helmus, Cornwell, Morlon,
   Ackerly, Blomberg \& Webb}]{Kembel2010}
 Kembel, S.W., Cowan, P.D., Helmus, M.R., Cornwell, W.K., Morlon, H., Ackerly,
@@ -469,6 +595,10 @@ Pearse, W.D., Cavender-Bares, J., Puvis, A. \& Helmus, M.R. (2014) Metrics and
   models of community phylogenetics. \emph{Modern Phylogenetic Comparative
   Methods and their Application in Evolutionary Biology---Concepts and
   Practice} (ed. L.Z. Garamszegi), Springer-Verlag, Berlin, Heidelberg.
+
+\bibitem[{Rafferty \& Ives(2013)}]{Rafferty2013} Rafferty, N.E. \&
+  Ives, A.R. (2013) Phylogenetic trait-based analyses of ecological
+  networks \emph{Ecology} \textbf{94}, 2321--2333.
 
 \bibitem[{Webb \emph{et~al.}(2002)Webb, Ackerly, McPeek \&
     Donoghue}]{Webb2002} Webb, C.O., Ackerly, D.D., McPeek, M.A. \&
