@@ -13,7 +13,7 @@ Description: Eco-phylogenetic and community phylogenetic analyses.
     and 'dissimilarity' metrics). Implementation of Cavender-Bares
     (2004) correlation of phylogenetic and ecological matrices
     ('fingerprint.regression'). Phylogenetic Generalised Linear Mixed
-    Models (PGLMMS) following ('pglmm') following Ives & Helmus (2011)
+    Models (PGLMMs) following ('pglmm') following Ives & Helmus (2011)
     and Rafferty & Ives (2013). Simulation of null assemblages,
     traits, and phylogenies ('scape', 'sim.meta.comm').
 License: GPL-3
