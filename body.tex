@@ -1,25 +1,29 @@
 \documentclass{bioinfo}
 \copyrightyear{2014}
 \pubyear{2014}
-\bibliographystyle{besjournals}
 \begin{document}
 \firstpage{1}
 
 \title[\emph{pez}]{\emph{pez}: Phylogenetics for the Environmental
   Sciences} \author[Pearse \textit{et~al}]{William D.\
-  Pearse\,$^{1}$\footnote{to whom correspondence should be addressed},
-  Marc Cadotte\,$^{2}$, Jeannine Cavender-Bares\,$^1$, Caroline
-  Tucker\,$^{3}$, Steve Walker\,$^{4}$ and Matthew R.\ Helmus\,$^5$}
-\address{$^{1}$Department of Ecology, Evolution, and Behavior,
-  University of Minnesota, 100 Ecology Building, 1987 Upper Buford
-  Circle, Saint Paul, Minnesota, 55108, USA, $^{2}$Department of
-  Biological Sciences, University of Toronto–Scarborough, 1265
-  Military Trail, Scarborough, Ontario M1C 1A4, Canada
-  $^{3}$Department of Ecology and Evolutionary Biology, University of
-  Colorado, Boulder, CO, USA, $^{4}$Department of Mathematics and
-  Statistics, McMaster University, Hamilton, Ontario L8S 4L8, Canada,
-  $^{5}$Department of Animal Ecology, Vrije Universiteit, 1081 HV,
-  Amsterdam, The Netherlands} \history{} \editor{}
+  Pearse\,$^{1,2,3}$\footnote{to whom correspondence should be
+    addressed}, Marc Cadotte\,$^{4}$, Jeannine Cavender-Bares\,$^1$,
+  Anthony R.\ Ives$^5$, Caroline Tucker\,$^6$, Steve Walker\,$^7$ and
+  Matthew R.\ Helmus\,$^8$} \address{$^1$Department of Ecology,
+  Evolution, and Behavior, University of Minnesota, 100 Ecology
+  Building, 1987 Upper Buford Circle, Saint Paul, Minnesota, USA,
+  $^2$Department of Biology, McGill University, 1205 Avenue Docteur
+  Penfield, Montr\'{e}al, Qu\'{e}bec, Canada, $^3$D\'{e}partement des
+  Sciences Biologiques, Universit\'{e} du Qu\'{e}bec \`{a}
+  Montr\'{e}al, Succursale Centre-ville, Montr\'{e}al, Qu\'{e}bec,
+  Canada, $^4$Department of Biological Sciences, University of
+  Toronto–Scarborough, 1265 Military Trail, Scarborough, Ontario,
+  Canada, $^5$Department of Zoology, University of Wisconsin, Madison,
+  Wisconsin, USA $^6$Department of Ecology and Evolutionary Biology,
+  University of Colorado, Boulder, CO, USA, $^7$Department of
+  Mathematics and Statistics, McMaster University, Hamilton, Ontario,
+  Canada, $^8$Department of Animal Ecology, Vrije Universiteit, 1081
+  HV, Amsterdam, The Netherlands} \history{} \editor{}
 \maketitle
 \begin{abstract}
 \section{Summary:}
@@ -27,7 +31,7 @@
 phylogenetic metrics, statistically models phylogenetic, trait, and
 community data, and simulates community structure. It provides a
 common programmatic standard for the management and manipulation of
-these different data streams in \emph{R}.
+eco-phylogenetic data \emph{R}.
 \section{Availability:}
 \emph{pez} is released under the GPL v3 open-source license, available
 on the Internet from CRAN
@@ -35,22 +39,22 @@ on the Internet from CRAN
 package is under active development, and the authors welcome
 contributions (see
 \href{http://github.com/willpearse/pez}{http://github.com/willpearse/pez}).
-\section{Contact:} \href{wdpearse@umn.edu}{William D.\ Pearse; wdpearse@umn.edu}
+\section{Contact:} \href{will.pearse@gmail.com}{William D.\ Pearse; will.pearse@gmail.com}
 \end{abstract}
 \section{Introduction}
-Community phylogenetics (or eco-phylogenetics) is a sub-field of
-ecology which links ecological phenomena with the evolutionary
-processes that generate species and their traits
+Community phylogenetics (or eco-phylogenetics) combines ecology and
+evolutionary biology, linking ecological phenomena with the
+evolutionary processes that generate species and their traits
 \citep[see][]{Webb2002}. This growing field has produced a number of
 statistical tools and software code to implement them
-\citep[\emph{e.g.},][]{Kembel2010}. This code is disparate and handles
-data differently, making routine data analyses challenging. In many
-cases, methods are not formally implemented in a software package and
-are available only as supplementary materials to papers. Without
-active (public) maintenance, these valuable techniques are effectively
-lost to the scientific community.
+\citep[\emph{e.g.},][]{Kembel2010}, but the field's code is disparate
+and handles data differently, making routine data analyses
+challenging. In many cases, methods are not formally implemented in a
+software package and are available only as supplementary materials to
+papers. Without active (public) maintenance, these valuable techniques
+are effectively lost to the scientific community.
 
-\emph{pez} provides an \emph{R} \citep{R2014} class
+\emph{pez} provides an \emph{R} \citep{R2015} class
 (\emph{comparative.comm}) that integrates phylogenetic, community,
 environmental, and trait data in a single object. Table
 \ref{metricTable} gives an overview of its features. Using a
@@ -59,86 +63,83 @@ phylogenetic biodiversity metrics, many of which were previously
 unavailable in \emph{R}. These metrics are grouped according to the
 framework outlined in \citet{Pearse2014review}, easing the
 interpretation and comparison of different aspects of phylogenetic
-biodiversity. Further, \emph{pez} implements and extends the
-regression framework presented by \citep{Cavender-Bares2004}, and
-provides functions to simulate phylogenetic and ecological data. It is
-our hope that \emph{pez} will provide a universal, easy to use, and
-extendable \emph{R} framework for eco-phylogenetic analysis.
+biodiversity. Further, \emph{pez} implements several modelling
+frameworks \citep{Cavender-Bares2004,Ives2011}, and provides functions
+to simulate phylogenetic and ecological data. It is our hope that
+\emph{pez} will provide a universal, easy to use, and extendable
+\emph{R} framework for eco-phylogenetic analysis.
 \section{Description}
 \subsection{Data manipulation and storage}
-\emph{pez} extends the data manipulation and import/export features of
-\emph{R}, and contains a unified class to contain all eco-phyogenetic
-data. It simplifies the process of ensuring community, trait,
-environmental, and phylogenetic data are compatible by, for example,
-allowing the simultaneous removal of species from all datasets
-simultaneously. \emph{pez} is compatible with \emph{caper}'s
-\citep{Orme2013} \emph{comparative.data} class, aiding comparative
+\emph{pez} extends the data manipulation features of \emph{R}, and
+provides a unified class to contain all eco-phyogenetic data. It
+ensures that community, trait, environmental, and phylogenetic data
+are compatible, and allows simultaneous manipulation of species and
+site composition across all data types. \emph{pez} is compatible with
+all \emph{caper} \citep{Orme2013} code, facilitating comparative
 analysis of species trait data.
 
 \subsection{Metrics}
 Following the classification of \citet{Pearse2014review}, \emph{pez}
-facilitates the calculation and comparison of a number of metrics by
-grouping them into four categories: \emph{shape}, \emph{evenness},
+eases the calculation and comparison of over 30 metrics by grouping
+them into four categories: \emph{shape}, \emph{evenness},
 \emph{dispersion}, and \emph{dissimilarity}. Shape metrics measure the
 structure of a community phylogeny, while evenness metrics
 additionally incorporate species abundances. Dispersion metrics are
 used to examine whether phylogenetic biodiversity in an assemblage
 differs from the expectation of random assembly from a given set of
-species, a species pool. Finally, dissimilarity metrics measure the
+species---a species pool. Finally, dissimilarity metrics measure the
 pairwise difference in phylogenetic biodiversity between
 assemblages. The \emph{traitgram} framework
 \citep{Ackerly2009,Cadotte2013}, which directly compares phylogenetic
 and functional trait community structure, is also
 implemented. Speeding and easing the comparison of community
 phylogenetic metrics is important, since different metrics can reveal
-separate aspects eco-phylogenetic structure \citep{Cadotte2010}.
+separate aspects of eco-phylogenetic structure \citep{Cadotte2010}.
 
 \begin{table*}
-  \processtable{Overview of some of the functions available in \emph{pez}.\label{metricTable}}
-  {\begin{tabular}{p{2.5cm} p{15cm}}\toprule
+  \processtable{Overview of some of the functions available in \emph{pez}. * indicates a family of functions which are documented under this name in the package.\label{metricTable}}
+  {\begin{tabular}{p{3cm} p{14cm}}\toprule
       Function(s) & Description\\\midrule
       \emph{comparative.comm} & Stores community, phylogenetic, environmental, and species trait data\\
-      \emph{shape}, \emph{evenness}, \emph{dispersion}, \emph{dissimilarity}
-
-
-      \emph{shape} & Calculates \emph{PSV} \citep{Helmus2007}, \emph{PSR} \citep{Helmus2007}, \emph{PD} \& \emph{MPD} \citep{Faith1992}, Colless' Index \citep{Colless1982}, $\gamma$ \citep{Pybus2000}, $\Delta$ \citep{Warwick1995}, $E_{ED}$ \& $H_{ed}$ \citep{Cadotte2010}, phylo-eigenvectors \citep{Diniz-Filho2011}\\
-      \emph{evenness} & Calculates $\Delta$ \citep{Warwick1995}, Phylogenetic Entropy \citep{Allen2009}, \emph{PAE}, \emph{IAC}, $H_{aed}$, \& $E_{aed}$ \citep{Cadotte2010}, Rao's quadratic entropy \citep{Rao1982a}, $\lambda$ \citep{Pagel1999}, $\delta$ \citep{Pagel1999}, $\kappa$ \citep{Pagel1999}\\
-      \emph{dispersion} & Calculates $SES_{MPD}$/\emph{NRI} \citep{Webb2002,Kembel2009}, $SES_{MNTD}/\emph{NTI}$ \citep{Webb2002,Kembel2009}, \emph{INND} \citep{Ness2011}, \emph{D} \citep{Fritz2010}\\
-      \emph{dissimilarity} &  Calculates UniFrac \citep{Lozupone2005}, \emph{PCD} \citep{Ives2010}, PhyloSor \citep{Bryant2008}, Rao's Q \citep{Rao1982a}\\
-      \emph{trait.asm} & Calculates optimal \emph{traitgram} that explains community data, following \citep{Ackerly2009,Cadotte2013}\\
-      \emph{fingerprint.regression} & Compares phylogenetic, community co-existence, and trait similarity matrices using Mantel tests, quantile regressions, or linear models, following \citep{Cavender-Bares2004} \\
-      \emph{scape} & Simulates community phylogenetic structure across a landscape, simulating phylogenetic repulsion, attraction, niche width, and range size \citep{Helmus2012}\\
-      \emph{sim.meta.phy.comm} & Simulates a phylogeny with associated species' traits under iterated regional assembly and dispersal; sub-components available as separate functions  (\emph{sim.bd.xxx}, and \emph{sim.meta.xxx}).\\
+      \emph{shape}, \emph{evenness}, \emph{dispersion}, \emph{dissimilarity} & Calculates metrics following the frameowkr of \citet{Pearse2014review}, including $E_{ED}$, $H_{ED}$, $H_{AED}$, \& $E_{AED}$ \citep{Cadotte2010}, Pagel's $\lambda$, $\delta$ \& $\kappa$ \citep{Pagel1999}, phylogenetic entropy \citep{Allen2009}, and \emph{INND} \citep{Ness2011}, all integrated with other metrics in existing packages. Permits use of trait distance matrices and \emph{traitgram} \citep{Ackerly2009,Cadotte2013} approaches, and square-root transformations \citep[following][]{Letten2014}.\\
+      \emph{fingerprint.regression}, \emph{eco.xxx.regression}* & Compares phylogenetic, community co-existence, trait similarity, environmental, and environmental overlap matrices using Mantel tests, quantile regressions, or linear models, following \citet{Cavender-Bares2004} \\
+      \emph{sim.phy}*, \emph{sim.meta}*, \emph{scape}, \emph{trait.asm}, \emph{ConDivSim} & Simulate phylogenies, assemblages, meta-communities, regional landscapes, and expected phylogenetic diversities. In particular, \emph{scape} simulates community phylogenetic structure across a landscape, simulating phylogenetic repulsion, attraction, niche width, and range size, following \citet{Helmus2012}\\
+      \emph{phy.build}* & Tools for building assemblage phylogenies, following the \emph{merge}/\emph{replace} methods of \emph{phyloGenerator} \citep{Pearse2013}\\
+      \emph{pglmm}* & Phylogenetic Generalised Linear Mixed Models of communty \citep{Ives2011} and interaction network \citep{Rafferty2013} data, optionally incorporating environmental, trait, and spatial structure\\
       \botrule
 \end{tabular}}{}
 \end{table*}
-\subsection{Models and Simulations}
+\subsection{Models}
 \emph{pez} implements the \citet{Cavender-Bares2004} regression
-framework for comparing species co-existence, environmental, trait,
-and phylogenetic distance matrices, and extends it by including more
-distance metrics and measures of phylogenetic signal. Developing new
-techniques requires the simulation and examination of null
-communities, and \emph{pez} contains functions to facilitate this.
-The most advanced of these functions (\emph{scape}) is based on
-\citet{Helmus2012}, and simulates species' distributions across
-environmental gradients. Species' environemntal tolerances and range
-sizes can be simulated under Brownian, Ornstein-Uhlenbeck, and
+framework for comparing matrices of species co-existence,
+environmental, trait, and phylogenetic distance, and extends it by
+including more distance metrics and measures of phylogenetic
+signal. It also permits regression modelling of community
+\citep{Ives2011} and interaction network data \citep{Rafferty2013}
+using the Phylogenetic Generalised Linear Mixed Modelling (PGLMM)
+framework. PGLMMs were the first truly statistical community
+phylogenetic models to be developed, and permit sensitive tests of the
+ecological and evolutionary structure of multiple communities.
+\subsection{Simulations}
+Developing new techniques requires the simulation and examination of
+null eco-phylogenetic data, and \emph{pez} contains functions to
+facilitate this.  The most advanced of these functions (\emph{scape})
+is based on \citet{Helmus2012}, and simulates species' distributions
+across environmental gradients. Species' environemntal tolerances and
+range sizes can be simulated under Brownian, Ornstein-Uhlenbeck, and
 disruptive models of trait evolution, and contrasting patterns of
 phylogenetic structure at different spatial scales can be
 generated. Another function (\emph{sim.meta.phy.comm}) permits less
 sophisticated models of trait evolution and regional assembly, but
-does not require an \emph{a priori} phylogeny, and simulates
+does not require an \emph{a priori} phylogeny, as it simulates
 phylogeny, traits, and regional dynamics through evolutionary
 time. Its sub-routines are available as separate functions within
 \emph{pez} (table \ref{metricTable}), permitting rapid development and
 prototyping of new methods and simulation studies.
 
 \section*{Acknowledgements}
-A.\ Purvis contributed to the metric framework according to which this
-package's metrics are organised.
-\paragraph{Funding\textcolon} WDP was funded by XXX, MRH was funded by
-the Netherland Organisation for Scientific Research (858.14.040); both
-were funded by SESYNC (XXX).
+E.\ Lind and B.\ Waring provided feedback on the package and
+manuscript.
 
 \begin{thebibliography}{30}
 \providecommand{\natexlab}[1]{#1}
@@ -153,13 +154,6 @@ Ackerly, D. (2009) Conservatism and diversification of plant functional traits: 
 Allen, B., Kon, M. \& Bar-Yam, Y. (2009) A new phylogenetic diversity measure
   generalizing the shannon index and its application to phyllostomid bats.
   \emph{The American Naturalist} \textbf{174}, 236--243.
-
-\bibitem[{Bryant \emph{et~al.}(2008)Bryant, Lamanna, Morlon, Kerkhoff, Enquist
-  \& Green}]{Bryant2008}
-Bryant, J.A., Lamanna, C., Morlon, H., Kerkhoff, A.J., Enquist, B.J. \& Green,
-  J.L. (2008) Microbes on mountainsides: contrasting elevational patterns of
-  bacterial and plant diversity. \emph{Proceedings of the National Academy of
-  Sciences} \textbf{105}, 11505--11511.
 
 \bibitem[{Cadotte \emph{et~al.}(2013)Cadotte, Albert \& Walker}]{Cadotte2013}
 Cadotte, M., Albert, C.H. \& Walker, S.C. (2013) The ecology of differences:
@@ -179,29 +173,9 @@ Cavender-Bares, J., Ackerly, D.D., Baum, D.a. \& Bazzaz, F.a. (2004)
   {Phylogenetic overdispersion in Floridian oak communities}. \emph{The
   American Naturalist} \textbf{163}, 823--43.
 
-\bibitem[{Colless(1982)}]{Colless1982}
-Colless, D.H. (1982) Review of phylogenetics: the theory and practice of
-  phylogenetic systematics. \emph{Systematic Zoology} \textbf{31}, 100--104.
-
-\bibitem[{Diniz-Filho \emph{et~al.}(2011)Diniz-Filho, Cianciaruso, Rangel \&
-  Bini}]{Diniz-Filho2011}
-Diniz-Filho, J.A.F., Cianciaruso, M.V., Rangel, T.F. \& Bini, L.M. (2011)
-  Eigenvector estimation of phylogenetic and functional diversity.
-  \emph{Functional Ecology} \textbf{25}, 735--744.
-
 \bibitem[{Faith(1992)}]{Faith1992}
 Faith, D.P. (1992) Conservation evaluation and phylogenetic diversity.
   \emph{Biological Conservation} \textbf{61}, 1--10.
-
-\bibitem[{Fritz \& Purvis(2010)}]{Fritz2010}
-Fritz, S.A. \& Purvis, A. (2010) selectivity in mammalian extinction risk and
-  threat types: a new measure of phylogenetic signal strength in binary traits.
-  \emph{Conservation Biology} \textbf{24}, 1042--1051.
-
-\bibitem[{Helmus \emph{et~al.}(2007)}]{Helmus2007} Helmus, Matthew
-  R. and Bland, Thomas J. and Williams, Christopher K. and Ives,
-  Anthony R. (2007) Phylogenetic metrics of biodiversity \emph{The
-    American Naturalist} \textbf{169}, E68--E83.
 
 \bibitem[{Helmus \& Ives(2012)}]{Helmus2012}
 Helmus, M.R. \& Ives, A.R. (2012) Phylogenetic diversity-area curves.
@@ -211,6 +185,8 @@ Helmus, M.R. \& Ives, A.R. (2012) Phylogenetic diversity-area curves.
 Ives, A.R. \& Helmus, M.R. (2010)
   Phylogenetic metrics of community similarity
   \emph{The American Naturalist} \textbf{176}, E128--E142.
+
+\bibitem[{Ives \& Helmus (2011)Ives \& Helmus}]{Ives2011}Ives, A.R. \& Helmus, M.R. (2011) Generalized linear mixed models for phylogenetic analyses of community structure \emph{Ecological Monographs} \textbf{81}, 511--525
 
 \bibitem[{Kembel(2009)}]{Kembel2009}
 Kembel, S.W. (2009) {Disentangling niche and neutral influences on community
@@ -223,10 +199,11 @@ Kembel, S.W., Cowan, P.D., Helmus, M.R., Cornwell, W.K., Morlon, H., Ackerly,
   D.D., Blomberg, S.P. \& Webb, C.O. (2010) Picante: R tools for integrating
   phylogenies and ecology. \emph{Bioinformatics} \textbf{26}, 1463--1464.
 
-\bibitem[{Lozupone \& Knight(2005)}]{Lozupone2005}
-Lozupone, C. \& Knight, R. (2005) {UniFrac}: a new phylogenetic method for
-  comparing microbial communities. \emph{Applied and Environmental
-  Microbiology} \textbf{71}, 8228--8235.
+\bibitem[{Letten \& Cornwell (in press)Letten \&
+    Cornwell}]{Letten2014} Letten, A.D. \& Cornwell, W.K. (in press)
+  Trees, branches and (square) roots: why evolutionary relatedness is
+  not linearly related to functional distance. \emph{Methods in
+    Ecology \& Evolution}.
 
 \bibitem[{Ness \emph{et~al.}(2011)Ness, Rollinson \& Whitney}]{Ness2011}
 Ness, J.H., Rollinson, E.J. \& Whitney, K.D. (2011) Phylogenetic distance can
@@ -244,6 +221,11 @@ Orme, D., Freckleton, R., Thomas, G., Petzoldt, T., Fritz, S., Isaac, N. \&
 Pagel, M. (1999) {Inferring the historical patterns of biological evolution}.
   \emph{Nature} \textbf{401}, 877--884.
 
+\bibitem[{Pearse \& Purvis(2013)}]{Pearse2013} Pearse, W.D. \& Purvis,
+  A. (2013) phyloGenerator: an automated phylogeny generation tool for
+  ecologists. \emph{Methods in Ecology and Evolution} \textbf{7},
+  692--698.
+
 \bibitem[{Pearse \emph{et~al.}(2014)Pearse, Cavender-Bares, Puvis \&
   Helmus}]{Pearse2014review}
 Pearse, W.D., Cavender-Bares, J., Puvis, A. \& Helmus, M.R. (2014) Metrics and
@@ -251,23 +233,13 @@ Pearse, W.D., Cavender-Bares, J., Puvis, A. \& Helmus, M.R. (2014) Metrics and
   Methods and their Application in Evolutionary Biology---Concepts and
   Practice} (ed. L.Z. Garamszegi), Springer-Verlag, Berlin, Heidelberg.
 
-\bibitem[{Pybus \& Harvey(2000)}]{Pybus2000}
-Pybus, O. \& Harvey, P. (2000) Testing macro-evolutionary models using
-  incomplete molecular phylogenies. \emph{Proceedings of the Royal Society B:
-  Biological Sciences} \textbf{267}, 2267--2272.
-
-\bibitem[{{R Core Team}(2014)}]{R2014}
-{R Core Team} (2014) \emph{R: A language and environment for statistical
+\bibitem[{{R Core Team}(2015)}]{R2015}
+{R Core Team} (2015) \emph{R: A language and environment for statistical
   computing}. R Foundation for Statistical Computing, Vienna, Austria.
 
-\bibitem[{Rao(1982)}]{Rao1982a}
-Rao, C. (1982) Diversity and dissimilarity coefficients: a unified approach.
-  \emph{Theoretical Population Biology} \textbf{21}, 24--43.
-
-\bibitem[{Warwick \& Clarke(1995)}]{Warwick1995}
-Warwick, R.M. \& Clarke, K.R. (1995) New `biodiversity' measures reveal a
-  decrease in taxonomic distinctness with increasing stress. \emph{Marine
-  Ecology Progress Series} \textbf{129}.
+\bibitem[{Rafferty \& Ives(2013)}]{Rafferty2013} Rafferty, N.E. \&
+  Ives, A.R. (2013) Phylogenetic trait-based analyses of ecological
+  networks. \emph{Ecology} \textbf{94}, 2321--2333.
 
 \bibitem[{Webb(2000)}]{Webb2000}
 Webb, C.O. (2000) {Exploring the phylogenetic structure of ecological

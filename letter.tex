@@ -2,10 +2,12 @@
 \usepackage[english]{babel}
 \usepackage[parfill]{parskip}  
 \usepackage{geometry}
-\usepackage{url}
+\usepackage{color} \definecolor{dark-gray}{gray}{0.3}
+\usepackage[colorlinks=true,urlcolor=dark-gray,breaklinks=true,citecolor=black,linkcolor=black]{hyperref}
+\usepackage{breakurl}
 
 \setkomavar{fromname}{Will Pearse}
-\setkomavar{fromaddress}{Department of Ecology, Evolution and Behavior\\University of Minnesota\\St. Paul, MN 55108, USA}
+\setkomavar{fromaddress}{Department of Biology, McGill University\\1205 ave Docteur Penfield, Room W3/4\\Montreal, Quebec, H3A 1B1\\Canada}
 
 \setkomavar{signature}{Will Pearse}
 \renewcommand{\raggedsignature}{\raggedright} % make the signature ragged right
@@ -17,7 +19,7 @@
 \KOMAoptions{fromalign=left, fromlogo=false, addrfield=no,
 backaddress=no,  subject=left,foldmarks=no,
 fromphone=no,fromemail=true,fromalign=right,pagenumber=no}
-\setkomavar{fromemail}{wdpearse@umn.edu}
+\setkomavar{fromemail}{will.pearse@gmail.com}
 \begin{document}
 \begin{letter}
 
@@ -29,28 +31,32 @@ I am writing to ask you to consider the manuscript `\emph{pez:
 (\emph{pez}) that integrates and facilitates the analysis and
 simulation of evolutionary and ecological data.
 
+%Needs more reference to statistical models
+
 An ever-increasing number of ecologists test hypotheses using
 phylogenetic data, but there is no unified data structure or interface
-that integrates diverse data-types. Moreover, there are a number of
-statistical methods that, despite their popularity, have not been
-formally released as software packages and as such are patchily and
-inconsistently implemened. \emph{pez} solves the first of these
-problems and goes some way to addressing the second, while also
-integrating a number of existing methods under a common interface. It
-is my hope that \emph{pez} will more tightly integrate the
-computational development of the field of eco-phylogenetics, ensuring
-the fragmentation I believe \emph{pez} to have reversed will not
-recur.
+that integrates ecological and phylogenetic data-types. Moreover,
+there are a number of statistical methods that, despite their
+popularity, have not been formally released as software packages and
+as such are patchily and inconsistently implemented.
+
+\emph{pez} solves the first of these problems and goes some way to
+addressing the second. It integrates existing phylogenetic metrics
+within a simple framework, and provides novel code for many metrics
+that were previously unavailable. \emph{pez} also contains many new
+modelling (\emph{e.g.}, Phylogenetic Generalised Linear Mixed Models;
+PGLMMs) and simulation functions. It is my hope that \emph{pez} will
+more tightly integrate the computational development of the field of
+eco-phylogenetics, ensuring the fragmentation I believe \emph{pez} to
+have reversed will not recur.
 
 I feel this manuscript is best-suited to \emph{Bioinformatics} because
 many conceptually related \emph{R} packages (\emph{e.g.},
 \emph{picante} and \emph{geiger}) have been published there. The
 package has been developed using modern, open software development
-techniques, which I feel your journal is well-placed to
-review. Potentially suitable reviewers include Scott Chamberlain
-(XXX), Stephen Kembell (XXX), and David Orme
-(\url{d.orme@imperial.ac.uk}, who have expertise implementing
-statistical methods similar to those in \emph{pez}.
+techniques, which I feel your journal is well-placed to review. I have
+indicated potential reviewers in the online submisison who I feel have
+implemented statistical methods similar to those in \emph{pez}.
 
 \closing{Thank you for your time, and I look forward to hearing from
   you,\vspace{20pt}}
