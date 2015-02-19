@@ -571,24 +571,16 @@ communityPGLMM.gaussian <- function(formula, data = list(), family = "gaussian",
 		re.i <- re[[i]]
 		# non-nested terms
 		if (length(re.i) == 3) {
-			if (setequal(levels(re.i[[2]]), levels(sp)) && all(re.i[[2]] == sp)) {
-				Zt.i <- kronecker(matrix(1, nrow = 1, ncol = nsite), chol(re.i[[3]]))
-				if (length(re.i[[1]]) > 1) {
-					Zt.i <- Zt.i * kronecker(t(re.i[[1]]), matrix(1, nrow = nspp, ncol = 1))
-				}
-				ii <- ii + 1
-				Ztt[[ii]] <- Zt.i
-				St.lengths[ii] <- nspp
+			counter <- 0
+			Z.i <- matrix(0, nrow=nspp * nsite, ncol = nlevels(re.i[[2]]))
+			for(i.levels in levels(re.i[[2]])) {
+				counter <- counter + 1
+				Z.i[,counter] <- re.i[[1]] * as.numeric(i.levels == re.i[[2]])
 			}
-			if (setequal(levels(re.i[[2]]), levels(site)) && all(re.i[[2]] == site)) {
-				Zt.i <- kronecker(chol(re.i[[3]]), matrix(re.i[[1]], nrow = 1, ncol = nspp))
-				if (length(re.i[[1]]) > 1) {
-					Zt.i <- Zt.i * kronecker(t(re.i[[1]]), matrix(1, nrow = nspp, ncol = 1))
-				}
-				ii <- ii + 1
-				Ztt[[ii]] <- Zt.i
-				St.lengths[ii] <- nsite
-			}
+			Zt.i <- chol(re.i[[3]]) %*% t(Z.i)
+			ii <- ii + 1
+			Ztt[[ii]] <- Zt.i
+			St.lengths[ii] <- nlevels(re.i[[2]])
 		}
 
 		# nested terms
@@ -994,24 +986,16 @@ if (is.null(sp) | is.null(site))
 		re.i <- re[[i]]
 		# non-nested terms
 		if (length(re.i) == 3) {
-			if (setequal(levels(re.i[[2]]), levels(sp)) && all(re.i[[2]] == sp)) {
-				Zt.i <- kronecker(matrix(1, nrow = 1, ncol = nsite), chol(re.i[[3]]))
-				if (length(re.i[[1]]) > 1) {
-					Zt.i <- Zt.i * kronecker(t(re.i[[1]]), matrix(1, nrow = nspp, ncol = 1))
-				}
-				ii <- ii + 1
-				Ztt[[ii]] <- Zt.i
-				St.lengths[ii] <- nspp
+			counter <- 0
+			Z.i <- matrix(0, nrow=nspp * nsite, ncol = nlevels(re.i[[2]]))
+			for(i.levels in levels(re.i[[2]])) {
+				counter <- counter + 1
+				Z.i[,counter] <- re.i[[1]] * as.numeric(i.levels == re.i[[2]])
 			}
-			if (setequal(levels(re.i[[2]]), levels(site)) && all(re.i[[2]] == site)) {
-				Zt.i <- kronecker(chol(re.i[[3]]), matrix(re.i[[1]], nrow = 1, ncol = nspp))
-				if (length(re.i[[1]]) > 1) {
-					Zt.i <- Zt.i * kronecker(t(re.i[[1]]), matrix(1, nrow = nspp, ncol = 1))
-				}
-				ii <- ii + 1
-				Ztt[[ii]] <- Zt.i
-				St.lengths[ii] <- nsite
-			}
+			Zt.i <- chol(re.i[[3]]) %*% t(Z.i)
+			ii <- ii + 1
+			Ztt[[ii]] <- Zt.i
+			St.lengths[ii] <- nlevels(re.i[[2]])
 		}
 
 		# nested terms
@@ -1457,24 +1441,16 @@ if (is.null(sp) | is.null(site))
 		re.i <- re[[i]]
 		# non-nested terms
 		if (length(re.i) == 3) {
-			if (setequal(levels(re.i[[2]]), levels(sp)) && all(re.i[[2]] == sp)) {
-				Zt.i <- kronecker(matrix(1, nrow = 1, ncol = nsite), chol(re.i[[3]]))
-				if (length(re.i[[1]]) > 1) {
-					Zt.i <- Zt.i * kronecker(t(re.i[[1]]), matrix(1, nrow = nspp, ncol = 1))
-				}
-				ii <- ii + 1
-				Ztt[[ii]] <- Zt.i
-				St.lengths[ii] <- nspp
+			counter <- 0
+			Z.i <- matrix(0, nrow=nspp * nsite, ncol = nlevels(re.i[[2]]))
+			for(i.levels in levels(re.i[[2]])) {
+				counter <- counter + 1
+				Z.i[,counter] <- re.i[[1]] * as.numeric(i.levels == re.i[[2]])
 			}
-			if (setequal(levels(re.i[[2]]), levels(site)) && all(re.i[[2]] == site)) {
-				Zt.i <- kronecker(chol(re.i[[3]]), matrix(re.i[[1]], nrow = 1, ncol = nspp))
-				if (length(re.i[[1]]) > 1) {
-					Zt.i <- Zt.i * kronecker(t(re.i[[1]]), matrix(1, nrow = nspp, ncol = 1))
-				}
-				ii <- ii + 1
-				Ztt[[ii]] <- Zt.i
-				St.lengths[ii] <- nsite
-			}
+			Zt.i <- chol(re.i[[3]]) %*% t(Z.i)
+			ii <- ii + 1
+			Ztt[[ii]] <- Zt.i
+			St.lengths[ii] <- nlevels(re.i[[2]])
 		}
 
 		# nested terms
