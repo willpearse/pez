@@ -1,12 +1,9 @@
 Phylogenetics for the Environmental Sciences [![Build Status](https://travis-ci.org/willpearse/pez.svg)](https://travis-ci.org/willpearse/pez)
 ============================================
-William D. Pearse, Marc W. Cadotte, Caroline Tucker, Steve Walker, and Matthew R. Helmus (wdpearse@umn.edu)
+William D. Pearse, Marc W. Cadotte, Jeannine Cavender-Bares, Anthony R. Ives, Caroline Tucker, Steve Walker, and Matthew R. Helmus
 
 ##Overview 
 This is the bleeding edge version of the package. Use at your own risk.
-
-##Licence
-This is a privately shared repository. You are not allowed to distribute, use, modify, extend, copy, or sneeze on this without explicit permission from Will Pearse, Matt Helmus, Marc Cadotte, or Steve Walker.
 
 ##Read before submitting a feature request/bug report/pull request
 
@@ -22,3 +19,12 @@ This is a privately shared repository. You are not allowed to distribute, use, m
    * If you fix a bug, make sure there is an issue associated with it. Otherwise, someone else is quite likely to 'fix' it back!
 
 Again, *thank you* for making pez even more awesome :D
+
+##Licence
+Copyright (c) 2015 William D. Pearse, Marc W. Cadotte, Jeannine Cavender-Bares, Anthony R. Ives, Caroline Tucker, Steve Walker, and Matthew R. Helmus
+
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
