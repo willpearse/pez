@@ -23,8 +23,9 @@
 #' @param metric default (\code{all}) calculates everything;
 #' individually call-able metrics are: \code{unifrac}, \code{pcd},
 #' \code{phylosor}, \code{comdist}.
-#' @param abundance If TRUE (default) metrics are calculated
-#' incorporating species abundances (currently only comdist)
+#' @param abundance.weighted If TRUE (default) metrics are calculated
+#' incorporating species abundances (\code{currently} only comdist
+#' support this)
 #' @param permute Number of permutations for metric (currently only
 #' for \code{pcd})
 #' @param sqrt.phy If TRUE (default is FALSE) your phylogenetic
@@ -81,7 +82,7 @@
 #' @importFrom picante unifrac phylosor pcd comdist
 #' @importFrom ape is.ultrametric as.phylo
 #' @export
-dissimilarity <- function(data, metric=c("all", "unifrac", "pcd", "phylosor", "comdist"), abundance=TRUE, permute=100, sqrt.phy=FALSE, traitgram=NULL, traitgram.p=2, ext.dist=NULL, ...)
+dissimilarity <- function(data, metric=c("all", "unifrac", "pcd", "phylosor", "comdist"), abundance.weighted=TRUE, permute=100, sqrt.phy=FALSE, traitgram=NULL, traitgram.p=2, ext.dist=NULL, ...)
 {   
   #Assertions and argument handling
   if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
@@ -104,34 +105,22 @@ dissimilarity <- function(data, metric=c("all", "unifrac", "pcd", "phylosor", "c
   } else ext.dist <- FALSE
   
   #Setup
-  output <- list(unifrac=NULL, pcd=NULL, phylosor=NULL, comdist=NULL)
+  if(sqrt.phy)
+      data <- .sqrt.phy(data)
   if(traitgram==FALSE & ext.dist==FALSE)
       dist <- cophenetic(data$phy)
-  if(sqrt.phy){
-        if(!is.ultrametric(data$phy))
-            warning("Phylogeny is not ultrametric; see function details")
-      dist <- sqrt(dist)
-      data$phy <- as.phylo(hclust(as.dist(dist)))
-  }
-  if(abundance == FALSE)
+  if(abundance.weighted == FALSE)
       data$comm[data$comm > 1] <- 1
-  #Caculate measures
-  if((metric == "unifrac" | metric == "all") & (ext.dist==FALSE & traitgram==FALSE))
-    output$unifrac <- unifrac(data$comm, data$phy, ...)
-  
-  if((metric == "pcd" | metric == "all") & (ext.dist==FALSE & traitgram==FALSE))
-    output$pcd <- pcd(data$comm, data$phy, reps=permute, ...)
 
-  #NOTE: I'm flipping phylosor to be a distance matrix
-  if((metric == "phylosor" | metric == "all")  & (ext.dist==FALSE & traitgram==FALSE)){
-    output$phylosor <- phylosor(data$comm, data$phy, ...)
-    output$phylosor <- as.dist(1 - as.matrix(output$phylosor))
-  }
-
-  if(metric == "comdist" | metric == "all")
-    output$comdist <- comdist(data$comm, dist, abundance.weighted=abundance, ...)
+  #Filter metrics according to suitability and calculate
+  functions <- setNames(c(.unifrac, .pcd, .phylosor, .comdist), c("unifrac", "pcd", "phylosor", "comdist"))
+  if(ext.dist == TRUE)
+      functions <- functions[!names(functions) %in% c("unifrac", "pcd", "phylosor")]
+  if(traitgram == TRUE)
+      functions <- functions[!names(functions) %in% c("unifrac", "pcd", "phylosor")]
+  output <- lapply(functions, function(x) x(data, dist=dist, abundance.weighted=abundance.weighted))
   
-  #Prepare output
+  #Prepare output and return
   output$type <- "dissimilarity"
   class(output) <- "phy.structure"
   return(output)

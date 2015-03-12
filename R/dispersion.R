@@ -87,7 +87,7 @@
 #' dispersion(data, metric = "sesmpd", permute = 100)
 #' @importFrom caper phylo.d
 #' @importFrom picante ses.mntd ses.mpd ses.pd
-#' @importFrom ape is.ultrametric as.phylo
+#' @importFrom ape is.ultrametric as.phylo cophenetic.phylo
 #' @export
 dispersion <- function(data, metric=c("all", "sesmpd", "sesmntd", "sespd", "innd", "d"), permute=1000, null.model=c("taxa.labels", "richness", "frequency", "sample.pool", "phylogeny.pool", "independentswap", "trialswap"), abundance=FALSE, sqrt.phy=FALSE, traitgram=NULL, traitgram.p=2, ext.dist=NULL, ...)
 {
@@ -122,120 +122,23 @@ dispersion <- function(data, metric=c("all", "sesmpd", "sesmntd", "sespd", "innd
   } else ext.dist <- FALSE
   
   #Setup
+  if(sqrt.phy)
+      data <- .sqrt.phy(data)
   if(traitgram==FALSE & ext.dist==FALSE)
       dist <- cophenetic(data$phy)
-  if(sqrt.phy){
-        if(!is.ultrametric(data$phy))
-            warning("Phylogeny is not ultrametric; see function details")
-      dist <- sqrt(dist)
-      data$phy <- as.phylo(hclust(as.dist(dist)))
-  }
-  dist <- cophenetic(data$phy)
-  output <- list(sesmpd=NULL, sesmntd=NULL, sespd=NULL, innd=NULL, d=NULL)
+
+  #Filter metrics according to suitability and calculate
+  functions <- setNames(c(.ses.mpd, .ses.mntd, .inmd, .innd, .d), c("ses.mpd", "ses.mntd", "inmd", "innd", "d"))
+  if(sqrt.phy == TRUE)
+      functions <- functions[names(functions) != "d"]
+  if(traitgram == TRUE)
+      functions <- functions[names(functions) != "d"]
+  if(ext.dist == TRUE)
+      functions <- functions[names(functions) != "d"]
+  output <- lapply(functions, function(x) try(x(data, dist=dist, abundance.weighted=FALSE, permute=permute), silent=TRUE))
   
-  #Caculate measures
-  if(metric == "sesmpd" | metric == "all"){
-    output$sesmpd <- ses.mpd(data$comm, dist, null.model=null.model, abundance.weighted=abundance, ...)
-    coefs$sesmpd <- output$sesmpd$mpd.obs.z
-  }
-  
-  if(metric == "sesmntd" | metric == "all"){
-    output$sesmntd <- ses.mntd(data$comm, dist, null.model=null.model, abundance.weighted=abundance, ...)
-    coefs$sesmntd <- output$sesmntd$mntd.obs.z
-  }
-  
-  if((metric == "sespd" | metric == "all") & ext.dist==FALSE){
-    output$sespd <- ses.pd(data$comm, data$phy, null.model=null.model, ...)
-    coefs$sespd <- output$sespd$pd.obs.z
-  }
-  
-  if(metric == "innd" | metric == "all"){
-    output$innd <- ses.mpd(data$comm,1/dist, null.model=null.model, abundance.weighted=abundance, ...)
-    coefs$innd <- output$innd$mpd.obs.z
-  }
-  #WARNING: Altering commnity matrix in-place
-  if((metric == "d" | metric == "all") & (ext.dist==FALSE & sqrt.phy==FALSE & abundance==FALSE & traitgram==FALSE)){
-    data$comm[data$comm > 0] <- 1
-    output$d <- .d(data)
-    coefs$d <- output$d[,1]
-  }
-  
-  #Prepare output
-  output$type <- "dispersion"
-  output$coefs <- coefs
-  class(output) <- "phy.structure"
+  #Clean up output and return
+  output <- Filter(function(x) !inherits(x, "try-error"), output)
+  output <- do.call(cbind, output)
   return(output)
-}
-
-#Interal D calculation. *Heavily* based on D from caper.
-# - placed in here for future compatibility with Dc
-#' @importFrom caper contrCalc VCV.array
-#' @importFrom mvtnorm rmvnorm
-.d <- function(data, permute=1000) {
-  #Checking
-  if(! inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
-  if (!is.numeric(permute)) (stop("'", permute, "' is not numeric."))
-  data$comm[data$comm > 1] <- 1
-  # check tree branch lengths
-  el    <- data$phy$edge.length
-  elTip <- data$phy$edge[,2] <= length(data$phy$tip.label)
-  
-  if(any(el[elTip] == 0)) 
-    stop('Phylogeny contains pairs of tips on zero branch lengths, cannot currently simulate')
-  if(any(el[! elTip] == 0)) 
-    stop('Phylogeny contains zero length internal branches. Use di2multi.')
-
-
-  #Internal D calculation
-  ..d <- function(ds, vcv, permute, phy){
-      dsSort <- sort(ds)
-      
-      ## Random Association model
-      ds.ran <- replicate(permute, sample(ds))
-      
-      ## Brownian Threshold model random data
-      ds.phy <- rmvnorm(permute, sigma=unclass(vcv)) # class of 'VCV.array' throws the method dispatch
-      ds.phy <- as.data.frame(t(ds.phy))
-      
-                                        # turn those into rank values, then pull that rank's observed value
-      ds.phy <- apply(ds.phy, 2, rank, ties="random")
-      ds.phy <- apply(ds.phy, 2, function(x) as.numeric(dsSort[x]))
-      
-      ## Get change along edges
-      ## insert observed and set dimnames for contrCalc
-      ds.ran <- cbind(Obs=ds, ds.ran)
-      ds.phy <- cbind(Obs=ds, ds.phy)
-      dimnames(ds.ran) <- dimnames(ds.phy) <- list(data$phy$tip.label, c('Obs', paste('V',1:permute, sep='')))
-      
-      ## now run that through the contrast engine 
-      ds.ran.cc <- contrCalc(vals=ds.ran, phy=phy, ref.var='V1', picMethod='phylo.d', crunch.brlen=0)
-      ds.phy.cc <- contrCalc(vals=ds.phy, phy=phy, ref.var='V1', picMethod='phylo.d', crunch.brlen=0)
-      
-      ## get sums of change and distributions
-      ransocc <- colSums(ds.ran.cc$contrMat)
-      physocc <- colSums(ds.phy.cc$contrMat)
-      # double check the observed, but only to six decimal places or you can get floating point errors
-      if(round(ransocc[1], digits=6) != round(physocc[1], digits=6)) stop('Problem with character change calculation in phylo.d')
-      obssocc <- ransocc[1]
-      ransocc <- ransocc[-1]
-      physocc <- physocc[-1]
-      
-      soccratio <- (obssocc - mean(physocc)) / (mean(ransocc) - mean(physocc))
-      soccpval1 <- sum(ransocc < obssocc) / permute
-      soccpval0 <- sum(physocc > obssocc) / permute
-      
-      return(c(soccratio, soccpval1, soccpval0))
-  }
-
-  ## being careful with the edge order - pre-reorder the phylogeny
-  phy <- reorder(data$phy, 'pruningwise')
-  
-  vcv <- VCV.array(data$phy)
-  vals <- matrix(ncol=3, nrow=nrow(data$comm))
-  rownames(vals) <- rownames(data$comm)
-  colnames(vals) <- c("D", "P(D=1)", "P(D=0)")
-  for(i in seq(nrow(data$comm)))
-      vals[i,] <- ..d(data$comm[i,], vcv, permute, data$phy)
-  
-  return(vals)
 }

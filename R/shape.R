@@ -129,157 +129,27 @@ shape <- function(data,metric=c("all-quick", "all", "psv", "psr", "mpd", "mntd",
   SR <- rowSums(data$comm > 0)
   data$comm[data$comm > 0] <- 1
   coefs <- data.frame(row.names=rownames(data$comm))
+  if(sqrt.phy)
+      data <- .sqrt.phy(data)
   if(traitgram==FALSE & ext.dist==FALSE)
       dist <- cophenetic(data$phy)
-  if(sqrt.phy){
-        if(!is.ultrametric(data$phy))
-            warning("Phylogeny is not ultrametric; see function details")
-      dist <- sqrt(dist)
-      data$phy <- as.phylo(hclust(as.dist(dist)))
-  }
-  #Remove missing species
-  dist <- dist[colSums(data$comm)>0, colSums(data$comm)>0]
-  data <- data[,colSums(data$comm)>0]
-  output <- list(psv=NULL, psr=NULL, mpd=NULL, mntd=NULL, pd=NULL, pd.ivs=NULL, colless=NULL, gamma=NULL, taxon=NULL, eigen.sum=NULL, Eed=NULL, Hed=NULL, dist.fd=NULL)
   
-  #Calculate measures
-  if((metric == "psv" | metric == "all" | metric == "all-quick") & (sqrt.phy==FALSE & traitgram==FALSE & ext.dist==FALSE))
-    output$psv <- coefs$psv <- try(psd(data$comm, data$phy, ...)[,1], silent = TRUE)
+  #Filter metrics according to suitability and calculate
+  functions <- setNames(c(.psv, .psr, .mpd, .mntd, .colless, .taxon, .eigen.sum, .eed, .hed, .dist.fd), c("psv", "psr", "mpd", "mntd", "colless", "taxon", "eigen.sum", "eed", "hed", "dist.fd"))
+  if(metric == "all-quick")
+      functions <- functions[names(functions) != "dist.fd"]
+  if(sqrt.phy == TRUE)
+      functions <- functions[!names(functions) %in% c("psv", "psr", "colless", "gamma", "eed", "hed")]
+  if(traitgram == TRUE)
+      functions <- functions[!names(functions) %in% c("psv", "psr", "pd", "colless", "gamma", "eed", "hed")]
+  if(ext.dist == TRUE)
+      functions <- functions[!names(functions) %in% c("psv", "psr", "colless", "gamma", "eed", "hed")]
+  if(!is.binary.tree(data$phy) & "colless" %in% names(functions))
+      warning("Cannot compute Colless' index with non-binary tree")
+  output <- lapply(functions, function(x) try(x(data, dist=dist, abundance.weighted=FALSE, which.eigen=which.eigen), silent=TRUE))
   
-  if((metric == "psr" | metric == "all" | metric == "all-quick") & (sqrt.phy==FALSE & traitgram==FALSE & ext.dist==FALSE))
-    output$psr <- coefs$psr <- try(psd(data$comm, data$phy, ...)[,4], silent = TRUE)
-  
-  if(metric == "mpd" | metric == "all" | metric == "all-quick")
-    output$mpd <- coefs$mpd <- try(mpd(data$comm, dist, abundance.weighted=FALSE, ...), silent = TRUE)
-  
-  if((metric == "pd" | metric == "all" | metric == "all-quick") & traitgram==FALSE & ext.dist==FALSE)
-    try({
-      output$pd <- coefs$pd <- pd(data$comm, data$phy, ...)[,1]
-      output$pd.ivs <- coefs$pd.ivs <- unname(resid(lm(coefs$pd ~ rowSums(data$comm))))
-    }, silent = TRUE)
-
-  if(metric == "mntd" | metric == "all" | metric == "all-quick")
-    try(output$mntd <- coefs$mntd <- mntd(data$comm, dist, abundance.weighted=FALSE, ...), silent = TRUE)
-  
-  if((metric == "colless" | metric == "all" | metric == "all-quick") & (sqrt.phy==FALSE & traitgram==FALSE & ext.dist==FALSE))
-      try(output$colless <- coefs$colless <- .colless(data), silent = TRUE)
-  
-  
-  if((metric == "gamma" | metric == "all" | metric == "all-quick") & (sqrt.phy==FALSE & traitgram==FALSE & ext.dist==FALSE))
-      try({
-          tree.shape <- as.treeshape(data$phy)
-          nams <- tree.shape$names
-          output$gamma <- coefs$gamma <- apply(data$comm, 1, .gamma, data$phy, nams)
-      }, silent = TRUE)
-  
-  #Note - I've cut out some here because I think the simplification
-  #can happen in the summary output
-  if(metric == "taxon" | metric == "all" | metric == "all-quick"){
-      try({
-        output$taxon <- taxondive(data$comm, dist, ...)
-        t <- data.frame(output$taxon$D, output$taxon$Dstar, output$taxon$Lambda, output$taxon$Dplus, output$taxon$SDplus)
-        names(t) <- c("Delta", "DeltaStar", "LambdaPlus", "DeltaPlus", "S.DeltaPlus")
-        coefs <- cbind(coefs, t)
-      }, silent = TRUE)
-  }
-  
-  if(metric == "eigen.sum" | metric == "all" | metric == "all-quick")
-      try({
-          eigen <- -0.5 * dist
-          l <- matrix(1/nrow(eigen), nrow=nrow(eigen), ncol=ncol(eigen))
-          eigen <- (diag(nrow(eigen)) - l) %*% eigen %*% (diag(nrow(eigen)) - l)
-          eigen <- eigen(eigen, symmetric=TRUE)$vectors
-          output$eigen.sum <- coefs$eigen.sum <- apply(data$comm, 1, .eigen.sum, eigen, which.eigen)
-      }, silent = TRUE)
-  
-  if((metric == "eed" | metric == "all" | metric == "all-quick") & (sqrt.phy==FALSE & traitgram==FALSE & ext.dist==FALSE))
-      try(output$Eed <- coefs$Eed <- .eed(data), silent=TRUE)
-
-  if((metric == "hed" | metric == "all" | metric == "all-quick") & (sqrt.phy==FALSE & traitgram==FALSE & ext.dist==FALSE))
-      try(output$Hed <- coefs$Hed <- .hed(data), silent=TRUE)
-
-  if(metric == "dist.fd" | metric == "all")
-      try({
-          if(!is.null(data$data) | traitgram==FALSE | ext.dist==FALSE){
-              t <- dist
-          } else t <- data$data
-          output$dist.fd$output <- capture.output(output$dist.fd <- dbFD(t, data$comm, w.abun=FALSE, messages=TRUE, ...), file=NULL)
-          coefs <- with(output$dist.fd, cbind(coefs, cbind(FRic, FEve, FDiv, FDis, RaoQ)))
-          #Only bother getting CWMs if we have trait data
-          if(!is.null(data$data)){
-              t <- output$dist.fd$CWM
-              colnames(t) <- paste(colnames(t), "cmw", sep=".")
-              coefs$dist.fd <- rbind(coef$dist.fd, t)
-          }
-      }, silent=TRUE)
-    
-  if(remove.errors) output <- lapply(output, .removeErrors)
-  
-  #Prepare output
-  output$type <- "shape"
-  output$coefs <- coefs
-  class(output) <- "phy.structure"
+  #Clean up output and return
+  output <- Filter(function(x) !inherits(x, "try-error"), output)
+  output <- do.call(cbind, output)
   return(output)
-}
-
-#Internal Colless function
-#' @importFrom apTreeshape colless tipsubtree
-.colless <- function(data)
-{
-    output <- numeric(nrow(data$comm))
-    for(i in seq(nrow(data$comm)))
-        output[i] <- colless(as.treeshape(drop_tip(data$phy, colnames(data$comm)[data$comm[i,]==0])))
-    names(output) <- rownames(data$comm)
-    return(output)
-}
-
-#' @importFrom ape gammaStat
-.gamma<-function(pa.vec,tree,nams){
-    if(sum(pa.vec)<3){
-        return(NA)
-    } else {
-        if(length(setdiff(tree$tip.label, nams)) != 0){
-            tree <- drop.tip(setdiff(tree$tip.label, ))
-        }
-        return(gammaStat(drop.tip(tree,nams[pa.vec==0])))
-    }
-}
-
-#' @importFrom picante pd
-#' @importFrom picante evol.distinct
-.hed <- function(data){
-    #Argument handling
-    if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
-
-    #Setup
-    ed <- evol.distinct(data$phy, "fair.proportion")$w
-    pd <- pd(data$comm, data$phy)$PD
-
-    #Internal assemblage calc.
-    ..hed <- function(ed, pd.comm){
-        hed <- ed / pd.comm
-        return(-sum(hed * log(hed)))
-    }
-
-    #Calculate, clean, and return
-    output <- numeric(nrow(data$comm))
-    names(output) <- rownames(data$comm)
-    for(i in seq(nrow(data$comm)))
-        output[i] <- ..hed(ed, pd[i])
-    return(output)
-}
-
-.eed <- function(data, na.rm=TRUE) {
-    if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
-    output <- .hed(data) / log(apply(data$comm, 1, function(x) sum(x != 0)))
-    names(output) <- rownames(data)
-    return(output)
-}
-
-.eigen.sum <- function(x, evc, vecnums) {
-    if(sum(x>0)) {
-        return(sum(apply(as.matrix(evc[x>0,vecnums]),2,var)))
-    } else {
-        return(NA)
-    }
 }
