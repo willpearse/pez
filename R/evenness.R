@@ -65,6 +65,11 @@
 #' of phylogenetic distance matrices. Much ink has been written about
 #' this, and in par this problem is why the \code{eigen.sum} measure
 #' came to be suggested.
+#'
+#' Some of these metrics can cause (inconsequential) warnings if given
+#' assemblages with only one species/individual in them, and return
+#' NA/NaN values depending on the metric. I consider these `features',
+#' not bugs.
 #' @return \code{phy.structure} list object of metric values. Use
 #' \code{coefs} to extract a summary metric table, or examine each
 #' individual metric (which gives more details for each) by calling

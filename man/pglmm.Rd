@@ -406,9 +406,9 @@ matplot(t(X), type = "l", ylab = "X", main = "X among sites")
 hist(b0, xlab = "b0", main = "b0 among species")
 hist(b1, xlab = "b1", main = "b1 among species")
 
-par(mfrow = c(1, 1), las = 1, mar = c(4, 4, 2, 2) - 0.1)
-if(require(plotrix))
-    color2D.matplot(Y, ylab = "species", xlab = "sites", main = "abundance")
+#Plot out; you get essentially this from plot(your.pglmm.model)
+image(t(Y), ylab = "species", xlab = "sites", main = "abundance",
+col=c("black","white"))
 
 # Transform data matrices into "long" form, and generate a data frame
 YY <- matrix(Y, nrow = nspp * nsite, ncol = 1)
@@ -451,7 +451,7 @@ plot(z.binary)
 
 # test statistical significance of the phylogenetic random effect
 # on species slopes using a likelihood ratio test
-# communityPGLMM.binary.LRT(z.binary, re.number = 4)$Pr
+communityPGLMM.binary.LRT(z.binary, re.number = 4)$Pr
 
 # The rest of these tests are not run to save CRAN server time;
 # - please take a look at them because they're very useful!

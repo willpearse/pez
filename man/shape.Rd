@@ -79,6 +79,11 @@ suppress) which are related to the general tendency for a low rank
 of phylogenetic distance matrices. Much ink has been written about
 this, and in par this problem is why the \code{eigen.sum} measure
 came to be suggested.
+
+Many of these metrics, (\emph{e.g.}, \code{eed}) will cause
+(inconsequential) warnings if given assemblages with only one
+species in them, and return NA/NaN values depending on the
+metric. I consider these `features', not bugs.
 }
 \examples{
 data(laja)

@@ -323,9 +323,9 @@
 #' hist(b0, xlab = "b0", main = "b0 among species")
 #' hist(b1, xlab = "b1", main = "b1 among species")
 #'
-#' par(mfrow = c(1, 1), las = 1, mar = c(4, 4, 2, 2) - 0.1)
-#' if(require(plotrix))
-#'     color2D.matplot(Y, ylab = "species", xlab = "sites", main = "abundance")
+#' #Plot out; you get essentially this from plot(your.pglmm.model)
+#' image(t(Y), ylab = "species", xlab = "sites", main = "abundance",
+#' col=c("black","white"))
 #' 
 #' # Transform data matrices into "long" form, and generate a data frame
 #' YY <- matrix(Y, nrow = nspp * nsite, ncol = 1)
@@ -368,7 +368,7 @@
 #'
 #' # test statistical significance of the phylogenetic random effect
 #' # on species slopes using a likelihood ratio test
-#' # communityPGLMM.binary.LRT(z.binary, re.number = 4)$Pr
+#' communityPGLMM.binary.LRT(z.binary, re.number = 4)$Pr
 #'
 #' # The rest of these tests are not run to save CRAN server time;
 #' # - please take a look at them because they're very useful!
@@ -746,9 +746,10 @@ communityPGLMM.gaussian <- function(formula, data = list(), family = "gaussian",
 	AIC <- -2 * logLik + 2 * k
 	BIC <- -2 * logLik + k * (log(n) - log(pi))
 
+        #NOTE: the nested/non-nested returns are 'swapped' here, which looks dodgy but is better than them being the wrong way round!
 	results <- list(formula = formula, data = data, family = family, random.effects = random.effects, 
 		B = B, B.se = B.se, B.cov = B.cov, B.zscore = B.zscore, B.pvalue = B.pvalue, ss = ss, 
-		s2r = s2r, s2n = s2n, s2resid = s2resid, logLik = logLik, AIC = AIC, BIC = BIC, REML = REML, 
+		s2n = s2r, s2r = s2n, s2resid = s2resid, logLik = logLik, AIC = AIC, BIC = BIC, REML = REML, 
 		s2.init = s2.init, B.init = B.init, Y = Y, X = X, H = H, iV = iV, mu = NULL, nested = nested, 
 		sp = sp, site = site, Zt = Zt, St = St, convcode = opt$convergence, niter = opt$counts)
 
@@ -1148,7 +1149,7 @@ if (is.null(sp) | is.null(site))
 
 	results <- list(formula = formula, data = data, family = family, random.effects = random.effects, 
 		B = B, B.se = B.se, B.cov = B.cov, B.zscore = B.zscore, B.pvalue = B.pvalue, ss = ss, 
-		s2r = s2r, s2n = s2n, s2resid = NULL, logLik = NULL, AIC = NULL, BIC = NULL, REML = REML, 
+		s2n = s2r, s2r = s2n, s2resid = NULL, logLik = NULL, AIC = NULL, BIC = NULL, REML = REML, 
 		s2.init = s2.init, B.init = B.init, Y = Y, X = X, H = H, iV = iV, mu = mu, nested = nested, sp = sp, 
 		site = site, Zt = Zt, St = St, convcode = opt$convergence, niter = opt$counts)
 	class(results) <- "communityPGLMM"
@@ -1570,16 +1571,16 @@ print.communityPGLMM <- function(x, digits = max(3, getOption("digits") - 3), ..
 ######################################################
 #' @rdname pglmm
 #' @method plot communityPGLMM
-#' @importFrom plotrix color2D.matplot
 #' @export
 plot.communityPGLMM <- function(x, digits = max(3, getOption("digits") - 3), ...) {
-	W <- data.frame(Y = x$Y, sp = x$sp, site = x$site)
-	Y <- reshape(W, v.names = "Y", idvar = "sp", timevar = "site", direction = "wide")
-	Y <- Y[, 2:dim(Y)[2]]
-
-	par(mfrow = c(1, 1), las = 1, mar = c(4, 4, 2, 2) - 0.1)
-
-	color2D.matplot(Y, ylab = "species", xlab = "sites", main = "Observed values")
+    #Wrangle data
+    W <- data.frame(Y = x$Y, sp = x$sp, site = x$site)
+    Y <- reshape(W, v.names = "Y", idvar = "sp", timevar = "site", direction = "wide")
+    Y <- Y[, 2:dim(Y)[2]]
+    
+    #Wrangle for image
+    Y <- t(Y)
+    image(x=seq(1,nrow(Y)), y=seq(1,ncol(Y)), z=Y, ylab = "species", xlab = "sites", main = "Observed values", col=c("black","white"))
 }
 
 
@@ -1620,4 +1621,57 @@ communityPGLMM.predicted.values <- function(x, show.plot = TRUE, ...) {
 		color2D.matplot(Y, ylab = "species", xlab = "sites", main = "Predicted values")
 	}
 	return(predicted.values)
+}
+
+#' Wrapper to create data for PGLMM analysis
+#'
+#' Creates a 'long' \code{data.frame} for use in
+#' \code{\link{pglmm}}. Necessary because \code{\link{pglmm}} can be
+#' used on data structures other than \emph{pez} objects, and the
+#' creation of random effect structures requires direct
+#' manipulation/understanding of the regression-style format of the
+#' data.
+#' @param x \code{\link{comparative.comm}} object for PGLMM analysis
+#' @param abundance.weighted whether to produce an output that
+#' incorporates abundance information (default FALSE)
+make.pglmm.data <- function(x, abundance.weighted=FALSE){
+    #Argument handling
+    if(!inherits(x, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
+
+    #Wrapper for expanding
+    # - tricky because of dummy factor variables
+    expand <- function(data, env, n.spp, n.sites){
+        if(!is.null(data)){
+            mat <- sapply(data, function(x) model.matrix(~x-1))
+            if(any(sapply(mat, function(x) is.character(x)|is.factor(x))))
+                mat <- do.call(cbind, mat)
+            y <- 1
+            for(i in seq(ncol(data))){
+                if(is.character(data[,i]) | is.factor(data[,i])){
+                    colnames(mat)[y:(y+length(unique(data[,i]))-1)] <- paste(names(data)[i], unique(data[,i]), sep=".")
+                    y <- y+length(unique(data[,i]))
+                } else {
+                    colnames(mat)[y] <- names(data)[i]
+                    y <- y+1
+                }
+            }
+            if(env) mat <- apply(mat, 2, rep, each=n.spp) else mat <- apply(mat, 2, rep, n.sites)
+        } else mat <- matrix(nrow=prod(n.spp, n.sites),ncol=0)
+        return(mat)
+    }
+    
+    #Make matrices - note that dummy variables make this tricky
+    output <- matrix(t(x$comm), ncol=1)
+    env <- expand(x$env, TRUE, length(species(x)), length(sites(x)))
+    traits <- expand(x$data, FALSE, length(species(x)), length(sites(x)))
+    
+    #Format output and return
+    output <- cbind(output, env, traits)
+    rownames(output) <- NULL
+    if(abundance.weighted){
+        names(output)[1] <- "abundance"} else {
+            names(output)[1] <- "presence"
+            output[,1][output[,1] > 1] <- 1
+        }
+    return(output)
 }
