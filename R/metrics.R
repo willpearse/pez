@@ -1,5 +1,15 @@
-#Internal Colless function
+#' Colless' index (Colless, 1982)
+#' @export
+#' @rdname pez.metrics
+#' @name pez.metrics
 #' @importFrom apTreeshape colless tipsubtree
+#' @references \code{colless} Colless D.H. (1982). Review of
+#' phylogenetics: the theory and practice of phylogenetic
+#' systematics. Systematic Zoology, 31, 100-104.
+#' @export
+#' @rdname pez.metrics
+#' @name pez.metrics
+
 .colless <- function(data, ...)
 {
     if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
@@ -9,8 +19,15 @@
     names(output) <- rownames(data$comm)
     return(output)
 }
-
+#' Hed (Cadotte et al., 2010)
 #' @importFrom picante pd evol.distinct
+#' @references \code{eed,hed} (i.e., \emph{Eed, Hed}) Cadotte M.W.,
+#' Davies T.J., Regetz J., Kembel S.W., Cleland E. & Oakley
+#' T.H. (2010). Phylogenetic diversity metrics for ecological
+#' communities: integrating species richness, abundance and
+#' evolutionary history. Ecology Letters, 13, 96-105.
+#' @rdname pez.metrics
+#' @name pez.metrics
 .hed <- function(data, ...){
     #Argument handling
     if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
@@ -33,6 +50,9 @@
     return(output)
 }
 
+#' Eed (Cadotte et al., 2010)
+#' @rdname pez.metrics
+#' @name pez.metrics
 .eed <- function(data, na.rm=TRUE, ...) {
     if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
     output <- .hed(data) / log(apply(data$comm, 1, function(x) sum(x != 0)))
@@ -40,22 +60,34 @@
     return(output)
 }
 
+#' PSV (Helmus et al., 2007)
+#' @references \code{PSV,PSR,PSE} Helmus M.R., Bland T.J., Williams
+#' C.K. & Ives A.R. (2007). Phylogenetic measures of
+#' biodiversity. American Naturalist, 169, E68-E83.
 #' @importFrom picante psv
+#' @rdname pez.metrics
+#' @name pez.metrics
 .psv <- function(x, ...){
     if(!inherits(x, "comparative.comm"))
         stop("'x' must be a comparative.comm object")
     psv(x$comm, x$phy)[,1]
 }
 
+#' PSR (Helmus et al., 2007)
 #' @importFrom picante psd
+#' @rdname pez.metrics
+#' @name pez.metrics
 .psr <- function(x, ...){
     if(!inherits(x, "comparative.comm"))
         stop("'x' must be a comparative.comm object")
     psd(x$comm, x$phy)[,4]
 }
 
+#' MPD (Mean Phylogenetic Distance)
 #' @importFrom picante mpd
 #' @importFrom ape cophenetic.phylo
+#' @rdname pez.metrics
+#' @name pez.metrics
 .mpd <- function(x, dist=NULL, abundance.weighted=FALSE, ...){
     if(!inherits(x, "comparative.comm"))
         stop("'x' must be a comparative.comm object")
@@ -64,18 +96,26 @@
     mpd(x$comm, dist, abundance.weighted=abundance.weighted)
 }
 
+#' PD (Faith, 1992)
+#' @references \code{PD} Faith D.P. (1992). Conservation evaluation
+#' and phylogenetic diversity. Biological Conservation, 61, 1-10.
 #' @importFrom picante pd
 #' @importFrom stats lm
+#' @rdname pez.metrics
+#' @name pez.metrics
 .pd <- function(x, include.root=TRUE, ...){
     if(!inherits(x, "comparative.comm"))
         stop("'x' must be a comparative.comm object")
     pd <- pd(x$comm, x$phy, include.root)[,1]
-    pd.ivs <- unname(resid(lm(coefs$pd ~ rowSums(x$comm))))
+    pd.ivs <- unname(resid(lm(pd ~ rowSums(x$comm))))
     return(cbind(pd, pd.ivs))
 }
 
+#' MNTD (Mean Nearest Taxonomic Distance)
 #' @importFrom picante mntd
 #' @importFrom ape cophenetic.phylo
+#' @rdname pez.metrics
+#' @name pez.metrics
 .mntd <- function(x, dist=NULL, abundance.weighted=FALSE, ...){
     if(!inherits(x, "comparative.comm"))
         stop("'x' must be a comparative.comm object")
@@ -84,8 +124,15 @@
     return(mntd(x$comm, dist, abundance.weighted=abundance.weighted))
 }
 
+#' Gamma (Pybus & Harvey, 2000)
+#' @references \code{gamma} Pybus O.G. & Harvey P.H. (2000) Testing
+#' macro-evolutionary models using incomplete molecular
+#' phylogenies. _Proceedings of the Royal Society of London. Series
+#' B. Biological Sciences 267: 2267--2272.
 #' @importFrom ape gammaStat
 #' @importFrom apTreeshape as.treeshape
+#' @rdname pez.metrics
+#' @name pez.metrics
 .gamma <- function(x, ...){
     if(!inherits(x, "comparative.comm"))
         stop("'x' must be a comparative.comm object")
@@ -106,8 +153,14 @@
     return(apply(x$comm, 1, ..gamma, x$phy, nams))
 }
 
+#' Taxonomic distinctiveness (Clarke & Warwick, 1998)
 #' @importFrom ape cophenetic.phylo
-#' @importFrom vegan taxondive 
+#' @importFrom vegan taxondive
+#' @references \code{taxon} Clarke K.R. & Warwick R.M. (1998). A
+#' taxonomic distinctness index and its statistical
+#' properties. J. Appl. Ecol., 35, 523-531.
+#' @rdname pez.metrics
+#' @name pez.metrics
 .taxon <- function(x, dist=NULL, ...){
     if(!inherits(x, "comparative.comm"))
         stop("'x' must be a comparative.comm object")
@@ -118,7 +171,14 @@
     return(output)
 }
 
+#' Sum of Phylo-Eigvenectors (Diniz-Filho et al., 2011)
+#' @references \code{eigen.sum} Diniz-Filho J.A.F., Cianciaruso M.V.,
+#' Rangel T.F. & Bini L.M. (2011). Eigenvector estimation of
+#' phylogenetic and functional diversity. Functional Ecology, 25,
+#' 735-744.
 #' @importFrom ape cophenetic.phylo
+#' @rdname pez.metrics
+#' @name pez.metrics
 .eigen.sum <- function(x, dist=NULL, which.eigen=1, ...){
     if(!inherits(x, "comparative.comm"))
         stop("'x' must be a comparative.comm object")
@@ -139,8 +199,11 @@
     return(apply(x$comm, 1, ..eigen.sum, eigen, which.eigen))
 }
 
+#' Functional Diversity
 #' @importFrom FD dbFD
 #' @importFrom ape cophenetic.phylo
+#' @rdname pez.metrics
+#' @name pez.metrics
 .dist.fd <- function(x, method="phy", abundance.weighted=FALSE, ...){
     if(!inherits(x, "comparative.comm"))
         stop("'x' must be a comparative.comm object")
@@ -163,6 +226,8 @@
 }
 
 #' @importFrom ape is.ultrametric as.phylo cophenetic.phylo
+#' @rdname pez.metrics
+#' @name pez.metrics
 .sqrt.phy <- function(x){
     if(!inherits(x, "comparative.comm"))
         stop("'x' must be a comparative.comm object")
@@ -173,8 +238,15 @@
     return(x)
 }
 
+#' Phylogenetic entropy (Allen et al., 2009)
+#' @references \code{entropy} Allen B., Kon M. & Bar-Yam Y. (2009). A
+#' New Phylogenetic Diversity Measure Generalizing the Shannon Index
+#' and Its Application to Phyllostomid Bats. The American Naturalist,
+#' 174, 236-243.
 #' @importFrom ape write.tree
 #' @importFrom ade4 newick2phylog
+#' @rdname pez.metrics
+#' @name pez.metrics
 .phylo.entropy <- function(data, ...)
 {
   #Assertions and argument handling
@@ -273,10 +345,11 @@
   return(hp.sites)
 }
 
+#' XXX
 #' @importFrom ape extract.clade
 #' @importFrom caper clade.matrix
-# Much of this is simplified from the original because we can assume
-#   the order of the components of a comparative.comm
+#' @rdname pez.metrics
+#' @name pez.metrics
 .aed <- function(data, ...){
     #Setup
     if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
@@ -312,8 +385,16 @@
     return(aed)
 }
 
+#' Haed (Cadotte et al., 2010)
+#' @references \code{pae,iac,haed,eaed} Cadotte M.W., Davies T.J.,
+#' Regetz J., Kembel S.W., Cleland E. & Oakley
+#' T.H. (2010). Phylogenetic diversity metrics for ecological
+#' communities: integrating species richness, abundance and
+#' evolutionary history. Ecology Letters, 13, 96-105.
 #' @importFrom picante pd
 #' @importFrom picante evol.distinct
+#' @rdname pez.metrics
+#' @name pez.metrics
 .haed <- function(data, ...){
     #Argument handling
     if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
@@ -338,7 +419,10 @@
     return(output)
 }
 
-#' @importFrom ape cophenetic.phylo 
+#' Simpson's phylogenetic diversity
+#' @importFrom ape cophenetic.phylo
+#' @rdname pez.metrics
+#' @name pez.metrics
 .simpson.phylogenetic <- function(data) {
     N.relative <- prop.table(data$comm, 2)
     dmat <- cophenetic(data$phy)
@@ -346,6 +430,9 @@
     return(out) 
 }
 
+#' IAC (Cadotte et al., 2010)
+#' @rdname pez.metrics
+#' @name pez.metrics
 .iac <- function(data, na.rm=TRUE, ...) {
     #Assertions and argument handling
     if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
@@ -385,6 +472,9 @@
     return(rowSums(abs(expected - data$comm), na.rm=na.rm) / nnodes)
 }
 
+#' PAE (Cadotte et al., 2010)
+#' @rdname pez.metrics
+#' @name pez.metrics
 .pae <- function(data, na.rm=TRUE, ...) {
     #Assertions and argument handling
     if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
@@ -408,6 +498,8 @@
 }
 
 #' @importFrom picante evol.distinct
+#' @rdname pez.metrics
+#' @name pez.metrics
 .scheiner <- function(data, q=0, abundance.weighted = TRUE, ...){
     #Assertions and argument handling
     if(!inherits(data, "comparative.comm")) stop("'data' must be a comparative community ecology object")
@@ -429,21 +521,36 @@
     return(output)
 }
 
+#' PSE (Helmus et al., 2007)
 #' @importFrom picante pse
+#' @rdname pez.metrics
+#' @name pez.metrics
 .pse <- function(x, ...){
     if(!inherits(x, "comparative.comm"))
         stop("'x' must be a comparative.comm object")
     pse(x$comm, x$phy)[,1]
 }
 
+#' Rao's Quadratic Entropy (XXX)
+#' @references \code{rao} Webb C.O. (2000). Exploring the phylogenetic
+#' structure of ecological communities: An example for rain forest
+#' trees. American Naturalist, 156, 145-155.
 #' @importFrom picante raoD
+#' @rdname pez.metrics
+#' @name pez.metrics
 .rao <- function(x, ...){
     if(!inherits(x, "comparative.comm"))
         stop("'x' must be a comparative.comm object")
     raoD(x$comm, x$phy)$Dkk
 }
 
+#' Pagel's Lambda (Pagel, 1999)
+#' @references \code{lambda,delta,kappa} Mark Pagel (1999) Inferring
+#' the historical patterns of biological evolution. Nature 6756(401):
+#' 877--884.
 #' @importFrom caper pgls comparative.data
+#' @rdname pez.metrics
+#' @name pez.metrics
 .lambda <- function(x, ...){
     if(!inherits(x, "comparative.comm"))
         stop("'x' must be a comparative.comm object")
@@ -461,7 +568,10 @@
     return(output)
 }
 
+#' Pagel's Delta (Pagel, 1999)
 #' @importFrom caper pgls comparative.data
+#' @rdname pez.metrics
+#' @name pez.metrics
 .delta <- function(x, ...){
     if(!inherits(x, "comparative.comm"))
         stop("'x' must be a comparative.comm object")
@@ -479,7 +589,10 @@
     return(output)
 }
 
+#' Pagel's Kappa (Pagel, 1999)
 #' @importFrom caper pgls comparative.data
+#' @rdname pez.metrics
+#' @name pez.metrics
 .kappa <- function(x, ...){
     if(!inherits(x, "comparative.comm"))
         stop("'x' must be a comparative.comm object")
@@ -497,28 +610,50 @@
     return(output)
 }
 
+#' Eaed (Cadotte et al., 2010)
+#' @rdname pez.metrics
+#' @name pez.metrics
 .eaed <- function(x, ...){
     if(!inherits(x, "comparative.comm"))
         stop("'x' must be a comparative.comm object")
     return(.haed(x)/log(rowSums(x$comm)))
 }
 
-
+#' UniFrac (Lozupone et al., 2005)
+#' @references \code{unifrac} Lozupone C.A. & Knight
+#' R. (2005). UniFrac: a new phylogenetic method for comparing
+#' microbial communities. Applied and Environmental Microbiology, 71,
+#' 8228-8235.
 #' @importFrom picante unifrac
+#' @rdname pez.metrics
+#' @name pez.metrics
 .unifrac <- function(x, ...){
     if(!inherits(x, "comparative.comm"))
         stop("'x' must be a comparative.comm object")
     return(unifrac(x$comm, x$phy))
 }
 
+#' PCD (Ives & Helmus, 2010)
+#' @references \code{pcd} Ives A.R. & Helmus M.R. (2010). Phylogenetic
+#' metrics of community similarity. The American Naturalist, 176,
+#' E128-E142.
 #' @importFrom picante ses.mpd
+#' @rdname pez.metrics
+#' @name pez.metrics
 .pcd <- function(x, permute=1000, ...){
     if(!inherits(x, "comparative.comm"))
         stop("'x' must be a comparative.comm object")
     return(pcd(x$comm, x$phy, rep=permute))
 }
 
+#' ComDist (Webb et al., 2008)
+#' @references \code{comdist} C.O. Webb, D.D. Ackerly, and
+#' S.W. Kembel. 2008. Phylocom: software for the analysis of
+#' phylogenetic community structure and trait
+#' evolution. Bioinformatics 18:2098-2100.
 #' @importFrom picante comdist
+#' @rdname pez.metrics
+#' @name pez.metrics
 .comdist <- function(x, dist=NULL, abundance.weighted=FALSE, ...){
     if(!inherits(x, "comparative.comm"))
         stop("'x' must be a comparative.comm object")
@@ -527,7 +662,15 @@
     return(comdist(x$comm, dist, abundance.weighted=abundance.weighted))
 }
 
+#' PhyloSor (Bryant et al., 2008)
+#' @references \code{phylosor} Bryant J.A., Lamanna C., Morlon H.,
+#' Kerkhoff A.J., Enquist B.J. & Green J.L. (2008). Microbes on
+#' mountainsides: Contrasting elevational patterns of bacterial and
+#' plant diversity. Proceedings of the National Academy of Sciences of
+#' the United States of America, 105, 11505-11511.
 #' @importFrom picante phylosor
+#' @rdname pez.metrics
+#' @name pez.metrics
 .phylosor <- function(x, dist=NULL, abundance.weighted=FALSE, ...){
     if(!inherits(x, "comparative.comm"))
         stop("'x' must be a comparative.comm object")
@@ -539,10 +682,15 @@
 }
 
 
-#Interal D calculation. *Heavily* based on D from caper.
-# - placed in here for future compatibility with Dc
+#' D (Fritz & Purvis, 2010)
+#' @references \code{d} Fritz S.A. & Purvis A. (2010). Selectivity in
+#' Mammalian Extinction Risk and Threat Types: a New Measure of
+#' Phylogenetic Signal Strength in Binary Traits. Conservation
+#' Biology, 24, 1042-1051.
 #' @importFrom caper contrCalc VCV.array
 #' @importFrom mvtnorm rmvnorm
+#' @rdname pez.metrics
+#' @name pez.metrics
 .d <- function(data, permute=1000, ...) {
   #Checking
   if(! inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
@@ -612,28 +760,46 @@
   return(vals)
 }
 
+#' SESmpd (Webb, 2000)
+#' @references \code{sesmpd,sesmntd} Webb C.O. (2000). Exploring the
+#' phylogenetic structure of ecological communities: An example for
+#' rain forest trees. American Naturalist, 156, 145-155.
 #' @importFrom picante ses.mpd
+#' @rdname pez.metrics
+#' @name pez.metrics
 .ses.mpd <- function(x, dist=NULL, null.model="taxa.labels", abundance.weighted=FALSE, permute=1000, ...){
     if(!inherits(x, "comparative.comm"))
         stop("'x' must be a comparative.comm object")
     return(ses.mpd(x$comm, dis=dist, null.model=null.model, abundance.weighted=abundance.weighted, runs=permute))
 }
 
+#' SESmntd (Webb, 2000)
 #' @importFrom picante ses.mntd
+#' @rdname pez.metrics
+#' @name pez.metrics
 .ses.mntd <- function(x, dist=NULL, null.model="taxa.labels", abundance.weighted=FALSE, permute=1000, ...){
     if(!inherits(x, "comparative.comm"))
         stop("'x' must be a comparative.comm object")
     return(ses.mntd(x$comm, dis=dist, null.model=null.model, abundance.weighted=abundance.weighted, runs=permute))
 }
 
+#' INMD (XXX)
+#' @references \code{innd} Ness J.H., Rollinson E.J. & Whitney
+#' K.D. (2011). Phylogenetic distance can predict susceptibility to
+#' attack by natural enemies. Oikos, 120, 1327-1334.
 #' @importFrom picante ses.mpd
+#' @rdname pez.metrics
+#' @name pez.metrics
 .inmd <- function(x, dist=NULL, null.model="taxa.labels", abundance.weighted=FALSE, permute=1000, ...){
     if(!inherits(x, "comparative.comm"))
         stop("'x' must be a comparative.comm object")
     return(ses.mpd(x$comm, dis=1/dist, null.model=null.model, abundance.weighted=abundance.weighted, runs=permute))
 }
 
+#' INND (XXX)
 #' @importFrom picante ses.mntd
+#' @rdname pez.metrics
+#' @name pez.metrics
 .innd <- function(x, dist=NULL, null.model="taxa.labels", abundance.weighted=FALSE, permute=1000, ...){
     if(!inherits(x, "comparative.comm"))
         stop("'x' must be a comparative.comm object")

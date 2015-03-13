@@ -7,6 +7,7 @@
 \alias{communityPGLMM.gaussian}
 \alias{communityPGLMM.matrix.structure}
 \alias{communityPGLMM.predicted.values}
+\alias{make.pglmm.data}
 \alias{pglmm}
 \alias{plot.communityPGLMM}
 \alias{summary.communityPGLMM}
@@ -39,6 +40,8 @@ communityPGLMM.matrix.structure(formula, data = list(), family = "binomial",
   ...)
 
 communityPGLMM.predicted.values(x, show.plot = TRUE, ...)
+
+make.pglmm.data(x, abundance.weighted = FALSE)
 }
 \arguments{
 \item{formula}{a two-sided linear formula object describing the
@@ -130,6 +133,11 @@ tested}
 in \code{\link{print.default}}}
 
 \item{show.plot}{if \code{TRUE} (default), display plot}
+
+\item{abundance.weighted}{whether to produce an output that
+incorporates abundance information (default FALSE)}
+
+\item{x}{\code{\link{comparative.comm}} object for PGLMM analysis}
 }
 \value{
 an object of class \code{communityPGLMM}
@@ -195,6 +203,13 @@ covariance matrix structure (V) when you specify random effects.
 \code{communityPGLMM.predicted.values} calculates the predicted
 values of Y; for the generalized linear mixed model (family =
 "binomial"), these values are in the logit-1 transformed space.
+
+Creates a 'long' \code{data.frame} for use in
+\code{\link{pglmm}}. Necessary because \code{\link{pglmm}} can be
+used on data structures other than \emph{pez} objects, and the
+creation of random effect structures requires direct
+manipulation/understanding of the regression-style format of the
+data.
 }
 \details{
 For linear mixed models (\code{family = 'gaussian'}), the

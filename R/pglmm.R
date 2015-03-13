@@ -1634,6 +1634,9 @@ communityPGLMM.predicted.values <- function(x, show.plot = TRUE, ...) {
 #' @param x \code{\link{comparative.comm}} object for PGLMM analysis
 #' @param abundance.weighted whether to produce an output that
 #' incorporates abundance information (default FALSE)
+#' @export
+#' @rdname pglmm
+#' @name pglmm
 make.pglmm.data <- function(x, abundance.weighted=FALSE){
     #Argument handling
     if(!inherits(x, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
