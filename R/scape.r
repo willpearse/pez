@@ -62,7 +62,7 @@
 #' @return \code{wd} the denominator for species ranges 
 #' @author M.R. Helmus
 #' @references Helmus M.R. & Ives A.R. (2012). Phylogenetic diversity area curves. Ecology, 93, S31-S43.
-#' @seealso \code{\link{sim.phy}}
+#' @seealso \code{\link{eco.scape}} \code{\link{sim.phy}} \code{\link{sim.meta}}
 #' @importFrom ape vcv corBlomberg compute.brlen vcv.phylo
 #' @export
 #' @examples
