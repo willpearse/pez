@@ -1,7 +1,61 @@
-#' Colless' index (Colless, 1982)
+#' Phylogenetic and functional trait metrics within pez
+#'
+#' Using these functions, you can calculate any of the phylogenetic
+#' metrics within pez, using \code{\link{comparative.comm}}
+#' objects. While you can call each individually, using the
+#' \code{\link{shape}}, \code{\link{evenness}},
+#' \code{\link{dispersion}}, and \code{\link{dissimilarity}} wrapper
+#' functions (and the more flexible \code{\link{generic.metric}} and
+#' null model functions) are probably your best bet. Note that *all of
+#' these functions* take a common first parameter: a
+#' \code{\link{comparative.comm}} object. There are additional
+#' parameters that can be passed, which are described below.
+#'
+#' @note Many (but not all) of these functions are fairly trivial
+#' wrappers around functions in other packages. In the citations for
+#' each metric, * indicates a function that's essentially written in
+#' \code{\link{picante}}. The Pagel family of measures are also fairly
+#' trivial wrapper around \code{\link{caper}} code, functional
+#' dissimilarity \code{\link{FD}} code, \code{gamma} \code{\link{ape}}
+#' code, and \code{colless} \code{\link{apTreeshape}} code. I can't
+#' demand it, but I would be grateful if you would cite these authors
+#' when using these wrappers.
+#'
+#' The \code{\link{shape}}, \code{\link{evenness}},
+#' \code{\link{dispersion}}, and \code{\link{dissimilarity}} wrapper
+#' functions go to some trouble to stop you calculating metrics using
+#' inappropriate data (see their notes). These functions give you
+#' access to the underlying code within \code{pez}; there is nothing I
+#' can do to stop you calculating a metric that, in my opinion,
+#' doesn't make any sense. You have been warned :D
+#'
+#' If you're a developer hoping to make your metric(s) work in this
+#' framework, please use the argument naming convention for arguments
+#' described in this help file, and use the \code{...} operator in
+#' your definition. That way functions that don't need particular
+#' arguments can co-exist peacefully with those that do. The first
+#' argument to one of these functions should \emph{always} be a
+#' \code{\link{comparative.comm}} object; there is no method dispatch
+#' on any of these functions and I foresee future pain without this
+#' rule.
 #' @export
-#' @rdname pez.metrics
-#' @name pez.metrics
+#' @param x \code{\link{comparative.comm}} object
+#' @param dist distance matrix for use with calculations; could be
+#' generated from traits, a square-root-transformed distance matrix
+#' (see \code{\link{.sqrt.phy}} for creating a
+#' \code{\link{comparative.comm}} object with a square-root
+#' transformed phylogeny). Default: NULL (--> calculate distance
+#' matrix from phylogeny)
+#' @param abundance.weighted whether to include species' abundances in
+#' metric calculation, often dictating whether you're calculating a
+#' \code{\link{shape}} or \code{\link{evenness}} metric. Default:
+#' FALSE
+#' @param na.rm remove NAs in calculations (altering this can obscure
+#' errors that are meaningful; I would advise leaving alone)
+#' @param include.root include root in PD calculations (default is
+#' TRUE, as in picante, but within \code{\link{shape}} I specify FALSE
+#' @param method whether to calculate using phylogeny ("phy";
+#' default) or trait data ("traits")
 #' @importFrom apTreeshape colless tipsubtree
 #' @references \code{colless} Colless D.H. (1982). Review of
 #' phylogenetics: the theory and practice of phylogenetic
@@ -9,14 +63,17 @@
 #' @export
 #' @rdname pez.metrics
 #' @name pez.metrics
-
-.colless <- function(data, ...)
+#' @examples
+#' data(laja)
+#' data <- comparative.comm(invert.tree, river.sites)
+#' .psv(data)
+.colless <- function(x, ...)
 {
-    if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
-    output <- numeric(nrow(data$comm))
-    for(i in seq(nrow(data$comm)))
-        output[i] <- colless(as.treeshape(drop_tip(data$phy, colnames(data$comm)[data$comm[i,]==0])))
-    names(output) <- rownames(data$comm)
+    if(!inherits(x, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
+    output <- numeric(nrow(x$comm))
+    for(i in seq(nrow(x$comm)))
+        output[i] <- colless(as.treeshape(drop_tip(x$phy, colnames(x$comm)[x$comm[i,]==0])))
+    names(output) <- rownames(x$comm)
     return(output)
 }
 #' Hed (Cadotte et al., 2010)
@@ -28,13 +85,14 @@
 #' evolutionary history. Ecology Letters, 13, 96-105.
 #' @rdname pez.metrics
 #' @name pez.metrics
-.hed <- function(data, ...){
+#' @export
+.hed <- function(x, ...){
     #Argument handling
-    if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
+    if(!inherits(x, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
 
     #Setup
-    ed <- evol.distinct(data$phy, "fair.proportion")$w
-    pd <- pd(data$comm, data$phy)$PD
+    ed <- evol.distinct(x$phy, "fair.proportion")$w
+    pd <- pd(x$comm, x$phy)$PD
 
     #Internal assemblage calc.
     ..hed <- function(ed, pd.comm){
@@ -43,9 +101,9 @@
     }
 
     #Calculate, clean, and return
-    output <- numeric(nrow(data$comm))
-    names(output) <- rownames(data$comm)
-    for(i in seq(nrow(data$comm)))
+    output <- numeric(nrow(x$comm))
+    names(output) <- rownames(x$comm)
+    for(i in seq(nrow(x$comm)))
         output[i] <- ..hed(ed, pd[i])
     return(output)
 }
@@ -53,10 +111,11 @@
 #' Eed (Cadotte et al., 2010)
 #' @rdname pez.metrics
 #' @name pez.metrics
-.eed <- function(data, na.rm=TRUE, ...) {
-    if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
-    output <- .hed(data) / log(apply(data$comm, 1, function(x) sum(x != 0)))
-    names(output) <- rownames(data)
+#' @export
+.eed <- function(x, na.rm=TRUE, ...) {
+    if(!inherits(x, "comparative.comm"))  stop("'x' must be a comparative community ecology object")
+    output <- .hed(x) / log(apply(x$comm, 1, function(x) sum(x != 0)))
+    names(output) <- rownames(x)
     return(output)
 }
 
@@ -77,6 +136,7 @@
 #' @importFrom picante psd
 #' @rdname pez.metrics
 #' @name pez.metrics
+#' @export
 .psr <- function(x, ...){
     if(!inherits(x, "comparative.comm"))
         stop("'x' must be a comparative.comm object")
@@ -88,6 +148,7 @@
 #' @importFrom ape cophenetic.phylo
 #' @rdname pez.metrics
 #' @name pez.metrics
+#' @export
 .mpd <- function(x, dist=NULL, abundance.weighted=FALSE, ...){
     if(!inherits(x, "comparative.comm"))
         stop("'x' must be a comparative.comm object")
@@ -103,6 +164,7 @@
 #' @importFrom stats lm
 #' @rdname pez.metrics
 #' @name pez.metrics
+#' @export
 .pd <- function(x, include.root=TRUE, ...){
     if(!inherits(x, "comparative.comm"))
         stop("'x' must be a comparative.comm object")
@@ -116,6 +178,7 @@
 #' @importFrom ape cophenetic.phylo
 #' @rdname pez.metrics
 #' @name pez.metrics
+#' @export
 .mntd <- function(x, dist=NULL, abundance.weighted=FALSE, ...){
     if(!inherits(x, "comparative.comm"))
         stop("'x' must be a comparative.comm object")
@@ -133,6 +196,7 @@
 #' @importFrom apTreeshape as.treeshape
 #' @rdname pez.metrics
 #' @name pez.metrics
+#' @export
 .gamma <- function(x, ...){
     if(!inherits(x, "comparative.comm"))
         stop("'x' must be a comparative.comm object")
@@ -161,6 +225,7 @@
 #' properties. J. Appl. Ecol., 35, 523-531.
 #' @rdname pez.metrics
 #' @name pez.metrics
+#' @export
 .taxon <- function(x, dist=NULL, ...){
     if(!inherits(x, "comparative.comm"))
         stop("'x' must be a comparative.comm object")
@@ -179,6 +244,7 @@
 #' @importFrom ape cophenetic.phylo
 #' @rdname pez.metrics
 #' @name pez.metrics
+#' @export
 .eigen.sum <- function(x, dist=NULL, which.eigen=1, ...){
     if(!inherits(x, "comparative.comm"))
         stop("'x' must be a comparative.comm object")
@@ -204,17 +270,18 @@
 #' @importFrom ape cophenetic.phylo
 #' @rdname pez.metrics
 #' @name pez.metrics
+#' @export
 .dist.fd <- function(x, method="phy", abundance.weighted=FALSE, ...){
     if(!inherits(x, "comparative.comm"))
         stop("'x' must be a comparative.comm object")
 
     if(method == "phy")
-        data <- cophenetic(x$phy)
+        x <- cophenetic(x$phy)
     if(method == "traits")
-        data <- x$data
+        x <- x$x
     if(is.matrix(method) | is.data.frame(method))
-        data <- method
-    output <- capture.output(dbFD(data, x$comm, w.abun=abundance.weighted, messages=TRUE), file=NULL)
+        x <- method
+    output <- capture.output(dbFD(x, x$comm, w.abun=abundance.weighted, messages=TRUE), file=NULL)
     coefs <- with(output, cbind(coefs, cbind(FRic, FEve, FDiv, FDis, RaoQ)))
     
     #Only bother getting CWMs if we have trait data
@@ -228,6 +295,7 @@
 #' @importFrom ape is.ultrametric as.phylo cophenetic.phylo
 #' @rdname pez.metrics
 #' @name pez.metrics
+#' @export
 .sqrt.phy <- function(x){
     if(!inherits(x, "comparative.comm"))
         stop("'x' must be a comparative.comm object")
@@ -247,28 +315,29 @@
 #' @importFrom ade4 newick2phylog
 #' @rdname pez.metrics
 #' @name pez.metrics
-.phylo.entropy <- function(data, ...)
+#' @export
+.phylo.entropy <- function(x, ...)
 {
   #Assertions and argument handling
-  if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
+  if(!inherits(x, "comparative.comm"))  stop("'x' must be a comparative community ecology object")
   
   #Setup
-  tree.phylog <- newick2phylog(write.tree(data$phy))
-  species <- colnames(data$comm)
-  hp.sites <- numeric(nrow(data$comm))
+  tree.phylog <- newick2phylog(write.tree(x$phy))
+  species <- colnames(x$comm)
+  hp.sites <- numeric(nrow(x$comm))
   
   ## beginning of the sites iteration
-  for (i in seq(nrow(data$comm)))
+  for (i in seq(nrow(x$comm)))
   {
     ## species which occured at the site
-    site.species <- species[which(data$comm[i,] > 0)]
+    site.species <- species[which(x$comm[i,] > 0)]
     
     ## species which NOT occured at the site. They will be removed
     ## from the phylogenetic tree.
-    other.species <- species[which(data$comm[i,] == 0)]
+    other.species <- species[which(x$comm[i,] == 0)]
     
     ## proportions of occurrence of each species
-    proportions <- data$comm[i,site.species] / sum(data$comm[i,])
+    proportions <- x$comm[i,site.species] / sum(x$comm[i,])
     
     ## god, how I hate these tree conversions...
     ## also, this comparison is very ugly, it has to be a better
@@ -278,13 +347,13 @@
       partial.tree <- tree.phylog
     } else {
       if(length(site.species) == 1) {other.species<-c(other.species,site.species)}
-      partial.tree <- drop.tip(data$phy, other.species)
+      partial.tree <- drop.tip(x$phy, other.species)
       if (all(partial.tree$edge.length[1] == partial.tree$edge.length) | length(site.species) == 2)
       {
         hp.sites[i] <- abs(sum(proportions * log(proportions) * partial.tree$edge.length[1]))
         next
       }
-      partial.tree <- newick2phylog(write.tree(drop.tip(data$phy, other.species)))
+      partial.tree <- newick2phylog(write.tree(drop.tip(x$phy, other.species)))
     }
     ## TODO: Some (I think) partial trees are not rooted. The results
     ## seem to be ok, but the paper states that Hp should be
@@ -340,7 +409,7 @@
   }
   #Make the 0 values NAs
   hp.sites[hp.sites==0]<-NA
-  names(hp.sites) <- rownames(data$comm)
+  names(hp.sites) <- rownames(x$comm)
   ## the end.
   return(hp.sites)
 }
@@ -350,10 +419,11 @@
 #' @importFrom caper clade.matrix
 #' @rdname pez.metrics
 #' @name pez.metrics
-.aed <- function(data, ...){
+#' @export
+.aed <- function(x, ...){
     #Setup
-    if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
-    uni.nodes <- data$phy$edge[,2][!data$phy$edge[,2] %in% seq_along(data$phy$tip.label)]
+    if(!inherits(x, "comparative.comm"))  stop("'x' must be a comparative community ecology object")
+    uni.nodes <- x$phy$edge[,2][!x$phy$edge[,2] %in% seq_along(x$phy$tip.label)]
 
     #Internal AED for each assemblage
     ..aed <- function(assemblage, tree, uni.nodes, clade.matrix){
@@ -378,9 +448,9 @@
     }
 
     #Calculate, neaten, and return
-    aed <- apply(data$comm, 1, ..aed, data$phy, uni.nodes, clade.matrix(data$phy)$clade.matrix[-seq_along(data$phy$tip.label),])
-    rownames(aed) <- data$phy$tip.label
-    colnames(aed) <- rownames(data$comm)
+    aed <- apply(x$comm, 1, ..aed, x$phy, uni.nodes, clade.matrix(x$phy)$clade.matrix[-seq_along(x$phy$tip.label),])
+    rownames(aed) <- x$phy$tip.label
+    colnames(aed) <- rownames(x$comm)
     aed[aed == Inf | aed == -Inf] <- NA
     return(aed)
 }
@@ -395,14 +465,15 @@
 #' @importFrom picante evol.distinct
 #' @rdname pez.metrics
 #' @name pez.metrics
-.haed <- function(data, ...){
+#' @export
+.haed <- function(x, ...){
     #Argument handling
-    if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
+    if(!inherits(x, "comparative.comm"))  stop("'x' must be a comparative community ecology object")
 
     #Setup
-    ed <- evol.distinct(data$phy, "fair.proportion")$w
-    pd <- pd(data$comm, data$phy)$PD
-    aed <- .aed(data)
+    ed <- evol.distinct(x$phy, "fair.proportion")$w
+    pd <- pd(x$comm, x$phy)$PD
+    aed <- .aed(x)
 
     #Internal assemblage calc.
     ..haed <- function(ed, pd.comm, aed.comm, assemblage){
@@ -412,10 +483,10 @@
     }
 
     #Calculate, clean, and return
-    output <- numeric(nrow(data$comm))
-    names(output) <- rownames(data$comm)
-    for(i in seq(nrow(data$comm)))
-        output[i] <- ..haed(ed, pd[i], aed[,i], data$comm[i,])
+    output <- numeric(nrow(x$comm))
+    names(output) <- rownames(x$comm)
+    for(i in seq(nrow(x$comm)))
+        output[i] <- ..haed(ed, pd[i], aed[,i], x$comm[i,])
     return(output)
 }
 
@@ -423,9 +494,10 @@
 #' @importFrom ape cophenetic.phylo
 #' @rdname pez.metrics
 #' @name pez.metrics
-.simpson.phylogenetic <- function(data) {
-    N.relative <- prop.table(data$comm, 2)
-    dmat <- cophenetic(data$phy)
+#' @export
+.simpson.phylogenetic <- function(x) {
+    N.relative <- prop.table(x$comm, 2)
+    dmat <- cophenetic(x$phy)
     out <- apply(N.relative, 1, function(n) sum((n %o% n)*dmat))
     return(out) 
 }
@@ -433,11 +505,12 @@
 #' IAC (Cadotte et al., 2010)
 #' @rdname pez.metrics
 #' @name pez.metrics
-.iac <- function(data, na.rm=TRUE, ...) {
+#' @export
+.iac <- function(x, na.rm=TRUE, ...) {
     #Assertions and argument handling
-    if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
+    if(!inherits(x, "comparative.comm"))  stop("'x' must be a comparative community ecology object")
     
-    subtrees <- assemblage.phylogenies(data)
+    subtrees <- assemblage.phylogenies(x)
     .ancestors <- function(tree, no.root=TRUE){
         mat <- clade.matrix(tree)$clade.matrix
         if(no.root)
@@ -465,58 +538,60 @@
 
     # Calculate expected number of individuals under null hypothesis
     # of equal allocation to each lineage at each (node) split 
-    expected <- rowSums(data$comm, na.rm=na.rm) / t(denom)
+    expected <- rowSums(x$comm, na.rm=na.rm) / t(denom)
 
     # IAC: summed absolute difference between expected and observed
     # abundances, divided by number of nodes
-    return(rowSums(abs(expected - data$comm), na.rm=na.rm) / nnodes)
+    return(rowSums(abs(expected - x$comm), na.rm=na.rm) / nnodes)
 }
 
 #' PAE (Cadotte et al., 2010)
 #' @rdname pez.metrics
 #' @name pez.metrics
-.pae <- function(data, na.rm=TRUE, ...) {
+#' @export
+.pae <- function(x, na.rm=TRUE, ...) {
     #Assertions and argument handling
-    if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
+    if(!inherits(x, "comparative.comm"))  stop("'x' must be a comparative community ecology object")
     
-    subtrees <- assemblage.phylogenies(data)
-    PD <- pd(data$comm, data$phy)
-    tmp <- setNames(rep(0, ncol(data$comm)), colnames(data$comm))
+    subtrees <- assemblage.phylogenies(x)
+    PD <- pd(x$comm, x$phy)
+    tmp <- setNames(rep(0, ncol(x$comm)), colnames(x$comm))
     TL <- lapply(subtrees, function(tree) {
         #Get terminal edge length
-        res <- data$phy$edge.length[data$phy$edge[,2] <= length(data$phy$tip.label)]
-        tmp[match(data$phy$tip.label, names(tmp))] <- res
+        res <- x$phy$edge.length[x$phy$edge[,2] <= length(x$phy$tip.label)]
+        tmp[match(x$phy$tip.label, names(tmp))] <- res
         tmp
     })
     TL <- do.call("cbind", TL)
-    numer <- PD$PD + colSums(TL * (t(data$comm) - 1))
-    denom <- PD$PD + (rowSums(data$comm, na.rm = na.rm) / rowSums(data$comm,
+    numer <- PD$PD + colSums(TL * (t(x$comm) - 1))
+    denom <- PD$PD + (rowSums(x$comm, na.rm = na.rm) / rowSums(x$comm,
         na.rm=na.rm) - 1) * colSums(TL)
     res <- numer/denom
-    names(res) <- rownames(data$comm)
+    names(res) <- rownames(x$comm)
     return(res)
 }
 
 #' @importFrom picante evol.distinct
 #' @rdname pez.metrics
 #' @name pez.metrics
-.scheiner <- function(data, q=0, abundance.weighted = TRUE, ...){
+#' @export
+.scheiner <- function(x, q=0, abundance.weighted = TRUE, ...){
     #Assertions and argument handling
-    if(!inherits(data, "comparative.comm")) stop("'data' must be a comparative community ecology object")
+    if(!inherits(x, "comparative.comm")) stop("'x' must be a comparative community ecology object")
     
     #Setup
-    ed <- evol.distinct(data$phy, "fair.proportion")$w
-    pd <- pd(data$comm, data$phy)$PD
+    ed <- evol.distinct(x$phy, "fair.proportion")$w
+    pd <- pd(x$comm, x$phy)$PD
     if(!abundance.weighted)
-        data$comm <- as.numeric(data$comm > 0)
+        x$comm <- as.numeric(x$comm > 0)
     
     #Calculate scheiner; beware dividing by zero inadvertantly
-    output <- numeric(nrow(data$comm))
-    for(i in seq(nrow(data$comm))){
+    output <- numeric(nrow(x$comm))
+    for(i in seq(nrow(x$comm))){
         if(q==1)
-            output[i] <- exp(-1*sum(((data$comm[i,]*ed[i])/(sum(data$comm[i,])*pd[i])) * log((data$comm[i,]*ed[i])/(sum(data$comm[i,])*pd[i]))))
+            output[i] <- exp(-1*sum(((x$comm[i,]*ed[i])/(sum(x$comm[i,])*pd[i])) * log((x$comm[i,]*ed[i])/(sum(x$comm[i,])*pd[i]))))
         else
-            output[i] <- sum(((data$comm[i,]*ed[i])/(sum(data$comm[i,])*pd[i]))^q)^(1/(1-q))
+            output[i] <- sum(((x$comm[i,]*ed[i])/(sum(x$comm[i,])*pd[i]))^q)^(1/(1-q))
     }
     return(output)
 }
@@ -525,6 +600,7 @@
 #' @importFrom picante pse
 #' @rdname pez.metrics
 #' @name pez.metrics
+#' @export
 .pse <- function(x, ...){
     if(!inherits(x, "comparative.comm"))
         stop("'x' must be a comparative.comm object")
@@ -538,6 +614,7 @@
 #' @importFrom picante raoD
 #' @rdname pez.metrics
 #' @name pez.metrics
+#' @export
 .rao <- function(x, ...){
     if(!inherits(x, "comparative.comm"))
         stop("'x' must be a comparative.comm object")
@@ -551,6 +628,7 @@
 #' @importFrom caper pgls comparative.data
 #' @rdname pez.metrics
 #' @name pez.metrics
+#' @export
 .lambda <- function(x, ...){
     if(!inherits(x, "comparative.comm"))
         stop("'x' must be a comparative.comm object")
@@ -572,6 +650,7 @@
 #' @importFrom caper pgls comparative.data
 #' @rdname pez.metrics
 #' @name pez.metrics
+#' @export
 .delta <- function(x, ...){
     if(!inherits(x, "comparative.comm"))
         stop("'x' must be a comparative.comm object")
@@ -593,6 +672,7 @@
 #' @importFrom caper pgls comparative.data
 #' @rdname pez.metrics
 #' @name pez.metrics
+#' @export
 .kappa <- function(x, ...){
     if(!inherits(x, "comparative.comm"))
         stop("'x' must be a comparative.comm object")
@@ -613,6 +693,7 @@
 #' Eaed (Cadotte et al., 2010)
 #' @rdname pez.metrics
 #' @name pez.metrics
+#' @export
 .eaed <- function(x, ...){
     if(!inherits(x, "comparative.comm"))
         stop("'x' must be a comparative.comm object")
@@ -627,6 +708,7 @@
 #' @importFrom picante unifrac
 #' @rdname pez.metrics
 #' @name pez.metrics
+#' @export
 .unifrac <- function(x, ...){
     if(!inherits(x, "comparative.comm"))
         stop("'x' must be a comparative.comm object")
@@ -640,6 +722,7 @@
 #' @importFrom picante ses.mpd
 #' @rdname pez.metrics
 #' @name pez.metrics
+#' @export
 .pcd <- function(x, permute=1000, ...){
     if(!inherits(x, "comparative.comm"))
         stop("'x' must be a comparative.comm object")
@@ -654,6 +737,7 @@
 #' @importFrom picante comdist
 #' @rdname pez.metrics
 #' @name pez.metrics
+#' @export
 .comdist <- function(x, dist=NULL, abundance.weighted=FALSE, ...){
     if(!inherits(x, "comparative.comm"))
         stop("'x' must be a comparative.comm object")
@@ -671,12 +755,13 @@
 #' @importFrom picante phylosor
 #' @rdname pez.metrics
 #' @name pez.metrics
+#' @export
 .phylosor <- function(x, dist=NULL, abundance.weighted=FALSE, ...){
     if(!inherits(x, "comparative.comm"))
         stop("'x' must be a comparative.comm object")
     if(is.null(dist))
         dist <- cophenetic(x$phy)
-    output <- phylosor(data$comm, data$phy)
+    output <- phylosor(x$comm, x$phy)
     output <- as.dist(1 - as.matrix(output))
     return(output)
 }
@@ -691,14 +776,15 @@
 #' @importFrom mvtnorm rmvnorm
 #' @rdname pez.metrics
 #' @name pez.metrics
-.d <- function(data, permute=1000, ...) {
+#' @export
+.d <- function(x, permute=1000, ...) {
   #Checking
-  if(! inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
+  if(! inherits(x, "comparative.comm"))  stop("'x' must be a comparative community ecology object")
   if (!is.numeric(permute)) (stop("'", permute, "' is not numeric."))
-  data$comm[data$comm > 1] <- 1
+  x$comm[x$comm > 1] <- 1
   # check tree branch lengths
-  el    <- data$phy$edge.length
-  elTip <- data$phy$edge[,2] <= length(data$phy$tip.label)
+  el    <- x$phy$edge.length
+  elTip <- x$phy$edge[,2] <= length(x$phy$tip.label)
   
   if(any(el[elTip] == 0)) 
     stop('Phylogeny contains pairs of tips on zero branch lengths, cannot currently simulate')
@@ -725,7 +811,7 @@
       ## insert observed and set dimnames for contrCalc
       ds.ran <- cbind(Obs=ds, ds.ran)
       ds.phy <- cbind(Obs=ds, ds.phy)
-      dimnames(ds.ran) <- dimnames(ds.phy) <- list(data$phy$tip.label, c('Obs', paste('V',1:permute, sep='')))
+      dimnames(ds.ran) <- dimnames(ds.phy) <- list(x$phy$tip.label, c('Obs', paste('V',1:permute, sep='')))
       
       ## now run that through the contrast engine 
       ds.ran.cc <- contrCalc(vals=ds.ran, phy=phy, ref.var='V1', picMethod='phylo.d', crunch.brlen=0)
@@ -748,14 +834,14 @@
   }
 
   ## being careful with the edge order - pre-reorder the phylogeny
-  phy <- reorder(data$phy, 'pruningwise')
+  phy <- reorder(x$phy, 'pruningwise')
   
-  vcv <- VCV.array(data$phy)
-  vals <- matrix(ncol=3, nrow=nrow(data$comm))
-  rownames(vals) <- rownames(data$comm)
+  vcv <- VCV.array(x$phy)
+  vals <- matrix(ncol=3, nrow=nrow(x$comm))
+  rownames(vals) <- rownames(x$comm)
   colnames(vals) <- c("D", "P(D=1)", "P(D=0)")
-  for(i in seq(nrow(data$comm)))
-      vals[i,] <- ..d(data$comm[i,], vcv, permute, data$phy)
+  for(i in seq(nrow(x$comm)))
+      vals[i,] <- ..d(x$comm[i,], vcv, permute, x$phy)
   
   return(vals)
 }
@@ -767,6 +853,7 @@
 #' @importFrom picante ses.mpd
 #' @rdname pez.metrics
 #' @name pez.metrics
+#' @export
 .ses.mpd <- function(x, dist=NULL, null.model="taxa.labels", abundance.weighted=FALSE, permute=1000, ...){
     if(!inherits(x, "comparative.comm"))
         stop("'x' must be a comparative.comm object")
@@ -777,6 +864,7 @@
 #' @importFrom picante ses.mntd
 #' @rdname pez.metrics
 #' @name pez.metrics
+#' @export
 .ses.mntd <- function(x, dist=NULL, null.model="taxa.labels", abundance.weighted=FALSE, permute=1000, ...){
     if(!inherits(x, "comparative.comm"))
         stop("'x' must be a comparative.comm object")
@@ -790,6 +878,7 @@
 #' @importFrom picante ses.mpd
 #' @rdname pez.metrics
 #' @name pez.metrics
+#' @export
 .inmd <- function(x, dist=NULL, null.model="taxa.labels", abundance.weighted=FALSE, permute=1000, ...){
     if(!inherits(x, "comparative.comm"))
         stop("'x' must be a comparative.comm object")
@@ -800,6 +889,7 @@
 #' @importFrom picante ses.mntd
 #' @rdname pez.metrics
 #' @name pez.metrics
+#' @export
 .innd <- function(x, dist=NULL, null.model="taxa.labels", abundance.weighted=FALSE, permute=1000, ...){
     if(!inherits(x, "comparative.comm"))
         stop("'x' must be a comparative.comm object")

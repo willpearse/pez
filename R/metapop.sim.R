@@ -94,10 +94,9 @@ sim.meta.comm <- function(size=10, n.spp=8, timesteps=10, p.migrate=0.05, env.la
 #' @param p.speciate probabilty that, at each timestep, a species will
 #' speciate. A species can only speciate, migrate, or reproduce if it
 #' has individuals!
-#' @return List with the species abundances (as a 3D array), the
-#' environmental quality (carrying capacities), the phylogeny of
-#' species (which generates warnings when plotted, don't ask me why!),
-#' and a lookup table from the abundance array to the phylogeny.
+#' @return \code{\link{comparative.comm}} object that describes the
+#' data; note that the rownames of the community object refer to the
+#' \code{row.column} of the data in the simulated grid assemblages.
 #' @rdname sim.meta
 #' @author Will Pearse
 #' @export
@@ -167,9 +166,17 @@ sim.meta.phy.comm <- function(size=10, n.spp=8, timesteps=10, p.migrate=0.3, env
         abundance[abundance < 0] <- 0
     }
     
-    #Turn into ape::phylo and return
+    #Produce ape::phylo
     species <- seq(nrow(edge)) %in% phy.abund.lookup$phy
     tree <- edge2phylo(edge, species, el=edge.length)
     phy.abund.lookup$phy[order(phy.abund.lookup$phy)] <- tree$tip.label
-    return(list(species=abundance, environment=env, tree=tree, lookup=phy.abund.lookup))
+
+    #Format output and return
+    comm <- apply(abundance, 3, unlist)
+    colnames(comm) <- phy.abund.lookup[,1]
+    t <- dim(abundance)
+    t <- expand.grid(seq_len(t[1]), seq_len(t[2]))
+    rownames(comm) <- paste(t[,1], t[,2], sep=".")
+    env <- data.frame(as.numeric(env), row.names=rownames(comm))
+    return(comparative.comm(tree, comm, env=env, force.root=1))
 }

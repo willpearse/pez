@@ -31,44 +31,60 @@ scape(tree, scape.size = 10, g.center = 1, g.range = 1, g.repulse = 1,
 
 \item{repulse}{include phylogenetic repulsion in range centers}
 
-\item{center.scale}{adjust strength of phylogenetic attraction in range centers independent of \code{g.center}}
+\item{center.scale}{adjust strength of phylogenetic attraction in
+range centers independent of \code{g.center}}
 
-\item{range.scale}{adjust strength of phylogenetic signal in range size independent of \code{g.range}}
+\item{range.scale}{adjust strength of phylogenetic signal in range
+size independent of \code{g.range}}
 
-\item{repulse.scale}{adjust strength of phylogenetic repulsion independent of \code{g.repulse}}
+\item{repulse.scale}{adjust strength of phylogenetic repulsion
+independent of \code{g.repulse}}
 
-\item{site.stoch.scale}{adjust strength of random variation in species richness across sites}
+\item{site.stoch.scale}{adjust strength of random variation in
+species richness across sites}
 
-\item{sd.center}{sd in \code{\link{rnorm}} for the range centers, increase to get more variation in center values across species}
+\item{sd.center}{sd in \code{\link{rnorm}} for the range centers,
+increase to get more variation in center values across species}
 
-\item{sd.range}{sd \code{\link{rnorm}} for the range sizes, increase to get more variation in range sizes across gradients}
+\item{sd.range}{sd \code{\link{rnorm}} for the range sizes,
+increase to get more variation in range sizes across gradients}
 
-\item{rho}{Grafen branch adjustment of phylogenetic tree see \code{\link{corGrafen}}}
+\item{rho}{Grafen branch adjustment of phylogenetic tree see
+\code{\link{corGrafen}}}
 
-\item{th}{probability threshold 10^-th above which species are considered present at a site}
+\item{th}{probability threshold 10^-th above which species are
+considered present at a site}
 }
 \value{
-\code{Y} presence/absence matrix
+\code{cc} \code{\link{comparative.comm}} object with
+presence/absence results of simulations. The site names are the
+row.columns of the cells in the original grid cells that made up
+the data
 
-\code{index} spatial coordinates for X and Y (stacked columns)
-
-\code{X.joint} full probabilities of species at sites, used to construct Y
+\code{X.joint} full probabilities of species at sites, used
+to construct cc
 
 \code{X1} probabilities of species along gradient 1
 
 \code{X2} probabilities of species along gradient 2
 
-\code{sppXs} full probabilities of each species as an array arranged in a \code{scape.size}-by-\code{scape.size} matrix
+\code{sppXs} full probabilities of each species as an array
+arranged in a \code{scape.size}-by-\code{scape.size} matrix
 
-\code{V.phylo} initial phylogenetic covariance matrix from tree
+\code{V.phylo} initial phylogenetic covariance matrix from
+tree
 
-\code{V.phylo.rho} phylogenetic covariance matrix from tree scaled by Grafen if rho is provided
+\code{V.phylo.rho} phylogenetic covariance matrix from tree
+scaled by Grafen if rho is provided
 
-\code{V.center} scaled by \code{g.center} phylo covariance matrix used in the simulations
+\code{V.center} scaled by \code{g.center} phylo covariance
+matrix used in the simulations
 
-\code{V.range}  scaled by \code{g.range} phylo covariance matrix used in the simulations
+\code{V.range} scaled by \code{g.range} phylo covariance
+matrix used in the simulations
 
-\code{V.repulse} scaled by \code{g.repulse} phylo covariance matrix used in the simulations
+\code{V.repulse} scaled by \code{g.repulse} phylo
+covariance matrix used in the simulations
 
 \code{bspp1} species optima for gradient 1
 
@@ -106,17 +122,19 @@ increased to obtain more species at sites and thus increase average
 site species richness.
 }
 \examples{
-require(ape)
-tree<-stree(8,type="balanced")       #signal in centers
-kk<-scape(tree, scape.size=100, g.center=100, g.range=1, g.repulse=1, wd.all=150,
-signal.center=TRUE, signal.range=FALSE, same.range=FALSE, repulse=FALSE,center.scale = 1,
-range.scale = 1, repulse.scale = 1, site.stoch.scale = 0, sd.center=3, sd.range=1,rho=NULL, th=20)
+#Create balanced tree with equal branch-lengths (signal in centers)
+tree <- stree(8,type="balanced")
+tree$edge.length <- rep(1, nrow(tree$edge))
+tree$root <- 1
+kk <- scape(tree, scape.size=100, g.center=100, g.range=1, g.repulse=1, wd.all=150,
+    signal.center=TRUE, signal.range=FALSE, same.range=FALSE, repulse=FALSE,center.scale = 1,
+    range.scale = 1, repulse.scale = 1, site.stoch.scale = 0, sd.center=3, sd.range=1,rho=NULL, th=20)
 
 #Make some plots
-require(plotrix)
 par(mfrow=c(1,Ntip(tree)),mar=c(.1,.1,.1,.1))
-for(j in 1:Ntip(tree)){color2D.matplot(1 - kk$sppXs[,,j]/max(kk$sppXs[,,j]), xlab = "",
-ylab = "",main = "",border=NA,do.hex=FALSE,axes=FALSE)}
+for(j in seq_along(tree$tip.label))
+    image(t(1 - kk$sppXs[,,j]/max(kk$sppXs[,,j])), xlab = "",
+              ylab = "",main = "",axes=FALSE, col=grey.colors(10))
 
 par(mfrow=c(2,1))
 matplot((kk$X1), type = "l", xlab="gradient",ylab = "probability",
@@ -124,16 +142,18 @@ main = "Gradient 1",col=rainbow(dim(kk$X1)[2]),lty=1)
 matplot((kk$X2), type = "l", xlab="gradient",ylab = "probability",
 main = "Gradient 2",col=rainbow(dim(kk$X2)[2]),lty=1)
 
-plot(x=1:dim(kk$Y)[1],y = rowSums(kk$Y), main = "SR",type = "l")
+plot(x=seq_along(sites(kk$cc)),y = rowSums(comm(kk$cc)), main = "SR",type = "l")
 cor(kk$X1)
 }
 \author{
-M.R. Helmus
+M.R. Helmus, cosmetic changes by Will Pearse
 }
 \references{
-Helmus M.R. & Ives A.R. (2012). Phylogenetic diversity area curves. Ecology, 93, S31-S43.
+Helmus M.R. & Ives A.R. (2012). Phylogenetic diversity
+area curves. Ecology, 93, S31-S43.
 }
 \seealso{
-\code{\link{eco.scape}} \code{\link{sim.phy}} \code{\link{sim.meta}}
+\code{\link{eco.scape}} \code{\link{sim.phy}}
+\code{\link{sim.meta}}
 }
 

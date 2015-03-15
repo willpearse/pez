@@ -134,7 +134,7 @@ eco.scape <- function(tree, scape.size=10, g.center=1,
     if(!is.ultrametric(tree))
         stop("'tree' must be ultrametric")
     V <- vcv.phylo(tree, corr = TRUE)
-    Vinit<-V       
+    Vinit<-V
     
     #Setup
     nspp <- dim(V)[1]
@@ -151,11 +151,9 @@ eco.scape <- function(tree, scape.size=10, g.center=1,
     
     ##############################################################################
     #SIMULATION
-    nsites<-scape.size  #number of sites for the square landscape
-    
     #Establish environmental gradient
-    mx2<- mx <- t(as.matrix((-(nsites)/2):(nsites/2)))  #env gradient
-    m <- length(mx) #new number of sites (equal to nsites + 1)
+    mx2<- mx <- t(as.matrix((-(scape.size)/2):(scape.size/2)))  #env gradient
+    m <- length(mx) #new number of sites (equal to scape.size + 1)
     
     if(env.type=="random"){
         mx <- sample(mx, size=length(mx), replace=FALSE)

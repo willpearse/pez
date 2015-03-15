@@ -50,10 +50,9 @@ environmental quality (carrying capacities) for
 phylogeny of species and a lookup table from the abundance array to
 the phylogeny.
 
-List with the species abundances (as a 3D array), the
-environmental quality (carrying capacities), the phylogeny of
-species (which generates warnings when plotted, don't ask me why!),
-and a lookup table from the abundance array to the phylogeny.
+\code{\link{comparative.comm}} object that describes the
+data; note that the rownames of the community object refer to the
+\code{row.column} of the data in the simulated grid assemblages.
 }
 \description{
 Simulate a meta-community (and the resulting phylogeny) based on

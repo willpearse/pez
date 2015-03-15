@@ -37,13 +37,13 @@
 \alias{.taxon}
 \alias{.unifrac}
 \alias{pez.metrics}
-\title{Colless' index (Colless, 1982)}
+\title{Phylogenetic and functional trait metrics within pez}
 \usage{
-.colless(data, ...)
+.colless(x, ...)
 
-.hed(data, ...)
+.hed(x, ...)
 
-.eed(data, na.rm = TRUE, ...)
+.eed(x, na.rm = TRUE, ...)
 
 .psv(x, ...)
 
@@ -65,19 +65,19 @@
 
 .sqrt.phy(x)
 
-.phylo.entropy(data, ...)
+.phylo.entropy(x, ...)
 
-.aed(data, ...)
+.aed(x, ...)
 
-.haed(data, ...)
+.haed(x, ...)
 
-.simpson.phylogenetic(data)
+.simpson.phylogenetic(x)
 
-.iac(data, na.rm = TRUE, ...)
+.iac(x, na.rm = TRUE, ...)
 
-.pae(data, na.rm = TRUE, ...)
+.pae(x, na.rm = TRUE, ...)
 
-.scheiner(data, q = 0, abundance.weighted = TRUE, ...)
+.scheiner(x, q = 0, abundance.weighted = TRUE, ...)
 
 .pse(x, ...)
 
@@ -99,7 +99,7 @@
 
 .phylosor(x, dist = NULL, abundance.weighted = FALSE, ...)
 
-.d(data, permute = 1000, ...)
+.d(x, permute = 1000, ...)
 
 .ses.mpd(x, dist = NULL, null.model = "taxa.labels",
   abundance.weighted = FALSE, permute = 1000, ...)
@@ -113,8 +113,41 @@
 .innd(x, dist = NULL, null.model = "taxa.labels",
   abundance.weighted = FALSE, permute = 1000, ...)
 }
+\arguments{
+\item{x}{\code{\link{comparative.comm}} object}
+
+\item{na.rm}{remove NAs in calculations (altering this can obscure
+errors that are meaningful; I would advise leaving alone)}
+
+\item{dist}{distance matrix for use with calculations; could be
+generated from traits, a square-root-transformed distance matrix
+(see \code{\link{.sqrt.phy}} for creating a
+\code{\link{comparative.comm}} object with a square-root
+transformed phylogeny). Default: NULL (--> calculate distance
+matrix from phylogeny)}
+
+\item{abundance.weighted}{whether to include species' abundances in
+metric calculation, often dictating whether you're calculating a
+\code{\link{shape}} or \code{\link{evenness}} metric. Default:
+FALSE}
+
+\item{include.root}{include root in PD calculations (default is
+TRUE, as in picante, but within \code{\link{shape}} I specify FALSE}
+
+\item{method}{whether to calculate using phylogeny ("phy";
+default) or trait data ("traits")}
+}
 \description{
-Colless' index (Colless, 1982)
+Using these functions, you can calculate any of the phylogenetic
+metrics within pez, using \code{\link{comparative.comm}}
+objects. While you can call each individually, using the
+\code{\link{shape}}, \code{\link{evenness}},
+\code{\link{dispersion}}, and \code{\link{dissimilarity}} wrapper
+functions (and the more flexible \code{\link{generic.metric}} and
+null model functions) are probably your best bet. Note that *all of
+these functions* take a common first parameter: a
+\code{\link{comparative.comm}} object. There are additional
+parameters that can be passed, which are described below.
 
 Hed (Cadotte et al., 2010)
 
@@ -179,6 +212,40 @@ SESmntd (Webb, 2000)
 INMD (XXX)
 
 INND (XXX)
+}
+\note{
+Many (but not all) of these functions are fairly trivial
+wrappers around functions in other packages. In the citations for
+each metric, * indicates a function that's essentially written in
+\code{\link{picante}}. The Pagel family of measures are also fairly
+trivial wrapper around \code{\link{caper}} code, functional
+dissimilarity \code{\link{FD}} code, \code{gamma} \code{\link{ape}}
+code, and \code{colless} \code{\link{apTreeshape}} code. I can't
+demand it, but I would be grateful if you would cite these authors
+when using these wrappers.
+
+The \code{\link{shape}}, \code{\link{evenness}},
+\code{\link{dispersion}}, and \code{\link{dissimilarity}} wrapper
+functions go to some trouble to stop you calculating metrics using
+inappropriate data (see their notes). These functions give you
+access to the underlying code within \code{pez}; there is nothing I
+can do to stop you calculating a metric that, in my opinion,
+doesn't make any sense. You have been warned :D
+
+If you're a developer hoping to make your metric(s) work in this
+framework, please use the argument naming convention for arguments
+described in this help file, and use the \code{...} operator in
+your definition. That way functions that don't need particular
+arguments can co-exist peacefully with those that do. The first
+argument to one of these functions should \emph{always} be a
+\code{\link{comparative.comm}} object; there is no method dispatch
+on any of these functions and I foresee future pain without this
+rule.
+}
+\examples{
+data(laja)
+data <- comparative.comm(invert.tree, river.sites)
+.psv(data)
 }
 \references{
 \code{colless} Colless D.H. (1982). Review of

@@ -192,6 +192,7 @@ ConDivSim<-function(object, type="traits", n.sim=100, plot = TRUE, disp99 = FALS
 #'  data(laja)
 #'  trait.asm(laja$fish.pref)
 #' }
+#' @export
 trait.asm<-function(a, m=1000,meanSR=NULL,interval=c(.001,10),exponential=TRUE,Pscale=1)
 {
     a<-a[!is.na(a)]
