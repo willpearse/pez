@@ -67,6 +67,7 @@
 #' data(laja)
 #' data <- comparative.comm(invert.tree, river.sites)
 #' .psv(data)
+#' @export
 .colless <- function(x, ...)
 {
     if(!inherits(x, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
@@ -126,6 +127,7 @@
 #' @importFrom picante psv
 #' @rdname pez.metrics
 #' @name pez.metrics
+#' @export
 .psv <- function(x, ...){
     if(!inherits(x, "comparative.comm"))
         stop("'x' must be a comparative.comm object")
@@ -165,9 +167,11 @@
 #' @rdname pez.metrics
 #' @name pez.metrics
 #' @export
-.pd <- function(x, include.root=TRUE, ...){
+.pd <- function(x, include.root=TRUE, abundance.weighted=FALSE, ...){
     if(!inherits(x, "comparative.comm"))
         stop("'x' must be a comparative.comm object")
+    if(abundance.weighted==FALSE)
+        x$comm[x$comm > 1] <- 1
     pd <- pd(x$comm, x$phy, include.root)[,1]
     pd.ivs <- unname(resid(lm(pd ~ rowSums(x$comm))))
     return(cbind(pd, pd.ivs))
@@ -226,11 +230,13 @@
 #' @rdname pez.metrics
 #' @name pez.metrics
 #' @export
-.taxon <- function(x, dist=NULL, ...){
+.taxon <- function(x, dist=NULL, abundance.weighted=FALSE, ...){
     if(!inherits(x, "comparative.comm"))
         stop("'x' must be a comparative.comm object")
     if(is.null(dist))
         dist <- cophenetic(x$phy)
+    if(abundance.weighted==FALSE)
+        x$comm[x$comm > 1] <- 1
     output <- taxondive(x$comm, dist)
     output <- with(output, data.frame(Delta=D, DeltaStar=Dstar, LambdaPlus=Lambda, DeltaPlus=Dplus, S.DeltaPlus=SDplus))
     return(output)
@@ -272,16 +278,18 @@
 #' @name pez.metrics
 #' @export
 .dist.fd <- function(x, method="phy", abundance.weighted=FALSE, ...){
+    x <- comparative.comm()
     if(!inherits(x, "comparative.comm"))
         stop("'x' must be a comparative.comm object")
-
     if(method == "phy")
-        x <- cophenetic(x$phy)
+        data <- as.dist(cophenetic(x$phy))
     if(method == "traits")
-        x <- x$x
+        data <- x$data
     if(is.matrix(method) | is.data.frame(method))
-        x <- method
-    output <- capture.output(dbFD(x, x$comm, w.abun=abundance.weighted, messages=TRUE), file=NULL)
+        data <- method
+    if(is.dist(method))
+        data <- method
+    output <- capture.output(dbFD(data, x$comm, w.abun=abundance.weighted, messages=TRUE), file=NULL)
     coefs <- with(output, cbind(coefs, cbind(FRic, FEve, FDiv, FDis, RaoQ)))
     
     #Only bother getting CWMs if we have trait data
@@ -575,7 +583,7 @@
 #' @rdname pez.metrics
 #' @name pez.metrics
 #' @export
-.scheiner <- function(x, q=0, abundance.weighted = TRUE, ...){
+.scheiner <- function(x, q=0, abundance.weighted = FALSE, ...){
     #Assertions and argument handling
     if(!inherits(x, "comparative.comm")) stop("'x' must be a comparative community ecology object")
     
@@ -636,10 +644,10 @@
     output <- numeric(length(sites(x)))
     for(i in seq(nrow(x$comm))){
         c.data <- x$comm[i,][x$comm[i,] > 0]
-        if(length(unique(c.x)) > 1){
+        if(length(unique(c.data)) > 1){
             c.data <- data.frame(comm=c.data, names=names(c.data))
             c.data <- comparative.data(phy=drop_tip(x$phy, setdiff(x$phy$tip.label, c.data$names)), data=c.data, names.col=names)
-            model <- pgls(comm ~ 1, c.data, lambda="ML", ...)
+            model <- pgls(comm ~ 1, c.data, lambda="ML")
             output[i] <- summary(model)$param.CI$lambda$opt
         } else output[i] <- NA
     }
@@ -658,10 +666,10 @@
     output <- numeric(length(sites(x)))
     for(i in seq(nrow(x$comm))){
         c.data <- x$comm[i,][x$comm[i,] > 0]
-        if(length(unique(c.x)) > 1){
+        if(length(unique(c.data)) > 1){
             c.data <- data.frame(comm=c.data, names=names(c.data))
             c.data <- comparative.data(phy=drop_tip(x$phy, setdiff(x$phy$tip.label, c.data$names)), data=c.data, names.col=names)
-            model <- pgls(comm ~ 1, c.data, delta="ML", ...)
+            model <- pgls(comm ~ 1, c.data, delta="ML")
             output[i] <- summary(model)$param.CI$delta$opt
         } else output[i] <- NA
     }
@@ -680,10 +688,10 @@
     output <- numeric(length(sites(x)))
     for(i in seq(nrow(x$comm))){
         c.data <- x$comm[i,][x$comm[i,] > 0]
-        if(length(unique(c.x)) > 1){
+        if(length(unique(c.data)) > 1){
             c.data <- data.frame(comm=c.data, names=names(c.data))
             c.data <- comparative.data(phy=drop_tip(x$phy, setdiff(x$phy$tip.label, c.data$names)), data=c.data, names.col=names)
-            model <- pgls(comm ~ 1, c.data, kappa="ML", ...)
+            model <- pgls(comm ~ 1, c.data, kappa="ML")
             output[i] <- summary(model)$param.CI$kappa$opt
         } else output[i] <- NA
     }
@@ -853,10 +861,13 @@
 #' @importFrom picante ses.mpd
 #' @rdname pez.metrics
 #' @name pez.metrics
+#' @importFrom picante ses.mpd
 #' @export
 .ses.mpd <- function(x, dist=NULL, null.model="taxa.labels", abundance.weighted=FALSE, permute=1000, ...){
     if(!inherits(x, "comparative.comm"))
         stop("'x' must be a comparative.comm object")
+    if(is.null(dist))
+        dist <- cophenetic(x$phy)
     return(ses.mpd(x$comm, dis=dist, null.model=null.model, abundance.weighted=abundance.weighted, runs=permute))
 }
 
@@ -864,10 +875,13 @@
 #' @importFrom picante ses.mntd
 #' @rdname pez.metrics
 #' @name pez.metrics
+#' @importFrom picante ses.mntd
 #' @export
 .ses.mntd <- function(x, dist=NULL, null.model="taxa.labels", abundance.weighted=FALSE, permute=1000, ...){
     if(!inherits(x, "comparative.comm"))
         stop("'x' must be a comparative.comm object")
+    if(is.null(dist))
+        dist <- cophenetic(x$phy)
     return(ses.mntd(x$comm, dis=dist, null.model=null.model, abundance.weighted=abundance.weighted, runs=permute))
 }
 

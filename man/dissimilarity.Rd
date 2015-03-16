@@ -6,8 +6,9 @@
 one-another}
 \usage{
 dissimilarity(data, metric = c("all", "unifrac", "pcd", "phylosor",
-  "comdist"), abundance.weighted = TRUE, permute = 100, sqrt.phy = FALSE,
-  traitgram = NULL, traitgram.p = 2, ext.dist = NULL, ...)
+  "comdist"), abundance.weighted = FALSE, permute = 1000,
+  sqrt.phy = FALSE, traitgram = NULL, traitgram.p = 2, ext.dist = NULL,
+  ...)
 }
 \arguments{
 \item{data}{\code{comparative.comm} object}
@@ -16,9 +17,9 @@ dissimilarity(data, metric = c("all", "unifrac", "pcd", "phylosor",
 individually call-able metrics are: \code{unifrac}, \code{pcd},
 \code{phylosor}, \code{comdist}.}
 
-\item{abundance.weighted}{If TRUE (default) metrics are calculated
-incorporating species abundances (\code{currently} only comdist
-support this)}
+\item{abundance.weighted}{If TRUE (default is FALSE) metrics are
+calculated incorporating species abundances; only \code{comdist}
+can incorporate abundances}
 
 \item{permute}{Number of permutations for metric (currently only
 for \code{pcd})}
@@ -34,10 +35,11 @@ is used.}
 \code{funct.phylo.dist} (\code{phyloWeight}; the `a' parameter),
 causing analysis on a distance matrix reflecting both traits and
 phylogeny (0 --> only phylogeny, 1 --> only traits; see
-\code{funct.phylo.dist}). If a vector of numbers is given,
-\code{shape} iterates across them and returns a \code{data.frame}
-with coefficients from each iteration. See `details' for details
-about different metric calculations when a distance matrix is used.}
+\code{funct.phylo.dist}). Unlike other metric wrapper functions,
+\code{dissimilarity} does not accept a vector of traitgram values;
+call the function many times to get these. This is simply because
+it can take so long: you're probably better off
+looping/\code{apply}-ing over this function yourself.}
 
 \item{traitgram.p}{A value for `p' to be used in conjunction with
 \code{traitgram} when calling \code{funct.phylo.dist}.}
@@ -50,9 +52,7 @@ distance matrices in different metric calculations.}
 function(s) you are calling}
 }
 \value{
-list object of metric values. A \code{coef} method does not
-exist for this function, because there's no nice way to simplify
-all the distance matrices. Sorry!
+list object of metric values.
 }
 \description{
 As described in Pearse et al. (2014), a dissimilarity metric

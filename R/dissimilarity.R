@@ -23,9 +23,9 @@
 #' @param metric default (\code{all}) calculates everything;
 #' individually call-able metrics are: \code{unifrac}, \code{pcd},
 #' \code{phylosor}, \code{comdist}.
-#' @param abundance.weighted If TRUE (default) metrics are calculated
-#' incorporating species abundances (\code{currently} only comdist
-#' support this)
+#' @param abundance.weighted If TRUE (default is FALSE) metrics are
+#' calculated incorporating species abundances; only \code{comdist}
+#' can incorporate abundances
 #' @param permute Number of permutations for metric (currently only
 #' for \code{pcd})
 #' @param sqrt.phy If TRUE (default is FALSE) your phylogenetic
@@ -38,10 +38,11 @@
 #' \code{funct.phylo.dist} (\code{phyloWeight}; the `a' parameter),
 #' causing analysis on a distance matrix reflecting both traits and
 #' phylogeny (0 --> only phylogeny, 1 --> only traits; see
-#' \code{funct.phylo.dist}). If a vector of numbers is given,
-#' \code{shape} iterates across them and returns a \code{data.frame}
-#' with coefficients from each iteration. See `details' for details
-#' about different metric calculations when a distance matrix is used.
+#' \code{funct.phylo.dist}). Unlike other metric wrapper functions,
+#' \code{dissimilarity} does not accept a vector of traitgram values;
+#' call the function many times to get these. This is simply because
+#' it can take so long: you're probably better off
+#' looping/\code{apply}-ing over this function yourself.
 #' @param traitgram.p A value for `p' to be used in conjunction with
 #' \code{traitgram} when calling \code{funct.phylo.dist}.
 #' @param ext.dist Supply an external species-level distance matrix
@@ -49,9 +50,7 @@
 #' distance matrices in different metric calculations.
 #' @param ... additional parameters to be passed to `metric
 #' function(s) you are calling
-#' @return list object of metric values. A \code{coef} method does not
-#' exist for this function, because there's no nice way to simplify
-#' all the distance matrices. Sorry!
+#' @return list object of metric values.
 #' @author M.R. Helmus, Will Pearse
 #' @seealso \code{\link{shape}} \code{\link{evenness}} \code{\link{dispersion}}
 #' @references Pearse W.D., Purvis A., Cavender-Bares J. & Helmus
@@ -82,7 +81,7 @@
 #' @importFrom picante unifrac phylosor pcd comdist
 #' @importFrom ape is.ultrametric as.phylo
 #' @export
-dissimilarity <- function(data, metric=c("all", "unifrac", "pcd", "phylosor", "comdist"), abundance.weighted=TRUE, permute=100, sqrt.phy=FALSE, traitgram=NULL, traitgram.p=2, ext.dist=NULL, ...)
+dissimilarity <- function(data, metric=c("all", "unifrac", "pcd", "phylosor", "comdist"), abundance.weighted=FALSE, permute=1000, sqrt.phy=FALSE, traitgram=NULL, traitgram.p=2, ext.dist=NULL, ...)
 {   
   #Assertions and argument handling
   if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
@@ -118,10 +117,9 @@ dissimilarity <- function(data, metric=c("all", "unifrac", "pcd", "phylosor", "c
       functions <- functions[!names(functions) %in% c("unifrac", "pcd", "phylosor")]
   if(traitgram == TRUE)
       functions <- functions[!names(functions) %in% c("unifrac", "pcd", "phylosor")]
+  if(abundance.weighted == TRUE)
+      functions <- functions[!names(functions) %in% c("unifrac", "pcd", "phylosor")]
   output <- lapply(functions, function(x) x(data, dist=dist, abundance.weighted=abundance.weighted))
   
-  #Prepare output and return
-  output$type <- "dissimilarity"
-  class(output) <- "phy.structure"
   return(output)
 }

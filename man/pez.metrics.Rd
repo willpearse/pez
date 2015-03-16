@@ -51,13 +51,13 @@
 
 .mpd(x, dist = NULL, abundance.weighted = FALSE, ...)
 
-.pd(x, include.root = TRUE, ...)
+.pd(x, include.root = TRUE, abundance.weighted = FALSE, ...)
 
 .mntd(x, dist = NULL, abundance.weighted = FALSE, ...)
 
 .gamma(x, ...)
 
-.taxon(x, dist = NULL, ...)
+.taxon(x, dist = NULL, abundance.weighted = FALSE, ...)
 
 .eigen.sum(x, dist = NULL, which.eigen = 1, ...)
 
@@ -77,7 +77,7 @@
 
 .pae(x, na.rm = TRUE, ...)
 
-.scheiner(x, q = 0, abundance.weighted = TRUE, ...)
+.scheiner(x, q = 0, abundance.weighted = FALSE, ...)
 
 .pse(x, ...)
 

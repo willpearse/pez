@@ -114,7 +114,7 @@ evenness <- function(data, metric=c("all-quick", "all", "rao", "taxon", "entropy
       if(length(traitgram) > 1){
           output <- vector("list", length(traitgram))
           for(i in seq_along(output))
-              output[[i]] <- cbind(coef(Recall(data, metric, sqrt.phy, traitgram=traitgram[i], traitgram.p=traitgram.p, ...)), traitgram[i], sites(data))
+              output[[i]] <- cbind(Recall(data, metric, sqrt.phy, traitgram=traitgram[i], traitgram.p=traitgram.p, ...), traitgram[i], sites(data))
           output <- do.call(rbind, output)
           names(output)[ncol(output)-1] <- "traitgram"
           names(output)[ncol(output)] <- "site"
@@ -142,12 +142,11 @@ evenness <- function(data, metric=c("all-quick", "all", "rao", "taxon", "entropy
       dist <- cophenetic(data$phy)
 
   #Remove missing species
-  dist <- dist[colSums(data$comm)>0, colSums(data$comm)>0]
-  data <- data[,colSums(data$comm)>0]
-  output <- list(pse=NULL, rao=NULL, taxon=NULL, entropy=NULL, cadotte=NULL, delta=NULL, mpd=NULL, mntd=NULL, dist.fd=NULL)
+  #dist <- dist[colSums(data$comm)>0, colSums(data$comm)>0]
+  #data <- data[,colSums(data$comm)>0]
   
   #Filter metrics according to suitability and calculate
-  functions <- setNames(c(.rao, .phylo.entropy, .pae, .iac, .haed, .eaed, .lambda, .delta, .kappa, .mpd, .mntd, .pse, .dist.fd), c("rao", "entropy", "pae", "iac", "haed", "eaed", "lambda", "delta", "kappa", "mpd", "mntd", "pse", "dist.fd"))
+  functions <- setNames(c(.rao, .phylo.entropy, .pae, .iac, .haed, .eaed, .lambda, .delta, .kappa, .mpd, .mntd, .taxon, .pse, .dist.fd), c("rao", "entropy", "pae", "iac", "haed", "eaed", "lambda", "delta", "kappa", "mpd", "mntd", "taxon", "pse", "dist.fd"))
   if(metric == "all-quick")
       functions <- functions[!names(functions) %in% c("dist.fd","lambda","delta","kappa")]
   if(sqrt.phy == TRUE)
@@ -161,5 +160,5 @@ evenness <- function(data, metric=c("all-quick", "all", "rao", "taxon", "entropy
   #Clean up output and return
   output <- Filter(function(x) !inherits(x, "try-error"), output)
   output <- do.call(cbind, output)
-  return(output)
+  return(as.data.frame(output))
 }

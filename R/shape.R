@@ -1,5 +1,28 @@
 #' Calculate (phylogenetic) shape: examine assemblage composition
 #'
+#' Calculates various metrics of phylogenetic biodiversity that are
+#' categorized as \emph{shape} metrics by Pearse \emph{et al.} (2014).
+#'
+#' As described in Pearse et al. (2014), a shape metric is one the
+#' examines the phylogenetic structure of species present in each
+#' assemblage, ignoring abundances entirely. For completeness, options
+#' are provided to calculate these metrics using species traits.
+#'
+#' Most of these metrics do not involve comparison with some kind of
+#' evolutionary-derived expectation for phylogenetic shape. Those that
+#' do, however, such as PSV or Colless' index, make no sense unless
+#' applied to a phylogenetic distance matrix - their null expectation
+#' *requires* it. Using square-rooted distance matrices, or distance
+#' matrices that incorporate trait information, can be an excellent
+#' thing to do, but (for the above reasons), \code{pez} won't give you
+#' an answer for metrics for which WDP thinks it makes no
+#' sense. \code{pd}, \code{eed} & \code{hed} can (...up to you whether
+#' you should!...) be used with a square-rooted distance matrix, but
+#' the results *will always be wrong* if you do not have an
+#' ultrametric tree (branch lengths proportional to time) and you will
+#' be warned about this. WDP strongly feels you should only be using
+#' ultrametric phylogenies in any case, but code to fix this bug is
+#' welcome.
 #' @param data \code{\link{comparative.comm}} object
 #' @param metric metrics to calculate. Default (\code{all-quick})
 #' calculates everything bar \code{fd.dist}, \code{all} calculates
@@ -36,29 +59,6 @@
 #' distance matrices in different metric calculations.
 #' @param ... Additional arguments to passed to metric functions
 #' (unlikely you will want this!)
-#' @details Calculates various metrics of phylogenetic biodiversity
-#' that are categorized as \emph{shape} metrics by Pearse \emph{et
-#' al.} (2014).
-#' @details As described in Pearse et al. (2014), a shape metric is
-#' one the examines the phylogenetic structure of species present in
-#' each assemblage, ignoring abundances entirely. For completeness,
-#' options are provided to calculate these metrics using species
-#' traits.
-#' @details Most of these metrics do not involve comparison with some
-#' kind of evolutionary-derived expectation for phylogenetic
-#' shape. Those that do, however, such as PSV or Colless' index, make
-#' no sense unless applied to a phylogenetic distance matrix - their
-#' null expectation *requires* it. Using square-rooted distance
-#' matrices, or distance matrices that incorporate trait information,
-#' can be an excellent thing to do, but (for the above reasons),
-#' \code{pez} won't give you an answer for metrics for which WDP
-#' thinks it makes no sense. \code{pd}, \code{eed} & \code{hed} can
-#' (...up to you whether you should!...) be used with a square-rooted
-#' distance matrix, but the results *will always be wrong* if you do
-#' not have an ultrametric tree (branch lengths proportional to time)
-#' and you will be warned about this. WDP strongly feels you should
-#' only be using ultrametric phylogenies in any case, but code to fix
-#' this bug is welcome.
 #' @note As mentioned above, \code{dist.fd} is calculated using a
 #' phylogenetic distance matrix if no trait data are available, or if
 #' you specify \code{sqrt.phy}. It is not calculated by default
@@ -111,7 +111,7 @@ shape <- function(data,metric=c("all-quick", "all", "psv", "psr", "mpd", "mntd",
       if(length(traitgram) > 1){
           output <- vector("list", length(traitgram))
           for(i in seq_along(output))
-              output[[i]] <- cbind(coef(Recall(data, metric, sqrt.phy, traitgram=traitgram[i], which.eigen=which.eigen, remove.errors=remove.errors, traitgram.p=traitgram.p, ...)), traitgram[i], sites(data))
+              output[[i]] <- cbind(Recall(data, metric, sqrt.phy, traitgram=traitgram[i], which.eigen=which.eigen, remove.errors=remove.errors, traitgram.p=traitgram.p, ...), traitgram[i], sites(data))
           output <- do.call(rbind, output)
           names(output)[ncol(output)-1] <- "traitgram"
           names(output)[ncol(output)] <- "site"
@@ -132,7 +132,7 @@ shape <- function(data,metric=c("all-quick", "all", "psv", "psr", "mpd", "mntd",
   nspp <- ncol(data$comm)
   nsite <- nrow(data$comm)
   SR <- rowSums(data$comm > 0)
-  data$comm[data$comm > 0] <- 1
+  data$comm[data$comm > 0] <- 1#Doesn't hurt to be sure!
   coefs <- data.frame(row.names=rownames(data$comm))
   if(sqrt.phy)
       data <- .sqrt.phy(data)
@@ -156,5 +156,5 @@ shape <- function(data,metric=c("all-quick", "all", "psv", "psr", "mpd", "mntd",
   #Clean up output and return
   output <- Filter(function(x) !inherits(x, "try-error"), output)
   output <- do.call(cbind, output)
-  return(output)
+  return(as.data.frame(output))
 }

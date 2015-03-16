@@ -104,7 +104,7 @@ dispersion <- function(data, metric=c("all", "sesmpd", "sesmntd", "sespd", "innd
       if(length(traitgram) > 1){
           output <- vector("list", length(traitgram))
           for(i in seq_along(output))
-              output[[i]] <- cbind(coef(Recall(data, metric=metric, permute=permute, null.model=null.model, abundance=abundance, sqrt.phy=sqrt.phy, traitgram=traitgram[i], traitgram.p=traitgram.p, ext.dist=ext.dist)), traitgram[i], sites(data))
+              output[[i]] <- cbind(Recall(data, metric=metric, permute=permute, null.model=null.model, abundance=abundance, sqrt.phy=sqrt.phy, traitgram=traitgram[i], traitgram.p=traitgram.p, ext.dist=ext.dist, ...), traitgram[i], sites(data))
           output <- do.call(rbind, output)
           names(output)[ncol(output)-1] <- "traitgram"
           names(output)[ncol(output)] <- "site"
