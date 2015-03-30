@@ -3,13 +3,14 @@
 #' Using these functions, you can calculate any of the phylogenetic
 #' metrics within pez, using \code{\link{comparative.comm}}
 #' objects. While you can call each individually, using the
-#' \code{\link{shape}}, \code{\link{evenness}},
-#' \code{\link{dispersion}}, and \code{\link{dissimilarity}} wrapper
-#' functions (and the more flexible \code{\link{generic.metric}} and
-#' null model functions) are probably your best bet. Note that *all of
-#' these functions* take a common first parameter: a
-#' \code{\link{comparative.comm}} object. There are additional
-#' parameters that can be passed, which are described below.
+#' \code{\link{pez.shape}}, \code{\link{pez.evenness}},
+#' \code{\link{pez.dispersion}}, and \code{\link{pez.dissimilarity}}
+#' wrapper functions (and the more flexible
+#' \code{\link{generic.metrics}} and null model functions) are probably
+#' your best bet. Note that *all of these functions* take a common
+#' first parameter: a \code{\link{comparative.comm}} object. There are
+#' additional parameters that can be passed, which are described
+#' below.
 #'
 #' @note Many (but not all) of these functions are fairly trivial
 #' wrappers around functions in other packages. In the citations for
@@ -17,17 +18,18 @@
 #' \code{\link{picante}}. The Pagel family of measures are also fairly
 #' trivial wrapper around \code{\link{caper}} code, functional
 #' dissimilarity \code{\link{FD}} code, \code{gamma} \code{\link{ape}}
-#' code, and \code{colless} \code{\link{apTreeshape}} code. I can't
-#' demand it, but I would be grateful if you would cite these authors
-#' when using these wrappers.
+#' code, and \code{colless}
+#' \code{\link[apTreeshape:colless]{apTreeshape}} code. I can't demand
+#' it, but I would be grateful if you would cite these authors when
+#' using these wrappers.
 #'
-#' The \code{\link{shape}}, \code{\link{evenness}},
-#' \code{\link{dispersion}}, and \code{\link{dissimilarity}} wrapper
-#' functions go to some trouble to stop you calculating metrics using
-#' inappropriate data (see their notes). These functions give you
-#' access to the underlying code within \code{pez}; there is nothing I
-#' can do to stop you calculating a metric that, in my opinion,
-#' doesn't make any sense. You have been warned :D
+#' The \code{\link{pez.shape}}, \code{\link{pez.evenness}},
+#' \code{\link{pez.dispersion}}, and \code{\link{pez.dissimilarity}}
+#' wrapper functions go to some trouble to stop you calculating
+#' metrics using inappropriate data (see their notes). These functions
+#' give you access to the underlying code within \code{pez}; there is
+#' nothing I can do to stop you calculating a metric that, in my
+#' opinion, doesn't make any sense. You have been warned :D
 #'
 #' If you're a developer hoping to make your metric(s) work in this
 #' framework, please use the argument naming convention for arguments
@@ -48,14 +50,26 @@
 #' matrix from phylogeny)
 #' @param abundance.weighted whether to include species' abundances in
 #' metric calculation, often dictating whether you're calculating a
-#' \code{\link{shape}} or \code{\link{evenness}} metric. Default:
-#' FALSE
+#' \code{\link{pez.shape}} or \code{\link{pez.evenness}}
+#' metric. Default: FALSE
 #' @param na.rm remove NAs in calculations (altering this can obscure
 #' errors that are meaningful; I would advise leaving alone)
 #' @param include.root include root in PD calculations (default is
-#' TRUE, as in picante, but within \code{\link{shape}} I specify FALSE
+#' TRUE, as in picante, but within \code{\link{pez.shape}} I specify
+#' FALSE
 #' @param method whether to calculate using phylogeny ("phy";
 #' default) or trait data ("traits")
+#' @param which.eigen which phylo-eigenvector to be used for PVR
+#' metric
+#' @param q the q parameter for the \code{\link{traitgram}} method
+#' @param permute number of permutations of null randomisations
+#' (mostly only applies to \code{\link[pez:pez.dispersion]{dispersion
+#' metrics}})
+#' @param null.model one of "taxa.labels", "richness", "frequency",
+#' "sample.pool", "phylogeny.pool", "independentswap", or
+#' "independentswap". These correspond to the null models available in
+#' \code{\link{picante}}; only \code{d} does not use these null models
+#' @param ... ignored
 #' @importFrom apTreeshape colless tipsubtree
 #' @references \code{colless} Colless D.H. (1982). Review of
 #' phylogenetics: the theory and practice of phylogenetic
@@ -156,7 +170,7 @@
         stop("'x' must be a comparative.comm object")
     if(is.null(dist))
         dist <- cophenetic(x$phy)
-    mpd(x$comm, dist, abundance.weighted=abundance.weighted)
+    mpd(x$comm, as.matrix(dist), abundance.weighted=abundance.weighted)
 }
 
 #' PD (Faith, 1992)
@@ -188,7 +202,7 @@
         stop("'x' must be a comparative.comm object")
     if(is.null(dist))
         dist <- cophenetic(x$phy)
-    return(mntd(x$comm, dist, abundance.weighted=abundance.weighted))
+    return(mntd(x$comm, as.matrix(dist), abundance.weighted=abundance.weighted))
 }
 
 #' Gamma (Pybus & Harvey, 2000)
@@ -287,7 +301,7 @@
         data <- x$data
     if(is.matrix(method) | is.data.frame(method))
         data <- method
-    if(is.dist(method))
+    if(class(method)=="dist")
         data <- method
     output <- capture.output(dbFD(data, x$comm, w.abun=abundance.weighted, messages=TRUE), file=NULL)
     coefs <- with(output, cbind(coefs, cbind(FRic, FEve, FDiv, FDis, RaoQ)))
@@ -734,7 +748,7 @@
 .pcd <- function(x, permute=1000, ...){
     if(!inherits(x, "comparative.comm"))
         stop("'x' must be a comparative.comm object")
-    return(pcd(x$comm, x$phy, rep=permute))
+    return(pcd(x$comm, x$phy, reps=permute))
 }
 
 #' ComDist (Webb et al., 2008)
@@ -751,7 +765,7 @@
         stop("'x' must be a comparative.comm object")
     if(is.null(dist))
         dist <- cophenetic(x$phy)
-    return(comdist(x$comm, dist, abundance.weighted=abundance.weighted))
+    return(comdist(x$comm, as.matrix(dist), abundance.weighted=abundance.weighted))
 }
 
 #' PhyloSor (Bryant et al., 2008)
@@ -868,7 +882,7 @@
         stop("'x' must be a comparative.comm object")
     if(is.null(dist))
         dist <- cophenetic(x$phy)
-    return(ses.mpd(x$comm, dis=dist, null.model=null.model, abundance.weighted=abundance.weighted, runs=permute))
+    return(ses.mpd(x$comm, dis=as.matrix(dist), null.model=null.model, abundance.weighted=abundance.weighted, runs=permute))
 }
 
 #' SESmntd (Webb, 2000)
@@ -882,7 +896,7 @@
         stop("'x' must be a comparative.comm object")
     if(is.null(dist))
         dist <- cophenetic(x$phy)
-    return(ses.mntd(x$comm, dis=dist, null.model=null.model, abundance.weighted=abundance.weighted, runs=permute))
+    return(ses.mntd(x$comm, dis=as.matrix(dist), null.model=null.model, abundance.weighted=abundance.weighted, runs=permute))
 }
 
 #' INMD (XXX)
@@ -896,7 +910,7 @@
 .inmd <- function(x, dist=NULL, null.model="taxa.labels", abundance.weighted=FALSE, permute=1000, ...){
     if(!inherits(x, "comparative.comm"))
         stop("'x' must be a comparative.comm object")
-    return(ses.mpd(x$comm, dis=1/dist, null.model=null.model, abundance.weighted=abundance.weighted, runs=permute))
+    return(ses.mpd(x$comm, dis=1/as.matrix(dist), null.model=null.model, abundance.weighted=abundance.weighted, runs=permute))
 }
 
 #' INND (XXX)
@@ -907,5 +921,5 @@
 .innd <- function(x, dist=NULL, null.model="taxa.labels", abundance.weighted=FALSE, permute=1000, ...){
     if(!inherits(x, "comparative.comm"))
         stop("'x' must be a comparative.comm object")
-    return(ses.mntd(x$comm, dis=1/dist, null.model=null.model, abundance.weighted=abundance.weighted, runs=permute))
+    return(ses.mntd(x$comm, dis=1/as.matrix(dist), null.model=null.model, abundance.weighted=abundance.weighted, runs=permute))
 }

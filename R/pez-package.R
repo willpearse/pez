@@ -5,10 +5,10 @@
 #' environmental data. Provide the \code{\link{comparative.comm}}
 #' object to ease data manipulation, and wrappers for common community
 #' phylogenetic indices grouped according to Pearse et al. 2014:
-#' \code{\link{shape}}, \code{\link{evenness}},
-#' \code{\link{dispersion}}, and
-#' \code{\link{dissimilarity}}. Implementation of Cavender-Bares et
-#' al. (2004) correlation of phylogenetic and ecological matrices
+#' \code{\link{pez.shape}}, \code{\link{pez.evenness}},
+#' \code{\link{pez.dispersion}}, and
+#' \code{\link{pez.dissimilarity}}. Implementation of Cavender-Bares
+#' et al. (2004) correlation of phylogenetic and ecological matrices
 #' (\code{\link{fingerprint.regression}}). Simulation of null
 #' assemblages, traits, and phylogenies (\code{\link{scape}},
 #' \code{\link{sim.meta.comm}}).
@@ -22,6 +22,6 @@
 #' require(pez)
 #' data(laja)
 #' data <- comparative.comm(invert.tree, river.sites, invert.traits, river.env)
-#' coef(shape(data))
+#' pez.shape(data)
 NULL
 

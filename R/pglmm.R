@@ -1165,7 +1165,6 @@ if (is.null(sp) | is.null(site))
 #' \code{communityPGLMM.binary.LRT} tests statistical significance of
 #' the phylogenetic random effect on species slopes using a likelihood
 #' ratio test
-#' @param x \code{communityPGLMM} model to be tested
 #' @param re.number which \code{random.effect} in \code{x} to be
 #' tested
 #' @rdname pglmm
@@ -1595,7 +1594,6 @@ plot.communityPGLMM <- function(x, digits = max(3, getOption("digits") - 3), ...
 #' @rdname pglmm
 #' @param show.plot if \code{TRUE} (default), display plot
 #' @export
-#' @importFrom plotrix color2D.matplot
 communityPGLMM.predicted.values <- function(x, show.plot = TRUE, ...) {
 
 	if (x$family == "gaussian") {
@@ -1617,8 +1615,8 @@ communityPGLMM.predicted.values <- function(x, show.plot = TRUE, ...) {
 		Y <- reshape(W, v.names = "Y", idvar = "sp", timevar = "site", direction = "wide")
 		Y <- Y[, 2:dim(Y)[2]]
 		par(mfrow = c(1, 1), las = 1, mar = c(4, 4, 2, 2) - 0.1)
-
-		color2D.matplot(Y, ylab = "species", xlab = "sites", main = "Predicted values")
+                Y <- t(Y)
+                image(x=seq(1,nrow(Y)), y=seq(1,ncol(Y)), z=Y, ylab = "species", xlab = "sites", main = "Predicted values", col=c("black","white"))
 	}
 	return(predicted.values)
 }
@@ -1631,7 +1629,8 @@ communityPGLMM.predicted.values <- function(x, show.plot = TRUE, ...) {
 #' creation of random effect structures requires direct
 #' manipulation/understanding of the regression-style format of the
 #' data.
-#' @param x \code{\link{comparative.comm}} object for PGLMM analysis
+#' @param x \code{\link{comparative.comm}} object for
+#' \code{make.pglmm.data}, otherwise a \code{communityPGLMM} object
 #' @param abundance.weighted whether to produce an output that
 #' incorporates abundance information (default FALSE)
 #' @export

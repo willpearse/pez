@@ -16,7 +16,7 @@ lengths and be ultrametric}
 \item{scape.size}{edge dimension of square landscape}
 
 \item{g.center}{strength of phylogenetic signal in species range
-centers. See \code{\link[ape:PcorBlomberg]{PcorBlomberg}},
+centers. See \code{\link[ape:corBlomberg]{corBlomberg}},
 1=brownian,<1=rates of evol accelerate, >1=rates decelerate.}
 
 \item{wd.all}{niche width, larger values simulate broader range
@@ -40,6 +40,8 @@ more variation in range sizes across gradients}
 \item{K}{carrying capacity of a site in terms of maximum
 individuals that can be present. Currently a constant value. Used
 to scale the presence-absence matrix to include abundances.}
+
+\item{env.type}{TO-DO XXX}
 
 \item{extinction}{TRUE/FALSE can species on the tree go extinct on
 the landscape? If the number of species present on the landscape

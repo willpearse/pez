@@ -46,12 +46,13 @@ use.}
 (see \code{\link{generic.metrics}} for possible arguments)}
 
 \item{observed}{observed metric values in site-metric matrix
-(\emph{e.g.}, from \link{\code{generic.metrics}})}
+(\emph{e.g.}, from \code{\link{generic.metrics}})}
 
 \item{null}{null distributions (\emph{e.g.}, from
-\link{\code{.metric.null}}) in a site-metric-permutation array}
+\code{\link{.metric.null}}) in a site-metric-permutation array}
 
-\item{permute}{number of null permutations}
+\item{trait}{if using \code{trait.asm} \code{null.model}, which
+trait to use (as in \code{\link{trait.asm}})}
 }
 \value{
 Output from \code{comp.fun}, by default an array
@@ -72,7 +73,7 @@ site-metric matrix
 \description{
 Compare any calculated metric within \code{pez} to values expected
 under some null distribution. This is a very light wrapper around
-the utility functions \code{\link{.generic.null}} and
+the utility functions \code{\link{generic.null}} and
 \code{\link{generic.metrics}} (which is, itself, a very simple
 function!).
 
@@ -97,13 +98,13 @@ code makes no attempt to stop you calculating null dissimilarity
 metrics, but I am not certain that doing so is a good idea using
 this code as I don't know what to do with such null models!
 
-The \code{\link{shape}}, \code{\link{evenness}},
-\code{\link{dispersion}}, and \code{\link{dissimilarity}} wrapper
-functions go to some trouble to stop you calculating metrics using
-inappropriate data (see their notes). These functions give you
-access to the underlying code within \code{pez}; there is nothing I
-can do to stop you calculating a metric that, in my opinion,
-doesn't make any sense. You have been warned :D
+The \code{\link{pez.shape}}, \code{\link{pez.evenness}},
+\code{\link{pez.dispersion}}, and \code{\link{pez.dissimilarity}}
+wrapper functions go to some trouble to stop you calculating
+metrics using inappropriate data (see their notes). These functions
+give you access to the underlying code within \code{pez}; there is
+nothing I can do to stop you calculating a metric that, in my
+opinion, doesn't make any sense. You have been warned :D
 }
 \examples{
 #Setup data
@@ -115,9 +116,9 @@ generic.metrics(data, c(.mpd, .pse))
 generic.null(data, c(.mpd, .pse), "trait.asm", permute=10, trait="fish.pref")
 #...be patient when running large (e.g., 1000) sets of null simulations
 #You can also do this in pieces, giving even more flexibility
-observed <- generic.metric(data, c(.mpd, .pse))
-null <- .metric.null(data, c(.mpd, .pse))
-ses <- .ses(observed, null)
+observed <- generic.metrics(data, c(.mpd, .pse))
+#null <- .metric.null(data, c(.mpd, .pse))
+#ses <- .ses(observed, null)
 #...this is how everything works within generic.null
 #...and, as with everything in pez, all internal functions start with a "."
 }

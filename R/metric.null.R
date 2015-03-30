@@ -2,7 +2,7 @@
 #'
 #' Compare any calculated metric within \code{pez} to values expected
 #' under some null distribution. This is a very light wrapper around
-#' the utility functions \code{\link{.generic.null}} and
+#' the utility functions \code{\link{generic.null}} and
 #' \code{\link{generic.metrics}} (which is, itself, a very simple
 #' function!).
 #'
@@ -20,13 +20,13 @@
 #' metrics, but I am not certain that doing so is a good idea using
 #' this code as I don't know what to do with such null models!
 #'
-#' The \code{\link{shape}}, \code{\link{evenness}},
-#' \code{\link{dispersion}}, and \code{\link{dissimilarity}} wrapper
-#' functions go to some trouble to stop you calculating metrics using
-#' inappropriate data (see their notes). These functions give you
-#' access to the underlying code within \code{pez}; there is nothing I
-#' can do to stop you calculating a metric that, in my opinion,
-#' doesn't make any sense. You have been warned :D
+#' The \code{\link{pez.shape}}, \code{\link{pez.evenness}},
+#' \code{\link{pez.dispersion}}, and \code{\link{pez.dissimilarity}}
+#' wrapper functions go to some trouble to stop you calculating
+#' metrics using inappropriate data (see their notes). These functions
+#' give you access to the underlying code within \code{pez}; there is
+#' nothing I can do to stop you calculating a metric that, in my
+#' opinion, doesn't make any sense. You have been warned :D
 #' @param data data \code{\link{comparative.comm}} object
 #' @param permute number of null permutations to perform (default
 #' 1000)
@@ -36,7 +36,6 @@
 #' "sample.pool", "phylogeny.pool", "independentswap", or
 #' "independentswap". These correspond to the null models available in
 #' \code{\link{picante}}
-#' @param permute number of null permutations
 #' @param comp.fun comparison function to compare observed values with
 #' null values. Default is \code{\link{.ses}}; this is a Standard
 #' Effect Size (obs - mean)/SEmean. You may supply your own function;
@@ -44,6 +43,8 @@
 #' argument, and a site-metric-permutation array as its second. See
 #' the internals of \code{\link{generic.null}} for an example of its
 #' use.
+#' @param trait if using \code{trait.asm} \code{null.model}, which
+#' trait to use (as in \code{\link{trait.asm}})
 #' @return Output from \code{comp.fun}, by default an array
 #' (site-metric-type), where type is the observed value, the mean of
 #' the null permutations, the Standard Error of that mean, the
@@ -77,9 +78,9 @@
 #' generic.null(data, c(.mpd, .pse), "trait.asm", permute=10, trait="fish.pref")
 #' #...be patient when running large (e.g., 1000) sets of null simulations
 #' #You can also do this in pieces, giving even more flexibility
-#' observed <- generic.metric(data, c(.mpd, .pse))
-#' null <- .metric.null(data, c(.mpd, .pse))
-#' ses <- .ses(observed, null)
+#' observed <- generic.metrics(data, c(.mpd, .pse))
+#' #null <- .metric.null(data, c(.mpd, .pse))
+#' #ses <- .ses(observed, null)
 #' #...this is how everything works within generic.null
 #' #...and, as with everything in pez, all internal functions start with a "."
 generic.null <- function(data, metrics, null.model=c("taxa.labels", "richness", "frequency", "sample.pool", "phylogeny.pool", "independentswap", "trialswap", "trait.asm"), permute=1000, comp.fun=.ses, ...){
@@ -102,9 +103,9 @@ generic.null <- function(data, metrics, null.model=c("taxa.labels", "richness", 
 
 #' Calculate Standard Effect Sizes of metrics
 #' @param observed observed metric values in site-metric matrix
-#' (\emph{e.g.}, from \link{\code{generic.metrics}})
+#' (\emph{e.g.}, from \code{\link{generic.metrics}})
 #' @param null null distributions (\emph{e.g.}, from
-#' \link{\code{.metric.null}}) in a site-metric-permutation array
+#' \code{\link{.metric.null}}) in a site-metric-permutation array
 #' @return Vector of standard effect sizes
 #' @export
 #' @rdname generic.metrics
@@ -151,7 +152,7 @@ generic.null <- function(data, metrics, null.model=c("taxa.labels", "richness", 
         null <- comparative.comm(data$phy, null, data$traits, data$env)
         null <- array(rep(sapply(metrics, function(x) x(null)), permute), c(nrow(data$comm), length(metrics), permute))
     } else {
-        null <- apply(replicate(permute, randomizeMatrix(data$comm, null.model=null.model)), 3, comparative.comm, phy=x$phy)
+        null <- apply(replicate(permute, randomizeMatrix(data$comm, null.model=null.model)), 3, comparative.comm, phy=data$phy)
         null <- lapply(null, function(x) do.call(cbind, lapply(metrics, function(y) y(x))))
         null <- array(unlist(null), c(dim(null[[1]]), length(null)))
     }

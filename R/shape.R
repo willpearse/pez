@@ -46,9 +46,10 @@
 #' causing analysis on a distance matrix reflecting both traits and
 #' phylogeny (0 --> only phylogeny, 1 --> only traits; see
 #' \code{funct.phylo.dist}). If a vector of numbers is given,
-#' \code{shape} iterates across them and returns a \code{data.frame}
-#' with coefficients from each iteration. See `details' for details
-#' about different metric calculations when a distance matrix is used.
+#' \code{pez.shape} iterates across them and returns a
+#' \code{data.frame} with coefficients from each iteration. See
+#' `details' for details about different metric calculations when a
+#' distance matrix is used.
 #' @param traitgram.p A value for `p' to be used in conjunction with
 #' \code{traitgram} when calling \code{funct.phylo.dist}.
 #' @param remove.errors suppress errors about metrics that failed to
@@ -78,7 +79,7 @@
 #' \code{print} on the output (i.e., type \code{output} in the example
 #' below).
 #' @author M.R. Helmus, Will Pearse
-#' @seealso \code{\link{evenness}} \code{\link{dispersion}} \code{\link{dissimilarity}}
+#' @seealso \code{\link{pez.evenness}} \code{\link{pez.dispersion}} \code{\link{pez.dissimilarity}}
 #' @references Pearse W.D., Purvis A., Cavender-Bares J. & Helmus M.R. (2014). Metrics and Models of Community Phylogenetics. In: Modern Phylogenetic Comparative Methods and Their Application in Evolutionary Biology. Springer Berlin Heidelberg, pp. 451-464.
 #' @references \code{PSV,PSR} Helmus M.R., Bland T.J., Williams C.K. & Ives A.R. (2007). Phylogenetic measures of biodiversity. American Naturalist, 169, E68-E83.
 #' @references \code{PD} Faith D.P. (1992). Conservation evaluation and phylogenetic diversity. Biological Conservation, 61, 1-10.
@@ -90,17 +91,17 @@
 #' @examples
 #' data(laja)
 #' data <- comparative.comm(invert.tree, river.sites, invert.traits)
-#' (output<-shape(data))
+#' (output<-pez.shape(data))
 #' str(output)
-#' shape(data, "colless")
-#' shape(data, "eigen.sum", which.eigen=2)
+#' pez.shape(data, "colless")
+#' pez.shape(data, "eigen.sum", which.eigen=2)
 #' @importFrom picante psd mpd pd mntd
 #' @importFrom vegan taxondive
 #' @importFrom apTreeshape as.treeshape as.treeshape.phylo colless tipsubtree
-#' @importFrom ape gammaStat cophenetic.phylo drop.tip is.ultrametric as.phylo
+#' @importFrom ape gammaStat cophenetic.phylo drop.tip is.ultrametric as.phylo is.binary.tree
 #' @importFrom FD dbFD
 #' @export
-shape <- function(data,metric=c("all-quick", "all", "psv", "psr", "mpd", "mntd", "pd","colless", "gamma", "taxon", "eigen.sum","eed", "hed", "dist.fd"), sqrt.phy=FALSE, traitgram=NULL, traitgram.p=2, ext.dist=NULL, which.eigen=1, remove.errors = TRUE,  ...)
+pez.shape <- function(data,metric=c("all-quick", "all", "psv", "psr", "mpd", "mntd", "pd","colless", "gamma", "taxon", "eigen.sum","eed", "hed", "dist.fd"), sqrt.phy=FALSE, traitgram=NULL, traitgram.p=2, ext.dist=NULL, which.eigen=1, remove.errors = TRUE,  ...)
 {
   #Assertions and argument handling
   if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")

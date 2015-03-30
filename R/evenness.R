@@ -47,7 +47,7 @@
 #' causing analysis on a distance matrix reflecting both traits and
 #' phylogeny (0-->only phylogeny, 1--> only traits; see
 #' \code{funct.phylo.dist}). If a vector of numbers is given,
-#' \code{shape} iterates across them and returns a \code{data.frame}
+#' \code{pez.eveness} iterates across them and returns a \code{data.frame}
 #' with coefficients from each iteration. See `details' for details
 #' about different metric calculations when a distance matrix is used.
 #' @param traitgram.p A value for `p' to be used in conjunction with
@@ -76,7 +76,7 @@
 #' \code{print} on the output (i.e., type \code{output} in the example
 #' below).
 #' @author M.R. Helmus, Will Pearse
-#' @seealso shape dispersion dissimilarity
+#' @seealso pez.shape pez.dispersion pez.dissimilarity
 #' @references Pearse W.D., Purvis A., Cavender-Bares J. & Helmus
 #' M.R. (2014). Metrics and Models of Community Phylogenetics. In:
 #' Modern Phylogenetic Comparative Methods and Their Application in
@@ -94,8 +94,8 @@
 #' @examples
 #' data(laja)
 #' data <- comparative.comm(invert.tree, river.sites, invert.traits)
-#' evenness(data)
-#' evenness(data, "rao")
+#' pez.evenness(data)
+#' pez.evenness(data, "rao")
 #' @importFrom ape cophenetic.phylo drop.tip is.ultrametric as.phylo
 #' @importFrom picante pse raoD
 #' @importFrom vegan taxondive
@@ -103,7 +103,7 @@
 #' @importFrom ade4 newick2phylog
 #' @importFrom FD dbFD
 #' @export
-evenness <- function(data, metric=c("all-quick", "all", "rao", "taxon", "entropy", "pae", "iac", "haed", "eaed", "lambda", "delta", "kappa", "mpd", "mntd", "pse", "dist.fd"), sqrt.phy=FALSE, traitgram=NULL, traitgram.p=2, ext.dist=NULL, ...)
+pez.evenness <- function(data, metric=c("all-quick", "all", "rao", "taxon", "entropy", "pae", "iac", "haed", "eaed", "lambda", "delta", "kappa", "mpd", "mntd", "pse", "dist.fd"), sqrt.phy=FALSE, traitgram=NULL, traitgram.p=2, ext.dist=NULL, ...)
 {
   #Assertions and argument handling
   if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")

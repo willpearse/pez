@@ -45,6 +45,13 @@ files for each function); notably \emph{caper} \citep{Orme2013} and
 \emph{picante} \citep{Kembel2010} but many others as well. Please cite
 the authors of these packages in your publications so that their
 hard-work is rewarded!
+
+Often, \emph{pez} functions will return warnings (and sometimes error
+messages!) because certain metrics or methods are not appropriate for
+the kinds of data you are working with. Indeed, you will see such
+warnings in this vignette. These are not \emph{bugs}; one simply
+cannot calculate some metrics without fully resolved phylogenies, and
+some models do not make sense without certain kinds of data.
 \clearpage
 \section{Data formats in \emph{pez}}
 \emph{pez} functions work with \texttt{comparative.comm} objects
@@ -60,7 +67,7 @@ data (\texttt{data}) that went into making dataset for yourself,
 although all the data types are explained in more detail below. Below
 we use the \citet{Helmus2012} dataset to show \emph{pez}'s features.
 
-<<tidy=TRUE>>=
+<<tidy=TRUE, size="small">>=
 library(pez)
 data(laja)
 data <- comparative.comm(invert.tree, river.sites, invert.traits, river.env)
@@ -79,19 +86,18 @@ You can also subset your comparative.comm object to exclude certain
 species or sites, in much the same way you can a
 \texttt{data.frame}. Dropping a site that contained the only instance
 of a species will remove it from dataset, and \emph{pez} will not warn
-you about this unless you specify \texttt{[,,warn=TRUE]}. For example:
+you about this unless you specify \texttt{[,,warn=TRUE]}.
 
-<<tidy=TRUE>>=
+<<tidy=TRUE, size="small">>=
 site.subset <- data[1:5,]
 spp.subset <- data[,1:3]
-data[-1,,warn=TRUE]
 @
 
 \emph{pez} makes it easier to work with and manipulate datasets. The
 functions \texttt{species} and \texttt{sites} are safe ways of
 manipulating all the parts of your data at the same time. For example:
 
-<<tidy=TRUE>>=
+<<tidy=TRUE, size="small">>=
 species(data)[1:2]
 species(data)[1:2] <- c("new", "names")
 sites(data)[1:2] <- c("newer", "names")
@@ -124,14 +130,14 @@ modification.
 \section{Community phylogenetic metrics}
 \emph{pez} splits community phylogenetic metrics into four functions
 according to the scheme outlined by \citet{Pearse2014review}:
-\texttt{shape}, \texttt{evenness}, \texttt{dispersion}, and
-\texttt{dissimilarity}. Shape metrics measure the structure of an
-community phylogeny, while evenness metrics additionally incorporate
-species abundances. Dispersion metrics examine whether phylogenetic
-biodiversity in an assemblage differs from the expectation of random
-assembly from a given set of species. Finally, dissimilarity measures
-the pairwise difference in phylogenetic biodiversity between
-assemblages.
+\texttt{pez.shape}, \texttt{pez.evenness}, \texttt{pez.dispersion},
+and \texttt{pez.dissimilarity}. Shape metrics measure the structure of
+an community phylogeny, while evenness metrics additionally
+incorporate species abundances. Dispersion metrics examine whether
+phylogenetic biodiversity in an assemblage differs from the
+expectation of random assembly from a given set of species. Finally,
+dissimilarity measures the pairwise difference in phylogenetic
+biodiversity between assemblages.
 
 You can calculate all metrics within a class at the same time (which
 is what we recommend), or you can pick a particular one. The intention
@@ -141,10 +147,10 @@ data. Working with \texttt{shape}, \texttt{evenness}, and
 \texttt{dispersion} metrics is exactly the same, so below we only show
 \texttt{shape}.
 
-<<tidy=TRUE>>=
-shape.output <- shape(data)
-dim(coef(shape.output))
-coef(shape.output)[1:3,1:3]
+<<tidy=TRUE, size="small">>=
+shape.output <- pez.shape(data)
+dim(shape.output)
+shape.output[1:3,1:3]
 @
 
 Both \texttt{shape} and \texttt{evenness} metrics, by default, only
@@ -159,13 +165,14 @@ explanatory power from phylogeny and traits, following
 \citet{Cadotte2013} (see below), and you can compare the output of
 different traitgram values. Not all metrics can meaningfully be
 calculated using external distance matrices, traitgrams, or
-square-rooted phylogenies, however.
+square-rooted phylogenies, however, and such metrics will not be
+calculated (and no errors will be displayed).
 
-<<tidy=TRUE>>=
-sqrt <- shape(data, sqrt.phy=TRUE)
-traits <- shape(data, traitgram=1) #traits alone
-traits <- shape(data, traitgram=c(0,0.5))#phylogeny and both
-traits <- shape(data, ext.dist=as.dist(cophenetic(data$phy)))
+<<tidy=TRUE, size="small">>=
+sqrt <- pez.shape(data, sqrt.phy=TRUE)
+traits <- pez.shape(data, traitgram=1) #traits alone
+traits <- pez.shape(data, traitgram=c(0,0.5))#phylogeny and both
+traits <- pez.shape(data, ext.dist=as.dist(cophenetic(phy(data))))
 @ 
 
 \texttt{dissimilarity} works slightly differently, because it returns
@@ -175,10 +182,25 @@ a list of distance matrices that describe your community data.
 fraction of shared branch length. This is not how it is in other
 packages, but remember: the function is called \texttt{dissimilarity}!
 
-<<tidy=TRUE, fig.width=6, fig.height=4>>=
-dist <- dissimilarity(data, "phylosor")
+<<tidy=TRUE, fig.width=6, fig.height=4, size="small">>=
+dist <- pez.dissimilarity(data, "phylosor")
 plot(hclust(dist$phylosor))
-@ 
+@
+
+It is possible to calculate any arbitrary combination of metrics using
+\texttt{generic.metrics}, and compare those metrics with values
+derrived from null distributions (\texttt{generic.null}). You can get
+a list of the metrics you can calculate by looking at
+\texttt{?pez.metrics}; there are many, but they all follow the same
+naming (\texttt{.name}) and argument conventions. Note that you can
+also pass arguments (external distance matrices, etc.) to all the
+metrics you calculate.
+
+<<tidy=TRUE, size="small">>=
+metrics <- generic.metrics(data, c(.mpd,.pse,.ses.mpd))
+#null.comparisons <- generic.null(data, c(.mpd,.pse))
+metrics <- generic.metrics(data, c(.mpd,.mntd), dist=as.dist(cophenetic(phy(data))))
+@
 \clearpage
 \section{Eco-evolutionary regression}
 Calculating metric values is useful, but often we want to make
@@ -196,7 +218,7 @@ distances can be based on any distance metric you can define. These
 are useful to explore your data, but also because the trait results
 are used in the \emph{fingerprint regression} described below.
 
-<<tidy=TRUE>>=
+<<tidy=TRUE, size="small">>=
 phy <- eco.phy.regression(data, permute=10)
 trait <- eco.trait.regression(data, permute=10, method="quantile", tau=c(0.25,0.5,0.7))
 trait <- eco.trait.regression(data, altogether=FALSE)
@@ -260,9 +282,8 @@ traits. By creating a regression such as this with your data, you are
 directly relating the present-day ecology of species to their
 evolutionary history.
 
-<<warning=FALSE, tidy=TRUE>>=
+<<warning=FALSE, tidy=TRUE, size="small">>=
 model <- fingerprint.regression(data, eco.permute=10)
-
 @
 
 Once you've performed a \emph{fingerprint regression} (the name is new
@@ -353,19 +374,18 @@ functional distances (e.g. $p = 2$ gives a Euclidean combination).
 This distance matrix can be computed using the
 \texttt{funct.phylo.dist} function.  For example, for $a = 0.5$, and
 $p = 2$, we have,
-<<FPDist>>=
+<<FPDist, size="small">>=
 fpd.data <- funct.phylo.dist(data, phyloWeight = 0.5, p = 2)
 @ %
 \noindent One use of these distance matrices is in community
 randomisation tests \citep{Cadotte2013}, an example of which can be
-computed using the following code,
-<<sesFPD>>=
-ses.mfpd.data <- picante::ses.mpd(data$comm, fpd.data)
+computed using the following code:
+<<sesFPD, size="small">>=
+ses.mfpd.data <- .ses.mpd(data, dist=fpd.data)
 head(ses.mfpd.data)[,c("ntaxa", "mpd.obs", "mpd.obs.p")]
 @
 
 \section{Phylogenetic Generalised Linear Models (PGLMMs)}
-
 Phylogenetic Generalised Linear Models (PGLMMs) are powerful tools
 that permit detailed tests of what structures ecological
 communities. They were originally intended to examine phylogenetic
@@ -387,7 +407,7 @@ approach. What follows is a greatly condensed version of the second
 section; the help file contains much more information of why and how
 each step of the simulation works.
 
-<<<pglmmSim, tidy=TRUE>>=
+<<pglmmSim, tidy=TRUE, size="small">>=
 # Basic parameters
 nspp <- 15; nsite <- 10
 # Fixed effects
@@ -424,15 +444,19 @@ rownames(Y) <- 1:nspp; colnames(Y) <- 1:nsite
 Arguably the most important thing for you to understand about the
 above is what \texttt{Y} represents: it is a matrix where each species
 has its own row, and each site its own column (see the final
-line). Were we to take the transpose of it (\texttt{t}), it would be
-the same format as a \texttt{comparative.comm}'s community matrix.
+line). When we take the transpose of it, we have what we need to
+create a \texttt{comparative.comm} object.
 
 We will now transform that data such that it is in a `long
 format'---each element in the community matrix will become a row in a
 \texttt{data.frame} and we will perform a regression (a PGLMM, to be
-precise!) on that data.
+precise!) on that data. This long format is important because PGLMM is
+sufficiently flexible that it can be fitted to data that don't fit
+into the \texttt{comparative.comm} format. An example is
+interaction-network data, of which there is an example in the help
+file.
 
-<<pglmmModel, tidy=TRUE>>=
+<<pglmmModel, tidy=TRUE, size="small">>=
 # Transform data into 'long' format
 # - Occurrence data
 YY <- matrix(Y, nrow = nspp * nsite, ncol = 1)

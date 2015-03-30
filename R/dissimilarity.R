@@ -52,7 +52,7 @@
 #' function(s) you are calling
 #' @return list object of metric values.
 #' @author M.R. Helmus, Will Pearse
-#' @seealso \code{\link{shape}} \code{\link{evenness}} \code{\link{dispersion}}
+#' @seealso \code{\link{pez.shape}} \code{\link{pez.evenness}} \code{\link{pez.dispersion}}
 #' @references Pearse W.D., Purvis A., Cavender-Bares J. & Helmus
 #' M.R. (2014). Metrics and Models of Community Phylogenetics. In:
 #' Modern Phylogenetic Comparative Methods and Their Application in
@@ -76,12 +76,12 @@
 #' @examples
 #' data(laja)
 #' data <- comparative.comm(invert.tree, river.sites, invert.traits)
-#' \dontrun{dissimilarity(data)}
-#' dissimilarity(data, "unifrac")
+#' \dontrun{pez.dissimilarity(data)}
+#' pez.dissimilarity(data, "unifrac")
 #' @importFrom picante unifrac phylosor pcd comdist
 #' @importFrom ape is.ultrametric as.phylo
 #' @export
-dissimilarity <- function(data, metric=c("all", "unifrac", "pcd", "phylosor", "comdist"), abundance.weighted=FALSE, permute=1000, sqrt.phy=FALSE, traitgram=NULL, traitgram.p=2, ext.dist=NULL, ...)
+pez.dissimilarity <- function(data, metric=c("all", "unifrac", "pcd", "phylosor", "comdist"), abundance.weighted=FALSE, permute=1000, sqrt.phy=FALSE, traitgram=NULL, traitgram.p=2, ext.dist=NULL, ...)
 {   
   #Assertions and argument handling
   if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")

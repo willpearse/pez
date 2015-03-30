@@ -117,7 +117,8 @@ binomial GLMM.}
 estimates of \code{s2} and \code{B} are plotted each iteration
 during optimization.}
 
-\item{x}{\code{communityPGLMM} model to be tested}
+\item{x}{\code{\link{comparative.comm}} object for
+\code{make.pglmm.data}, otherwise a \code{communityPGLMM} object}
 
 \item{re.number}{which \code{random.effect} in \code{x} to be
 tested}
@@ -136,8 +137,6 @@ in \code{\link{print.default}}}
 
 \item{abundance.weighted}{whether to produce an output that
 incorporates abundance information (default FALSE)}
-
-\item{x}{\code{\link{comparative.comm}} object for PGLMM analysis}
 }
 \value{
 an object of class \code{communityPGLMM}

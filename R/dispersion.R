@@ -49,7 +49,7 @@
 #' causing analysis on a distance matrix reflecting both traits and
 #' phylogeny (0 --> only phylogeny, 1 --> only traits; see
 #' \code{funct.phylo.dist}). If a vector of numbers is given,
-#' \code{shape} iterates across them and returns a \code{data.frame}
+#' \code{pez.dispersion} iterates across them and returns a \code{data.frame}
 #' with coefficients from each iteration. See `details' for details
 #' about different metric calculations when a distance matrix is used.
 #' @param ext.dist Supply an external species-level distance matrix
@@ -61,7 +61,7 @@
 #' you will want to use this!)
 #' @return a \code{phy.structure} list object of metric values
 #' @author M.R. Helmus, Will Pearse
-#' @seealso \code{\link{shape}} \code{\link{evenness}} \code{\link{dissimilarity}}
+#' @seealso \code{\link{pez.shape}} \code{\link{pez.evenness}} \code{\link{pez.dissimilarity}}
 #' @references Pearse W.D., Purvis A., Cavender-Bares J. & Helmus
 #' M.R. (2014). Metrics and Models of Community Phylogenetics. In:
 #' Modern Phylogenetic Comparative Methods and Their Application in
@@ -83,13 +83,13 @@
 #' @examples
 #' data(laja)
 #' data <- comparative.comm(invert.tree, river.sites, invert.traits)
-#' \dontrun{dispersion(data)}
-#' dispersion(data, metric = "sesmpd", permute = 100)
+#' \dontrun{pez.dispersion(data)}
+#' pez.dispersion(data, metric = "sesmpd", permute = 100)
 #' @importFrom caper phylo.d
 #' @importFrom picante ses.mntd ses.mpd ses.pd
 #' @importFrom ape is.ultrametric as.phylo cophenetic.phylo
 #' @export
-dispersion <- function(data, metric=c("all", "sesmpd", "sesmntd", "sespd", "innd", "d"), permute=1000, null.model=c("taxa.labels", "richness", "frequency", "sample.pool", "phylogeny.pool", "independentswap", "trialswap"), abundance=FALSE, sqrt.phy=FALSE, traitgram=NULL, traitgram.p=2, ext.dist=NULL, ...)
+pez.dispersion <- function(data, metric=c("all", "sesmpd", "sesmntd", "sespd", "innd", "d"), permute=1000, null.model=c("taxa.labels", "richness", "frequency", "sample.pool", "phylogeny.pool", "independentswap", "trialswap"), abundance=FALSE, sqrt.phy=FALSE, traitgram=NULL, traitgram.p=2, ext.dist=NULL, ...)
 {
   #Assertions and argument handling
   if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")

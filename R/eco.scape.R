@@ -47,7 +47,7 @@
 #' lengths and be ultrametric
 #' @param scape.size edge dimension of square landscape
 #' @param g.center strength of phylogenetic signal in species range
-#' centers. See \code{\link[ape:PcorBlomberg]{PcorBlomberg}},
+#' centers. See \code{\link[ape:corBlomberg]{corBlomberg}},
 #' 1=brownian,<1=rates of evol accelerate, >1=rates decelerate.
 #' @param wd.all niche width, larger values simulate broader range
 #' sizes
@@ -68,6 +68,7 @@
 #' the landscape? If the number of species present on the landscape
 #' should equal the number of tips on the tree, choose FALSE. See
 #' Details.
+#' @param env.type TO-DO XXX
 #' @param rho Grafen branch adjustment of phylogenetic tree see
 #' \code{\link[ape:corGrafen]{corGrafen}}
 #' @return
