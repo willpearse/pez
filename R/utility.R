@@ -1,6 +1,7 @@
 #Null models for community data
 #Internal use only; mostly based on picante's code
 #' @importFrom picante randomizeMatrix
+#' @export
 .eco.null <- function(comm, method=c("taxa.labels", "richness", "frequency", "independentswap", "trialswap"), swap.iter=1000){
   #Checks
   method <- match.arg(method)

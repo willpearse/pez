@@ -99,7 +99,7 @@
 #' @examples
 #' # Simulations
 #' tree <- rcoal(64)
-#' scape1 <- eco.scape(tree, scape.size=25, g.center=1, signal.center=FALSE, K=100, env.type="gradient", extinction=TRUE)
+#' scape1 <- eco.scape(tree, scape.size=25, g.center=1, signal.center=FALSE, K=100, extinction=TRUE)
 #' scape2 <- eco.scape(tree, scape.size=16, g.center=0.2, signal.center=TRUE, K=100, extinction=FALSE)
 #' scape3 <- eco.scape(tree, scape.size=16, g.center=20, signal.center=TRUE, K=100, extinction=TRUE)
 #' 
@@ -123,10 +123,7 @@
 #' @importFrom vegan decostand
 #' @seealso \code{\link{scape}} \code{\link{sim.phy}} \code{\link{sim.meta}}
 #' @export
-eco.scape <- function(tree, scape.size=10, g.center=1,
-                      wd.all=0.2*(scape.size+1)^2, signal.center=TRUE, center.scale = 1,
-                      site.stoch.scale = 0, sd.center=1, sd.range=1, K=100,
-                      env.type="gradient", extinction = FALSE, rho=NULL){
+eco.scape <- function(tree, scape.size=10, g.center=1, wd.all=0.2*(scape.size+1)^2, signal.center=TRUE, center.scale = 1, site.stoch.scale = 0, sd.center=1, sd.range=1, K=100, extinction = FALSE, rho=NULL){
     #Argument checking and assertion
     if(!inherits(tree, "phylo"))
         stop("'tree' must be of class 'phylo'")
@@ -137,39 +134,29 @@ eco.scape <- function(tree, scape.size=10, g.center=1,
     V <- vcv.phylo(tree, corr = TRUE)
     Vinit<-V
     
-    #Setup
+    #initialize
     nspp <- dim(V)[1]
-    bspp2 <- NULL
-    Vcomp <- NULL
+
     Xscale <- 2     #scale the strength of the probability matrix X
     Mscale <- site.stoch.scale    #scale stochasticity in niche distributions 
     Vscale1 <- Vscale2 <- center.scale  #scale the strength of the optimal values on axis one
+    
     # Grafen's rho adjust strength of phylogenetic signal overall.
     if(!is.null(rho)){
         V <- 1-(1-Vinit)^rho
         V <- V/max(V)
     }
-    
-    ##############################################################################
-    #SIMULATION
+
+    #################################
+    #SIMULATION######################
+    #################################
+    nsites<-scape.size  #number of sites for the square landscape
     #Establish environmental gradient
-    mx2<- mx <- t(as.matrix((-(scape.size)/2):(scape.size/2)))  #env gradient
-    m <- length(mx) #new number of sites (equal to scape.size + 1)
-    
-    if(env.type=="random"){
-        mx <- sample(mx, size=length(mx), replace=FALSE)
-        mx2 <- sample(mx, size=length(mx), replace=FALSE)
-    }else{
-    	if(env.type=="patchy"){
-            shuf <- sort(sample(1:length(mx), size=0.4*length(mx), replace=FALSE))
-            mx[shuf]<- sample(mx[shuf], length(shuf))
-            #gradient 2
-            shuf <- sort(sample(1:length(mx2), size=0.4*length(mx2), replace=FALSE))
-            mx2[shuf]<- sample(mx2[shuf], length(shuf))
-    	}}
-    
+    mx2<- mx <- t(as.matrix((-(nsites)/2):(nsites/2)))  #env gradient
+    m <- length(mx) #new number of sites (equal to nsites + 1)    
     ############
-    ####Establish range centers/niche optima     
+    ####Establish range centers/niche optima 
+    
     if(signal.center){
         g<-abs(g.center)
         V.a<-vcv(corBlomberg(g, tree), corr=T)   #adjust phylogenetic signal for niche optima
@@ -178,18 +165,16 @@ eco.scape <- function(tree, scape.size=10, g.center=1,
         V.a<-V
         iD <- diag(nspp)
     }
-    V.w<-V
     iD.w <- diag(nspp)
-    
+
     ##Species response to environmental gradient 1   
-    sd.niche <- ifelse(scape.size < 11, 0.05, ifelse(scape.size < 21, 0.5, ifelse(scape.size < 100, 5, 15)))
     e <- iD %*% rnorm(nspp, sd=sd.center)                                                         #assign optimal values as related to branch lengths, includes variation about mean value. Absolute values meaningless
     e <- Vscale1 * (e - mean(e))/apply(e, 2, sd)  #z-scores and scaling of the optimal values based on environmental signal in phylogeny
     bspp1 <- e
 
     spmx <- t((array(1, c(nspp, 1))) %*% mx) #env array as matrix
     mxsp <- max(mx)*((array(1, c(length(mx), 1))) %*% t(e)) #max response to env for all sp
-    wd <- iD.w %*% rnorm(nspp, sd=sd.niche) #add small variation
+    wd <- iD.w %*% rnorm(nspp, sd=sd.range) #add small variation
     wd <- wd + (abs(min(wd))) #remove negative values
     
     X <- exp(-((spmx - mxsp)^2)/t(matrix(wd, nspp, m))) #Niche distributions  
@@ -200,28 +185,27 @@ eco.scape <- function(tree, scape.size=10, g.center=1,
     wd[wd==0]<-sort(wd)[2]-sort(wd)[2]*rat    
     #Assign the zero with the mean ratio of nearest neighbor distances over the larger item
     wd <- wd.all*wd
-    ##Species response to environmental gradient 2
     
+    ##Species response to environmental gradient 2   
     e <- iD %*% rnorm(nspp, sd=sd.center)
     e <- Vscale2 * (e - mean(e))/apply(e, 2, sd)
     bspp2 <- e
 
     spmx2 <- t((array(1, c(nspp, 1))) %*% mx2)
     mxsp2 <- max(mx2)*((array(1, c(length(mx2), 1))) %*% t(e))
-    wd <- iD.w %*% rnorm(nspp, sd=sd.niche)
+    wd <- iD.w %*% rnorm(nspp, sd=sd.range)
     wd <- wd + (abs(min(wd)))
     
     X <- exp(-((spmx2 - mxsp2)^2)/t(matrix(wd, nspp, m))) #Niche distributions     
     X2 <- Xscale * X
 
-    dif<-sort(wd)[-1]-sort(wd)[-length(wd)] #Assign the zero to the nonzero minimum
-    rat<-mean(dif/sort(wd)[-1])
-    wd[wd==0]<-sort(wd)[2]-sort(wd)[2]*rat
-    #Assign the zero with the mean rato of nearist neighbor distances over the larger item
-    wd <- wd.all*wd
-    
-    ##################################
-    ##JOINT PROBABILITY MATRIX, combine X1 & X2
+    dif <- sort(wd)[-1]-sort(wd)[-length(wd)] #Assign the zero to the nonzero minimum
+    rat <- mean(dif/sort(wd)[-1])
+    wd[wd==0] <- sort(wd)[2]-sort(wd)[2]*rat 
+    wd <- wd.all*wd       #Assign the zero with the mean rato of nearist neighbor distances over the larger item
+
+
+    ###CALCULATE JOINT PROBABILITY MATRIX, by combining X1 & X2
     X. <- NULL
     spp.Xs <- array(NA, dim=c(m, m, nspp))
     for(i in 1:nspp){
@@ -231,55 +215,44 @@ eco.scape <- function(tree, scape.size=10, g.center=1,
     }
     colnames(X.) <- colnames(X2)
 
-    ################################
-    ## Solve for probability cutoff that gives mean range = wd.all  
-    f <- function(th){mean(apply(X., 2, function(x){length(x[x>th])})) - wd.all} 
-    th <- uniroot(f, lower=0, upper=max(X.), tol=10^-200)$root
+
+    ## SOLVE for probability cutoff that gives mean range = wd.all  
+    th <- uniroot(
+        function(y) mean(apply(X., 2, function(x) sum(x>y))) - wd.all,
+                     lower=0, upper=max(X.), tol=10^-200)$root
     
-    ##Create PA matrix
+    
+    ##SUMMARIZE PA matrix
     m. <- dim(X.)[1]
     Y <- matrix(0, ncol = nspp, nrow = m.)
     Y[th < X.] <- 1
     if(extinction==FALSE)
         for(i in  which(colSums(Y)==0))
             Y[sample((which(X.[,i]==max(X.[,i]))),1),i] <- 1
+    
     colnames(Y) <- colnames(X.)
-    index <- NULL
     index <- cbind(matrix(sapply(1:m, rep, times=m)), matrix(rep(1:m, times=m)))
     colnames(index) <- c("X1", "X2")
     
-    ##Create abundance matrix- new range of values between 0 (absent), that sums to K
+    ##WEIGHT by K for abundance matrix- new range of values for each site bounded by 0 (absent), each site sums to K
     Yab <- X.
     Yab[th > X.] <- 0
-
-    #scale by carrying capacity K
-    Yab <- t(apply(Yab, 1, function(x) if(sum(x)>0) ceiling(x*K/sum(x)) else x))
+    
+    Yab <- t(apply(Yab, 1, function(x) if(sum(x)>0) ceiling(x*K/sum(x)) else x)) #scale by carrying capacity K			
     Yab[Yab>0] <- floor(sapply(Yab[Yab>0], function(x){runif(1,min=(x-1),max=(x+5))}))
     for(i in which(colSums(Yab)==0))
         Yab[(which(Y[,i]==1)),i] <- 1
     colnames(Yab) <- colnames(X.)
-    
-    ##Fill environmental matrix (add mx1+mx2)
+
+    ##CREATE full environmental matrix (add mx1+mx2)
     env <- matrix(mx, nrow=length(mx), ncol=length(mx), byrow=TRUE)
     for(i in 1:nrow(env))
 	env[i,] <- sapply(env[i,],function(x){x+mx2[i]})
-    
-    ##Generate cost functions for landscape
-    linear_cost <- decostand(env,"range")
-    linear_cost <- linear_cost/sum(linear_cost)
-    quadratic_cost <- decostand((env - env^2),"range")
-    quadratic_cost <- quadratic_cost/sum(quadratic_cost)
-    stoch <- rnorm(nrow(env)^2, mean=env, sd=0.1*(max(env)-min(env)))
-    stochastic_linear_cost <- matrix(decostand(stoch, "range"), nrow=nrow(env), ncol=ncol(env), byrow=TRUE)
-    stochastic_linear_cost <- stochastic_linear_cost/sum(stochastic_linear_cost)
-    random_cost <- matrix(runif(nrow(env)^2, 0, 1), nrow=nrow(env), ncol=ncol(env), byrow=TRUE)
-    random_cost <- random_cost/sum(random_cost)
-    uniform_cost <- matrix(rep(1/nrow(env)^2, nrow(env)^2), ncol=ncol(env), nrow=nrow(env))
-    
-    return(list(Y = Y, Yab = Yab, index = index, gradient1 = mx,
-                gradient2 = mx2, X.joint = X., X1 = X1, X2 = X2, nichewd = wd.all,
-                K = K, linear.cost=linear_cost, quadratic.cost = quadratic_cost,
-                stochastic.cost = stochastic_linear_cost, random.cost = random_cost,
-                uniform.cost = uniform_cost, environ = env, sppXs = spp.Xs,
-                V.phylo = Vinit, V.phylo.rho = V, V.center = V.a, bsp1 = bspp1, bspp2 = bspp2)) 
+
+    ########### OUTPUT
+    rownames(Yab) <- paste(index[,1], index[,2], sep=".")
+    env <- data.frame(env.gradient=env[index])
+    rownames(env) <- rownames(Yab)
+    cc <- comparative.comm(tree, Yab, env=env)
+    return(list(cc=cc, gradient1 = mx, gradient2 = mx2, X.joint = X., X1 = X1, X2 = X2, nichewd = wd.all, K = K, environ = env, sppXs = spp.Xs, V.phylo = Vinit, V.phylo.rho = V, V.center = V.a, bsp1 = bspp1, bspp2 = bspp2))
 }

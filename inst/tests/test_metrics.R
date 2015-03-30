@@ -14,8 +14,8 @@ test_that("MNTD", expect_that(.mntd(data), equals(c(2,2,2,2,6,5))))
 test_that("Taxon", expect_that(.taxon(data, abundance.weighted=TRUE), is_equivalent_to(as.data.frame(matrix(c(4.85714285714286, 5.39393939393939, 6.36363636363636, 7.57575757575758, 8.85714285714286, 7.58333333333333, 4.85714285714286, 5.74193548387097, 6.7741935483871, 8.06451612903226, 8.85714285714286, 8.42592592592593, 2.12244897959184, 5.71428571428572, 11.265306122449, 7.3469387755102, 2.12244897959182, 3.81632653061224, 4.85714285714286, 6, 7.14285714285714, 8.28571428571429, 8.85714285714286, 8.42857142857143, 38.8571428571429, 48, 57.1428571428571, 66.2857142857143, 70.8571428571429, 67.4285714285714), ncol=5)))))
 test_that("Taxon", expect_that(.taxon(data, abundance.weighted=TRUE), is_equivalent_to(as.data.frame(matrix(c(4.85714285714286, 5.39393939393939, 6.36363636363636, 7.57575757575758, 8.85714285714286, 7.58333333333333, 4.85714285714286, 5.74193548387097, 6.7741935483871, 8.06451612903226, 8.85714285714286, 8.42592592592593, 2.12244897959184, 5.71428571428572, 11.265306122449, 7.3469387755102, 2.12244897959182, 3.81632653061224, 4.85714285714286, 6, 7.14285714285714, 8.28571428571429, 8.85714285714286, 8.42857142857143, 38.8571428571429, 48, 57.1428571428571, 66.2857142857143, 70.8571428571429, 67.4285714285714), ncol=5)))))
 test_that("Taxon", expect_that(.taxon(data), is_equivalent_to(as.data.frame(matrix(c(4.85714285714286, 6, 7.14285714285714, 8.28571428571429, 8.85714285714286, 8.42857142857143, 4.85714285714286, 6, 7.14285714285714, 8.28571428571429, 8.85714285714286, 8.42857142857143, 2.12244897959184, 5.71428571428572, 11.265306122449, 7.3469387755102, 2.12244897959182, 3.81632653061224, 4.85714285714286, 6, 7.14285714285714, 8.28571428571429, 8.85714285714286, 8.42857142857143, 38.8571428571429, 48, 57.1428571428571, 66.2857142857143, 70.8571428571429, 67.4285714285714), ncol=5)))))
-test_that("PD", expect_that(.pd(data, abundance.weighted=FALSE), is_equivalent_to(cbind(c(16, 17, 18, 22, 30, 27), c(-4.88235294117647, -4.82352941176471, -3.82352941176471, 0.176470588235294, 9.11764705882352, 4.23529411764706)))))
-test_that("PD", expect_that(.pd(data, abundance.weighted=TRUE), is_equivalent_to(cbind(c(16, 17, 18, 22, 30, 27), c(-5.66666666666666, -4.66666666666667, -3.66666666666667, 0.333333333333332, 8.33333333333333, 5.33333333333333)))))
+test_that("PD", expect_that(.pd(data, abundance.weighted=TRUE), is_equivalent_to(cbind(c(16, 17, 18, 22, 30, 27), c(-4.88235294117647, -4.82352941176471, -3.82352941176471, 0.176470588235294, 9.11764705882352, 4.23529411764706)))))
+test_that("PD", expect_that(.pd(data, abundance.weighted=FALSE), is_equivalent_to(cbind(c(16, 17, 18, 22, 30, 27), c(-5.66666666666666, -4.66666666666667, -3.66666666666667, 0.333333333333332, 8.33333333333333, 5.33333333333333)))))
 test_that("Colless", expect_that(.colless(data), is_equivalent_to(c(0, 0, 0, 0, 0, 5))))
 test_that("Gamma", expect_that(.gamma(data), is_equivalent_to(c(-1.41421356237309, -0.707106781186547, -0.157134840263678, -0.385694607919935, -2.9227080289044, -2.19988776369148))))
 test_that("Eigenvectors", {
@@ -48,86 +48,3 @@ test_that("UniFrac", expect_that(.unifrac(data), is_equivalent_to(structure(c(0.
 #...PCD is not reproducible, so no test :-(
 #...comdist has no good test either :-(
 
-
-
-
-
-
-
-
-
-if(FALSE){          
-          test_that("Non-standard distance matrices",{
-    sqrt <- shape(laja, "all", sqrt.phy=TRUE)
-    expect_that(names(sqrt), equals(c("psv","psr","mpd","mntd","pd","pd.ivs","colless","gamma","taxon","eigen.sum","Eed","Hed","dist.fd","type","coefs")))
-    t <- sqrt(cophenetic(laja$phy))
-    ext.dist <- shape(laja, "all", ext.dist=as.dist(t))
-    expect_that(identical(names(coef(sqrt)),names(coef(ext.dist))), is_false())
-    expect_that(coef(sqrt)[,names(coef(ext.dist))], equals(coef(ext.dist)))
-    t <- comparative.comm(invert.tree, river.sites, invert.traits)
-    traitgram <- shape(t, traitgram=1)
-    traitgram.group <- shape(t, "all", traitgram=c(0,0.5,1))
-    expect_that(coef(traitgram), is_equivalent_to(traitgram.group[traitgram.group$traitgram==1.0,names(coef(traitgram))]))
-})
-
-                    test_that("Non-standard distance matrices",{
-    sqrt <- evenness(laja, "all", sqrt.phy=TRUE)
-    expect_that(names(coef(sqrt)), equals(c("rao","taxon.Delta","taxon.DeltaStar","taxon.LambdaPlus","taxon.DeltaPlus","taxon.S.DeltaPlus","entropy","pae","iac","Haed","Eaed","mpd","mntd","FRic","FEve","FDiv","FDis","RaoQ")))
-    t <- sqrt(cophenetic(laja$phy))
-    ext.dist <- evenness(laja, "all", ext.dist=as.dist(t))
-    expect_that(identical(names(coef(sqrt)),names(coef(ext.dist))), is_false())
-    expect_that(coef(sqrt)[,names(coef(ext.dist))], equals(coef(ext.dist)))
-    t <- comparative.comm(invert.tree, river.sites, invert.traits)
-    traitgram <- evenness(t, traitgram=1)
-    traitgram.group <- evenness(t, "all", traitgram=c(0,0.5,1))
-    expect_that(coef(traitgram), is_equivalent_to(traitgram.group[traitgram.group$traitgram==1.0,names(coef(traitgram))]))
-})
-
-                    test_that("MPD", expect_that(.mpd(data, abdundance.weighted=TRUE), equals(c(c(4.25, 4.94444444444444, 5.83333333333333, 6.94444444444444, 7.75, 7.109375)))))
-test_that("MNTD", expect_that(.mntd(data, abdundance.weighted=TRUE), equals(mntd(data$comm, cophenetic(data$phy), abundance.weighted=TRUE))))
-
-
-#SESmpd etc. is so unpredictable that tests of the numerical values are almost pointless...
-test_that("Non-standard distance matrices",{
-    data(laja)
-    laja <- comparative.comm(invert.tree, river.sites, invert.traits, river.env)
-    set.seed(123)
-    sqrt <- dispersion(laja, "all", sqrt.phy=TRUE)
-    expect_that(names(coef(sqrt)), equals(c("sesmpd","sesmntd","sespd","innd")))
-    t <- sqrt(cophenetic(laja$phy))
-    set.seed(123)
-    ext.dist <- dispersion(laja, "all", ext.dist=as.dist(t))
-    expect_that(identical(names(coef(sqrt)),names(coef(ext.dist))), is_false())
-    #expect_that(coef(sqrt)[,names(coef(ext.dist))], equals(coef(ext.dist)))
-    t <- comparative.comm(invert.tree, river.sites, invert.traits)
-    traitgram <- dispersion(t, traitgram=1)
-    traitgram.group <- dispersion(t, "all", traitgram=c(0,0.5,1))
-    #expect_that(round(coef(traitgram),1), is_equivalent_to(round(traitgram.group[traitgram.group$traitgram==1.0,names(coef(traitgram))],1)))
-})
-
-test_that("INND", expect_that(innd_test$innd$mpd.obs, equals(c(0.238095238095238, 0.214285714285714, 0.2, 0.164285714285714, 0.116666666666667, 0.12797619047619)))
-          test_that("PhyloSor", expect_that(.phylosor(data), is_equivalent_to(as.numeric(c(0.454545454545455, 0.470588235294118, 0.684210526315789, 0.652173913043478, 0.627906976744186, 0.485714285714286, 0.435897435897436, 0.617021276595745, 0.590909090909091, 0.4, 0.583333333333333, 0.555555555555556, 0.307692307692308, 0.510204081632653, 0.368421052631579), Labels = c("clump1", "clump2a", "clump2b", "clump4", "even", "random"), Size = 6L, call = as.dist.default(m = 1 - as.matrix(output)), class = "dist", Diag = FALSE, Upper = FALSE))))
-
-          
-test_that("Non-standard distance matrices",{
-    data(laja)
-    laja <<- comparative.comm(invert.tree, river.sites, warn=FALSE)
-    sqrt <- dissimilarity(laja, "all", sqrt.phy=TRUE)
-    expect_that(names(sqrt), equals(c("unifrac","pcd","phylosor","comdist", "type")))
-    t <- sqrt(cophenetic(laja$phy))
-    ext.dist <- dissimilarity(laja, "all", ext.dist=as.dist(t))
-    expect_that(ext.dist$comdist, equals(sqrt$comdist))
-    t <- comparative.comm(invert.tree, river.sites, invert.traits)
-    traitgram <- dissimilarity(t, traitgram=1)
-})
-
-test_that("Each measure is the same as calculated together", {
-  set.seed(123)
-  all_test <- dissimilarity(data)
-  expect_that(all_test$unifrac, equals(unifrac_test$unifrac))
-  #expect_that(all_test$pcd, equals(pcd_test$pcd)) - impossible, see above
-  expect_that(all_test$phylosor, equals(phylosor_test$phylosor))
-  expect_that(all_test$comdist, equals(comdist_test$comdist))
-})
-
-      }

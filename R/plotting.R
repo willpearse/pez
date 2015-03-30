@@ -31,6 +31,7 @@
 #' @author Will Pearse, Matt Helmus
 #' @method plot comparative.comm
 #' @importFrom ape tiplabels plot.phylo
+#' @export
 #' @examples
 #' data(laja)
 #' data <- comparative.comm(invert.tree, river.sites, invert.traits)
@@ -47,7 +48,6 @@
 #' x.increment=settings$x.increment/4, abundance=TRUE, dot.cex=abund.sqrt)
 #' plot(data, sites=c("AT", "BP"), site.col=rainbow(2), fraction=1.2,
 #' x.increment=settings$x.increment/4, abundance=TRUE, dot.cex=function(x) sqrt(x))
-#' @export
 plot.comparative.comm <- function(x, sites=NULL, abundance=FALSE, pch=20, dot.cex=NULL, site.col="black", fraction=3, x.increment=NULL, show.tip.label=FALSE, ...){
   #Assertions and argument checking
   data <- x

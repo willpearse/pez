@@ -40,11 +40,13 @@
 #' @note \code{\link{scape}} is a much more sophisticated simulation
 #' of the biogeography, but requires you to supply a phylogeny. You
 #' pays your money, you makes your choice.
-#' @return List with the species abundances (as a 3D array) and the
-#' environmental quality (carrying capacities) for
-#' \code{sim.meta.comm}. For \code{sim.meta.phy.comm}, also a
-#' phylogeny of species and a lookup table from the abundance array to
-#' the phylogeny.
+#' @return For \code{sim.meta.comm} a list with a species-site matrix
+#' as the first slot, and the environment as the second. Rownames of
+#' the site-species are the List with the x and y co-ordinates of the
+#' simulation grid pasted together; colnames are arbitrary species
+#' names. For \code{sim.meta.comm}, a \code{\link{comparative.comm}}
+#' object (since we have now simulated a phylogeny), with the same
+#' naming convention for the site names.  phylogeny.
 #' @author Will Pearse
 #' @rdname sim.meta
 #' @name sim.meta
@@ -85,8 +87,13 @@ sim.meta.comm <- function(size=10, n.spp=8, timesteps=10, p.migrate=0.05, env.la
         abundance[abundance < 0] <- 0
     }
     
-    #Return
-    return(list(species=abundance, environment=env))
+    #Format output and return
+    comm <- apply(abundance, 3, unlist)
+    t <- dim(abundance)
+    t <- expand.grid(seq_len(t[1]), seq_len(t[2]))
+    rownames(comm) <- paste(t[,1], t[,2], sep=".")
+    env <- data.frame(as.numeric(env), row.names=rownames(comm))
+    return(list(comm=comm, environment=env))
 }
 
 #' \code{sim.meta.phy.comm} simulate a (sort of) meta-community

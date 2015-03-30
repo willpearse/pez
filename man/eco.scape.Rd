@@ -6,8 +6,8 @@
 \usage{
 eco.scape(tree, scape.size = 10, g.center = 1, wd.all = 0.2 * (scape.size
   + 1)^2, signal.center = TRUE, center.scale = 1, site.stoch.scale = 0,
-  sd.center = 1, sd.range = 1, K = 100, env.type = "gradient",
-  extinction = FALSE, rho = NULL)
+  sd.center = 1, sd.range = 1, K = 100, extinction = FALSE,
+  rho = NULL)
 }
 \arguments{
 \item{tree}{\code{\link[ape:phylo]{phylo}} object; must have branch
@@ -41,8 +41,6 @@ more variation in range sizes across gradients}
 individuals that can be present. Currently a constant value. Used
 to scale the presence-absence matrix to include abundances.}
 
-\item{env.type}{TO-DO XXX}
-
 \item{extinction}{TRUE/FALSE can species on the tree go extinct on
 the landscape? If the number of species present on the landscape
 should equal the number of tips on the tree, choose FALSE. See
@@ -50,6 +48,8 @@ Details.}
 
 \item{rho}{Grafen branch adjustment of phylogenetic tree see
 \code{\link[ape:corGrafen]{corGrafen}}}
+
+\item{env.type}{TO-DO XXX}
 }
 \value{
 \item{Y}{presence/absence matrix}
@@ -124,7 +124,7 @@ presence.
 \examples{
 # Simulations
 tree <- rcoal(64)
-scape1 <- eco.scape(tree, scape.size=25, g.center=1, signal.center=FALSE, K=100, env.type="gradient", extinction=TRUE)
+scape1 <- eco.scape(tree, scape.size=25, g.center=1, signal.center=FALSE, K=100, extinction=TRUE)
 scape2 <- eco.scape(tree, scape.size=16, g.center=0.2, signal.center=TRUE, K=100, extinction=FALSE)
 scape3 <- eco.scape(tree, scape.size=16, g.center=20, signal.center=TRUE, K=100, extinction=TRUE)
 

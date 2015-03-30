@@ -152,7 +152,7 @@ generic.null <- function(data, metrics, null.model=c("taxa.labels", "richness", 
         null <- comparative.comm(data$phy, null, data$traits, data$env)
         null <- array(rep(sapply(metrics, function(x) x(null)), permute), c(nrow(data$comm), length(metrics), permute))
     } else {
-        null <- apply(replicate(permute, randomizeMatrix(data$comm, null.model=null.model)), 3, comparative.comm, phy=data$phy)
+        null <- apply(replicate(permute, .eco.null(data$comm, method=null.model)), 3, comparative.comm, phy=data$phy)
         null <- lapply(null, function(x) do.call(cbind, lapply(metrics, function(y) y(x))))
         null <- array(unlist(null), c(dim(null[[1]]), length(null)))
     }

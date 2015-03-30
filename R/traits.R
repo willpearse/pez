@@ -38,18 +38,23 @@ ConDivSim<-function(object, type="traits", n.sim=100, plot = TRUE, disp99 = FALS
     #Assertions and argument handling
     if(!inherits(object, "comparative.comm"))
         stop("'data' must be a comparative community ecology object")
-    Dist <- NULL
-    if(type == "traits")
-        if(is.null(object$data)) {
-            stop("'object' must contain trait data if using a trait matrix")
-        } else {
-            dist <- as.matrix(dist(object$data))
-        }
-    if(type == "phy")
-        dist <- cophenetic(object$phy)
-    if(is.null(dist))
+    if(is.matrix(type)){
         if(nrow(type)==length(object$phy$tip.label) & nrow(type)==ncol(type))
             dist <- type else stop("'Provided distance matrix is of incorrect dimension'")
+    } else {
+        if(inherits(dist, "dist")){
+            dist <- as.matrix(type)
+            if(nrow(dist)==length(object$phy$tip.label) & nrow(dist)==ncol(dist))
+                dist <- type else stop("'Provided distance matrix is of incorrect dimension'")
+        } else {
+                if(type == "traits")
+                    if(is.null(object$data)) {
+                        stop("'object' must contain trait data if using a trait matrix")
+                    } else {
+                        dist <- as.matrix(dist(object$data))
+                    }
+            }
+    }
     
     object$comm <- round(object$comm)
     if(!all(object$comm %in% c(0L, 1L))) stop("Community data must be presence-absence")
@@ -89,7 +94,7 @@ ConDivSim<-function(object, type="traits", n.sim=100, plot = TRUE, disp99 = FALS
     ## calculate the observed mean pairwise distance for the community
     ## (with the unweighted method from mpd in picante, it means only 
     ## the lower triangle!)
-    MPD.obs <- mpd(object$comm, dist, abundance.weighted = FALSE)
+    MPD.obs <- .mpd(object, dist=as.dist(dist), abundance.weighted = FALSE)
     
     ## Loop on the species richness range to calculate the random 
     ## expectations of mean pairwise distance
