@@ -149,9 +149,6 @@ comparative.comm <- function(phy, comm, traits=NULL, env=NULL, warn=TRUE, force.
   return(output)
 }
 
-############################
-# some useful generics######
-############################
 #' @param x \code{comparative.comm} object to be printed
 #' @param ... not currently used
 #' @rdname comparative.comm
@@ -202,7 +199,7 @@ print.comparative.comm <- function(x, ...){
 #' will be kept consistent across all parts of the
 #' \code{\link{comparative.comm}} object. With them, you can drop
 #' species, sites, and work directly with each part of your data. You
-#' an also manipulate your \code{\link{comparative.comm}} object's
+#' can also manipulate your \code{\link{comparative.comm}} object's
 #' \code{phy}, \code{data}, \code{env}, and \code{comm} slots directly
 #' if you wish, but altering the object directly yourself runs the
 #' risk of things getting unsynchronised.
@@ -297,7 +294,6 @@ print.comparative.comm <- function(x, ...){
 }
 
 ##' @param object A \code{\link{comparative.comm}} object
-##' @param value values to replace \code{object}
 ##' @return Names of the traits or environmental variables
 ##' @rdname cc.manip
 ##' @export
@@ -427,8 +423,6 @@ phy <- tree
 `phy<-` <- `tree<-`
 
 #' @param data A \code{\link{comparative.comm}} object
-#' @return List of \code{\link[ape:phylo]{phylo}} objects, one for
-#' each assemblage in the \code{data}.
 #' @export
 #' @rdname cc.manip
 assemblage.phylogenies <- function(data){
@@ -437,4 +431,52 @@ assemblage.phylogenies <- function(data){
     for(i in seq(nrow(data$comm)))
         subtrees[[i]] <- drop_tip(data$phy, rownames(data$comm)[data$comm[i,]!=0])
     return(subtrees)
+}
+
+#' @export
+#' @rdname cc.manip
+#' @param abundance.weighted whether to create to create a
+#' presence-absence dataset (default: FALSE)
+as.data.frame.comparative.comm <- function(x, abundance.weighted=FALSE){
+    #Argument handling
+    if(!inherits(x, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
+
+    #Wrapper for expanding
+    # - tricky because of dummy factor variables
+    expand <- function(data, env, n.spp, n.sites){
+        if(!is.null(data)){
+            mat <- sapply(data, function(x) model.matrix(~x-1))
+            if(any(sapply(mat, function(x) is.character(x)|is.factor(x))))
+                mat <- do.call(cbind, mat)
+            y <- 1
+            for(i in seq(ncol(data))){
+                if(is.character(data[,i]) | is.factor(data[,i])){
+                    colnames(mat)[y:(y+length(unique(data[,i]))-1)] <- paste(names(data)[i], unique(data[,i]), sep=".")
+                    y <- y+length(unique(data[,i]))
+                } else {
+                    colnames(mat)[y] <- names(data)[i]
+                    y <- y+1
+                }
+            }
+            if(env) mat <- apply(mat, 2, rep, each=n.spp) else mat <- apply(mat, 2, rep, n.sites)
+        } else mat <- matrix(nrow=prod(n.spp, n.sites),ncol=0)
+        return(mat)
+    }
+    
+    #Make matrices - note that dummy variables make this tricky
+    output <- matrix(t(x$comm), ncol=1)
+    env <- expand(x$env, TRUE, length(species(x)), length(sites(x)))
+    traits <- expand(x$data, FALSE, length(species(x)), length(sites(x)))
+    site <- matrix(t(row(x$comm)), ncol=1)
+    
+    #Format output and return
+    output <- as.data.frame(cbind(output, env, traits, site))
+    rownames(output) <- NULL
+    if(abundance.weighted){
+        names(output)[1] <- "abundance"} else {
+            names(output)[1] <- "presence"
+            output[,1][output[,1] > 1] <- 1
+        }
+    names(output)[ncol(output)] <- "site"
+    return(as.data.frame(output))
 }

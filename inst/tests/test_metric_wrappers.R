@@ -27,7 +27,14 @@ test_that("Evenness",{
 })
 
 #Dispersion
-# - do when you've fixed INND etc.
+# - there are no meaningful tests of this, because I can't fix the value of SESmpd etc.
+test_that("Dispersion",{
+    expect_true({pez.dispersion(data, permute=10);TRUE})
+    expect_true({pez.dispersion(data, abundance=TRUE, permute=10);TRUE})
+    expect_true({pez.dispersion(data, traitgram=0.5, permute=10);TRUE})
+    expect_true({pez.dispersion(data, traitgram=c(0,1), permute=10);TRUE})
+    expect_true({pez.dispersion(data, sqrt.phy=TRUE, permute=10);TRUE})
+})
 
 #Dissimilarity
 # - pointless doing anything smart here given that none of these (even with set.seed) are deterministic

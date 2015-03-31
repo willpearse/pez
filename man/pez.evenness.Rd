@@ -5,26 +5,11 @@
 \title{Calculate (phylogenetic) evenness: examine assemblage composition
 and abundance}
 \usage{
-pez.evenness(data, metric = c("all-quick", "all", "rao", "taxon", "entropy",
-  "pae", "iac", "haed", "eaed", "lambda", "delta", "kappa", "mpd", "mntd",
-  "pse", "dist.fd"), sqrt.phy = FALSE, traitgram = NULL, traitgram.p = 2,
-  ext.dist = NULL, ...)
+pez.evenness(data, sqrt.phy = FALSE, traitgram = NULL, traitgram.p = 2,
+  ext.dist = NULL, quick = TRUE, ...)
 }
 \arguments{
 \item{data}{\code{\link{comparative.comm}} object}
-
-\item{metric}{default (\code{all-quick}) calculates everything bar
-\code{fd.dist} and the Pagel transformations
-(\eqn{$\lambda$}{lambda}, \eqn{$\delta$}{delta},
-\eqn{$\kappa$}{kappa}). \code{all} calculates
-everything. Individually call-able metrics are: \code{rao},
-\code{taxon}, \code{entropy}, \code{pae}, \code{iac}, \code{haed},
-\code{eaed}, \code{lambda}, \code{kappa}, \code{delta}, \code{mpd},
-\code{mntd}, \code{pse}, & \code{dist.fd}. Note that \code{dist.fd}
-is a trait distance metric, but will be calculated on the
-phylogenetic distance matrix if not traits are supplied, and the
-external/square-rooted phylogenetic distance matrix if either is
-specified.}
 
 \item{sqrt.phy}{If TRUE (default is FALSE) your phylogenetic
 distance matrix will be square-rooted; specifying TRUE will force
@@ -48,6 +33,12 @@ about different metric calculations when a distance matrix is used.}
 \item{ext.dist}{Supply an external species-level distance matrix
 for use in calculations. See `details' for comments on the use of
 distance matrices in different metric calculations.}
+
+\item{quick}{Only calculate metrics which are quick to calculate
+(default: TRUE); setting to FALSE will also calculate
+\code{fd.dist} and the Pagel transformations
+(\eqn{$\lambda$}{lambda}, \eqn{$\delta$}{delta},
+\eqn{$\kappa$}{kappa}).}
 
 \item{...}{Additional arguments to passed to metric functions
 (unlikely you will want this!)}

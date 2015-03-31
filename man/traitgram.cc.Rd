@@ -46,6 +46,6 @@ use the result.}
 \code{\link[picante:traitgram]{traitgram}} function in the
 \code{picante} package.
 
-A very soft wrapper for \code{\link{princomp}}
+\code{princompOne} A very soft wrapper for \code{\link{princomp}}
 }
 

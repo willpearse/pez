@@ -1,10 +1,10 @@
 #' Calculate (phylogenetic) dispersion: examine assemblages in the
 #' context of a source pools
 #'
-#' As described in Pearse et al. (2014), an evenness metric is one the
-#' examines the phylogenetic structure of species present in each
+#' As described in Pearse et al. (2014), a dispersion metric is one
+#' the examines the phylogenetic structure of species present in each
 #' assemblage in the context of a source pool of potentially present
-#' species. Unlike other metrics, the values of a dispersion metric is
+#' species. Unlike other metrics, the value of a dispersion metric is
 #' *contingent* on the definition of source pool, and (often)
 #' randomisations used to conduct that comparison. For completeness,
 #' options are provided to calculate these metrics using species
@@ -28,9 +28,6 @@
 #' @param data \code{\link{comparative.comm}} object
 #' @param permute number of null permutations to perform (default
 #' 1000)
-#' @param metric default (\code{all}) calculates everything;
-#' individually call-able metrics are: \code{SESmpd}, \code{SESmntd},
-#' \code{SESpd}, \code{innd}, \code{d}.
 #' @param null.model one of "taxa.labels", "richness", "frequency",
 #' "sample.pool", "phylogeny.pool", "independentswap", or
 #' "independentswap". These correspond to the null models available in
@@ -59,7 +56,7 @@
 #' \code{traitgram} when calling \code{funct.phylo.dist}.
 #' @param ... additional parameters to be passed to metrics (unlikely
 #' you will want to use this!)
-#' @return a \code{phy.structure} list object of metric values
+#' @return a \code{data.frame} with metric values
 #' @author M.R. Helmus, Will Pearse
 #' @seealso \code{\link{pez.shape}} \code{\link{pez.evenness}} \code{\link{pez.dissimilarity}}
 #' @references Pearse W.D., Purvis A., Cavender-Bares J. & Helmus
@@ -89,11 +86,10 @@
 #' @importFrom picante ses.mntd ses.mpd ses.pd
 #' @importFrom ape is.ultrametric as.phylo cophenetic.phylo
 #' @export
-pez.dispersion <- function(data, metric=c("all", "sesmpd", "sesmntd", "sespd", "innd", "d"), permute=1000, null.model=c("taxa.labels", "richness", "frequency", "sample.pool", "phylogeny.pool", "independentswap", "trialswap"), abundance=FALSE, sqrt.phy=FALSE, traitgram=NULL, traitgram.p=2, ext.dist=NULL, ...)
+pez.dispersion <- function(data, null.model=c("taxa.labels", "richness", "frequency", "sample.pool", "phylogeny.pool", "independentswap", "trialswap"), abundance=FALSE, sqrt.phy=FALSE, traitgram=NULL, traitgram.p=2, ext.dist=NULL, permute=1000, ...)
 {
   #Assertions and argument handling
   if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
-  metric <- match.arg(metric)
   if(permute < 0) stop("Can't have negative null permutations!")
   null.model <- match.arg(null.model)
   coefs <- data.frame(row.names=rownames(data$comm))
@@ -104,7 +100,7 @@ pez.dispersion <- function(data, metric=c("all", "sesmpd", "sesmntd", "sespd", "
       if(length(traitgram) > 1){
           output <- vector("list", length(traitgram))
           for(i in seq_along(output))
-              output[[i]] <- cbind(Recall(data, metric=metric, permute=permute, null.model=null.model, abundance=abundance, sqrt.phy=sqrt.phy, traitgram=traitgram[i], traitgram.p=traitgram.p, ext.dist=ext.dist, ...), traitgram[i], sites(data))
+              output[[i]] <- cbind(Recall(data, permute=permute, null.model=null.model, abundance=abundance, sqrt.phy=sqrt.phy, traitgram=traitgram[i], traitgram.p=traitgram.p, ext.dist=ext.dist, ...), traitgram[i], sites(data))
           output <- do.call(rbind, output)
           names(output)[ncol(output)-1] <- "traitgram"
           names(output)[ncol(output)] <- "site"
@@ -128,7 +124,7 @@ pez.dispersion <- function(data, metric=c("all", "sesmpd", "sesmntd", "sespd", "
       dist <- cophenetic(data$phy)
 
   #Filter metrics according to suitability and calculate
-  functions <- setNames(c(.ses.mpd, .ses.mntd, .inmd, .innd, .d), c("ses.mpd", "ses.mntd", "inmd", "innd", "d"))
+  functions <- setNames(c(.ses.mpd, .ses.mntd, .mipd, .innd, .d), c("ses.mpd", "ses.mntd", "inmd", "innd", "d"))
   if(sqrt.phy == TRUE)
       functions <- functions[names(functions) != "d"]
   if(traitgram == TRUE)

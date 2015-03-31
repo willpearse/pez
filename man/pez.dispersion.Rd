@@ -5,21 +5,13 @@
 \title{Calculate (phylogenetic) dispersion: examine assemblages in the
 context of a source pools}
 \usage{
-pez.dispersion(data, metric = c("all", "sesmpd", "sesmntd", "sespd", "innd",
-  "d"), permute = 1000, null.model = c("taxa.labels", "richness",
-  "frequency", "sample.pool", "phylogeny.pool", "independentswap", "trialswap"),
+pez.dispersion(data, null.model = c("taxa.labels", "richness", "frequency",
+  "sample.pool", "phylogeny.pool", "independentswap", "trialswap"),
   abundance = FALSE, sqrt.phy = FALSE, traitgram = NULL,
-  traitgram.p = 2, ext.dist = NULL, ...)
+  traitgram.p = 2, ext.dist = NULL, permute = 1000, ...)
 }
 \arguments{
 \item{data}{\code{\link{comparative.comm}} object}
-
-\item{metric}{default (\code{all}) calculates everything;
-individually call-able metrics are: \code{SESmpd}, \code{SESmntd},
-\code{SESpd}, \code{innd}, \code{d}.}
-
-\item{permute}{number of null permutations to perform (default
-1000)}
 
 \item{null.model}{one of "taxa.labels", "richness", "frequency",
 "sample.pool", "phylogeny.pool", "independentswap", or
@@ -53,17 +45,20 @@ about different metric calculations when a distance matrix is used.}
 for use in calculations. See `details' for comments on the use of
 distance matrices in different metric calculations.}
 
+\item{permute}{number of null permutations to perform (default
+1000)}
+
 \item{...}{additional parameters to be passed to metrics (unlikely
 you will want to use this!)}
 }
 \value{
-a \code{phy.structure} list object of metric values
+a \code{data.frame} with metric values
 }
 \description{
-As described in Pearse et al. (2014), an evenness metric is one the
-examines the phylogenetic structure of species present in each
+As described in Pearse et al. (2014), a dispersion metric is one
+the examines the phylogenetic structure of species present in each
 assemblage in the context of a source pool of potentially present
-species. Unlike other metrics, the values of a dispersion metric is
+species. Unlike other metrics, the value of a dispersion metric is
 *contingent* on the definition of source pool, and (often)
 randomisations used to conduct that comparison. For completeness,
 options are provided to calculate these metrics using species

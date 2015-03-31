@@ -28,8 +28,9 @@
 #' which may be of use to you. Check those functions' code for
 #' examples of use.
 #'
-#' These functions are closely related to \code{\link{sim.meta}} that
-#' extend this to simulate meta-community structure at the same time.
+#' These functions are closely related to \code{\link{sim.meta}}; the
+#' latter are extensions that simulate meta-community structure at the
+#' same time.
 #' 
 #' @param speciate probability each species will speciate in each
 #' time-step (0-1)
@@ -37,7 +38,7 @@
 #' time-step (0-1)
 #' @param time.steps number of time-steps for simulation
 #' @return \code{\link[ape:phylo]{phylo}} object with random
-#' tip.labels; trait values if using \code{sim.br.tr.tree}.
+#' tip.labels, and trait values if using \code{sim.br.tr.tree}.
 #' @author Will Pearse
 #' @seealso sim.meta scape
 #' @examples
@@ -182,8 +183,6 @@ sim.bd.tr.phy <- function(speciate=0.1, extinction=0.025, time.steps=20, tr.rang
     return(edge2phylo(edge, species, extinct, edge.length, traits))
 }
 
-#' Convert a simulated edge matrix to an ape:phylo object
-#' 
 #' @param edge a two-column matrix where the first column is the start
 #' node, the second the destination, as in
 #' \code{\link[ape:phylo]{phylo}$edge}
@@ -195,7 +194,6 @@ sim.bd.tr.phy <- function(speciate=0.1, extinction=0.025, time.steps=20, tr.rang
 #' phylogeny (default NA, i.e., none)
 #' @param t if given (default NA), a vector to be used for traits
 #' (\code{$traits} slot) in the phylogeny
-#' @return \code{\link[ape:phylo]{phylo}} object
 #' @author Will Pearse
 #' @rdname sim.phy
 #' @export

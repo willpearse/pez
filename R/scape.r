@@ -1,5 +1,3 @@
-# TO_DO:
-# clean up Rd code, write nice example
 #' Simulate phylogenetic community structure across a landscape
 #' 
 #' \code{scape} simulates communities that are phylogenetically structured

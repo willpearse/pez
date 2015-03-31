@@ -14,10 +14,10 @@
 \alias{.haed}
 \alias{.hed}
 \alias{.iac}
-\alias{.inmd}
 \alias{.innd}
 \alias{.kappa}
 \alias{.lambda}
+\alias{.mipd}
 \alias{.mntd}
 \alias{.mpd}
 \alias{.pae}
@@ -107,7 +107,7 @@
 .ses.mntd(x, dist = NULL, null.model = "taxa.labels",
   abundance.weighted = FALSE, permute = 1000, ...)
 
-.inmd(x, dist = NULL, null.model = "taxa.labels",
+.mipd(x, dist = NULL, null.model = "taxa.labels",
   abundance.weighted = FALSE, permute = 1000, ...)
 
 .innd(x, dist = NULL, null.model = "taxa.labels",
@@ -167,69 +167,7 @@ first parameter: a \code{\link{comparative.comm}} object. There are
 additional parameters that can be passed, which are described
 below.
 
-Hed (Cadotte et al., 2010)
-
-Eed (Cadotte et al., 2010)
-
-PSV (Helmus et al., 2007)
-
-PSR (Helmus et al., 2007)
-
-MPD (Mean Phylogenetic Distance)
-
-PD (Faith, 1992)
-
-MNTD (Mean Nearest Taxonomic Distance)
-
-Gamma (Pybus & Harvey, 2000)
-
-Taxonomic distinctiveness (Clarke & Warwick, 1998)
-
-Sum of Phylo-Eigvenectors (Diniz-Filho et al., 2011)
-
-Functional Diversity
-
-Phylogenetic entropy (Allen et al., 2009)
-
-XXX
-
-Haed (Cadotte et al., 2010)
-
-Simpson's phylogenetic diversity
-
-IAC (Cadotte et al., 2010)
-
-PAE (Cadotte et al., 2010)
-
 PSE (Helmus et al., 2007)
-
-Rao's Quadratic Entropy (XXX)
-
-Pagel's Lambda (Pagel, 1999)
-
-Pagel's Delta (Pagel, 1999)
-
-Pagel's Kappa (Pagel, 1999)
-
-Eaed (Cadotte et al., 2010)
-
-UniFrac (Lozupone et al., 2005)
-
-PCD (Ives & Helmus, 2010)
-
-ComDist (Webb et al., 2008)
-
-PhyloSor (Bryant et al., 2008)
-
-D (Fritz & Purvis, 2010)
-
-SESmpd (Webb, 2000)
-
-SESmntd (Webb, 2000)
-
-INMD (XXX)
-
-INND (XXX)
 }
 \note{
 Many (but not all) of these functions are fairly trivial
@@ -303,7 +241,7 @@ New Phylogenetic Diversity Measure Generalizing the Shannon Index
 and Its Application to Phyllostomid Bats. The American Naturalist,
 174, 236-243.
 
-\code{pae,iac,haed,eaed} Cadotte M.W., Davies T.J.,
+\code{pae,aed,iac,haed,eaed} Cadotte M.W., Davies T.J.,
 Regetz J., Kembel S.W., Cleland E. & Oakley
 T.H. (2010). Phylogenetic diversity metrics for ecological
 communities: integrating species richness, abundance and
@@ -346,7 +284,7 @@ Biology, 24, 1042-1051.
 phylogenetic structure of ecological communities: An example for
 rain forest trees. American Naturalist, 156, 145-155.
 
-\code{innd} Ness J.H., Rollinson E.J. & Whitney
+\code{innd,mipd} Ness J.H., Rollinson E.J. & Whitney
 K.D. (2011). Phylogenetic distance can predict susceptibility to
 attack by natural enemies. Oikos, 120, 1327-1334.
 }

@@ -1,10 +1,11 @@
-#' Compare any metric(s) with null distributions
+#' Calculate any metric(s) (and compare with null distributions)
 #'
-#' Compare any calculated metric within \code{pez} to values expected
-#' under some null distribution. This is a very light wrapper around
-#' the utility functions \code{\link{generic.null}} and
-#' \code{\link{generic.metrics}} (which is, itself, a very simple
-#' function!).
+#' Allow the calculation of any metric within \code{pez}.
+#'
+#' \code{generic.null} Calculate metrics and compare with null
+#' distributions. Very light wrapper around the utility functions
+#' \code{\link{generic.null}} and \code{\link{generic.metrics}} (which
+#' is, itself, a very simple function!).
 #'
 #' @note \code{comp.fun} can be \emph{anything}; much ink has been
 #' written about the use of standard effect sizes in eco-phylogenetic
@@ -45,9 +46,9 @@
 #' use.
 #' @param trait if using \code{trait.asm} \code{null.model}, which
 #' trait to use (as in \code{\link{trait.asm}})
-#' @return Output from \code{comp.fun}, by default an array
-#' (site-metric-type), where type is the observed value, the mean of
-#' the null permutations, the Standard Error of that mean, the
+#' @return \code{generic.null} Output from \code{comp.fun}, by default
+#' an array (site-metric-type), where type is the observed value, the
+#' mean of the null permutations, the Standard Error of that mean, the
 #' Standard Effect Size of the metric (obs-null.mean)/SE, and then the
 #' rank of the observed value in the permutations. The rank can be
 #' considered a bootstrapped p-value of significance, but remember
@@ -101,12 +102,12 @@ generic.null <- function(data, metrics, null.model=c("taxa.labels", "richness", 
     return(comp.fun(observed, null))
 }
 
-#' Calculate Standard Effect Sizes of metrics
+#' \code{.ses} Calculate Standard Effect Sizes of metrics
 #' @param observed observed metric values in site-metric matrix
 #' (\emph{e.g.}, from \code{\link{generic.metrics}})
 #' @param null null distributions (\emph{e.g.}, from
 #' \code{\link{.metric.null}}) in a site-metric-permutation array
-#' @return Vector of standard effect sizes
+#' @return \code{.ses} Vector of standard effect sizes
 #' @export
 #' @rdname generic.metrics
 #' @name generic.metrics
@@ -124,8 +125,9 @@ generic.null <- function(data, metrics, null.model=c("taxa.labels", "richness", 
     return(output)
 }
 
-#' Produce null randomisations and compute metrics across them
-#' @return site-metric-permutation array
+#' \code{.metric.null} Produce null randomisations and compute metrics
+#' across them
+#' @return \code{.metric.null} site-metric-permutation array
 #' @export
 #' @rdname generic.metrics
 #' @name generic.metrics
@@ -160,8 +162,8 @@ generic.null <- function(data, metrics, null.model=c("taxa.labels", "richness", 
     return(null)
 }
 
-#' Calculate arbitrary metrics across data
-#' @return site-metric matrix
+#' \code{generic.metrics} Calculate arbitrary metrics across data
+#' @return \code{generic.metrics} site-metric matrix
 #' @export
 #' @rdname generic.metrics
 #' @name generic.metrics

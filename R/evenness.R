@@ -1,7 +1,6 @@
 #' Calculate (phylogenetic) evenness: examine assemblage composition
 #' and abundance
 #'
-#'
 #' As described in Pearse et al. (2014), an evenness metric is one the
 #' examines the phylogenetic structure of species present in each
 #' assemblage, taking into account their abundances. For completeness,
@@ -24,18 +23,6 @@
 #' only be using ultrametric phylogenies in any case, but code to fix
 #' this bug is welcome.
 #' @param data \code{\link{comparative.comm}} object
-#' @param metric default (\code{all-quick}) calculates everything bar
-#' \code{fd.dist} and the Pagel transformations
-#' (\eqn{$\lambda$}{lambda}, \eqn{$\delta$}{delta},
-#' \eqn{$\kappa$}{kappa}). \code{all} calculates
-#' everything. Individually call-able metrics are: \code{rao},
-#' \code{taxon}, \code{entropy}, \code{pae}, \code{iac}, \code{haed},
-#' \code{eaed}, \code{lambda}, \code{kappa}, \code{delta}, \code{mpd},
-#' \code{mntd}, \code{pse}, & \code{dist.fd}. Note that \code{dist.fd}
-#' is a trait distance metric, but will be calculated on the
-#' phylogenetic distance matrix if not traits are supplied, and the
-#' external/square-rooted phylogenetic distance matrix if either is
-#' specified.
 #' @param sqrt.phy If TRUE (default is FALSE) your phylogenetic
 #' distance matrix will be square-rooted; specifying TRUE will force
 #' the square-root transformation on phylogenetic distance matrices
@@ -55,6 +42,11 @@
 #' @param ext.dist Supply an external species-level distance matrix
 #' for use in calculations. See `details' for comments on the use of
 #' distance matrices in different metric calculations.
+#' @param quick Only calculate metrics which are quick to calculate
+#' (default: TRUE); setting to FALSE will also calculate
+#' \code{fd.dist} and the Pagel transformations
+#' (\eqn{$\lambda$}{lambda}, \eqn{$\delta$}{delta},
+#' \eqn{$\kappa$}{kappa}).
 #' @param ... Additional arguments to passed to metric functions
 #' (unlikely you will want this!)
 #' @note As mentioned above, \code{dist.fd} is calculated using a
@@ -103,18 +95,17 @@
 #' @importFrom ade4 newick2phylog
 #' @importFrom FD dbFD
 #' @export
-pez.evenness <- function(data, metric=c("all-quick", "all", "rao", "taxon", "entropy", "pae", "iac", "haed", "eaed", "lambda", "delta", "kappa", "mpd", "mntd", "pse", "dist.fd"), sqrt.phy=FALSE, traitgram=NULL, traitgram.p=2, ext.dist=NULL, ...)
+pez.evenness <- function(data, sqrt.phy=FALSE, traitgram=NULL, traitgram.p=2, ext.dist=NULL, quick=TRUE, ...)
 {
   #Assertions and argument handling
   if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
-  metric <- match.arg(metric)
     if(sum(c(!is.null(traitgram), sqrt.phy, !is.null(ext.dist))) > 1)
       stop("Confusion now hath made its masterpiece!\nYou have specified more than one thing to do with a distance matrix.")
   if(!is.null(traitgram)){
       if(length(traitgram) > 1){
           output <- vector("list", length(traitgram))
           for(i in seq_along(output))
-              output[[i]] <- cbind(Recall(data, metric, sqrt.phy, traitgram=traitgram[i], traitgram.p=traitgram.p, ...), traitgram[i], sites(data))
+              output[[i]] <- cbind(Recall(data, sqrt.phy, traitgram=traitgram[i], traitgram.p=traitgram.p, ...), traitgram[i], sites(data))
           output <- do.call(rbind, output)
           names(output)[ncol(output)-1] <- "traitgram"
           names(output)[ncol(output)] <- "site"
@@ -147,7 +138,7 @@ pez.evenness <- function(data, metric=c("all-quick", "all", "rao", "taxon", "ent
   
   #Filter metrics according to suitability and calculate
   functions <- setNames(c(.rao, .phylo.entropy, .pae, .iac, .haed, .eaed, .lambda, .delta, .kappa, .mpd, .mntd, .taxon, .pse, .dist.fd), c("rao", "entropy", "pae", "iac", "haed", "eaed", "lambda", "delta", "kappa", "mpd", "mntd", "taxon", "pse", "dist.fd"))
-  if(metric == "all-quick")
+  if(quick == TRUE)
       functions <- functions[!names(functions) %in% c("dist.fd","lambda","delta","kappa")]
   if(sqrt.phy == TRUE)
       functions <- functions[!names(functions) %in% c("pse","lambda","delta","kappa")]

@@ -5,7 +5,7 @@
 \alias{.ses}
 \alias{generic.metrics}
 \alias{generic.null}
-\title{Compare any metric(s) with null distributions}
+\title{Calculate any metric(s) (and compare with null distributions)}
 \usage{
 generic.null(data, metrics, null.model = c("taxa.labels", "richness",
   "frequency", "sample.pool", "phylogeny.pool", "independentswap", "trialswap",
@@ -55,33 +55,36 @@ use.}
 trait to use (as in \code{\link{trait.asm}})}
 }
 \value{
-Output from \code{comp.fun}, by default an array
-(site-metric-type), where type is the observed value, the mean of
-the null permutations, the Standard Error of that mean, the
+\code{generic.null} Output from \code{comp.fun}, by default
+an array (site-metric-type), where type is the observed value, the
+mean of the null permutations, the Standard Error of that mean, the
 Standard Effect Size of the metric (obs-null.mean)/SE, and then the
 rank of the observed value in the permutations. The rank can be
 considered a bootstrapped p-value of significance, but remember
 that this is a rank: at the 95% (two-tailed) level, a value of 0.99
 would be significant.
 
-Vector of standard effect sizes
+\code{.ses} Vector of standard effect sizes
 
-site-metric-permutation array
+\code{.metric.null} site-metric-permutation array
 
-site-metric matrix
+\code{generic.metrics} site-metric matrix
 }
 \description{
-Compare any calculated metric within \code{pez} to values expected
-under some null distribution. This is a very light wrapper around
-the utility functions \code{\link{generic.null}} and
-\code{\link{generic.metrics}} (which is, itself, a very simple
-function!).
+Allow the calculation of any metric within \code{pez}.
 
-Calculate Standard Effect Sizes of metrics
+\code{.ses} Calculate Standard Effect Sizes of metrics
 
-Produce null randomisations and compute metrics across them
+\code{.metric.null} Produce null randomisations and compute metrics
+across them
 
-Calculate arbitrary metrics across data
+\code{generic.metrics} Calculate arbitrary metrics across data
+}
+\details{
+\code{generic.null} Calculate metrics and compare with null
+distributions. Very light wrapper around the utility functions
+\code{\link{generic.null}} and \code{\link{generic.metrics}} (which
+is, itself, a very simple function!).
 }
 \note{
 \code{comp.fun} can be \emph{anything}; much ink has been

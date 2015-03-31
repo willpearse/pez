@@ -1,8 +1,5 @@
 #' Calculate (phylogenetic) shape: examine assemblage composition
 #'
-#' Calculates various metrics of phylogenetic biodiversity that are
-#' categorized as \emph{shape} metrics by Pearse \emph{et al.} (2014).
-#'
 #' As described in Pearse et al. (2014), a shape metric is one the
 #' examines the phylogenetic structure of species present in each
 #' assemblage, ignoring abundances entirely. For completeness, options
@@ -24,15 +21,6 @@
 #' ultrametric phylogenies in any case, but code to fix this bug is
 #' welcome.
 #' @param data \code{\link{comparative.comm}} object
-#' @param metric metrics to calculate. Default (\code{all-quick})
-#' calculates everything bar \code{fd.dist}, \code{all} calculates
-#' everything. Individually call-able metrics are: \code{psv},
-#' \code{psr}, \code{mpd}, \code{mntd}, \code{pd}, \code{colless},
-#' \code{gamma}, \code{taxon}, \code{eigen.sum}, \code{eed}, \code{hed}, &
-#' \code{dist.fd}. Note that \code{dist.fd} is a trait distance
-#' metric, but will be calculated on the phylogenetic distance matrix
-#' if not traits are supplied, and the external/square-rooted
-#' phylogenetic distance matrix if either is specified.
 #' @param which.eigen The eigen vector to calculate for the PhyloEigen
 #' metric (\code{eigen.sum})
 #' @param sqrt.phy If TRUE (default is FALSE) your phylogenetic
@@ -58,6 +46,9 @@
 #' @param ext.dist Supply an external species-level distance matrix
 #' for use in calculations. See `details' for comments on the use of
 #' distance matrices in different metric calculations.
+#' @param quick Only calculate metrics which are quick to calculate
+#' (default: TRUE); setting to FALSE will also calculate
+#' \code{fd.dist}.
 #' @param ... Additional arguments to passed to metric functions
 #' (unlikely you will want this!)
 #' @note As mentioned above, \code{dist.fd} is calculated using a
@@ -101,18 +92,17 @@
 #' @importFrom ape gammaStat cophenetic.phylo drop.tip is.ultrametric as.phylo is.binary.tree
 #' @importFrom FD dbFD
 #' @export
-pez.shape <- function(data,metric=c("all-quick", "all", "psv", "psr", "mpd", "mntd", "pd","colless", "gamma", "taxon", "eigen.sum","eed", "hed", "dist.fd"), sqrt.phy=FALSE, traitgram=NULL, traitgram.p=2, ext.dist=NULL, which.eigen=1, remove.errors = TRUE,  ...)
+pez.shape <- function(data, sqrt.phy=FALSE, traitgram=NULL, traitgram.p=2, ext.dist=NULL, which.eigen=1, remove.errors = TRUE, quick=TRUE,  ...)
 {
   #Assertions and argument handling
   if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
-  metric <- match.arg(metric)
   if(sum(c(!is.null(traitgram), sqrt.phy, !is.null(ext.dist))) > 1)
       stop("Confusion now hath made its masterpiece!\nYou have specified more than one thing to do with a distance matrix.")
   if(!is.null(traitgram)){
       if(length(traitgram) > 1){
           output <- vector("list", length(traitgram))
           for(i in seq_along(output))
-              output[[i]] <- cbind(Recall(data, metric, sqrt.phy, traitgram=traitgram[i], which.eigen=which.eigen, remove.errors=remove.errors, traitgram.p=traitgram.p, ...), traitgram[i], sites(data))
+              output[[i]] <- cbind(Recall(data, sqrt.phy, traitgram=traitgram[i], which.eigen=which.eigen, remove.errors=remove.errors, traitgram.p=traitgram.p, ...), traitgram[i], sites(data))
           output <- do.call(rbind, output)
           names(output)[ncol(output)-1] <- "traitgram"
           names(output)[ncol(output)] <- "site"
@@ -142,7 +132,7 @@ pez.shape <- function(data,metric=c("all-quick", "all", "psv", "psr", "mpd", "mn
   
   #Filter metrics according to suitability and calculate
   functions <- setNames(c(.psv, .psr, .mpd, .mntd, .colless, .taxon, .eigen.sum, .eed, .hed, .dist.fd), c("psv", "psr", "mpd", "mntd", "colless", "taxon", "eigen.sum", "eed", "hed", "dist.fd"))
-  if(metric == "all-quick")
+  if(quick == TRUE)
       functions <- functions[names(functions) != "dist.fd"]
   if(sqrt.phy == TRUE)
       functions <- functions[!names(functions) %in% c("psv", "psr", "colless", "gamma", "eed", "hed")]

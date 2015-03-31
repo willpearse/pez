@@ -1,4 +1,4 @@
-%\VignetteIndexEntry{pez-intro}
+% \VignetteIndexEntry{pez-intro}
 %\VignettePackage{pez}
 %\VignetteEngine{knitr::knitr}
 \documentclass[12pt]{article}
@@ -31,8 +31,8 @@ You can install \emph{pez} by typing \texttt{install.packages("pez")},
 and get a listing of the functions in the package by typing
 \texttt{library(help=pez)}. If you find any bugs, or have any feature
 requests for the package, please use
-\href{http://github.com/willpearse/pez/issues}{the online tracker}
-at. Indeed, please contribute to the package using at its
+\href{http://github.com/willpearse/pez/issues}{the online
+  tracker}. Indeed, please contribute to the package using at its
 \href{http://github.com/willpearse/pez/issues}{GitHub site}---help is
 always welcome! If you need help, please email the
 \href{https://groups.google.com/forum/#!forum/pez_users}{user mailing
@@ -45,6 +45,12 @@ files for each function); notably \emph{caper} \citep{Orme2013} and
 \emph{picante} \citep{Kembel2010} but many others as well. Please cite
 the authors of these packages in your publications so that their
 hard-work is rewarded!
+
+The functions within \emph{pez} are grouped into families; thus, while
+there is no \texttt{pez.metric} function, there is a help-file with
+this title that describes over thirty different functions. Looking for
+the help file for each of these functions will take you to combined,
+`overview' help-file.
 
 Often, \emph{pez} functions will return warnings (and sometimes error
 messages!) because certain metrics or methods are not appropriate for
@@ -64,8 +70,10 @@ Below we load \emph{pez}, some example data that comes with it, and
 then make a \texttt{comparative.comm} object. You can examine the
 phylogeny (\texttt{tree}), community data (\texttt{comm}), and trait
 data (\texttt{data}) that went into making dataset for yourself,
-although all the data types are explained in more detail below. Below
-we use the \citet{Helmus2012} dataset to show \emph{pez}'s features.
+although all the data types are explained in more detail below. A
+phylogeny and a community matrix are all you need to make a
+\texttt{comparative.comm} object; everything else is optional. Below
+we use the \citet{Helmus2014} dataset to show \emph{pez}'s features.
 
 <<tidy=TRUE, size="small">>=
 library(pez)
@@ -80,7 +88,7 @@ data and community data. The same goes for the phylogeny, and for
 sites with environmental data. \emph{pez} will warn you about the loss
 of species or traits when you print the object to screen, and while
 it's making the comparative.comm object (unless you set the argument
-\texttt{warm=FALSE}).
+\texttt{warn=FALSE}).
 
 You can also subset your comparative.comm object to exclude certain
 species or sites, in much the same way you can a
@@ -109,35 +117,35 @@ traits(data)$new.trait <- NULL
 The final example above showed you can work with the internal
 components of a \texttt{comparative.comm} to get things done quicker,
 in this case removing all species that were only recorded five times
-in the dataset. The help entry for \texttt{cc.manip} contains more
-examples, and \texttt{plot.comparative.comm} is a quick plotting
+or fewer in the dataset. The help entry for \texttt{cc.manip} contains
+more examples, and \texttt{plot.comparative.comm} is a quick plotting
 tool. We have also provided the \texttt{comm},
 \texttt{phy}(/\texttt{tree}), \texttt{traits}, and \texttt{env}
 wrappers to examine and manipulate the community matrix, phylogeny,
 trait data, and environmental data, slots in your
-\texttt{comparative.comm} objects. We give some examples above, and
-you can find more in the help file for \texttt{cc.manip}. By using
-these wrappers, as opposed to interacting directly with the slots in
-your \texttt{comparative.comm} object, you ensure your species and
-sites remain consistent across your data, and make your code a little
-easier to read. Internally, your trait data are stored in the
-\texttt{data} slow; this means that \texttt{comparatve.comm} is
-compatible with the \texttt{caper} package. Anything you can do in
-that (\emph{e.g.}, PGLS regression, comparative modelling and
-simulation) can be done using you data in \emph{pez} without
-modification.
+\texttt{comparative.comm} objects (\emph{e.g.}, \texttt{phy(data)}
+would return your phylogeny). We give some examples above, and you can
+find more in the help file for \texttt{cc.manip}. By using these
+wrappers, as opposed to interacting directly with the slots in your
+\texttt{comparative.comm} object, you ensure your species and sites
+remain consistent across your data, and make your code a little easier
+to read. Internally, your trait data are stored in the \texttt{data}
+slot; this means that \texttt{comparatve.comm} is compatible with the
+\texttt{caper} package. Anything you can do in that (\emph{e.g.}, PGLS
+regression, comparative modelling and simulation) can be done using
+you data in \emph{pez} without modification.
 \clearpage
 \section{Community phylogenetic metrics}
 \emph{pez} splits community phylogenetic metrics into four functions
 according to the scheme outlined by \citet{Pearse2014review}:
 \texttt{pez.shape}, \texttt{pez.evenness}, \texttt{pez.dispersion},
 and \texttt{pez.dissimilarity}. Shape metrics measure the structure of
-an community phylogeny, while evenness metrics additionally
-incorporate species abundances. Dispersion metrics examine whether
-phylogenetic biodiversity in an assemblage differs from the
-expectation of random assembly from a given set of species. Finally,
-dissimilarity measures the pairwise difference in phylogenetic
-biodiversity between assemblages.
+a community phylogeny, while evenness metrics additionally incorporate
+species abundances. Dispersion metrics examine whether phylogenetic
+biodiversity in an assemblage differs from the expectation of random
+assembly from a given set of species. Finally, dissimilarity measures
+the pairwise difference in phylogenetic biodiversity between
+assemblages.
 
 You can calculate all metrics within a class at the same time (which
 is what we recommend), or you can pick a particular one. The intention
@@ -589,6 +597,12 @@ Bryant, J.A., Lamanna, C., Morlon, H., Kerkhoff, A.J., Enquist, B.J. \& Green,
 \bibitem[{Helmus \& Ives(2012)}]{Helmus2012}
 Helmus, M.R. \& Ives, A.R. (2012) Phylogenetic diversity-area curves.
   \emph{Ecology} \textbf{93}, S31--S43.
+
+\bibitem[{Helmus \emph{et~al.}(2014) Helmus, Mercado-Silva \&
+    Zanden(2014)}]{Helmus2014} Helmus, M.R., Mercado-Silva, N., \&
+  Zanden, M.J.V. (2014) Subsidies to predators, apparent competition
+  and the phylogenetic structure of prey communities \emph{Oceologia}
+  \textbf{173}, 997--1007.
 
 \bibitem[{Ives \& Helmus(2011)}]{Ives2011} Ives, A.R. \& Helmus,
   M.R. (2011) Generalized linear mixed models for phylogenetic

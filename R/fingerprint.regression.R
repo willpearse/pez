@@ -10,10 +10,10 @@
 #' Figure 6. For each trait, the phylogenetic inertia of species%
 #' traits is regressed against their co-occurrence in the community
 #' matrix. Note that Pagel's \eqn{$\lambda$}{lambda},
-#' \eqn{$\delta$}{delta}, and \eqn{$\kappa$}{kappa} are used, unlike
-#' the original where a mantel test was employed. Moreover, note also
-#' that Pianka's distance (as described in the manuscript) is used to
-#' measure species overlap.
+#' \eqn{$\delta$}{delta}, and \eqn{$\kappa$}{kappa}, and Blomberg's K,
+#' can be used, unlike the original where a mantel test was
+#' employed. Moreover, note also that Pianka's distance (as described
+#' in the manuscript) is used to measure species overlap.
 #' 
 #' @param data \code{\link{comparative.comm}} for analysis
 #' @param eco.rnd null distribution with which to compare your

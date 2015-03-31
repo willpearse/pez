@@ -68,7 +68,6 @@
 #' the landscape? If the number of species present on the landscape
 #' should equal the number of tips on the tree, choose FALSE. See
 #' Details.
-#' @param env.type TO-DO XXX
 #' @param rho Grafen branch adjustment of phylogenetic tree see
 #' \code{\link[ape:corGrafen]{corGrafen}}
 #' @return

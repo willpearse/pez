@@ -25,7 +25,9 @@ mean pairwise distance, and the 5-95\% confidence interval.}
 \item{disp99}{Display the 99\% interval?}
 }
 \value{
-TODO
+\code{matrix} with quantiles of mean pairwise distances for
+all quantiles of of mean pairwise distance, with one row for the
+range of species richnesses in the data (see column SpRich).
 }
 \description{
 Simulate expectations (under a null model) of mean pairwise distance for
@@ -51,6 +53,9 @@ data$comm[data$comm>1] <- 1
 sims <- ConDivSim(data)
 #...without traits...
 sims.phy <- ConDivSim(data, type="phy")
+}
+\author{
+Steve Walker, wrappers by Will Pearse
 }
 \seealso{
 \code{\link{sim.phy}} \code{\link{scape}}

@@ -48,8 +48,6 @@ Details.}
 
 \item{rho}{Grafen branch adjustment of phylogenetic tree see
 \code{\link[ape:corGrafen]{corGrafen}}}
-
-\item{env.type}{TO-DO XXX}
 }
 \value{
 \item{Y}{presence/absence matrix}

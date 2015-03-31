@@ -1,8 +1,5 @@
 #' Simulate a meta-community (and its phylogeny)
 #'
-#' Simulate a meta-community (and the resulting phylogeny) based on
-#' responses to environmental gradients
-#'
 #' \code{sim.meta.comm} simulates species moving through a
 #' metacommunity. At each time-step each cell's next abundance for
 #' each species is \code{env.quality} - \code{current.abundance} +
@@ -12,7 +9,7 @@
 #' want half-species (these are individuals), and keeping everything
 #' in Poisson makes it easier to compare the relative rates of
 #' everything.
-#'
+#' 
 #' \code{sim.meta.phy.comm} As above, but with a simulation of
 #' phylogeny as well - there are no additional extinction parameters,
 #' since extinction happens as a natural consequence of ecological
@@ -44,7 +41,7 @@
 #' as the first slot, and the environment as the second. Rownames of
 #' the site-species are the List with the x and y co-ordinates of the
 #' simulation grid pasted together; colnames are arbitrary species
-#' names. For \code{sim.meta.comm}, a \code{\link{comparative.comm}}
+#' names. \code{sim.meta.comm}, a \code{\link{comparative.comm}}
 #' object (since we have now simulated a phylogeny), with the same
 #' naming convention for the site names.  phylogeny.
 #' @author Will Pearse
@@ -101,9 +98,10 @@ sim.meta.comm <- function(size=10, n.spp=8, timesteps=10, p.migrate=0.05, env.la
 #' @param p.speciate probabilty that, at each timestep, a species will
 #' speciate. A species can only speciate, migrate, or reproduce if it
 #' has individuals!
-#' @return \code{\link{comparative.comm}} object that describes the
-#' data; note that the rownames of the community object refer to the
-#' \code{row.column} of the data in the simulated grid assemblages.
+#' @return \code{sim.meta.phy.comm} \code{\link{comparative.comm}}
+#' object that describes the data; note that the rownames of the
+#' community object refer to the \code{row.column} of the data in the
+#' simulated grid assemblages.
 #' @rdname sim.meta
 #' @author Will Pearse
 #' @export

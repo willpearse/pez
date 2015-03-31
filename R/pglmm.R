@@ -2,8 +2,8 @@
 #'
 #' This function performs Generalized Linear Mixed Models for binary
 #' and continuous phylogenetic data, estimating regression
-#' coefficients with approximate standard errors. It is a modeled
-#' after \code{\link[lme4:lmer]{lmer}} but is more general by allowing
+#' coefficients with approximate standard errors. It is modeled after
+#' \code{\link[lme4:lmer]{lmer}} but is more general by allowing
 #' correlation structure within random effects; these correlations can
 #' be phylogenetic among species, or any other correlation structure,
 #' such as geographical correlations among sites. It is, however, much
@@ -22,7 +22,10 @@
 #' named in formula. The data frame should have long format with
 #' factors specifying species and sites. \code{communityPGLMM} will
 #' reorder rows of the data frame so that species are nested within
-#' sites.
+#' sites. Please note that calling
+#' \code{\link[as.data.frame.comparative.comm]{as.data.frame}} will
+#' return your \code{comparative.comm} object into this format for
+#' you.
 #' @param family either \code{gaussian} for a Linear Mixed Model, or
 #' \code{binomial} for binary dependent data.
 #' @param sp a \code{\link{factor}} variable that identifies species
@@ -168,16 +171,13 @@
 #' \item{convcode}{the convergence code provided by \code{\link{optim}}}
 #' \item{niter}{number of iterations performed by \code{\link{optim}}}
 #' @note These function \emph{do not} use a
-#' \code{\link{comparative.comm}} object; the power of this method
-#' comes from deciding your own parameters parameters to be determined
-#' (the data for regression, the random effects, etc.) such that this
-#' is emphatically a feature, not a bug! Bear in mind that
-#' \code{species(c.c.obj)} will return your species (for argument
-#' \code{sp}), \code{comm(c.c.obj)} your community (site) data (for
-#' argument \code{site}), and \code{cophenetic(tree(c.c.obj))} your
-#' phylogenetic covariacne matrix. The examples below are extremely
-#' thorough and really help explain the method; please take a look at
-#' them.
+#' \code{\link{comparative.comm}} object, but you can use
+#' \code{\link[as.data.frame.comparative.comm]{as.data.frame}} to
+#' create a \code{data.frame} for use with these functions. The power
+#' of this method comes from deciding your own parameters parameters
+#' to be determined (the data for regression, the random effects,
+#' etc.), and it is our hope that this interface gives you more
+#' flexibility in model selection/fitting.
 #' @author Anthony R. Ives, cosmetic changes by Will Pearse
 #' @references Ives, A. R. and M. R. Helmus. 2011. Generalized linear
 #' mixed models for phylogenetic analyses of community
@@ -763,9 +763,9 @@ communityPGLMM.gaussian <- function(formula, data = list(), family = "gaussian",
 # communityPGLMM.binary
 ######################################################
 ######################################################
-#' calculates the statistical significance of the random effects in
-#' the generalized linear mixed model from the marginal profile
-#' likelihood.
+#' \code{communityPGLMM.binary} calculates the statistical
+#' significance of the random effects in the generalized linear mixed
+#' model from the marginal profile likelihood.
 #' @rdname pglmm
 #' @importClassesFrom Matrix dsCMatrix RsparseMatrix
 #' @importMethodsFrom Matrix t solve %*% determinant diag
@@ -1619,61 +1619,4 @@ communityPGLMM.predicted.values <- function(x, show.plot = TRUE, ...) {
                 image(x=seq(1,nrow(Y)), y=seq(1,ncol(Y)), z=Y, ylab = "species", xlab = "sites", main = "Predicted values", col=c("black","white"))
 	}
 	return(predicted.values)
-}
-
-#' Wrapper to create data for PGLMM analysis
-#'
-#' Creates a 'long' \code{data.frame} for use in
-#' \code{\link{pglmm}}. Necessary because \code{\link{pglmm}} can be
-#' used on data structures other than \emph{pez} objects, and the
-#' creation of random effect structures requires direct
-#' manipulation/understanding of the regression-style format of the
-#' data.
-#' @param x \code{\link{comparative.comm}} object for
-#' \code{make.pglmm.data}, otherwise a \code{communityPGLMM} object
-#' @param abundance.weighted whether to produce an output that
-#' incorporates abundance information (default FALSE)
-#' @export
-#' @rdname pglmm
-#' @name pglmm
-make.pglmm.data <- function(x, abundance.weighted=FALSE){
-    #Argument handling
-    if(!inherits(x, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
-
-    #Wrapper for expanding
-    # - tricky because of dummy factor variables
-    expand <- function(data, env, n.spp, n.sites){
-        if(!is.null(data)){
-            mat <- sapply(data, function(x) model.matrix(~x-1))
-            if(any(sapply(mat, function(x) is.character(x)|is.factor(x))))
-                mat <- do.call(cbind, mat)
-            y <- 1
-            for(i in seq(ncol(data))){
-                if(is.character(data[,i]) | is.factor(data[,i])){
-                    colnames(mat)[y:(y+length(unique(data[,i]))-1)] <- paste(names(data)[i], unique(data[,i]), sep=".")
-                    y <- y+length(unique(data[,i]))
-                } else {
-                    colnames(mat)[y] <- names(data)[i]
-                    y <- y+1
-                }
-            }
-            if(env) mat <- apply(mat, 2, rep, each=n.spp) else mat <- apply(mat, 2, rep, n.sites)
-        } else mat <- matrix(nrow=prod(n.spp, n.sites),ncol=0)
-        return(mat)
-    }
-    
-    #Make matrices - note that dummy variables make this tricky
-    output <- matrix(t(x$comm), ncol=1)
-    env <- expand(x$env, TRUE, length(species(x)), length(sites(x)))
-    traits <- expand(x$data, FALSE, length(species(x)), length(sites(x)))
-    
-    #Format output and return
-    output <- cbind(output, env, traits)
-    rownames(output) <- NULL
-    if(abundance.weighted){
-        names(output)[1] <- "abundance"} else {
-            names(output)[1] <- "presence"
-            output[,1][output[,1] > 1] <- 1
-        }
-    return(output)
 }

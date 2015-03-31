@@ -4,23 +4,12 @@
 \alias{pez.shape}
 \title{Calculate (phylogenetic) shape: examine assemblage composition}
 \usage{
-pez.shape(data, metric = c("all-quick", "all", "psv", "psr", "mpd", "mntd",
-  "pd", "colless", "gamma", "taxon", "eigen.sum", "eed", "hed", "dist.fd"),
-  sqrt.phy = FALSE, traitgram = NULL, traitgram.p = 2, ext.dist = NULL,
-  which.eigen = 1, remove.errors = TRUE, ...)
+pez.shape(data, sqrt.phy = FALSE, traitgram = NULL, traitgram.p = 2,
+  ext.dist = NULL, which.eigen = 1, remove.errors = TRUE, quick = TRUE,
+  ...)
 }
 \arguments{
 \item{data}{\code{\link{comparative.comm}} object}
-
-\item{metric}{metrics to calculate. Default (\code{all-quick})
-calculates everything bar \code{fd.dist}, \code{all} calculates
-everything. Individually call-able metrics are: \code{psv},
-\code{psr}, \code{mpd}, \code{mntd}, \code{pd}, \code{colless},
-\code{gamma}, \code{taxon}, \code{eigen.sum}, \code{eed}, \code{hed}, &
-\code{dist.fd}. Note that \code{dist.fd} is a trait distance
-metric, but will be calculated on the phylogenetic distance matrix
-if not traits are supplied, and the external/square-rooted
-phylogenetic distance matrix if either is specified.}
 
 \item{sqrt.phy}{If TRUE (default is FALSE) your phylogenetic
 distance matrix will be square-rooted; specifying TRUE will force
@@ -53,6 +42,10 @@ metric (\code{eigen.sum})}
 run (default: TRUE). This will happen for some metrics if you have,
 for example, only one species in a community.}
 
+\item{quick}{Only calculate metrics which are quick to calculate
+(default: TRUE); setting to FALSE will also calculate
+\code{fd.dist}.}
+
 \item{...}{Additional arguments to passed to metric functions
 (unlikely you will want this!)}
 }
@@ -64,15 +57,12 @@ individual metric (which gives more details for each) by calling
 below).
 }
 \description{
-Calculates various metrics of phylogenetic biodiversity that are
-categorized as \emph{shape} metrics by Pearse \emph{et al.} (2014).
-}
-\details{
 As described in Pearse et al. (2014), a shape metric is one the
 examines the phylogenetic structure of species present in each
 assemblage, ignoring abundances entirely. For completeness, options
 are provided to calculate these metrics using species traits.
-
+}
+\details{
 Most of these metrics do not involve comparison with some kind of
 evolutionary-derived expectation for phylogenetic shape. Those that
 do, however, such as PSV or Colless' index, make no sense unless

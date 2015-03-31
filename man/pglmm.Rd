@@ -7,7 +7,6 @@
 \alias{communityPGLMM.gaussian}
 \alias{communityPGLMM.matrix.structure}
 \alias{communityPGLMM.predicted.values}
-\alias{make.pglmm.data}
 \alias{pglmm}
 \alias{plot.communityPGLMM}
 \alias{summary.communityPGLMM}
@@ -40,8 +39,6 @@ communityPGLMM.matrix.structure(formula, data = list(), family = "binomial",
   ...)
 
 communityPGLMM.predicted.values(x, show.plot = TRUE, ...)
-
-make.pglmm.data(x, abundance.weighted = FALSE)
 }
 \arguments{
 \item{formula}{a two-sided linear formula object describing the
@@ -51,7 +48,10 @@ fixed-effects of the model; for example, \code{Y ~ X}.}
 named in formula. The data frame should have long format with
 factors specifying species and sites. \code{communityPGLMM} will
 reorder rows of the data frame so that species are nested within
-sites.}
+sites. Please note that calling
+\code{\link[as.data.frame.comparative.comm]{as.data.frame}} will
+return your \code{comparative.comm} object into this format for
+you.}
 
 \item{family}{either \code{gaussian} for a Linear Mixed Model, or
 \code{binomial} for binary dependent data.}
@@ -117,9 +117,6 @@ binomial GLMM.}
 estimates of \code{s2} and \code{B} are plotted each iteration
 during optimization.}
 
-\item{x}{\code{\link{comparative.comm}} object for
-\code{make.pglmm.data}, otherwise a \code{communityPGLMM} object}
-
 \item{re.number}{which \code{random.effect} in \code{x} to be
 tested}
 
@@ -134,9 +131,6 @@ tested}
 in \code{\link{print.default}}}
 
 \item{show.plot}{if \code{TRUE} (default), display plot}
-
-\item{abundance.weighted}{whether to produce an output that
-incorporates abundance information (default FALSE)}
 }
 \value{
 an object of class \code{communityPGLMM}
@@ -173,8 +167,8 @@ an object of class \code{communityPGLMM}
 \description{
 This function performs Generalized Linear Mixed Models for binary
 and continuous phylogenetic data, estimating regression
-coefficients with approximate standard errors. It is a modeled
-after \code{\link[lme4:lmer]{lmer}} but is more general by allowing
+coefficients with approximate standard errors. It is modeled after
+\code{\link[lme4:lmer]{lmer}} but is more general by allowing
 correlation structure within random effects; these correlations can
 be phylogenetic among species, or any other correlation structure,
 such as geographical correlations among sites. It is, however, much
@@ -188,9 +182,9 @@ Helmus (2011). It can also analyze bipartite phylogenetic data,
 such as that analyzed in Rafferty and Ives (2011), by giving sites
 phylogenetic correlations.
 
-calculates the statistical significance of the random effects in
-the generalized linear mixed model from the marginal profile
-likelihood.
+\code{communityPGLMM.binary} calculates the statistical
+significance of the random effects in the generalized linear mixed
+model from the marginal profile likelihood.
 
 \code{communityPGLMM.binary.LRT} tests statistical significance of
 the phylogenetic random effect on species slopes using a likelihood
@@ -202,13 +196,6 @@ covariance matrix structure (V) when you specify random effects.
 \code{communityPGLMM.predicted.values} calculates the predicted
 values of Y; for the generalized linear mixed model (family =
 "binomial"), these values are in the logit-1 transformed space.
-
-Creates a 'long' \code{data.frame} for use in
-\code{\link{pglmm}}. Necessary because \code{\link{pglmm}} can be
-used on data structures other than \emph{pez} objects, and the
-creation of random effect structures requires direct
-manipulation/understanding of the regression-style format of the
-data.
 }
 \details{
 For linear mixed models (\code{family = 'gaussian'}), the
@@ -274,16 +261,13 @@ reasons).
 }
 \note{
 These function \emph{do not} use a
-\code{\link{comparative.comm}} object; the power of this method
-comes from deciding your own parameters parameters to be determined
-(the data for regression, the random effects, etc.) such that this
-is emphatically a feature, not a bug! Bear in mind that
-\code{species(c.c.obj)} will return your species (for argument
-\code{sp}), \code{comm(c.c.obj)} your community (site) data (for
-argument \code{site}), and \code{cophenetic(tree(c.c.obj))} your
-phylogenetic covariacne matrix. The examples below are extremely
-thorough and really help explain the method; please take a look at
-them.
+\code{\link{comparative.comm}} object, but you can use
+\code{\link[as.data.frame.comparative.comm]{as.data.frame}} to
+create a \code{data.frame} for use with these functions. The power
+of this method comes from deciding your own parameters parameters
+to be determined (the data for regression, the random effects,
+etc.), and it is our hope that this interface gives you more
+flexibility in model selection/fitting.
 }
 \examples{
 ## Structure of examples:

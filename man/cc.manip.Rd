@@ -2,6 +2,7 @@
 % Please edit documentation in R/comparative.comm.R, R/utility.R
 \name{cc.manip}
 \alias{[.comparative.comm}
+\alias{as.data.frame.comparative.comm}
 \alias{assemblage.phylogenies}
 \alias{cc.manip}
 \alias{comm}
@@ -59,6 +60,8 @@ phy(x) <- value
 
 assemblage.phylogenies(data)
 
+\method{as.data.frame}{comparative.comm}(x, abundance.weighted = FALSE)
+
 \method{within}{comparative.comm}(data, expr, ...)
 }
 \arguments{
@@ -77,9 +80,10 @@ creating object (default: TRUE)}
 
 \item{object}{A \code{\link{comparative.comm}} object}
 
-\item{value}{values to replace \code{object}}
-
 \item{data}{A \code{\link{comparative.comm}} object}
+
+\item{abundance.weighted}{whether to create to create a
+presence-absence dataset (default: FALSE)}
 
 \item{expr}{expression to be evaluated within the scope of
 \code{data}}
@@ -88,9 +92,6 @@ creating object (default: TRUE)}
 }
 \value{
 Names of the traits or environmental variables
-
-List of \code{\link[ape:phylo]{phylo}} objects, one for
-each assemblage in the \code{data}.
 }
 \description{
 As described in the vignette, we recommend using these wrappers to
@@ -98,7 +99,7 @@ manipulate species and site data, as it guarantees that everything
 will be kept consistent across all parts of the
 \code{\link{comparative.comm}} object. With them, you can drop
 species, sites, and work directly with each part of your data. You
-an also manipulate your \code{\link{comparative.comm}} object's
+can also manipulate your \code{\link{comparative.comm}} object's
 \code{phy}, \code{data}, \code{env}, and \code{comm} slots directly
 if you wish, but altering the object directly yourself runs the
 risk of things getting unsynchronised.

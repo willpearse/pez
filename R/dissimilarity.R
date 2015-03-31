@@ -85,7 +85,6 @@ pez.dissimilarity <- function(data, metric=c("all", "unifrac", "pcd", "phylosor"
 {   
   #Assertions and argument handling
   if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
-  metric <- match.arg(metric)
   if(permute < 0) stop("Can't have negative null permutations!")
 
   if(sum(c(!is.null(traitgram), sqrt.phy, !is.null(ext.dist))) > 1)

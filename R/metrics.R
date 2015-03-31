@@ -91,7 +91,6 @@
     names(output) <- rownames(x$comm)
     return(output)
 }
-#' Hed (Cadotte et al., 2010)
 #' @importFrom picante pd evol.distinct
 #' @references \code{eed,hed} (i.e., \emph{Eed, Hed}) Cadotte M.W.,
 #' Davies T.J., Regetz J., Kembel S.W., Cleland E. & Oakley
@@ -123,7 +122,6 @@
     return(output)
 }
 
-#' Eed (Cadotte et al., 2010)
 #' @rdname pez.metrics
 #' @name pez.metrics
 #' @export
@@ -134,7 +132,6 @@
     return(output)
 }
 
-#' PSV (Helmus et al., 2007)
 #' @references \code{PSV,PSR,PSE} Helmus M.R., Bland T.J., Williams
 #' C.K. & Ives A.R. (2007). Phylogenetic measures of
 #' biodiversity. American Naturalist, 169, E68-E83.
@@ -148,7 +145,6 @@
     psv(x$comm, x$phy)[,1]
 }
 
-#' PSR (Helmus et al., 2007)
 #' @importFrom picante psd
 #' @rdname pez.metrics
 #' @name pez.metrics
@@ -159,7 +155,6 @@
     psd(x$comm, x$phy)[,4]
 }
 
-#' MPD (Mean Phylogenetic Distance)
 #' @importFrom picante mpd
 #' @importFrom ape cophenetic.phylo
 #' @rdname pez.metrics
@@ -173,7 +168,6 @@
     mpd(x$comm, as.matrix(dist), abundance.weighted=abundance.weighted)
 }
 
-#' PD (Faith, 1992)
 #' @references \code{PD} Faith D.P. (1992). Conservation evaluation
 #' and phylogenetic diversity. Biological Conservation, 61, 1-10.
 #' @importFrom picante pd
@@ -191,7 +185,6 @@
     return(cbind(pd, pd.ivs))
 }
 
-#' MNTD (Mean Nearest Taxonomic Distance)
 #' @importFrom picante mntd
 #' @importFrom ape cophenetic.phylo
 #' @rdname pez.metrics
@@ -205,7 +198,6 @@
     return(mntd(x$comm, as.matrix(dist), abundance.weighted=abundance.weighted))
 }
 
-#' Gamma (Pybus & Harvey, 2000)
 #' @references \code{gamma} Pybus O.G. & Harvey P.H. (2000) Testing
 #' macro-evolutionary models using incomplete molecular
 #' phylogenies. _Proceedings of the Royal Society of London. Series
@@ -235,7 +227,6 @@
     return(apply(x$comm, 1, ..gamma, x$phy, nams))
 }
 
-#' Taxonomic distinctiveness (Clarke & Warwick, 1998)
 #' @importFrom ape cophenetic.phylo
 #' @importFrom vegan taxondive
 #' @references \code{taxon} Clarke K.R. & Warwick R.M. (1998). A
@@ -256,7 +247,6 @@
     return(output)
 }
 
-#' Sum of Phylo-Eigvenectors (Diniz-Filho et al., 2011)
 #' @references \code{eigen.sum} Diniz-Filho J.A.F., Cianciaruso M.V.,
 #' Rangel T.F. & Bini L.M. (2011). Eigenvector estimation of
 #' phylogenetic and functional diversity. Functional Ecology, 25,
@@ -285,7 +275,6 @@
     return(apply(x$comm, 1, ..eigen.sum, eigen, which.eigen))
 }
 
-#' Functional Diversity
 #' @importFrom FD dbFD
 #' @importFrom ape cophenetic.phylo
 #' @rdname pez.metrics
@@ -328,7 +317,6 @@
     return(x)
 }
 
-#' Phylogenetic entropy (Allen et al., 2009)
 #' @references \code{entropy} Allen B., Kon M. & Bar-Yam Y. (2009). A
 #' New Phylogenetic Diversity Measure Generalizing the Shannon Index
 #' and Its Application to Phyllostomid Bats. The American Naturalist,
@@ -436,7 +424,6 @@
   return(hp.sites)
 }
 
-#' XXX
 #' @importFrom ape extract.clade
 #' @importFrom caper clade.matrix
 #' @rdname pez.metrics
@@ -477,8 +464,7 @@
     return(aed)
 }
 
-#' Haed (Cadotte et al., 2010)
-#' @references \code{pae,iac,haed,eaed} Cadotte M.W., Davies T.J.,
+#' @references \code{pae,aed,iac,haed,eaed} Cadotte M.W., Davies T.J.,
 #' Regetz J., Kembel S.W., Cleland E. & Oakley
 #' T.H. (2010). Phylogenetic diversity metrics for ecological
 #' communities: integrating species richness, abundance and
@@ -512,7 +498,6 @@
     return(output)
 }
 
-#' Simpson's phylogenetic diversity
 #' @importFrom ape cophenetic.phylo
 #' @rdname pez.metrics
 #' @name pez.metrics
@@ -524,7 +509,6 @@
     return(out) 
 }
 
-#' IAC (Cadotte et al., 2010)
 #' @rdname pez.metrics
 #' @name pez.metrics
 #' @export
@@ -567,7 +551,6 @@
     return(rowSums(abs(expected - x$comm), na.rm=na.rm) / nnodes)
 }
 
-#' PAE (Cadotte et al., 2010)
 #' @rdname pez.metrics
 #' @name pez.metrics
 #' @export
@@ -629,7 +612,6 @@
     pse(x$comm, x$phy)[,1]
 }
 
-#' Rao's Quadratic Entropy (XXX)
 #' @references \code{rao} Webb C.O. (2000). Exploring the phylogenetic
 #' structure of ecological communities: An example for rain forest
 #' trees. American Naturalist, 156, 145-155.
@@ -643,7 +625,6 @@
     raoD(x$comm, x$phy)$Dkk
 }
 
-#' Pagel's Lambda (Pagel, 1999)
 #' @references \code{lambda,delta,kappa} Mark Pagel (1999) Inferring
 #' the historical patterns of biological evolution. Nature 6756(401):
 #' 877--884.
@@ -668,7 +649,6 @@
     return(output)
 }
 
-#' Pagel's Delta (Pagel, 1999)
 #' @importFrom caper pgls comparative.data
 #' @rdname pez.metrics
 #' @name pez.metrics
@@ -690,7 +670,6 @@
     return(output)
 }
 
-#' Pagel's Kappa (Pagel, 1999)
 #' @importFrom caper pgls comparative.data
 #' @rdname pez.metrics
 #' @name pez.metrics
@@ -712,7 +691,6 @@
     return(output)
 }
 
-#' Eaed (Cadotte et al., 2010)
 #' @rdname pez.metrics
 #' @name pez.metrics
 #' @export
@@ -722,7 +700,6 @@
     return(.haed(x)/log(rowSums(x$comm)))
 }
 
-#' UniFrac (Lozupone et al., 2005)
 #' @references \code{unifrac} Lozupone C.A. & Knight
 #' R. (2005). UniFrac: a new phylogenetic method for comparing
 #' microbial communities. Applied and Environmental Microbiology, 71,
@@ -737,7 +714,6 @@
     return(unifrac(x$comm, x$phy))
 }
 
-#' PCD (Ives & Helmus, 2010)
 #' @references \code{pcd} Ives A.R. & Helmus M.R. (2010). Phylogenetic
 #' metrics of community similarity. The American Naturalist, 176,
 #' E128-E142.
@@ -751,7 +727,6 @@
     return(pcd(x$comm, x$phy, reps=permute))
 }
 
-#' ComDist (Webb et al., 2008)
 #' @references \code{comdist} C.O. Webb, D.D. Ackerly, and
 #' S.W. Kembel. 2008. Phylocom: software for the analysis of
 #' phylogenetic community structure and trait
@@ -768,7 +743,6 @@
     return(comdist(x$comm, as.matrix(dist), abundance.weighted=abundance.weighted))
 }
 
-#' PhyloSor (Bryant et al., 2008)
 #' @references \code{phylosor} Bryant J.A., Lamanna C., Morlon H.,
 #' Kerkhoff A.J., Enquist B.J. & Green J.L. (2008). Microbes on
 #' mountainsides: Contrasting elevational patterns of bacterial and
@@ -789,7 +763,6 @@
 }
 
 
-#' D (Fritz & Purvis, 2010)
 #' @references \code{d} Fritz S.A. & Purvis A. (2010). Selectivity in
 #' Mammalian Extinction Risk and Threat Types: a New Measure of
 #' Phylogenetic Signal Strength in Binary Traits. Conservation
@@ -868,7 +841,6 @@
   return(vals)
 }
 
-#' SESmpd (Webb, 2000)
 #' @references \code{sesmpd,sesmntd} Webb C.O. (2000). Exploring the
 #' phylogenetic structure of ecological communities: An example for
 #' rain forest trees. American Naturalist, 156, 145-155.
@@ -885,7 +857,6 @@
     return(ses.mpd(x$comm, dis=as.matrix(dist), null.model=null.model, abundance.weighted=abundance.weighted, runs=permute))
 }
 
-#' SESmntd (Webb, 2000)
 #' @importFrom picante ses.mntd
 #' @rdname pez.metrics
 #' @name pez.metrics
@@ -899,21 +870,21 @@
     return(ses.mntd(x$comm, dis=as.matrix(dist), null.model=null.model, abundance.weighted=abundance.weighted, runs=permute))
 }
 
-#' INMD (XXX)
-#' @references \code{innd} Ness J.H., Rollinson E.J. & Whitney
+#' @references \code{innd,mipd} Ness J.H., Rollinson E.J. & Whitney
 #' K.D. (2011). Phylogenetic distance can predict susceptibility to
 #' attack by natural enemies. Oikos, 120, 1327-1334.
 #' @importFrom picante ses.mpd
 #' @rdname pez.metrics
 #' @name pez.metrics
 #' @export
-.inmd <- function(x, dist=NULL, null.model="taxa.labels", abundance.weighted=FALSE, permute=1000, ...){
+.mipd <- function(x, dist=NULL, null.model="taxa.labels", abundance.weighted=FALSE, permute=1000, ...){
     if(!inherits(x, "comparative.comm"))
         stop("'x' must be a comparative.comm object")
+    if(is.null(dist))
+        dist <- cophenetic(x$phy)
     return(ses.mpd(x$comm, dis=1/as.matrix(dist), null.model=null.model, abundance.weighted=abundance.weighted, runs=permute))
 }
 
-#' INND (XXX)
 #' @importFrom picante ses.mntd
 #' @rdname pez.metrics
 #' @name pez.metrics
@@ -921,5 +892,7 @@
 .innd <- function(x, dist=NULL, null.model="taxa.labels", abundance.weighted=FALSE, permute=1000, ...){
     if(!inherits(x, "comparative.comm"))
         stop("'x' must be a comparative.comm object")
+    if(is.null(dist))
+        dist <- cophenetic(x$phy)
     return(ses.mntd(x$comm, dis=1/as.matrix(dist), null.model=null.model, abundance.weighted=abundance.weighted, runs=permute))
 }

@@ -63,15 +63,11 @@ phylogeny (default NA, i.e., none)}
 }
 \value{
 \code{\link[ape:phylo]{phylo}} object with random
-tip.labels; trait values if using \code{sim.br.tr.tree}.
-
-\code{\link[ape:phylo]{phylo}} object
+tip.labels, and trait values if using \code{sim.br.tr.tree}.
 }
 \description{
 Simulate phylogenies under pure birth/death or as a function of
 trait evolution
-
-Convert a simulated edge matrix to an ape:phylo object
 }
 \details{
 \code{sim.bd.tree} simulates a pure birth/death speciation
@@ -99,8 +95,9 @@ ext.tr*min.tr.dist}, where \eqn{$i$}{i} denotes each species.
 which may be of use to you. Check those functions' code for
 examples of use.
 
-These functions are closely related to \code{\link{sim.meta}} that
-extend this to simulate meta-community structure at the same time.
+These functions are closely related to \code{\link{sim.meta}}; the
+latter are extensions that simulate meta-community structure at the
+same time.
 }
 \examples{
 tree <- sim.bd.phy(0.1, 0, 10)
