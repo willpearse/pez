@@ -19,11 +19,7 @@
 \maketitle
 \tableofcontents
 <<include=FALSE>>=
-require(plotrix)
 require(pez)
-require(ape)
-require(picante)
-require(methods)
 options(width=40)
 @ 
 \section{Preamble}
@@ -58,7 +54,7 @@ the kinds of data you are working with. Indeed, you will see such
 warnings in this vignette. These are not \emph{bugs}; one simply
 cannot calculate some metrics without fully resolved phylogenies, and
 some models do not make sense without certain kinds of data.
-\clearpage
+%\clearpage
 \section{Data formats in \emph{pez}}
 \emph{pez} functions work with \texttt{comparative.comm} objects
 (\emph{comparative community ecology}). These are designed to help
@@ -130,11 +126,11 @@ wrappers, as opposed to interacting directly with the slots in your
 \texttt{comparative.comm} object, you ensure your species and sites
 remain consistent across your data, and make your code a little easier
 to read. Internally, your trait data are stored in the \texttt{data}
-slot; this means that \texttt{comparatve.comm} is compatible with the
+slot; this means that \texttt{comparative.comm} is compatible with the
 \texttt{caper} package. Anything you can do in that (\emph{e.g.}, PGLS
 regression, comparative modelling and simulation) can be done using
 you data in \emph{pez} without modification.
-\clearpage
+%\clearpage
 \section{Community phylogenetic metrics}
 \emph{pez} splits community phylogenetic metrics into four functions
 according to the scheme outlined by \citet{Pearse2014review}:
@@ -197,7 +193,7 @@ plot(hclust(dist$phylosor))
 
 It is possible to calculate any arbitrary combination of metrics using
 \texttt{generic.metrics}, and compare those metrics with values
-derrived from null distributions (\texttt{generic.null}). You can get
+derived from null distributions (\texttt{generic.null}). You can get
 a list of the metrics you can calculate by looking at
 \texttt{?pez.metrics}; there are many, but they all follow the same
 naming (\texttt{.name}) and argument conventions. Note that you can
@@ -209,7 +205,7 @@ metrics <- generic.metrics(data, c(.mpd,.pse,.ses.mpd))
 #null.comparisons <- generic.null(data, c(.mpd,.pse))
 metrics <- generic.metrics(data, c(.mpd,.mntd), dist=as.dist(cophenetic(phy(data))))
 @
-\clearpage
+%\clearpage
 \section{Eco-evolutionary regression}
 Calculating metric values is useful, but often we want to make
 statistical models. \emph{pez} features a set of regression techniques,
@@ -303,7 +299,8 @@ independent, either ecologically or evolutionarily, which could lead
 to bias. Examine the \texttt{\$eco} and \texttt{\$evo} slots in your
 output to see what it plotted where; you can plot these names by
 provide these two values and \texttt{traits(data)} to the function
-\texttt{text}.
+\texttt{text}. In our example here the results are not particularly
+interesting as we have only two traits! 
 
 It is worth pausing to consider the interpretation of various
 outcomes. A positive relationship would indicate a combination of
@@ -319,7 +316,10 @@ would be difficult to interpret because it would indicate a
 combination of niche conservatism (environmental filtering on
 conserved functional traits) and trait patterns of dissimilar labile
 traits within communities that could be generated any number of ways
-or result from stochastic processes.
+or result from stochastic processes. A further complication, of
+course, is that different measures of phylogenetic signal mean very
+different things; ensure that you understand how to interpret the
+metric you are using!
 
 An important caveat is that multiple processes may contribute to
 observed patterns making interpretation difficult
@@ -344,7 +344,7 @@ acted as an environmental filter causing fire tolerant species to
 assemble in fire-dominated habitats and fire-intolerant species to
 assemble in habitats lacking fire.
 
-\clearpage
+%\clearpage
 \section{Functional phylogenetic distances and traitgrams}
 
 Taxa differ both functionally and phylogenetically, a fact that is
@@ -393,7 +393,8 @@ ses.mfpd.data <- .ses.mpd(data, dist=fpd.data)
 head(ses.mfpd.data)[,c("ntaxa", "mpd.obs", "mpd.obs.p")]
 @
 
-\section{Phylogenetic Generalised Linear Models (PGLMMs)}
+%\clearpage
+\section{Phylogenetic Generalised Linear Mixed Models}
 Phylogenetic Generalised Linear Models (PGLMMs) are powerful tools
 that permit detailed tests of what structures ecological
 communities. They were originally intended to examine phylogenetic
@@ -462,7 +463,8 @@ precise!) on that data. This long format is important because PGLMM is
 sufficiently flexible that it can be fitted to data that don't fit
 into the \texttt{comparative.comm} format. An example is
 interaction-network data, of which there is an example in the help
-file.
+file. Calling \texttt{as.data.frame} on a \texttt{comparative.comm}
+object will convert your data into this long-format structure for you.
 
 <<pglmmModel, tidy=TRUE, size="small">>=
 # Transform data into 'long' format
@@ -516,6 +518,7 @@ check a more recent (but basic) overview
 \citep{Pearse2014review}. Powerful methods mean you get to make
 powerful choices about what you analyse: this is a good thing!
 
+%\clearpage
 \section{Simulation}
 
 A good simulation is one that does exactly what you want it to do, and
@@ -541,7 +544,7 @@ communities are excellent for use as null models to compare with your
 own data, and as such they take a \texttt{comparative.comm} object as
 an argument to generate communities that match your own data.
 
-\clearpage
+%\clearpage
 \begin{thebibliography}{6}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}

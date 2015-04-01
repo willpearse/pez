@@ -128,7 +128,8 @@ tree$edge.length <- rep(1, nrow(tree$edge))
 tree$root <- 1
 kk <- scape(tree, scape.size=100, g.center=100, g.range=1, g.repulse=1, wd.all=150,
     signal.center=TRUE, signal.range=FALSE, same.range=FALSE, repulse=FALSE,center.scale = 1,
-    range.scale = 1, repulse.scale = 1, site.stoch.scale = 0, sd.center=3, sd.range=1,rho=NULL, th=20)
+    range.scale = 1, repulse.scale = 1, site.stoch.scale = 0, sd.center=3, sd.range=1,
+    rho=NULL, th=20)
 
 #Make some plots
 par(mfrow=c(1,Ntip(tree)),mar=c(.1,.1,.1,.1))

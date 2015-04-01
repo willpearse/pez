@@ -32,12 +32,12 @@ with \code{\link[caper:comparative.data]{comparative.data}}.}
 creating object (default: TRUE)}
 
 \item{force.root}{if \code{phy} is unrooted, a \code{root.edge} of
-value force.root will be added (default: -1, which means this will
-never happen). Rarely needed, rarely advisable.}
+force.root will be added (default: -1, which means this will never
+happen). Rarely needed, rarely advisable.}
 
 \item{x}{\code{comparative.comm} object to be printed}
 
-\item{...}{not currently used}
+\item{...}{ignored}
 }
 \value{
 comparative.comm object

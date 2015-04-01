@@ -30,6 +30,8 @@
 \alias{.psv}
 \alias{.rao}
 \alias{.scheiner}
+\alias{.ses.innd}
+\alias{.ses.mipd}
 \alias{.ses.mntd}
 \alias{.ses.mpd}
 \alias{.simpson.phylogenetic}
@@ -77,7 +79,7 @@
 
 .pae(x, na.rm = TRUE, ...)
 
-.scheiner(x, q = 0, abundance.weighted = FALSE, ...)
+.scheiner(x, q = 1e-04, abundance.weighted = FALSE, ...)
 
 .pse(x, ...)
 
@@ -107,11 +109,15 @@
 .ses.mntd(x, dist = NULL, null.model = "taxa.labels",
   abundance.weighted = FALSE, permute = 1000, ...)
 
-.mipd(x, dist = NULL, null.model = "taxa.labels",
+.ses.mipd(x, dist = NULL, null.model = "taxa.labels",
   abundance.weighted = FALSE, permute = 1000, ...)
 
-.innd(x, dist = NULL, null.model = "taxa.labels",
+.ses.innd(x, dist = NULL, null.model = "taxa.labels",
   abundance.weighted = FALSE, permute = 1000, ...)
+
+.mipd(x, dist = NULL, abundance.weighted = FALSE, ...)
+
+.innd(x, dist = NULL, abundance.weighted = FALSE, ...)
 }
 \arguments{
 \item{x}{\code{\link{comparative.comm}} object}
@@ -143,7 +149,7 @@ metric}
 \item{method}{whether to calculate using phylogeny ("phy";
 default) or trait data ("traits")}
 
-\item{q}{the q parameter for the \code{\link{traitgram}} method}
+\item{q}{the q parameter for \code{.scheiner}; default 0.0001}
 
 \item{permute}{number of permutations of null randomisations
 (mostly only applies to \code{\link[pez:pez.dispersion]{dispersion
@@ -246,6 +252,10 @@ Regetz J., Kembel S.W., Cleland E. & Oakley
 T.H. (2010). Phylogenetic diversity metrics for ecological
 communities: integrating species richness, abundance and
 evolutionary history. Ecology Letters, 13, 96-105.
+
+\code{scheiner} Scheiner, S.M. (20120). A metric of
+biodiversity that integrates abundance, phylogeny, and function.
+Oikos, 121, 1191-1202.
 
 \code{rao} Webb C.O. (2000). Exploring the phylogenetic
 structure of ecological communities: An example for rain forest

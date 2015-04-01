@@ -98,9 +98,13 @@
 #' @examples
 #' # Simulations
 #' tree <- rcoal(64)
-#' scape1 <- eco.scape(tree, scape.size=25, g.center=1, signal.center=FALSE, K=100, extinction=TRUE)
-#' scape2 <- eco.scape(tree, scape.size=16, g.center=0.2, signal.center=TRUE, K=100, extinction=FALSE)
-#' scape3 <- eco.scape(tree, scape.size=16, g.center=20, signal.center=TRUE, K=100, extinction=TRUE)
+#'
+#' scape1 <- eco.scape(tree, scape.size=25, g.center=1,
+#'     signal.center=FALSE, K=100, extinction=TRUE)
+#' scape2 <- eco.scape(tree, scape.size=16, g.center=0.2,
+#'     signal.center=TRUE, K=100, extinction=FALSE)
+#' scape3 <- eco.scape(tree, scape.size=16, g.center=20,
+#'     signal.center=TRUE, K=100, extinction=TRUE)
 #' 
 #' # Plotting distributions and landscape patterns
 #' original_landscape <- scape1
@@ -110,13 +114,21 @@
 #' site.size <- nrow(PA_mat)
 #' species <- ncol(PA_mat)
 #' mx <- original_landscape$gradient
-#' env <- original_landscape$environ
+#' env <- original_landscape$environ$env.gradient
 #' par(mfrow=c(2,2), oma=c(0,0,2,0))
 #' heatcol <- (colorRampPalette(c("yellow","red")))
-#' image(matrix(env,sqrt(site.size),sqrt(site.size),byrow=TRUE),col=heatcol(max(env)),xaxt="n",yaxt="n",main="Env gradient")
-#' image(matrix(rowSums(PA_mat),sqrt(site.size),sqrt(site.size),byrow=TRUE),col=heatcol(16),xaxt="n",yaxt="n",main="Species Richness")
-#' hist(colSums(PA_mat),ylab="Number of species",xlab="Number of sites",main="Species Area Relationship",col="lightgrey")
-#' hist(colSums(abund_mat),ylab="Number of species",xlab="Number of individuals",main="Species Abundance Relationship",col="lightgrey")
+#' 
+#' image(matrix(env,sqrt(site.size),sqrt(site.size),byrow=TRUE),
+#'     col=heatcol(max(env)),xaxt="n",yaxt="n",main="Env gradient")
+#' 
+#' image(matrix(rowSums(PA_mat),sqrt(site.size),sqrt(site.size),byrow=TRUE),
+#'     col=heatcol(16),xaxt="n",yaxt="n",main="Species Richness")
+#' 
+#' hist(colSums(PA_mat),ylab="Number of species",xlab="Number of sites",
+#'     main="Species Area Relationship",col="lightgrey")
+#' 
+#' hist(colSums(abund_mat),ylab="Number of species",xlab="Number of individuals",
+#'     main="Species Abundance Relationship",col="lightgrey")
 #' mtext("Env random, phy.signal=0.2, 32 species", outer=TRUE, side=3, cex=1.25)
 #' @importFrom ape vcv.phylo is.ultrametric
 #' @importFrom vegan decostand
@@ -161,8 +173,9 @@ eco.scape <- function(tree, scape.size=10, g.center=1, wd.all=0.2*(scape.size+1)
         V.a<-vcv(corBlomberg(g, tree), corr=T)   #adjust phylogenetic signal for niche optima
         iD <- t(chol(V.a))
     } else {
-        V.a<-V
+        V.a <- V
         iD <- diag(nspp)
+        dimnames(iD) <- dimnames(V.a)
     }
     iD.w <- diag(nspp)
 
@@ -253,5 +266,5 @@ eco.scape <- function(tree, scape.size=10, g.center=1, wd.all=0.2*(scape.size+1)
     env <- data.frame(env.gradient=env[index])
     rownames(env) <- rownames(Yab)
     cc <- comparative.comm(tree, Yab, env=env)
-    return(list(cc=cc, gradient1 = mx, gradient2 = mx2, X.joint = X., X1 = X1, X2 = X2, nichewd = wd.all, K = K, environ = env, sppXs = spp.Xs, V.phylo = Vinit, V.phylo.rho = V, V.center = V.a, bsp1 = bspp1, bspp2 = bspp2))
+    return(list(cc=cc, Y=Y, Yab=Yab, gradient1 = mx, gradient2 = mx2, X.joint = X., X1 = X1, X2 = X2, nichewd = wd.all, K = K, environ = env, sppXs = spp.Xs, V.phylo = Vinit, V.phylo.rho = V, V.center = V.a, bsp1 = bspp1, bspp2 = bspp2))
 }

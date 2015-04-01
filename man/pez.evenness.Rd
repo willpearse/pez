@@ -6,7 +6,7 @@
 and abundance}
 \usage{
 pez.evenness(data, sqrt.phy = FALSE, traitgram = NULL, traitgram.p = 2,
-  ext.dist = NULL, quick = TRUE, ...)
+  ext.dist = NULL, quick = TRUE, q = 1e-04)
 }
 \arguments{
 \item{data}{\code{\link{comparative.comm}} object}
@@ -40,8 +40,7 @@ distance matrices in different metric calculations.}
 (\eqn{$\lambda$}{lambda}, \eqn{$\delta$}{delta},
 \eqn{$\kappa$}{kappa}).}
 
-\item{...}{Additional arguments to passed to metric functions
-(unlikely you will want this!)}
+\item{q}{value for \emph{q} in \code{scheiner} (default 0.0001)}
 }
 \value{
 \code{phy.structure} list object of metric values. Use
@@ -93,7 +92,6 @@ not bugs.
 data(laja)
 data <- comparative.comm(invert.tree, river.sites, invert.traits)
 pez.evenness(data)
-pez.evenness(data, "rao")
 }
 \author{
 M.R. Helmus, Will Pearse
@@ -108,19 +106,45 @@ Evolutionary Biology. Springer Berlin Heidelberg, pp. 451-464.
 Ives A.R. (2007). Phylogenetic measures of biodiversity. American
 Naturalist, 169, E68-E83.
 
-Pearse W.D., Purvis A., Cavender-Bares J. & Helmus M.R. (2014). Metrics and Models of Community Phylogenetics. In: Modern Phylogenetic Comparative Methods and Their Application in Evolutionary Biology. Springer Berlin Heidelberg, pp. 451-464.
+Pearse W.D., Purvis A., Cavender-Bares J. & Helmus
+M.R. (2014). Metrics and Models of Community Phylogenetics. In:
+Modern Phylogenetic Comparative Methods and Their Application in
+Evolutionary Biology. Springer Berlin Heidelberg, pp. 451-464.
 
-\code{pse} Helmus M.R., Bland T.J., Williams C.K. & Ives A.R. (2007). Phylogenetic measures of biodiversity. American Naturalist, 169, E68-E83.
+\code{pse} Helmus M.R., Bland T.J., Williams C.K. &
+Ives A.R. (2007). Phylogenetic measures of biodiversity. American
+Naturalist, 169, E68-E83.
 
-\code{rao} Webb C.O. (2000). Exploring the phylogenetic structure of ecological communities: An example for rain forest trees. American Naturalist, 156, 145-155.
+\code{rao} Webb C.O. (2000). Exploring the phylogenetic
+structure of ecological communities: An example for rain forest
+trees. American Naturalist, 156, 145-155.
 
-\code{taxon} Clarke K.R. & Warwick R.M. (1998). A taxonomic distinctness index and its statistical properties. J. Appl. Ecol., 35, 523-531.
+\code{taxon} Clarke K.R. & Warwick R.M. (1998). A
+taxonomic distinctness index and its statistical
+properties. J. Appl. Ecol., 35, 523-531.
 
-\code{entropy} Allen B., Kon M. & Bar-Yam Y. (2009). A New Phylogenetic Diversity Measure Generalizing the Shannon Index and Its Application to Phyllostomid Bats. The American Naturalist, 174, 236-243.
+\code{entropy} Allen B., Kon M. & Bar-Yam Y. (2009). A
+New Phylogenetic Diversity Measure Generalizing the Shannon Index
+and Its Application to Phyllostomid Bats. The American Naturalist,
+174, 236-243.
 
-\code{pae,iac,haed,eaed} Cadotte M.W., Davies T.J., Regetz J., Kembel S.W., Cleland E. & Oakley T.H. (2010). Phylogenetic diversity metrics for ecological communities: integrating species richness, abundance and evolutionary history. Ecology Letters, 13, 96-105.
+\code{pae,iac,haed,eaed} Cadotte M.W., Davies T.J.,
+Regetz J., Kembel S.W., Cleland E. & Oakley
+T.H. (2010). Phylogenetic diversity metrics for ecological
+communities: integrating species richness, abundance and
+evolutionary history. Ecology Letters, 13, 96-105.
 
-\code{lambda,delta,kappa} Mark Pagel (1999) Inferring the historical patterns of biological evolution. Nature 6756(401): 877--884.
+\code{lambda,delta,kappa} Mark Pagel (1999) Inferring
+the historical patterns of biological evolution. Nature 6756(401):
+877--884.
+
+\code{innd,mipd} Ness J.H., Rollinson E.J. & Whitney
+K.D. (2011). Phylogenetic distance can predict susceptibility to
+attack by natural enemies. Oikos, 120, 1327-1334.
+
+\code{scheiner} Scheiner, S.M. (20120). A metric of
+biodiversity that integrates abundance, phylogeny, and function.
+Oikos, 121, 1191-1202.
 }
 \seealso{
 pez.shape pez.dispersion pez.dissimilarity

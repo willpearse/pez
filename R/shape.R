@@ -40,17 +40,13 @@
 #' distance matrix is used.
 #' @param traitgram.p A value for `p' to be used in conjunction with
 #' \code{traitgram} when calling \code{funct.phylo.dist}.
-#' @param remove.errors suppress errors about metrics that failed to
-#' run (default: TRUE). This will happen for some metrics if you have,
-#' for example, only one species in a community.
 #' @param ext.dist Supply an external species-level distance matrix
 #' for use in calculations. See `details' for comments on the use of
 #' distance matrices in different metric calculations.
 #' @param quick Only calculate metrics which are quick to calculate
 #' (default: TRUE); setting to FALSE will also calculate
 #' \code{fd.dist}.
-#' @param ... Additional arguments to passed to metric functions
-#' (unlikely you will want this!)
+#' @param q value for \emph{q} in \code{scheiner} (default 0.0001)
 #' @note As mentioned above, \code{dist.fd} is calculated using a
 #' phylogenetic distance matrix if no trait data are available, or if
 #' you specify \code{sqrt.phy}. It is not calculated by default
@@ -70,29 +66,53 @@
 #' \code{print} on the output (i.e., type \code{output} in the example
 #' below).
 #' @author M.R. Helmus, Will Pearse
-#' @seealso \code{\link{pez.evenness}} \code{\link{pez.dispersion}} \code{\link{pez.dissimilarity}}
-#' @references Pearse W.D., Purvis A., Cavender-Bares J. & Helmus M.R. (2014). Metrics and Models of Community Phylogenetics. In: Modern Phylogenetic Comparative Methods and Their Application in Evolutionary Biology. Springer Berlin Heidelberg, pp. 451-464.
-#' @references \code{PSV,PSR} Helmus M.R., Bland T.J., Williams C.K. & Ives A.R. (2007). Phylogenetic measures of biodiversity. American Naturalist, 169, E68-E83.
-#' @references \code{PD} Faith D.P. (1992). Conservation evaluation and phylogenetic diversity. Biological Conservation, 61, 1-10.
-#' @references \code{colless} Colless D.H. (1982). Review of phylogenetics: the theory and practice of phylogenetic systematics. Systematic Zoology, 31, 100-104.
-#' @references \code{gamma} Pybus O.G. & Harvey P.H. (2000) Testing macro-evolutionary models using incomplete molecular phylogenies. _Proceedings of the Royal Society of London. Series B. Biological Sciences 267: 2267--2272.
-#' @references \code{taxon} Clarke K.R. & Warwick R.M. (1998). A taxonomic distinctness index and its statistical properties. J. Appl. Ecol., 35, 523-531.
-#' @references \code{eigen.sum} Diniz-Filho J.A.F., Cianciaruso M.V., Rangel T.F. & Bini L.M. (2011). Eigenvector estimation of phylogenetic and functional diversity. Functional Ecology, 25, 735-744.
-#' @references \code{eed,hed} (i.e., \emph{Eed, Hed}) Cadotte M.W., Davies T.J., Regetz J., Kembel S.W., Cleland E. & Oakley T.H. (2010). Phylogenetic diversity metrics for ecological communities: integrating species richness, abundance and evolutionary history. Ecology Letters, 13, 96-105.
+#' @seealso \code{\link{pez.evenness}} \code{\link{pez.dispersion}}
+#' \code{\link{pez.dissimilarity}}
+#' @references Pearse W.D., Purvis A., Cavender-Bares J. & Helmus
+#' M.R. (2014). Metrics and Models of Community Phylogenetics. In:
+#' Modern Phylogenetic Comparative Methods and Their Application in
+#' Evolutionary Biology. Springer Berlin Heidelberg, pp. 451-464.
+#' @references \code{PSV,PSR} Helmus M.R., Bland T.J., Williams C.K. &
+#' Ives A.R. (2007). Phylogenetic measures of biodiversity. American
+#' Naturalist, 169, E68-E83.
+#' @references \code{PD} Faith D.P. (1992). Conservation evaluation
+#' and phylogenetic diversity. Biological Conservation, 61, 1-10.
+#' @references \code{colless} Colless D.H. (1982). Review of
+#' phylogenetics: the theory and practice of phylogenetic
+#' systematics. Systematic Zoology, 31, 100-104.
+#' @references \code{gamma} Pybus O.G. & Harvey P.H. (2000) Testing
+#' macro-evolutionary models using incomplete molecular
+#' phylogenies. _Proceedings of the Royal Society of London. Series
+#' B. Biological Sciences 267: 2267--2272.
+#' @references \code{taxon} Clarke K.R. & Warwick R.M. (1998). A
+#' taxonomic distinctness index and its statistical
+#' properties. J. Appl. Ecol., 35, 523-531.
+#' @references \code{eigen.sum} Diniz-Filho J.A.F., Cianciaruso M.V.,
+#' Rangel T.F. & Bini L.M. (2011). Eigenvector estimation of
+#' phylogenetic and functional diversity. Functional Ecology, 25,
+#' 735-744.
+#' @references \code{eed,hed} (i.e., \emph{Eed, Hed}) Cadotte M.W.,
+#' Davies T.J., Regetz J., Kembel S.W., Cleland E. & Oakley
+#' T.H. (2010). Phylogenetic diversity metrics for ecological
+#' communities: integrating species richness, abundance and
+#' evolutionary history. Ecology Letters, 13, 96-105.
+#' @references \code{innd,mipd} Ness J.H., Rollinson E.J. & Whitney
+#' K.D. (2011). Phylogenetic distance can predict susceptibility to
+#' attack by natural enemies. Oikos, 120, 1327-1334.
+#' @references \code{scheiner} Scheiner, S.M. (20120). A metric of
+#' biodiversity that integrates abundance, phylogeny, and function.
+#' Oikos, 121, 1191-1202.
 #' @examples
 #' data(laja)
 #' data <- comparative.comm(invert.tree, river.sites, invert.traits)
 #' (output<-pez.shape(data))
-#' str(output)
-#' pez.shape(data, "colless")
-#' pez.shape(data, "eigen.sum", which.eigen=2)
 #' @importFrom picante psd mpd pd mntd
 #' @importFrom vegan taxondive
 #' @importFrom apTreeshape as.treeshape as.treeshape.phylo colless tipsubtree
 #' @importFrom ape gammaStat cophenetic.phylo drop.tip is.ultrametric as.phylo is.binary.tree
 #' @importFrom FD dbFD
 #' @export
-pez.shape <- function(data, sqrt.phy=FALSE, traitgram=NULL, traitgram.p=2, ext.dist=NULL, which.eigen=1, remove.errors = TRUE, quick=TRUE,  ...)
+pez.shape <- function(data, sqrt.phy=FALSE, traitgram=NULL, traitgram.p=2, ext.dist=NULL, which.eigen=1, quick=TRUE, q=0.0001)
 {
   #Assertions and argument handling
   if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
@@ -102,7 +122,7 @@ pez.shape <- function(data, sqrt.phy=FALSE, traitgram=NULL, traitgram.p=2, ext.d
       if(length(traitgram) > 1){
           output <- vector("list", length(traitgram))
           for(i in seq_along(output))
-              output[[i]] <- cbind(Recall(data, sqrt.phy, traitgram=traitgram[i], which.eigen=which.eigen, remove.errors=remove.errors, traitgram.p=traitgram.p, ...), traitgram[i], sites(data))
+              output[[i]] <- cbind(Recall(data, sqrt.phy, traitgram=traitgram[i], which.eigen=which.eigen, traitgram.p=traitgram.p, q=q), traitgram[i], sites(data))
           output <- do.call(rbind, output)
           names(output)[ncol(output)-1] <- "traitgram"
           names(output)[ncol(output)] <- "site"
@@ -131,15 +151,15 @@ pez.shape <- function(data, sqrt.phy=FALSE, traitgram=NULL, traitgram.p=2, ext.d
       dist <- cophenetic(data$phy)
   
   #Filter metrics according to suitability and calculate
-  functions <- setNames(c(.psv, .psr, .mpd, .mntd, .colless, .taxon, .eigen.sum, .eed, .hed, .dist.fd), c("psv", "psr", "mpd", "mntd", "colless", "taxon", "eigen.sum", "eed", "hed", "dist.fd"))
+  functions <- setNames(c(.psv, .psr, .mpd, .mntd, .mipd, .innd, .colless, .taxon, .eigen.sum, .eed, .hed, .dist.fd, .scheiner), c("psv", "psr", "mpd", "mntd", "mipd", "innd", "colless", "taxon", "eigen.sum", "eed", "hed", "dist.fd", "scheiner"))
   if(quick == TRUE)
       functions <- functions[names(functions) != "dist.fd"]
   if(sqrt.phy == TRUE)
       functions <- functions[!names(functions) %in% c("psv", "psr", "colless", "gamma", "eed", "hed")]
   if(traitgram == TRUE)
-      functions <- functions[!names(functions) %in% c("psv", "psr", "pd", "colless", "gamma", "eed", "hed")]
+      functions <- functions[!names(functions) %in% c("psv", "psr", "pd", "colless", "gamma", "eed", "hed", "scheiner")]
   if(ext.dist == TRUE)
-      functions <- functions[!names(functions) %in% c("psv", "psr", "colless", "gamma", "eed", "hed")]
+      functions <- functions[!names(functions) %in% c("psv", "psr", "colless", "gamma", "eed", "hed", "scheiner")]
   if(!is.binary.tree(data$phy) & "colless" %in% names(functions))
       warning("Cannot compute Colless' index with non-binary tree")
   output <- lapply(functions, function(x) try(x(data, dist=dist, abundance.weighted=FALSE, which.eigen=which.eigen), silent=TRUE))

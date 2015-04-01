@@ -49,9 +49,8 @@ named in formula. The data frame should have long format with
 factors specifying species and sites. \code{communityPGLMM} will
 reorder rows of the data frame so that species are nested within
 sites. Please note that calling
-\code{\link[as.data.frame.comparative.comm]{as.data.frame}} will
-return your \code{comparative.comm} object into this format for
-you.}
+\code{\link{as.data.frame.comparative.comm}} will return your
+\code{comparative.comm} object into this format for you.}
 
 \item{family}{either \code{gaussian} for a Linear Mixed Model, or
 \code{binomial} for binary dependent data.}
@@ -116,6 +115,8 @@ binomial GLMM.}
 \item{verbose}{if \code{TRUE}, the model deviance and running
 estimates of \code{s2} and \code{B} are plotted each iteration
 during optimization.}
+
+\item{x}{\code{communityPGLMM} object}
 
 \item{re.number}{which \code{random.effect} in \code{x} to be
 tested}
@@ -262,7 +263,7 @@ reasons).
 \note{
 These function \emph{do not} use a
 \code{\link{comparative.comm}} object, but you can use
-\code{\link[as.data.frame.comparative.comm]{as.data.frame}} to
+\code{\link{as.data.frame.comparative.comm}} to
 create a \code{data.frame} for use with these functions. The power
 of this method comes from deciding your own parameters parameters
 to be determined (the data for regression, the random effects,
@@ -439,6 +440,13 @@ re.4 <- list(dat$X, sp = dat$sp, covar = Vphy)
 # random effect for site
 re.site <- list(1, site = dat$site, covar = diag(nsite))
 
+simple <- communityPGLMM(Y ~ X, data = dat, family = "binomial", sp
+= dat$sp, site = dat$site, random.effects = list(re.site),
+REML=TRUE, verbose=FALSE)
+
+# The rest of these tests are not run to save CRAN server time;
+# - please take a look at them because they're *very* useful!
+\dontrun{
 z.binary <- communityPGLMM(Y ~ X, data = dat, family = "binomial",
 sp = dat$sp, site = dat$site, random.effects = list(re.1, re.2,
 re.3, re.4), REML = TRUE, verbose = FALSE)
@@ -450,10 +458,6 @@ plot(z.binary)
 # test statistical significance of the phylogenetic random effect
 # on species slopes using a likelihood ratio test
 communityPGLMM.binary.LRT(z.binary, re.number = 4)$Pr
-
-# The rest of these tests are not run to save CRAN server time;
-# - please take a look at them because they're very useful!
-\dontrun{
 
 # extract the predicted values of Y
 communityPGLMM.predicted.values(z.binary, show.plot = TRUE)

@@ -61,7 +61,7 @@
 #' default) or trait data ("traits")
 #' @param which.eigen which phylo-eigenvector to be used for PVR
 #' metric
-#' @param q the q parameter for the \code{\link{traitgram}} method
+#' @param q the q parameter for \code{.scheiner}; default 0.0001
 #' @param permute number of permutations of null randomisations
 #' (mostly only applies to \code{\link[pez:pez.dispersion]{dispersion
 #' metrics}})
@@ -579,8 +579,11 @@
 #' @importFrom picante evol.distinct
 #' @rdname pez.metrics
 #' @name pez.metrics
+#' @references \code{scheiner} Scheiner, S.M. (20120). A metric of
+#' biodiversity that integrates abundance, phylogeny, and function.
+#' Oikos, 121, 1191-1202.
 #' @export
-.scheiner <- function(x, q=0, abundance.weighted = FALSE, ...){
+.scheiner <- function(x, q=0.0001, abundance.weighted = FALSE, ...){
     #Assertions and argument handling
     if(!inherits(x, "comparative.comm")) stop("'x' must be a comparative community ecology object")
     
@@ -588,7 +591,7 @@
     ed <- evol.distinct(x$phy, "fair.proportion")$w
     pd <- pd(x$comm, x$phy)$PD
     if(!abundance.weighted)
-        x$comm <- as.numeric(x$comm > 0)
+        x$comm[x$comm > 0] <- 1
     
     #Calculate scheiner; beware dividing by zero inadvertantly
     output <- numeric(nrow(x$comm))
@@ -877,7 +880,7 @@
 #' @rdname pez.metrics
 #' @name pez.metrics
 #' @export
-.mipd <- function(x, dist=NULL, null.model="taxa.labels", abundance.weighted=FALSE, permute=1000, ...){
+.ses.mipd <- function(x, dist=NULL, null.model="taxa.labels", abundance.weighted=FALSE, permute=1000, ...){
     if(!inherits(x, "comparative.comm"))
         stop("'x' must be a comparative.comm object")
     if(is.null(dist))
@@ -889,10 +892,34 @@
 #' @rdname pez.metrics
 #' @name pez.metrics
 #' @export
-.innd <- function(x, dist=NULL, null.model="taxa.labels", abundance.weighted=FALSE, permute=1000, ...){
+.ses.innd <- function(x, dist=NULL, null.model="taxa.labels", abundance.weighted=FALSE, permute=1000, ...){
     if(!inherits(x, "comparative.comm"))
         stop("'x' must be a comparative.comm object")
     if(is.null(dist))
         dist <- cophenetic(x$phy)
     return(ses.mntd(x$comm, dis=1/as.matrix(dist), null.model=null.model, abundance.weighted=abundance.weighted, runs=permute))
+}
+
+#' @importFrom picante mpd
+#' @rdname pez.metrics
+#' @name pez.metrics
+#' @export
+.mipd <- function(x, dist=NULL, abundance.weighted=FALSE, ...){
+    if(!inherits(x, "comparative.comm"))
+        stop("'x' must be a comparative.comm object")
+    if(is.null(dist))
+        dist <- cophenetic(x$phy)
+    return(mpd(x$comm, dis=1/as.matrix(dist), abundance.weighted=abundance.weighted))
+}
+
+#' @importFrom picante mntd
+#' @rdname pez.metrics
+#' @name pez.metrics
+#' @export
+.innd <- function(x, dist=NULL, abundance.weighted=FALSE, ...){
+    if(!inherits(x, "comparative.comm"))
+        stop("'x' must be a comparative.comm object")
+    if(is.null(dist))
+        dist <- cophenetic(x$phy)
+    return(mntd(x$comm, dis=1/as.matrix(dist), abundance.weighted=abundance.weighted))
 }

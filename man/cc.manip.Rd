@@ -60,7 +60,8 @@ phy(x) <- value
 
 assemblage.phylogenies(data)
 
-\method{as.data.frame}{comparative.comm}(x, abundance.weighted = FALSE)
+\method{as.data.frame}{comparative.comm}(x, row.names = NULL,
+  optional = FALSE, abundance.weighted = FALSE, ...)
 
 \method{within}{comparative.comm}(data, expr, ...)
 }
@@ -80,15 +81,23 @@ creating object (default: TRUE)}
 
 \item{object}{A \code{\link{comparative.comm}} object}
 
+\item{value}{when altering a \code{\link{comparative.comm}}
+object's internal structure, the thing that you're inserting into
+it!}
+
 \item{data}{A \code{\link{comparative.comm}} object}
 
-\item{abundance.weighted}{whether to create to create a
+\item{row.names}{ignored}
+
+\item{optional}{ignored
 presence-absence dataset (default: FALSE)}
+
+\item{abundance.weighted}{whether to create to create a}
+
+\item{...}{ignored}
 
 \item{expr}{expression to be evaluated within the scope of
 \code{data}}
-
-\item{...}{ignored}
 }
 \value{
 Names of the traits or environmental variables

@@ -23,8 +23,8 @@
 #' @param warn whether to warn if species/sites are dropped when
 #' creating object (default: TRUE)
 #' @param force.root if \code{phy} is unrooted, a \code{root.edge} of
-#' value force.root will be added (default: -1, which means this will
-#' never happen). Rarely needed, rarely advisable.
+#' force.root will be added (default: -1, which means this will never
+#' happen). Rarely needed, rarely advisable.
 #' @note \code{comparative.comm} is compatible with
 #' \code{\link[caper:comparative.data]{comparative.data}}; this means
 #' that the slot for species' trait data is called \code{data}. I
@@ -150,7 +150,7 @@ comparative.comm <- function(phy, comm, traits=NULL, env=NULL, warn=TRUE, force.
 }
 
 #' @param x \code{comparative.comm} object to be printed
-#' @param ... not currently used
+#' @param ... ignored
 #' @rdname comparative.comm
 #' @method print comparative.comm
 #' @export
@@ -213,6 +213,9 @@ print.comparative.comm <- function(x, ...){
 #' \code{x[,-1:-5]}, but not \code{x[c("sp a", "sp b"),]}.
 #' @param warn whether to warn if species/sites are dropped when
 #' creating object (default: TRUE)
+#' @param value when altering a \code{\link{comparative.comm}}
+#' object's internal structure, the thing that you're inserting into
+#' it!
 #' @note As described in \code{\link{comparative.comm}}, each
 #' \code{\link{comparative.comm}} object contains a phylogeny
 #' (\code{$phy}) and a site-by-species community matrix (as used in
@@ -436,8 +439,10 @@ assemblage.phylogenies <- function(data){
 #' @export
 #' @rdname cc.manip
 #' @param abundance.weighted whether to create to create a
+#' @param row.names ignored
+#' @param optional ignored
 #' presence-absence dataset (default: FALSE)
-as.data.frame.comparative.comm <- function(x, abundance.weighted=FALSE){
+as.data.frame.comparative.comm <- function(x, row.names=NULL, optional=FALSE, abundance.weighted=FALSE, ...){
     #Argument handling
     if(!inherits(x, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
 

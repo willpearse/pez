@@ -89,7 +89,8 @@
 #' tree$root <- 1
 #' kk <- scape(tree, scape.size=100, g.center=100, g.range=1, g.repulse=1, wd.all=150,
 #'     signal.center=TRUE, signal.range=FALSE, same.range=FALSE, repulse=FALSE,center.scale = 1,
-#'     range.scale = 1, repulse.scale = 1, site.stoch.scale = 0, sd.center=3, sd.range=1,rho=NULL, th=20)
+#'     range.scale = 1, repulse.scale = 1, site.stoch.scale = 0, sd.center=3, sd.range=1,
+#'     rho=NULL, th=20)
 #'
 #' #Make some plots
 #' par(mfrow=c(1,Ntip(tree)),mar=c(.1,.1,.1,.1))
@@ -260,7 +261,7 @@ scape<-function(tree, scape.size=10, g.center=1, g.range=1, g.repulse=1, wd.all=
     ########### OUTPUT
     rownames(Y) <- paste(index[,1], index[,2], sep=".")
     cc <- comparative.comm(tree, Y)
-    return(list(cc=cc, X.joint=X., X1=X1, X2=X2, sppXs=spp.Xs, 
+    return(list(cc=cc, Y=Y, X.joint=X., X1=X1, X2=X2, sppXs=spp.Xs, 
                 V.phylo=Vinit, V.phylo.rho = V, V.center = V.a, V.range = V.w, V.repulse = Vcomp, 
                 bspp1 = bspp1, bspp2 = bspp2, u = mx, wd=wd.all))
     

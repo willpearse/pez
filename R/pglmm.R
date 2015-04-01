@@ -23,9 +23,8 @@
 #' factors specifying species and sites. \code{communityPGLMM} will
 #' reorder rows of the data frame so that species are nested within
 #' sites. Please note that calling
-#' \code{\link[as.data.frame.comparative.comm]{as.data.frame}} will
-#' return your \code{comparative.comm} object into this format for
-#' you.
+#' \code{\link{as.data.frame.comparative.comm}} will return your
+#' \code{comparative.comm} object into this format for you.
 #' @param family either \code{gaussian} for a Linear Mixed Model, or
 #' \code{binomial} for binary dependent data.
 #' @param sp a \code{\link{factor}} variable that identifies species
@@ -172,7 +171,7 @@
 #' \item{niter}{number of iterations performed by \code{\link{optim}}}
 #' @note These function \emph{do not} use a
 #' \code{\link{comparative.comm}} object, but you can use
-#' \code{\link[as.data.frame.comparative.comm]{as.data.frame}} to
+#' \code{\link{as.data.frame.comparative.comm}} to
 #' create a \code{data.frame} for use with these functions. The power
 #' of this method comes from deciding your own parameters parameters
 #' to be determined (the data for regression, the random effects,
@@ -317,7 +316,7 @@
 #' # name the simulated species 1:nspp and sites 1:nsites
 #' rownames(Y) <- 1:nspp
 #' colnames(Y) <- 1:nsite
-#' 
+#'
 #' par(mfrow = c(3, 1), las = 1, mar = c(2, 4, 2, 2) - 0.1)
 #' matplot(t(X), type = "l", ylab = "X", main = "X among sites")
 #' hist(b0, xlab = "b0", main = "b0 among species")
@@ -357,7 +356,14 @@
 #' 
 #' # random effect for site
 #' re.site <- list(1, site = dat$site, covar = diag(nsite))
-#' 
+#'
+#' simple <- communityPGLMM(Y ~ X, data = dat, family = "binomial", sp
+#' = dat$sp, site = dat$site, random.effects = list(re.site),
+#' REML=TRUE, verbose=FALSE)
+#'
+#' # The rest of these tests are not run to save CRAN server time;
+#' # - please take a look at them because they're *very* useful!
+#' \dontrun{ 
 #' z.binary <- communityPGLMM(Y ~ X, data = dat, family = "binomial",
 #' sp = dat$sp, site = dat$site, random.effects = list(re.1, re.2,
 #' re.3, re.4), REML = TRUE, verbose = FALSE)
@@ -369,10 +375,6 @@
 #' # test statistical significance of the phylogenetic random effect
 #' # on species slopes using a likelihood ratio test
 #' communityPGLMM.binary.LRT(z.binary, re.number = 4)$Pr
-#'
-#' # The rest of these tests are not run to save CRAN server time;
-#' # - please take a look at them because they're very useful!
-#' \dontrun{
 #' 
 #' # extract the predicted values of Y
 #' communityPGLMM.predicted.values(z.binary, show.plot = TRUE)
@@ -1167,6 +1169,7 @@ if (is.null(sp) | is.null(site))
 #' ratio test
 #' @param re.number which \code{random.effect} in \code{x} to be
 #' tested
+#' @param x \code{communityPGLMM} object
 #' @rdname pglmm
 #' @importClassesFrom Matrix dsCMatrix
 #' @importMethodsFrom Matrix t solve %*% determinant diag

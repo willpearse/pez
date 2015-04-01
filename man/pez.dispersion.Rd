@@ -84,7 +84,7 @@ any case, but code to fix this bug is welcome.
 data(laja)
 data <- comparative.comm(invert.tree, river.sites, invert.traits)
 \dontrun{pez.dispersion(data)}
-pez.dispersion(data, metric = "sesmpd", permute = 100)
+pez.dispersion(data, permute = 100)
 }
 \author{
 M.R. Helmus, Will Pearse
@@ -104,7 +104,7 @@ S.W. (2008). Phylocom: software for the analysis of phylogenetic
 community structure and trait evolution. Bioinformatics
 Applications Note, 24, 2098-2100.
 
-\code{innd} Ness J.H., Rollinson E.J. & Whitney
+\code{innd,mipd} Ness J.H., Rollinson E.J. & Whitney
 K.D. (2011). Phylogenetic distance can predict susceptibility to
 attack by natural enemies. Oikos, 120, 1327-1334.
 

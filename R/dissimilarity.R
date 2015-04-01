@@ -76,8 +76,9 @@
 #' @examples
 #' data(laja)
 #' data <- comparative.comm(invert.tree, river.sites, invert.traits)
-#' \dontrun{pez.dissimilarity(data)}
-#' pez.dissimilarity(data, "unifrac")
+#' \dontrun{
+#' dissim <- pez.dissimilarity(data)
+#' }
 #' @importFrom picante unifrac phylosor pcd comdist
 #' @importFrom ape is.ultrametric as.phylo
 #' @export

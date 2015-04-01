@@ -70,7 +70,7 @@
 #' S.W. (2008). Phylocom: software for the analysis of phylogenetic
 #' community structure and trait evolution. Bioinformatics
 #' Applications Note, 24, 2098-2100.
-#' @references \code{innd} Ness J.H., Rollinson E.J. & Whitney
+#' @references \code{innd,mipd} Ness J.H., Rollinson E.J. & Whitney
 #' K.D. (2011). Phylogenetic distance can predict susceptibility to
 #' attack by natural enemies. Oikos, 120, 1327-1334.
 #' @references \code{d} Fritz S.A. & Purvis A. (2010). Selectivity in
@@ -81,7 +81,7 @@
 #' data(laja)
 #' data <- comparative.comm(invert.tree, river.sites, invert.traits)
 #' \dontrun{pez.dispersion(data)}
-#' pez.dispersion(data, metric = "sesmpd", permute = 100)
+#' pez.dispersion(data, permute = 100)
 #' @importFrom caper phylo.d
 #' @importFrom picante ses.mntd ses.mpd ses.pd
 #' @importFrom ape is.ultrametric as.phylo cophenetic.phylo
@@ -124,7 +124,7 @@ pez.dispersion <- function(data, null.model=c("taxa.labels", "richness", "freque
       dist <- cophenetic(data$phy)
 
   #Filter metrics according to suitability and calculate
-  functions <- setNames(c(.ses.mpd, .ses.mntd, .mipd, .innd, .d), c("ses.mpd", "ses.mntd", "inmd", "innd", "d"))
+  functions <- setNames(c(.ses.mpd, .ses.mntd, .ses.mipd, .ses.innd, .d), c("ses.mpd", "ses.mntd", "ses.mipd", "ses.innd", "d"))
   if(sqrt.phy == TRUE)
       functions <- functions[names(functions) != "d"]
   if(traitgram == TRUE)

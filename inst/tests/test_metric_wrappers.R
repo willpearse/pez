@@ -8,22 +8,22 @@ context("Metric wrappers")
 
 #Shape
 test_that("Shape",{
-    expect_that(pez.shape(data), is_equivalent_to(cbind(.psv(data,abundance.weighted=FALSE),.psr(data,abundance.weighted=FALSE),.mpd(data,abundance.weighted=FALSE),.mntd(data,abundance.weighted=FALSE),.taxon(data,abundance.weighted=FALSE),.eigen.sum(data,abundance.weighted=FALSE),.eed(data,abundance.weighted=FALSE),.hed(data,abundance.weighted=FALSE))))
+    expect_that(pez.shape(data), is_equivalent_to(cbind(.psv(data,abundance.weighted=FALSE),.psr(data,abundance.weighted=FALSE),.mpd(data,abundance.weighted=FALSE),.mntd(data,abundance.weighted=FALSE),.mipd(data,abundance.weighted=FALSE),.innd(data,abundance.weighted=FALSE),.taxon(data,abundance.weighted=FALSE),.eigen.sum(data,abundance.weighted=FALSE),.eed(data,abundance.weighted=FALSE),.hed(data,abundance.weighted=FALSE),.scheiner(data,abundance.weighted=FALSE))))
     t <- .sqrt.phy(data)
-    expect_that(pez.shape(data,sqrt.phy=TRUE), is_equivalent_to(cbind(.mpd(t,abundance.weighted=FALSE),.mntd(t,abundance.weighted=FALSE),.taxon(t,abundance.weighted=FALSE),.eigen.sum(t,abundance.weighted=FALSE))))
-    expect_that(round(pez.shape(data,traitgram=0.5),2), is_equivalent_to(as.data.frame(matrix(c(0.54, 0.63, 0.5, 0.56, 0.52, 0.59, 0.51, 0.45, 0.53, 0.48, 0.52, 0.23, 0.39, 0.28, 0.3, 0.32, 0.27, 0.23, 0.27, 0.3, 0.26, 0.32, 0.54, 0.63, 0.5, 0.56, 0.52, 0.59, 0.51, 0.45, 0.53, 0.48, 0.52, 0.54, 0.63, 0.5, 0.56, 0.52, 0.59, 0.51, 0.45, 0.53, 0.48, 0.52, 0.03, 0.02, 0.03, 0.03, 0.03, 0.03, 0.02, 0.02, 0.03, 0.02, 0.03, 0.54, 0.63, 0.5, 0.56, 0.52, 0.59, 0.51, 0.45, 0.53, 0.48, 0.52, 15.55, 5.07, 11.97, 10.06, 6.18, 12.43, 14.19, 8.08, 8.43, 9.67, 7.86, 0.02, 0.02, 0.01, 0.01, 0.01, 0.02, 0.01, 0.01, 0.01, 0.01, 0.01),ncol=8))))
-    expect_that(pez.shape(data,traitgram=c(0,1))[,1:8], is_equivalent_to(rbind(pez.shape(data,traitgram=0),pez.shape(data,traitgram=1))))
-    expect_that(pez.shape(data,ext.dist=as.dist(cophenetic(data$phy))), is_equivalent_to(cbind(.mpd(data),.mntd(data),.taxon(data),.eigen.sum(data))))
+    expect_that(pez.shape(data,sqrt.phy=TRUE), is_equivalent_to(cbind(.mpd(t,abundance.weighted=FALSE),.mntd(t,abundance.weighted=FALSE),.mipd(t,abundance.weighted=FALSE),.innd(t,abundance.weighted=FALSE),.taxon(t,abundance.weighted=FALSE),.eigen.sum(t,abundance.weighted=FALSE),.scheiner(t,abundance.weighted=FALSE))))
+    expect_true({pez.shape(data,traitgram=0.5);TRUE})
+    expect_that(pez.shape(data,traitgram=c(0,1))[,1:10], is_equivalent_to(rbind(pez.shape(data,traitgram=0),pez.shape(data,traitgram=1))))
+    expect_that(pez.shape(data,ext.dist=as.dist(cophenetic(data$phy))), is_equivalent_to(cbind(.mpd(data),.mntd(data),.mipd(data),.innd(data),.taxon(data),.eigen.sum(data))))
 })
 
 #Evenness
 test_that("Evenness",{
-    expect_that(pez.evenness(data), is_equivalent_to(cbind(.rao(data,abundance.weighted=TRUE),.phylo.entropy(data,abundance.weighted=TRUE),.pae(data,abundance.weighted=TRUE),.iac(data,abundance.weighted=TRUE),.haed(data,abundance.weighted=TRUE),.eaed(data,abundance.weighted=TRUE),.mpd(data,abundance.weighted=TRUE),.mntd(data,abundance.weighted=TRUE),.taxon(data,abundance.weighted=TRUE),.pse(data,abundance.weighted=TRUE))))
+    expect_that(pez.evenness(data), is_equivalent_to(cbind(.rao(data,abundance.weighted=TRUE),.phylo.entropy(data,abundance.weighted=TRUE),.pae(data,abundance.weighted=TRUE),.iac(data,abundance.weighted=TRUE),.haed(data,abundance.weighted=TRUE),.eaed(data,abundance.weighted=TRUE),.mpd(data,abundance.weighted=TRUE),.mntd(data,abundance.weighted=TRUE),.mipd(data,abundance.weighted=TRUE),.innd(data,abundance.weighted=TRUE),.taxon(data,abundance.weighted=TRUE),.pse(data,abundance.weighted=TRUE),.scheiner(data,abundance.weighted=TRUE))))
     t <- .sqrt.phy(data)
-    expect_that(pez.evenness(data,sqrt.phy=TRUE), is_equivalent_to(cbind(.rao(t,abundance.weighted=TRUE),.phylo.entropy(t,abundance.weighted=TRUE),.pae(t,abundance.weighted=TRUE),.iac(t,abundance.weighted=TRUE),.haed(t,abundance.weighted=TRUE),.eaed(t,abundance.weighted=TRUE),.mpd(t,abundance.weighted=TRUE),.mntd(t,abundance.weighted=TRUE),.taxon(t,abundance.weighted=TRUE))))
-    expect_that(round(pez.evenness(data,traitgram=0.5),2), is_equivalent_to(as.data.frame(matrix(c(37.95, 12.58, 20.3, 10.01, 10.74, 3.86, 22.19, 1.26, 459.76, 21.97, 26.3, 0.74, 0.63, 0.82, 0.67, 0.78, 0.84, 0.72, 0.85, 0.6, 0.7, 0.68, 0.21, 0.06, 0.34, 0.13, 0.31, 0.51, 0.28, 0.31, 0.02, 0.25, 0.14, 0.23, 0.24, 0.2, 0.24, 0.29, 0.3, 0.2, 0.22, 0.23, 0.18, 0.23, 0.21, 0.06, 0.34, 0.13, 0.31, 0.51, 0.28, 0.32, 0.02, 0.25, 0.14, 0.51, 0.53, 0.43, 0.39, 0.46, 0.65, 0.4, 0.45, 0.47, 0.43, 0.45, 0.03, 0.02, 0.03, 0.03, 0.03, 0.03, 0.02, 0.02, 0.03, 0.02, 0.03, 0.54, 0.63, 0.5, 0.56, 0.52, 0.59, 0.51, 0.45, 0.53, 0.48, 0.52, 15.55, 5.07, 11.97, 10.06, 6.18, 12.43, 14.19, 8.08, 8.43, 9.67, 7.86),ncol=9))))
-    expect_that(pez.evenness(data,traitgram=c(0,1))[,1:9], is_equivalent_to(rbind(pez.evenness(data,traitgram=0),pez.evenness(data,traitgram=1))))
-    expect_that(pez.evenness(data,ext.dist=as.dist(cophenetic(data$phy))), is_equivalent_to(cbind(.mpd(data,abundance.weighted=TRUE),.mntd(data,abundance.weighted=TRUE),.taxon(data,abundance.weighted=TRUE))))
+    expect_that(pez.evenness(data,sqrt.phy=TRUE), is_equivalent_to(cbind(.rao(t,abundance.weighted=TRUE),.phylo.entropy(t,abundance.weighted=TRUE),.pae(t,abundance.weighted=TRUE),.iac(t,abundance.weighted=TRUE),.haed(t,abundance.weighted=TRUE),.eaed(t,abundance.weighted=TRUE),.mpd(t,abundance.weighted=TRUE),.mntd(t,abundance.weighted=TRUE),.mipd(t,abundance.weighted=TRUE),.innd(t,abundance.weighted=TRUE),.taxon(t,abundance.weighted=TRUE),.scheiner(t,abundance.weighted=TRUE))))
+    expect_true({pez.evenness(data,traitgram=0.5);TRUE})
+    expect_that(pez.evenness(data,traitgram=c(0,1))[,1:11], is_equivalent_to(rbind(pez.evenness(data,traitgram=0),pez.evenness(data,traitgram=1))))
+    expect_that(pez.evenness(data,ext.dist=as.dist(cophenetic(data$phy))), is_equivalent_to(cbind(.mpd(data,abundance.weighted=TRUE),.mntd(data,abundance.weighted=TRUE),.mipd(data,abundance.weighted=TRUE),.innd(data,abundance.weighted=TRUE),.taxon(data,abundance.weighted=TRUE))))
 })
 
 #Dispersion

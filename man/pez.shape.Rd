@@ -5,8 +5,7 @@
 \title{Calculate (phylogenetic) shape: examine assemblage composition}
 \usage{
 pez.shape(data, sqrt.phy = FALSE, traitgram = NULL, traitgram.p = 2,
-  ext.dist = NULL, which.eigen = 1, remove.errors = TRUE, quick = TRUE,
-  ...)
+  ext.dist = NULL, which.eigen = 1, quick = TRUE, q = 1e-04)
 }
 \arguments{
 \item{data}{\code{\link{comparative.comm}} object}
@@ -38,16 +37,11 @@ distance matrices in different metric calculations.}
 \item{which.eigen}{The eigen vector to calculate for the PhyloEigen
 metric (\code{eigen.sum})}
 
-\item{remove.errors}{suppress errors about metrics that failed to
-run (default: TRUE). This will happen for some metrics if you have,
-for example, only one species in a community.}
-
 \item{quick}{Only calculate metrics which are quick to calculate
 (default: TRUE); setting to FALSE will also calculate
 \code{fd.dist}.}
 
-\item{...}{Additional arguments to passed to metric functions
-(unlikely you will want this!)}
+\item{q}{value for \emph{q} in \code{scheiner} (default 0.0001)}
 }
 \value{
 \code{phy.structure} list object of metric values. Use
@@ -98,31 +92,57 @@ metric. I consider these `features', not bugs.
 data(laja)
 data <- comparative.comm(invert.tree, river.sites, invert.traits)
 (output<-pez.shape(data))
-str(output)
-pez.shape(data, "colless")
-pez.shape(data, "eigen.sum", which.eigen=2)
 }
 \author{
 M.R. Helmus, Will Pearse
 }
 \references{
-Pearse W.D., Purvis A., Cavender-Bares J. & Helmus M.R. (2014). Metrics and Models of Community Phylogenetics. In: Modern Phylogenetic Comparative Methods and Their Application in Evolutionary Biology. Springer Berlin Heidelberg, pp. 451-464.
+Pearse W.D., Purvis A., Cavender-Bares J. & Helmus
+M.R. (2014). Metrics and Models of Community Phylogenetics. In:
+Modern Phylogenetic Comparative Methods and Their Application in
+Evolutionary Biology. Springer Berlin Heidelberg, pp. 451-464.
 
-\code{PSV,PSR} Helmus M.R., Bland T.J., Williams C.K. & Ives A.R. (2007). Phylogenetic measures of biodiversity. American Naturalist, 169, E68-E83.
+\code{PSV,PSR} Helmus M.R., Bland T.J., Williams C.K. &
+Ives A.R. (2007). Phylogenetic measures of biodiversity. American
+Naturalist, 169, E68-E83.
 
-\code{PD} Faith D.P. (1992). Conservation evaluation and phylogenetic diversity. Biological Conservation, 61, 1-10.
+\code{PD} Faith D.P. (1992). Conservation evaluation
+and phylogenetic diversity. Biological Conservation, 61, 1-10.
 
-\code{colless} Colless D.H. (1982). Review of phylogenetics: the theory and practice of phylogenetic systematics. Systematic Zoology, 31, 100-104.
+\code{colless} Colless D.H. (1982). Review of
+phylogenetics: the theory and practice of phylogenetic
+systematics. Systematic Zoology, 31, 100-104.
 
-\code{gamma} Pybus O.G. & Harvey P.H. (2000) Testing macro-evolutionary models using incomplete molecular phylogenies. _Proceedings of the Royal Society of London. Series B. Biological Sciences 267: 2267--2272.
+\code{gamma} Pybus O.G. & Harvey P.H. (2000) Testing
+macro-evolutionary models using incomplete molecular
+phylogenies. _Proceedings of the Royal Society of London. Series
+B. Biological Sciences 267: 2267--2272.
 
-\code{taxon} Clarke K.R. & Warwick R.M. (1998). A taxonomic distinctness index and its statistical properties. J. Appl. Ecol., 35, 523-531.
+\code{taxon} Clarke K.R. & Warwick R.M. (1998). A
+taxonomic distinctness index and its statistical
+properties. J. Appl. Ecol., 35, 523-531.
 
-\code{eigen.sum} Diniz-Filho J.A.F., Cianciaruso M.V., Rangel T.F. & Bini L.M. (2011). Eigenvector estimation of phylogenetic and functional diversity. Functional Ecology, 25, 735-744.
+\code{eigen.sum} Diniz-Filho J.A.F., Cianciaruso M.V.,
+Rangel T.F. & Bini L.M. (2011). Eigenvector estimation of
+phylogenetic and functional diversity. Functional Ecology, 25,
+735-744.
 
-\code{eed,hed} (i.e., \emph{Eed, Hed}) Cadotte M.W., Davies T.J., Regetz J., Kembel S.W., Cleland E. & Oakley T.H. (2010). Phylogenetic diversity metrics for ecological communities: integrating species richness, abundance and evolutionary history. Ecology Letters, 13, 96-105.
+\code{eed,hed} (i.e., \emph{Eed, Hed}) Cadotte M.W.,
+Davies T.J., Regetz J., Kembel S.W., Cleland E. & Oakley
+T.H. (2010). Phylogenetic diversity metrics for ecological
+communities: integrating species richness, abundance and
+evolutionary history. Ecology Letters, 13, 96-105.
+
+\code{innd,mipd} Ness J.H., Rollinson E.J. & Whitney
+K.D. (2011). Phylogenetic distance can predict susceptibility to
+attack by natural enemies. Oikos, 120, 1327-1334.
+
+\code{scheiner} Scheiner, S.M. (20120). A metric of
+biodiversity that integrates abundance, phylogeny, and function.
+Oikos, 121, 1191-1202.
 }
 \seealso{
-\code{\link{pez.evenness}} \code{\link{pez.dispersion}} \code{\link{pez.dissimilarity}}
+\code{\link{pez.evenness}} \code{\link{pez.dispersion}}
+\code{\link{pez.dissimilarity}}
 }
 

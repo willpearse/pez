@@ -47,8 +47,7 @@
 #' \code{fd.dist} and the Pagel transformations
 #' (\eqn{$\lambda$}{lambda}, \eqn{$\delta$}{delta},
 #' \eqn{$\kappa$}{kappa}).
-#' @param ... Additional arguments to passed to metric functions
-#' (unlikely you will want this!)
+#' @param q value for \emph{q} in \code{scheiner} (default 0.0001)
 #' @note As mentioned above, \code{dist.fd} is calculated using a
 #' phylogenetic distance matrix if no trait data are available, or if
 #' you specify \code{sqrt.phy}. It is not calculated by default
@@ -76,18 +75,41 @@
 #' @references \code{pse} Helmus M.R., Bland T.J., Williams C.K. &
 #' Ives A.R. (2007). Phylogenetic measures of biodiversity. American
 #' Naturalist, 169, E68-E83.
-#' @references Pearse W.D., Purvis A., Cavender-Bares J. & Helmus M.R. (2014). Metrics and Models of Community Phylogenetics. In: Modern Phylogenetic Comparative Methods and Their Application in Evolutionary Biology. Springer Berlin Heidelberg, pp. 451-464.
-#' @references \code{pse} Helmus M.R., Bland T.J., Williams C.K. & Ives A.R. (2007). Phylogenetic measures of biodiversity. American Naturalist, 169, E68-E83.
-#' @references \code{rao} Webb C.O. (2000). Exploring the phylogenetic structure of ecological communities: An example for rain forest trees. American Naturalist, 156, 145-155.
-#' @references \code{taxon} Clarke K.R. & Warwick R.M. (1998). A taxonomic distinctness index and its statistical properties. J. Appl. Ecol., 35, 523-531.
-#' @references \code{entropy} Allen B., Kon M. & Bar-Yam Y. (2009). A New Phylogenetic Diversity Measure Generalizing the Shannon Index and Its Application to Phyllostomid Bats. The American Naturalist, 174, 236-243.
-#' @references \code{pae,iac,haed,eaed} Cadotte M.W., Davies T.J., Regetz J., Kembel S.W., Cleland E. & Oakley T.H. (2010). Phylogenetic diversity metrics for ecological communities: integrating species richness, abundance and evolutionary history. Ecology Letters, 13, 96-105.
-#' @references \code{lambda,delta,kappa} Mark Pagel (1999) Inferring the historical patterns of biological evolution. Nature 6756(401): 877--884.
+#' @references Pearse W.D., Purvis A., Cavender-Bares J. & Helmus
+#' M.R. (2014). Metrics and Models of Community Phylogenetics. In:
+#' Modern Phylogenetic Comparative Methods and Their Application in
+#' Evolutionary Biology. Springer Berlin Heidelberg, pp. 451-464.
+#' @references \code{pse} Helmus M.R., Bland T.J., Williams C.K. &
+#' Ives A.R. (2007). Phylogenetic measures of biodiversity. American
+#' Naturalist, 169, E68-E83.
+#' @references \code{rao} Webb C.O. (2000). Exploring the phylogenetic
+#' structure of ecological communities: An example for rain forest
+#' trees. American Naturalist, 156, 145-155.
+#' @references \code{taxon} Clarke K.R. & Warwick R.M. (1998). A
+#' taxonomic distinctness index and its statistical
+#' properties. J. Appl. Ecol., 35, 523-531.
+#' @references \code{entropy} Allen B., Kon M. & Bar-Yam Y. (2009). A
+#' New Phylogenetic Diversity Measure Generalizing the Shannon Index
+#' and Its Application to Phyllostomid Bats. The American Naturalist,
+#' 174, 236-243.
+#' @references \code{pae,iac,haed,eaed} Cadotte M.W., Davies T.J.,
+#' Regetz J., Kembel S.W., Cleland E. & Oakley
+#' T.H. (2010). Phylogenetic diversity metrics for ecological
+#' communities: integrating species richness, abundance and
+#' evolutionary history. Ecology Letters, 13, 96-105.
+#' @references \code{lambda,delta,kappa} Mark Pagel (1999) Inferring
+#' the historical patterns of biological evolution. Nature 6756(401):
+#' 877--884.
+#' @references \code{innd,mipd} Ness J.H., Rollinson E.J. & Whitney
+#' K.D. (2011). Phylogenetic distance can predict susceptibility to
+#' attack by natural enemies. Oikos, 120, 1327-1334.
+#' @references \code{scheiner} Scheiner, S.M. (20120). A metric of
+#' biodiversity that integrates abundance, phylogeny, and function.
+#' Oikos, 121, 1191-1202.
 #' @examples
 #' data(laja)
 #' data <- comparative.comm(invert.tree, river.sites, invert.traits)
 #' pez.evenness(data)
-#' pez.evenness(data, "rao")
 #' @importFrom ape cophenetic.phylo drop.tip is.ultrametric as.phylo
 #' @importFrom picante pse raoD
 #' @importFrom vegan taxondive
@@ -95,7 +117,7 @@
 #' @importFrom ade4 newick2phylog
 #' @importFrom FD dbFD
 #' @export
-pez.evenness <- function(data, sqrt.phy=FALSE, traitgram=NULL, traitgram.p=2, ext.dist=NULL, quick=TRUE, ...)
+pez.evenness <- function(data, sqrt.phy=FALSE, traitgram=NULL, traitgram.p=2, ext.dist=NULL, quick=TRUE, q=0.0001)
 {
   #Assertions and argument handling
   if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
@@ -105,7 +127,7 @@ pez.evenness <- function(data, sqrt.phy=FALSE, traitgram=NULL, traitgram.p=2, ex
       if(length(traitgram) > 1){
           output <- vector("list", length(traitgram))
           for(i in seq_along(output))
-              output[[i]] <- cbind(Recall(data, sqrt.phy, traitgram=traitgram[i], traitgram.p=traitgram.p, ...), traitgram[i], sites(data))
+              output[[i]] <- cbind(Recall(data, sqrt.phy, traitgram=traitgram[i], traitgram.p=traitgram.p, q=q), traitgram[i], sites(data))
           output <- do.call(rbind, output)
           names(output)[ncol(output)-1] <- "traitgram"
           names(output)[ncol(output)] <- "site"
@@ -137,16 +159,16 @@ pez.evenness <- function(data, sqrt.phy=FALSE, traitgram=NULL, traitgram.p=2, ex
   #data <- data[,colSums(data$comm)>0]
   
   #Filter metrics according to suitability and calculate
-  functions <- setNames(c(.rao, .phylo.entropy, .pae, .iac, .haed, .eaed, .lambda, .delta, .kappa, .mpd, .mntd, .taxon, .pse, .dist.fd), c("rao", "entropy", "pae", "iac", "haed", "eaed", "lambda", "delta", "kappa", "mpd", "mntd", "taxon", "pse", "dist.fd"))
+  functions <- setNames(c(.rao, .phylo.entropy, .pae, .iac, .haed, .eaed, .lambda, .delta, .kappa, .mpd, .mntd, .mipd, .innd, .taxon, .pse, .dist.fd, .scheiner), c("rao", "entropy", "pae", "iac", "haed", "eaed", "lambda", "delta", "kappa", "mpd", "mntd", "mipd", "innd", "taxon", "pse", "dist.fd", "scheiner"))
   if(quick == TRUE)
       functions <- functions[!names(functions) %in% c("dist.fd","lambda","delta","kappa")]
   if(sqrt.phy == TRUE)
       functions <- functions[!names(functions) %in% c("pse","lambda","delta","kappa")]
   if(traitgram == TRUE)
-      functions <- functions[!names(functions) %in% c("pse", "entropy", "iac", "haed", "lambda", "delta", "kappa", "rao")]
+      functions <- functions[!names(functions) %in% c("pse", "entropy", "iac", "haed", "lambda", "delta", "kappa", "rao", "scheiner")]
   if(ext.dist == TRUE)
-      functions <- functions[!names(functions) %in% c("pse", "rao", "entropy", "pae", "iac", "haed", "eaed", "lambda", "delta", "kappa")]
-  output <- lapply(functions, function(x) try(x(data, dist=dist, abundance.weighted=TRUE), silent=TRUE))
+      functions <- functions[!names(functions) %in% c("pse", "rao", "entropy", "pae", "iac", "haed", "eaed", "lambda", "delta", "kappa", "scheiner")]
+  output <- lapply(functions, function(x) try(x(data, dist=dist, abundance.weighted=TRUE, q=q), silent=TRUE))
 
   #Clean up output and return
   output <- Filter(function(x) !inherits(x, "try-error"), output)

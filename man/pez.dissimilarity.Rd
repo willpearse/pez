@@ -77,8 +77,9 @@ any case, but code to fix this bug is welcome.
 \examples{
 data(laja)
 data <- comparative.comm(invert.tree, river.sites, invert.traits)
-\dontrun{pez.dissimilarity(data)}
-pez.dissimilarity(data, "unifrac")
+\dontrun{
+dissim <- pez.dissimilarity(data)
+}
 }
 \author{
 M.R. Helmus, Will Pearse
