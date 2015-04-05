@@ -61,6 +61,12 @@
 #' assemblages with only one species/individual in them, and return
 #' NA/NaN values depending on the metric. I consider these `features',
 #' not bugs.
+#'
+#' Some of the metrics in this wrapper are also in
+#' \code{\link{pez.shape}}; such metrics can be calculated using
+#' species' abundances (making them \emph{evenness}) metrics or simply
+#' using presence/absence of species (making them \emph{shape}
+#' metrics).
 #' @return \code{phy.structure} list object of metric values. Use
 #' \code{coefs} to extract a summary metric table, or examine each
 #' individual metric (which gives more details for each) by calling

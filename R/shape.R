@@ -65,6 +65,12 @@
 #' individual metric (which gives more details for each) by calling
 #' \code{print} on the output (i.e., type \code{output} in the example
 #' below).
+#'
+#' Some of the metrics in this wrapper are also in
+#' \code{\link{pez.evenness}}; such metrics can be calculated using
+#' species' abundances (making them \emph{evenness}) metrics or simply
+#' using presence/absence of species (making them \emph{shape}
+#' metrics).
 #' @author M.R. Helmus, Will Pearse
 #' @seealso \code{\link{pez.evenness}} \code{\link{pez.dispersion}}
 #' \code{\link{pez.dissimilarity}}

@@ -87,6 +87,12 @@ Some of these metrics can cause (inconsequential) warnings if given
 assemblages with only one species/individual in them, and return
 NA/NaN values depending on the metric. I consider these `features',
 not bugs.
+
+Some of the metrics in this wrapper are also in
+\code{\link{pez.shape}}; such metrics can be calculated using
+species' abundances (making them \emph{evenness}) metrics or simply
+using presence/absence of species (making them \emph{shape}
+metrics).
 }
 \examples{
 data(laja)
