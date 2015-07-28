@@ -1,3 +1,10 @@
+2015-07-29	Version 1.1-0
+
+* metric.null.R - added generic metrics, metric null distributions,
+  and changed wrapper naming
+* scale.R - changed return values
+* CITATION - added citation file
+
 2015-02-10	Version 1.0-0
 
 * pglmm.R - created, examples added to vignette

@@ -2,20 +2,20 @@ Package: pez
 Type: Package
 Title: Phylogenetics for the Environmental Sciences
 Version: 1.1-0
-Date: 2015-03-15
+Date: 2015-07-29
 Author: William D. Pearse, Marc W. Cadotte, Jeannine Cavender-Bares,
     Anthony R. Ives, Caroline Tucker, Steve C. Walker, Matthew R. Helmus
 Maintainer: William D. Pearse <will.pearse@gmail.com>
 Description: Eco-phylogenetic and community phylogenetic analyses.
     Keeps community ecological and phylogenetic data matched up and
     comparable using 'comparative.comm' objects. Wrappers for common
-    community phylogenetic indices ('shape', 'evenness', 'dispersion',
-    and 'dissimilarity' metrics). Implementation of Cavender-Bares
-    (2004) correlation of phylogenetic and ecological matrices
-    ('fingerprint.regression'). Phylogenetic Generalised Linear Mixed
-    Models (PGLMMs; 'pglmm') following Ives & Helmus (2011) and
-    Rafferty & Ives (2013). Simulation of null assemblages, traits,
-    and phylogenies ('scape', 'sim.meta.comm').
+    community phylogenetic indices ('pez.shape', 'pez.evenness',
+    'pez.dispersion', and 'pez.dissimilarity' metrics). Implementation
+    of Cavender-Bares (2004) correlation of phylogenetic and
+    ecological matrices ('fingerprint.regression'). Phylogenetic
+    Generalised Linear Mixed Models (PGLMMs; 'pglmm') following Ives &
+    Helmus (2011) and Rafferty & Ives (2013). Simulation of null
+    assemblages, traits, and phylogenies ('scape', 'sim.meta.comm').
 License: GPL-3
 VignetteBuilder: knitr
 Suggests:

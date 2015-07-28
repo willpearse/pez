@@ -157,7 +157,7 @@ pez.shape <- function(data, sqrt.phy=FALSE, traitgram=NULL, traitgram.p=2, ext.d
       dist <- cophenetic(data$phy)
   
   #Filter metrics according to suitability and calculate
-  functions <- setNames(c(.psv, .psr, .mpd, .mntd, .mipd, .innd, .colless, .taxon, .eigen.sum, .eed, .hed, .dist.fd, .scheiner), c("psv", "psr", "mpd", "mntd", "mipd", "innd", "colless", "taxon", "eigen.sum", "eed", "hed", "dist.fd", "scheiner"))
+  functions <- setNames(c(.pd, .psv, .psr, .mpd, .mntd, .mipd, .innd, .colless, .taxon, .eigen.sum, .eed, .hed, .dist.fd, .scheiner), c("pd", "psv", "psr", "mpd", "mntd", "mipd", "innd", "colless", "taxon", "eigen.sum", "eed", "hed", "dist.fd", "scheiner"))
   if(quick == TRUE)
       functions <- functions[names(functions) != "dist.fd"]
   if(sqrt.phy == TRUE)
@@ -165,7 +165,7 @@ pez.shape <- function(data, sqrt.phy=FALSE, traitgram=NULL, traitgram.p=2, ext.d
   if(traitgram == TRUE)
       functions <- functions[!names(functions) %in% c("psv", "psr", "pd", "colless", "gamma", "eed", "hed", "scheiner")]
   if(ext.dist == TRUE)
-      functions <- functions[!names(functions) %in% c("psv", "psr", "colless", "gamma", "eed", "hed", "scheiner")]
+      functions <- functions[!names(functions) %in% c("pd", "psv", "psr", "colless", "gamma", "eed", "hed", "scheiner")]
   if(!is.binary.tree(data$phy) & "colless" %in% names(functions))
       warning("Cannot compute Colless' index with non-binary tree")
   output <- lapply(functions, function(x) try(x(data, dist=dist, abundance.weighted=FALSE, which.eigen=which.eigen), silent=TRUE))

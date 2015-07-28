@@ -8,9 +8,9 @@ context("Metric wrappers")
 
 #Shape
 test_that("Shape",{
-    expect_that(pez.shape(data), is_equivalent_to(cbind(.psv(data,abundance.weighted=FALSE),.psr(data,abundance.weighted=FALSE),.mpd(data,abundance.weighted=FALSE),.mntd(data,abundance.weighted=FALSE),.mipd(data,abundance.weighted=FALSE),.innd(data,abundance.weighted=FALSE),.taxon(data,abundance.weighted=FALSE),.eigen.sum(data,abundance.weighted=FALSE),.eed(data,abundance.weighted=FALSE),.hed(data,abundance.weighted=FALSE),.scheiner(data,abundance.weighted=FALSE))))
+    expect_that(pez.shape(data), is_equivalent_to(cbind(.pd(data,abundance.weighted=FALSE),.psv(data,abundance.weighted=FALSE),.psr(data,abundance.weighted=FALSE),.mpd(data,abundance.weighted=FALSE),.mntd(data,abundance.weighted=FALSE),.mipd(data,abundance.weighted=FALSE),.innd(data,abundance.weighted=FALSE),.taxon(data,abundance.weighted=FALSE),.eigen.sum(data,abundance.weighted=FALSE),.eed(data,abundance.weighted=FALSE),.hed(data,abundance.weighted=FALSE),.scheiner(data,abundance.weighted=FALSE))))
     t <- .sqrt.phy(data)
-    expect_that(pez.shape(data,sqrt.phy=TRUE), is_equivalent_to(cbind(.mpd(t,abundance.weighted=FALSE),.mntd(t,abundance.weighted=FALSE),.mipd(t,abundance.weighted=FALSE),.innd(t,abundance.weighted=FALSE),.taxon(t,abundance.weighted=FALSE),.eigen.sum(t,abundance.weighted=FALSE),.scheiner(t,abundance.weighted=FALSE))))
+    expect_that(pez.shape(data,sqrt.phy=TRUE), is_equivalent_to(cbind(.pd(t,abundance.weighted=FALSE),.mpd(t,abundance.weighted=FALSE),.mntd(t,abundance.weighted=FALSE),.mipd(t,abundance.weighted=FALSE),.innd(t,abundance.weighted=FALSE),.taxon(t,abundance.weighted=FALSE),.eigen.sum(t,abundance.weighted=FALSE),.scheiner(t,abundance.weighted=FALSE))))
     expect_true({pez.shape(data,traitgram=0.5);TRUE})
     expect_that(pez.shape(data,traitgram=c(0,1))[,1:10], is_equivalent_to(rbind(pez.shape(data,traitgram=0),pez.shape(data,traitgram=1))))
     expect_that(pez.shape(data,ext.dist=as.dist(cophenetic(data$phy))), is_equivalent_to(cbind(.mpd(data),.mntd(data),.mipd(data),.innd(data),.taxon(data),.eigen.sum(data))))
