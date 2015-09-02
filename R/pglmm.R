@@ -444,6 +444,7 @@ communityPGLMM <- function(formula, data = list(), family = "gaussian", sp = NUL
 #' @rdname pglmm
 #' @importClassesFrom Matrix RsparseMatrix dsCMatrix
 #' @importMethodsFrom Matrix t solve %*% determinant diag
+#' @importFrom stats pchisq model.frame model.matrix model.response lm var optim pnorm
 #' @export
 communityPGLMM.gaussian <- function(formula, data = list(), family = "gaussian", sp = NULL, 
 	site = NULL, random.effects = list(), REML = TRUE, s2.init = NULL, B.init = NULL, reltol = 10^-8, 
@@ -771,6 +772,8 @@ communityPGLMM.gaussian <- function(formula, data = list(), family = "gaussian",
 #' @rdname pglmm
 #' @importClassesFrom Matrix dsCMatrix RsparseMatrix
 #' @importMethodsFrom Matrix t solve %*% determinant diag
+#' @importFrom methods as show
+#' @importFrom stats model.frame model.matrix model.response glm binomial optim pchisq
 #' @export
 communityPGLMM.binary <- function(formula, data = list(), family = "binomial", sp = NULL, site = NULL, 
 	random.effects = list(), REML = TRUE, s2.init = 0.25, B.init = NULL, reltol = 10^-5, maxit = 40, 
@@ -1173,6 +1176,7 @@ if (is.null(sp) | is.null(site))
 #' @rdname pglmm
 #' @importClassesFrom Matrix dsCMatrix
 #' @importMethodsFrom Matrix t solve %*% determinant diag
+#' @importFrom methods as show
 #' @export
 communityPGLMM.binary.LRT <- function(x, re.number = 0, ...) {
 
@@ -1355,6 +1359,8 @@ communityPGLMM.binary.LRT <- function(x, re.number = 0, ...) {
 #' covariance matrix structure (V) when you specify random effects.
 #' @importClassesFrom Matrix dsCMatrix RsparseMatrix
 #' @importClassesFrom Matrix dsCMatrix RsparseMatrix
+#' @importFrom methods as
+#' @importFrom stats model.frame model.matrix model.response
 #' @param ss which of the \code{random.effects} to produce
 #' @rdname pglmm
 #' @export
@@ -1511,6 +1517,7 @@ if (is.null(sp) | is.null(site))
 #' @param digits minimal number of significant digits for printing, as
 #' in \code{\link{print.default}}
 #' @param object communityPGLMM object to be summarised
+#' @importFrom stats printCoefmat
 #' @export
 summary.communityPGLMM <- function(object, digits = max(3, getOption("digits") - 3), ...) {
 	if (object$family == "gaussian") {
@@ -1573,6 +1580,8 @@ print.communityPGLMM <- function(x, digits = max(3, getOption("digits") - 3), ..
 ######################################################
 #' @rdname pglmm
 #' @method plot communityPGLMM
+#' @importFrom graphics par image
+#' @importFrom stats reshape
 #' @export
 plot.communityPGLMM <- function(x, digits = max(3, getOption("digits") - 3), ...) {
     #Wrangle data
@@ -1596,6 +1605,8 @@ plot.communityPGLMM <- function(x, digits = max(3, getOption("digits") - 3), ...
 #' "binomial"), these values are in the logit-1 transformed space.
 #' @rdname pglmm
 #' @param show.plot if \code{TRUE} (default), display plot
+#' @importFrom graphics par
+#' @importFrom stats reshape
 #' @export
 communityPGLMM.predicted.values <- function(x, show.plot = TRUE, ...) {
 

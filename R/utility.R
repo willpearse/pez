@@ -14,6 +14,7 @@
 }
 
 #Prearing regressions for output
+#' @importFrom stats coef
 .prepare.regression.output <- function(observed, randomisations=NULL, method=c("lm", "quantile", "mantel"), permute=0, class=NULL){
   #Checks
   method <- match.arg(method)
@@ -54,6 +55,7 @@
 #' @export
 #' @rdname eco.xxx.regression
 #' @importFrom quantreg summary.rq print.rq
+#' @importFrom stats sd
 summary.eco.xxx.regression <- function(object, ...){
     x <- object  ## FIXME:  lazy hack
     cat("\n", x$type, "\n", sep="")
@@ -87,6 +89,8 @@ print.eco.xxx.regression <- function(x, ...){
     summary(x, ...)
 }
 
+#' @importFrom graphics plot abline
+#' @importFrom stats coef
 .plot.regression <- function(x, y, observed, randomisations,
                              method=c("quantile", "lm", "mantel"),
                              permute=0, ...){
@@ -120,6 +124,8 @@ print.eco.xxx.regression <- function(x, ...){
 #' @method plot eco.xxx.regression
 #' @export
 #' @rdname eco.xxx.regression
+#' @importFrom stats as.dist
+#' @importFrom ape cophenetic.phylo
 plot.eco.xxx.regression <- function(x, ...){
     if(x$type == "eco.env.regression"){
         #Beware calling without knowing which environmental distance matrix we should be using
@@ -141,7 +147,7 @@ plot.eco.xxx.regression <- function(x, ...){
 
     if(x$type == "eco.phy.regression"){
         eco.matrix <- as.numeric(comm.dist(x$data$comm))
-        phy.matrix <- as.numeric(as.dist(cophenetic(x$data$phy)))
+        phy.matrix <- as.numeric(as.dist(cophenetic.phylo(x$data$phy)))
         .plot.regression(phy.matrix, eco.matrix, x$observed, x$randomisations, x$method, x$permute,
                          xlab="Phylogenetic Distance", ylab="Ecological Co-existnce", ...)
     }

@@ -122,6 +122,8 @@
 #' @importFrom caper comparative.data pgls summary.pgls coef.pgls
 #' @importFrom ade4 newick2phylog
 #' @importFrom FD dbFD
+#' @importFrom stats coef cophenetic hclust as.dist
+#' @importFrom utils capture.output
 #' @export
 pez.evenness <- function(data, sqrt.phy=FALSE, traitgram=NULL, traitgram.p=2, ext.dist=NULL, quick=TRUE, q=0.0001)
 {

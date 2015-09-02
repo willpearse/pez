@@ -81,6 +81,8 @@
 #' @seealso \code{\link{eco.scape}} \code{\link{sim.phy}}
 #' \code{\link{sim.meta}}
 #' @importFrom ape vcv corBlomberg compute.brlen vcv.phylo
+#' @importFrom stats rnorm sd runif
+#' @importFrom methods is
 #' @export
 #' @examples
 #' #Create balanced tree with equal branch-lengths (signal in centers)
@@ -246,7 +248,7 @@ scape<-function(tree, scape.size=10, g.center=1, g.range=1, g.repulse=1, wd.all=
         spp.Xs[,,i]<-sppX
         X.<-cbind(X.,matrix(sppX))
     }
-    colnames(X.)<-colnames(X2)
+    
     ######################
     #PA matrix
     m.<- dim(X.)[1]
@@ -260,6 +262,7 @@ scape<-function(tree, scape.size=10, g.center=1, g.range=1, g.repulse=1, wd.all=
     
     ########### OUTPUT
     rownames(Y) <- paste(index[,1], index[,2], sep=".")
+    colnames(Y) <- tree$tip.label
     cc <- comparative.comm(tree, Y)
     return(list(cc=cc, Y=Y, X.joint=X., X1=X1, X2=X2, sppXs=spp.Xs, 
                 V.phylo=Vinit, V.phylo.rho = V, V.center = V.a, V.range = V.w, V.repulse = Vcomp, 

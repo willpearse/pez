@@ -252,6 +252,7 @@
 #' phylogenetic and functional diversity. Functional Ecology, 25,
 #' 735-744.
 #' @importFrom ape cophenetic.phylo
+#' @importFrom stats var
 #' @rdname pez.metrics
 #' @name pez.metrics
 #' @export
@@ -504,7 +505,7 @@
 #' @export
 .simpson.phylogenetic <- function(x) {
     N.relative <- prop.table(x$comm, 2)
-    dmat <- cophenetic(x$phy)
+    dmat <- cophenetic.phylo(x$phy)
     out <- apply(N.relative, 1, function(n) sum((n %o% n)*dmat))
     return(out) 
 }
@@ -553,6 +554,7 @@
 
 #' @rdname pez.metrics
 #' @name pez.metrics
+#' @importFrom stats setNames
 #' @export
 .pae <- function(x, na.rm=TRUE, ...) {
     #Assertions and argument handling
@@ -772,6 +774,7 @@
 #' Biology, 24, 1042-1051.
 #' @importFrom caper contrCalc VCV.array
 #' @importFrom mvtnorm rmvnorm
+#' @importFrom stats reorder
 #' @rdname pez.metrics
 #' @name pez.metrics
 #' @export

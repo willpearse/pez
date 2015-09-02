@@ -69,6 +69,7 @@
 #' @rdname eco.xxx.regression
 #' @importFrom quantreg rq
 #' @importFrom vegan mantel
+#' @importFrom stats lm as.dist
 #' @export
 eco.trait.regression <- function(data,
   randomisation=c("taxa.labels", "richness", "frequency", "sample.pool", "phylogeny.pool", "independentswap", "trialswap"),

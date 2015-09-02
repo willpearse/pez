@@ -117,6 +117,8 @@
 #' @importFrom apTreeshape as.treeshape as.treeshape.phylo colless tipsubtree
 #' @importFrom ape gammaStat cophenetic.phylo drop.tip is.ultrametric as.phylo is.binary.tree
 #' @importFrom FD dbFD
+#' @importFrom stats coef hclust as.dist resid lm coef
+#' @importFrom utils capture.output
 #' @export
 pez.shape <- function(data, sqrt.phy=FALSE, traitgram=NULL, traitgram.p=2, ext.dist=NULL, which.eigen=1, quick=TRUE, q=0.0001)
 {

@@ -48,6 +48,7 @@
 #' @rdname sim.meta
 #' @name sim.meta
 #' @seealso \code{\link{sim.phy}} \code{\link{scape}}
+#' @importFrom stats rpois rbinom
 #' @export
 sim.meta.comm <- function(size=10, n.spp=8, timesteps=10, p.migrate=0.05, env.lam=10, abund.lam=5, stoch.lam=1){
     #Setup environment and abundances
@@ -104,6 +105,7 @@ sim.meta.comm <- function(size=10, n.spp=8, timesteps=10, p.migrate=0.05, env.la
 #' simulated grid assemblages.
 #' @rdname sim.meta
 #' @author Will Pearse
+#' @importFrom stats rpois rbinom runif
 #' @export
 sim.meta.phy.comm <- function(size=10, n.spp=8, timesteps=10, p.migrate=0.3, env.lam=10, abund.lam=5, stoch.lam=1, p.speciate=0.05){
     #Setup environment and abundances

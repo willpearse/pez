@@ -1,6 +1,8 @@
 #' @importFrom ape cophenetic.phylo
 #' @importFrom quantreg rq
 #' @importFrom vegan mantel
+#' @importFrom stats lm as.dist
+#' @importFrom ape cophenetic.phylo
 #' @export
 #' @rdname eco.xxx.regression
 eco.phy.regression <- function(data,
@@ -15,7 +17,7 @@ eco.phy.regression <- function(data,
     if(abundance==FALSE)
         data$comm[data$comm>1] <- 1
     eco.matrix <- as.dist(1 - as.matrix(comm.dist(data$comm)))
-    phy.matrix <- as.dist(cophenetic(data$phy))
+    phy.matrix <- as.dist(cophenetic.phylo(data$phy))
 	
     #Observed eco.phy.regression
     observed <- .eco.phy.regression(eco.matrix, phy.matrix, method, ...)

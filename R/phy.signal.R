@@ -24,6 +24,7 @@
 #' phy.signal(data, "lambda")
 #' @importFrom caper comparative.data pgls
 #' @importFrom picante Kcalc
+#' @importFrom stats setNames
 #' @export
 phy.signal <- function(data, method=c("lambda", "delta", "kappa", "blom.k")){
   #Assertions and argument handling

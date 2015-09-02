@@ -46,6 +46,7 @@
 #' plot(tree)
 #' @rdname sim.phy
 #' @name sim.phy
+#' @importFrom stats runif
 #' @export
 sim.bd.phy <- function(speciate=0.1, extinction=0.025, time.steps=20){
     #Setup
@@ -112,6 +113,7 @@ sim.bd.phy <- function(speciate=0.1, extinction=0.025, time.steps=20){
 #' within the boundary defined by \code{tr.range}; default TRUE.
 #' @author Will Pearse
 #' @rdname sim.phy
+#' @importFrom stats runif rnorm quantile
 #' @export
 sim.bd.tr.phy <- function(speciate=0.1, extinction=0.025, time.steps=20, tr.range=c(0,1), sp.tr=2, ext.tr=1, tr.walk=0.2, tr.wrap=TRUE){
     #Setup

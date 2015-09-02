@@ -13,6 +13,7 @@
 comm.dist <- function(x) UseMethod("comm.dist", x)
 #' @export
 #' @rdname dist.xxx
+#' @importFrom stats as.dist
 comm.dist.matrix <- function(x){
 	output <- matrix(ncol=ncol(x), nrow=ncol(x))
 	for(i in seq(ncol(x))){
@@ -60,6 +61,7 @@ traits.dist.default <- function(x, dist.func = dist.func.default, ...) dist.func
 traits.dist.data.frame <- function(x, dist.func = dist.func.default, ...) dist.func(as.matrix(x))
 #' @export
 #' @rdname dist.xxx
+#' @importFrom stats dist
 dist.func.default <- function(x) dist(scale(x, center=TRUE, scale=TRUE))
 
 #' @details \code{phylo.dist} returns the phylogenetic (cophenetic)
@@ -69,7 +71,9 @@ dist.func.default <- function(x) dist(scale(x, center=TRUE, scale=TRUE))
 phylo.dist <- function(x, ...) UseMethod("phylo.dist", x)
 #' @export
 #' @rdname dist.xxx
-phylo.dist.phylo <- function(x, ...) as.dist(cophenetic(x))
+#' @importFrom stats as.dist
+#' @importFrom ape cophenetic.phylo
+phylo.dist.phylo <- function(x, ...) as.dist(cophenetic.phylo(x))
 #' @export
 #' @rdname dist.xxx
 phylo.dist.comparative.comm <- function(x, ...) phylo.dist(x$phy)
@@ -118,6 +122,7 @@ pianka.dist <- function(x, ...) UseMethod("pianka.dist", x)
 #' @param env environmental variable to be used to calculate the
 #' distance matrix
 #' @export
+#' @importFrom stats as.dist
 pianka.dist.matrix <- function(x, env = NULL, ...){
     #Checks and assertions
     if(!is.numeric(x)) stop("Need numeric community matrix for Pianaka calculations")
@@ -143,6 +148,7 @@ pianka.dist.matrix <- function(x, env = NULL, ...){
 
 #' @export
 #' @rdname dist.xxx
+#' @importFrom stats as.dist
 pianka.dist.comparative.comm <- function(x, alltogether = TRUE, ...){
 	#Checks and assertions
 	if(is.null(x$env)) stop("Cannot calculate Pianka distances without environmental data")

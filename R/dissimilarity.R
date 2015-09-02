@@ -81,6 +81,7 @@
 #' }
 #' @importFrom picante unifrac phylosor pcd comdist
 #' @importFrom ape is.ultrametric as.phylo
+#' @importFrom stats cophenetic hclust as.dist
 #' @export
 pez.dissimilarity <- function(data, metric=c("all", "unifrac", "pcd", "phylosor", "comdist"), abundance.weighted=FALSE, permute=1000, sqrt.phy=FALSE, traitgram=NULL, traitgram.p=2, ext.dist=NULL, ...)
 {   

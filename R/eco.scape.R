@@ -132,6 +132,7 @@
 #' mtext("Env random, phy.signal=0.2, 32 species", outer=TRUE, side=3, cex=1.25)
 #' @importFrom ape vcv.phylo is.ultrametric
 #' @importFrom vegan decostand
+#' @importFrom stats uniroot rnorm
 #' @seealso \code{\link{scape}} \code{\link{sim.phy}} \code{\link{sim.meta}}
 #' @export
 eco.scape <- function(tree, scape.size=10, g.center=1, wd.all=0.2*(scape.size+1)^2, signal.center=TRUE, center.scale = 1, site.stoch.scale = 0, sd.center=1, sd.range=1, K=100, extinction = FALSE, rho=NULL){
@@ -254,7 +255,7 @@ eco.scape <- function(tree, scape.size=10, g.center=1, wd.all=0.2*(scape.size+1)
     Yab[Yab>0] <- floor(sapply(Yab[Yab>0], function(x){runif(1,min=(x-1),max=(x+5))}))
     for(i in which(colSums(Yab)==0))
         Yab[(which(Y[,i]==1)),i] <- 1
-    colnames(Yab) <- colnames(X.)
+    colnames(Yab) <- tree$tip.label
 
     ##CREATE full environmental matrix (add mx1+mx2)
     env <- matrix(mx, nrow=length(mx), ncol=length(mx), byrow=TRUE)

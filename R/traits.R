@@ -35,6 +35,10 @@
 #' sims <- ConDivSim(data)
 #' #...without traits...
 #' sims.phy <- ConDivSim(data, type="phy")
+#' @importFrom ape cophenetic.phylo
+#' @importFrom stats quantile sd
+#' @importFrom graphics polygon lines points text
+#' @importFrom grDevices grey
 #' @export
 ConDivSim<-function(object, type="traits", n.sim=100, plot = TRUE, disp99 = FALSE){
     #Assertions and argument handling
@@ -55,7 +59,7 @@ ConDivSim<-function(object, type="traits", n.sim=100, plot = TRUE, disp99 = FALS
                            stop("'object' must contain trait data if using a trait matrix")
                        dist <- as.matrix(dist(object$data))
                    },
-                   "phy" = dist <- cophenetic(object$phy),
+                   "phy" = dist <- cophenetic.phylo(object$phy),
                    stop("Unknown 'type' of analysis"))
         }
     }
@@ -198,6 +202,7 @@ ConDivSim<-function(object, type="traits", n.sim=100, plot = TRUE, disp99 = FALS
 #'  data(laja)
 #'  trait.asm(laja$fish.pref)
 #' }
+#' @importFrom stats rbinom optimize
 #' @export
 trait.asm<-function(a, m=1000,meanSR=NULL,interval=c(.001,10),exponential=TRUE,Pscale=1)
 {
@@ -306,5 +311,6 @@ traitgram.cc <- function(object, trait, moreArgs = NULL, ...) {
 ##' @param x A matrix-like object
 ##' @return \code{princompOne}: the first axis of a PCA
 ##' @rdname traitgram.cc
+##' @importFrom stats princomp
 ##' @export
 princompOne <- function(x, ...) princomp(x, ...)$scores[,1]

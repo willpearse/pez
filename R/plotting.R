@@ -31,6 +31,7 @@
 #' @author Will Pearse, Matt Helmus
 #' @method plot comparative.comm
 #' @importFrom ape tiplabels plot.phylo
+#' @importFrom graphics plot
 #' @export
 #' @examples
 #' data(laja)

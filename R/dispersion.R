@@ -85,6 +85,7 @@
 #' @importFrom caper phylo.d
 #' @importFrom picante ses.mntd ses.mpd ses.pd
 #' @importFrom ape is.ultrametric as.phylo cophenetic.phylo
+#' @importFrom stats coef cophenetic hclust as.dist
 #' @export
 pez.dispersion <- function(data, null.model=c("taxa.labels", "richness", "frequency", "sample.pool", "phylogeny.pool", "independentswap", "trialswap"), abundance=FALSE, sqrt.phy=FALSE, traitgram=NULL, traitgram.p=2, ext.dist=NULL, permute=1000, ...)
 {

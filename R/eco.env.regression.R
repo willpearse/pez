@@ -1,8 +1,10 @@
 #' @importFrom quantreg rq
 #' @importFrom vegan mantel
+#' @importFrom stats as.dist lm
 #' @export
 #' @rdname eco.xxx.regression
 #' @name eco.xxx.regression
+#' @importFrom stats as.dist
 eco.env.regression <- function(data, randomisation=c("taxa.labels", "richness", "frequency",
                                    "sample.pool", "phylogeny.pool", "independentswap", "trialswap"),
                                permute=0, method=c("quantile", "lm", "mantel"), altogether=TRUE, indep.swap=1000, abundance=TRUE, ...){
