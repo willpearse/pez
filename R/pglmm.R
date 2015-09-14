@@ -150,8 +150,8 @@
 #' \item{B.zscore}{approximate Z scores for the fixed effects regression coefficients}
 #' \item{B.pvalue}{approximate tests for the fixed effects regression coefficients being different from zero}
 #' \item{ss}{random effects' standard deviations for the covariance matrix \eqn{\sigma^2V}{sigma^2 V} for each random effect in order. For the linear mixed model, the residual variance is listed last}
-#' \item{s2r}{random effects variances for nested random effects}
-#' \item{s2n}{random effects variances for non-nested random effects}
+#' \item{s2r}{random effects variances for non-nested random effects}
+#' \item{s2n}{random effects variances for nested random effects}
 #' \item{s2resid}{for linear mixed models, the residual vairance}
 #' \item{logLIK}{for linear mixed models, the log-likelihood for either the restricted likelihood (\code{REML=TRUE}) or the overall likelihood (\code{REML=FALSE}). This is set to NULL for generalised linear mixed models}
 #' \item{AIC}{for linear mixed models, the AIC for either the restricted likelihood (\code{REML=TRUE}) or the overall likelihood (\code{REML=FALSE}). This is set to NULL for generalised linear mixed models}
@@ -752,7 +752,7 @@ communityPGLMM.gaussian <- function(formula, data = list(), family = "gaussian",
         #NOTE: the nested/non-nested returns are 'swapped' here, which looks dodgy but is better than them being the wrong way round!
 	results <- list(formula = formula, data = data, family = family, random.effects = random.effects, 
 		B = B, B.se = B.se, B.cov = B.cov, B.zscore = B.zscore, B.pvalue = B.pvalue, ss = ss, 
-		s2n = s2r, s2r = s2n, s2resid = s2resid, logLik = logLik, AIC = AIC, BIC = BIC, REML = REML, 
+		s2n = s2n, s2r = s2r, s2resid = s2resid, logLik = logLik, AIC = AIC, BIC = BIC, REML = REML, 
 		s2.init = s2.init, B.init = B.init, Y = Y, X = X, H = H, iV = iV, mu = NULL, nested = nested, 
 		sp = sp, site = site, Zt = Zt, St = St, convcode = opt$convergence, niter = opt$counts)
 
@@ -1154,7 +1154,7 @@ if (is.null(sp) | is.null(site))
 
 	results <- list(formula = formula, data = data, family = family, random.effects = random.effects, 
 		B = B, B.se = B.se, B.cov = B.cov, B.zscore = B.zscore, B.pvalue = B.pvalue, ss = ss, 
-		s2n = s2r, s2r = s2n, s2resid = NULL, logLik = NULL, AIC = NULL, BIC = NULL, REML = REML, 
+		s2n = s2n, s2r = s2r, s2resid = NULL, logLik = NULL, AIC = NULL, BIC = NULL, REML = REML, 
 		s2.init = s2.init, B.init = B.init, Y = Y, X = X, H = H, iV = iV, mu = mu, nested = nested, sp = sp, 
 		site = site, Zt = Zt, St = St, convcode = opt$convergence, niter = opt$counts)
 	class(results) <- "communityPGLMM"

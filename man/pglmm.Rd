@@ -145,8 +145,8 @@ an object of class \code{communityPGLMM}
 \item{B.zscore}{approximate Z scores for the fixed effects regression coefficients}
 \item{B.pvalue}{approximate tests for the fixed effects regression coefficients being different from zero}
 \item{ss}{random effects' standard deviations for the covariance matrix \eqn{\sigma^2V}{sigma^2 V} for each random effect in order. For the linear mixed model, the residual variance is listed last}
-\item{s2r}{random effects variances for nested random effects}
-\item{s2n}{random effects variances for non-nested random effects}
+\item{s2r}{random effects variances for non-nested random effects}
+\item{s2n}{random effects variances for nested random effects}
 \item{s2resid}{for linear mixed models, the residual vairance}
 \item{logLIK}{for linear mixed models, the log-likelihood for either the restricted likelihood (\code{REML=TRUE}) or the overall likelihood (\code{REML=FALSE}). This is set to NULL for generalised linear mixed models}
 \item{AIC}{for linear mixed models, the AIC for either the restricted likelihood (\code{REML=TRUE}) or the overall likelihood (\code{REML=FALSE}). This is set to NULL for generalised linear mixed models}
