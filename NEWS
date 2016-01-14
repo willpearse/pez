@@ -1,3 +1,13 @@
+2016-01-15	Version 1.1-1
+
+* eco.scape.R & scape.R - changed return type, stopped crashing bug on
+  certain parameter combinations (hat-tip to Ben Weinstein)
+* metrics.R - more descriptive documentation for .pd (hat-tip to Max
+  Farrell), IMPORTANT change to calculation of .scheiner
+* CITATION - updated now manuscript released
+* pez-pglmm-overview - new overview vignette
+* pglmm.R - corrected mis-specified documentation/code
+
 2015-07-29	Version 1.1-0
 
 * metric.null.R - added generic metrics, metric null distributions,

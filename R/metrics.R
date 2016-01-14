@@ -12,6 +12,13 @@
 #' additional parameters that can be passed, which are described
 #' below.
 #'
+#' \code{.pd} returns two metrics: Faith's PD (which does not take
+#' into account abundance) and Faith's PD corrected for species
+#' richness or total abundance (depending on
+#' \code{abundance.weighted}). I am almost certain that I got the idea
+#' for this from somewhere, but I can't find the reference: if you
+#' published on this before 2012, please get in touch with me.
+#'
 #' @note Many (but not all) of these functions are fairly trivial
 #' wrappers around functions in other packages. In the citations for
 #' each metric, * indicates a function that's essentially written in
@@ -591,7 +598,6 @@
     
     #Setup
     ed <- evol.distinct(x$phy, "fair.proportion")$w
-    pd <- pd(x$comm, x$phy)$PD
     if(!abundance.weighted)
         x$comm[x$comm > 0] <- 1
     
@@ -599,14 +605,13 @@
     output <- numeric(nrow(x$comm))
     for(i in seq(nrow(x$comm))){
         if(q==1)
-            output[i] <- exp(-1*sum(((x$comm[i,]*ed[i])/(sum(x$comm[i,])*pd[i])) * log((x$comm[i,]*ed[i])/(sum(x$comm[i,])*pd[i]))))
+            output[i] <- exp(-1*sum(((x$comm[i,]*ed[i])/(sum(x$comm[i,])*ed[i])) * log((x$comm[i,]*ed[i])/(sum(x$comm[i,])*ed[i]))))
         else
-            output[i] <- sum(((x$comm[i,]*ed[i])/(sum(x$comm[i,])*pd[i]))^q)^(1/(1-q))
+            output[i] <- sum(((x$comm[i,]*ed[i])/(sum(x$comm[i,])*ed[i]))^q)^(1/(1-q))
     }
     return(output)
 }
 
-#' PSE (Helmus et al., 2007)
 #' @importFrom picante pse
 #' @rdname pez.metrics
 #' @name pez.metrics

@@ -199,9 +199,10 @@ values of Y; for the generalized linear mixed model (family =
 "binomial"), these values are in the logit-1 transformed space.
 }
 \details{
-For linear mixed models (\code{family = 'gaussian'}), the
-function estimates parameters for the model of the form, for
-example,
+The vignette 'pez-pglmm-overview' gives a gentle
+introduction to using PGLMMS. For linear mixed models (\code{family
+= 'gaussian'}), the function estimates parameters for the model of
+the form, for example,
 
 \deqn{Y = \beta_0 + \beta_1x + b_0 + b_1x}{y = beta_0 + beta_1x + b_0 + b_1x}
 \deqn{b_0 ~ Gaussian(0, \sigma_0^2I_{sp})}{b_0 ~ Gaussian(0, sigma_0^2I_(sp))}
@@ -334,6 +335,9 @@ re.c, re.d, re.f, re.g), REML = TRUE, verbose = TRUE, s2.init=.1)
 
 #########################################################
 #Second section; detailed simulation and analysis #######
+#NOTE: this section is explained and annotated in #######
+#      detail in the vignette 'pez-pglmm-overview'#######
+#      run 'vignette('pez-pglmm-overview') to read#######
 #########################################################
 # Generate simulated data for nspp species and nsite sites
 nspp <- 15
@@ -387,6 +391,10 @@ if (signal.B1 == TRUE) {
 
 # Simulate species abundances among sites to give matrix Y that
 # contains species in rows and sites in columns
+y <- rep(b0, each=nsite)
+y <- y + rep(b1, each=nsite) * rep(X, nspp)
+y <- y + rnorm(nspp*nsite) #add some random 'error'
+Y <- rbinom(length(y), size=1, prob=exp(y)/(1+exp(y)))
 y <- matrix(outer(b0, array(1, dim = c(1, nsite))), nrow = nspp,
 ncol = nsite) + matrix(outer(b1, X), nrow = nspp, ncol = nsite)
 e <- rnorm(nspp * nsite, sd = sd.resid)

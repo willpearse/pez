@@ -172,8 +172,14 @@ your best bet. Note that *all of these functions* take a common
 first parameter: a \code{\link{comparative.comm}} object. There are
 additional parameters that can be passed, which are described
 below.
-
-PSE (Helmus et al., 2007)
+}
+\details{
+\code{.pd} returns two metrics: Faith's PD (which does not take
+into account abundance) and Faith's PD corrected for species
+richness or total abundance (depending on
+\code{abundance.weighted}). I am almost certain that I got the idea
+for this from somewhere, but I can't find the reference: if you
+published on this before 2012, please get in touch with me.
 }
 \note{
 Many (but not all) of these functions are fairly trivial

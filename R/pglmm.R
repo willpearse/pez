@@ -79,9 +79,10 @@
 #' during optimization.
 #' @param ... additional arguments to summary and plotting functions
 #' (currently ignored)
-#' @details For linear mixed models (\code{family = 'gaussian'}), the
-#' function estimates parameters for the model of the form, for
-#' example,
+#' @details The vignette 'pez-pglmm-overview' gives a gentle
+#' introduction to using PGLMMS. For linear mixed models (\code{family
+#' = 'gaussian'}), the function estimates parameters for the model of
+#' the form, for example,
 #' 
 #' \deqn{Y = \beta_0 + \beta_1x + b_0 + b_1x}{y = beta_0 + beta_1x + b_0 + b_1x}
 #' \deqn{b_0 ~ Gaussian(0, \sigma_0^2I_{sp})}{b_0 ~ Gaussian(0, sigma_0^2I_(sp))}
@@ -251,6 +252,9 @@
 #' 
 #' #########################################################
 #' #Second section; detailed simulation and analysis #######
+#' #NOTE: this section is explained and annotated in #######
+#' #      detail in the vignette 'pez-pglmm-overview'#######
+#' #      run 'vignette('pez-pglmm-overview') to read#######
 #' #########################################################
 #' # Generate simulated data for nspp species and nsite sites
 #' nspp <- 15
@@ -304,6 +308,11 @@
 #' 
 #' # Simulate species abundances among sites to give matrix Y that
 #' # contains species in rows and sites in columns
+#' y <- rep(b0, each=nsite)
+#' y <- y + rep(b1, each=nsite) * rep(X, nspp)
+#' y <- y + rnorm(nspp*nsite) #add some random 'error'
+#' Y <- rbinom(length(y), size=1, prob=exp(y)/(1+exp(y)))
+
 #' y <- matrix(outer(b0, array(1, dim = c(1, nsite))), nrow = nspp,
 #' ncol = nsite) + matrix(outer(b1, X), nrow = nspp, ncol = nsite)
 #' e <- rnorm(nspp * nsite, sd = sd.resid)
@@ -418,6 +427,12 @@
 communityPGLMM <- function(formula, data = list(), family = "gaussian", sp = NULL, site = NULL, 
 	random.effects = list(), REML = TRUE, s2.init = NULL, B.init = NULL, reltol = 10^-6, maxit = 500, 
 	tol.pql = 10^-6, maxit.pql = 200, verbose = FALSE) {
+
+    #Error checking
+    if(!is.factor(sp))
+        stop("'sp' must be a factor")
+    if(!is.factor(site))
+        stop("'site' must be a factor")
 
 	if (family == "gaussian") 
 		z <- communityPGLMM.gaussian(formula = formula, data = data, sp = sp, site = site, random.effects = random.effects, 

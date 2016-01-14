@@ -51,30 +51,30 @@
 #' increased to obtain more species at sites and thus increase average
 #' site species richness.
 #
-#' @return \code{cc} \code{\link{comparative.comm}} object with
-#' presence/absence results of simulations. The site names are the
-#' row.columns of the cells in the original grid cells that made up
-#' the data
-#' @return \code{X.joint} full probabilities of species at sites, used
-#' to construct cc
-#' @return \code{X1} probabilities of species along gradient 1
-#' @return \code{X2} probabilities of species along gradient 2
-#' @return \code{sppXs} full probabilities of each species as an array
-#' arranged in a \code{scape.size}-by-\code{scape.size} matrix
-#' @return \code{V.phylo} initial phylogenetic covariance matrix from
-#' tree
-#' @return \code{V.phylo.rho} phylogenetic covariance matrix from tree
-#' scaled by Grafen if rho is provided
-#' @return \code{V.center} scaled by \code{g.center} phylo covariance
-#' matrix used in the simulations
-#' @return \code{V.range} scaled by \code{g.range} phylo covariance
-#' matrix used in the simulations
-#' @return \code{V.repulse} scaled by \code{g.repulse} phylo
-#' covariance matrix used in the simulations
-#' @return \code{bspp1} species optima for gradient 1
-#' @return \code{bspp2} species optima for gradient 2                               
-#' @return \code{u} the env gradients values for the two gradients
-#' @return \code{wd} the denominator for species ranges
+#' @return \item{cc}{\code{\link{comparative.comm}} object with presence/absence
+#' results of simulations. The site names are the row.columns of the
+#' cells in the original grid cells that made up the data, and these
+#' co-ordinates are also given in the \code{env} slot of the object.}
+#' \item{X.joint}{full probabilities of species at sites, used
+#' to construct \code{cc}}
+#' \item{X1}{probabilities of species along gradient 1}
+#' \item{X2}{probabilities of species along gradient 2}
+#' \item{sppXs}{full probabilities of each species as an array
+#' arranged in a \code{scape.size}-by-\code{scape.size} matrix}
+#' \item{V.phylo}{initial phylogenetic covariance matrix from
+#' tree}
+#' \item{V.phylo.rho}{phylogenetic covariance matrix from tree
+#' scaled by Grafen if rho is provided}
+#' \item{V.center}{scaled by \code{g.center} phylo covariance
+#' matrix used in the simulations}
+#' \item{V.range}{scaled by \code{g.range} phylo covariance
+#' matrix used in the simulations}
+#' \item{V.repulse}{scaled by \code{g.repulse} phylo
+#' covariance matrix used in the simulations}
+#' \item{bspp1}{species optima for gradient 1}
+#' \item{bspp2}{species optima for gradient 2}                              
+#' \item{u}{the env gradients values for the two gradients}
+#' \item{wd}{the denominator for species ranges}
 #' @author M.R. Helmus, cosmetic changes by Will Pearse
 #' @references Helmus M.R. & Ives A.R. (2012). Phylogenetic diversity
 #' area curves. Ecology, 93, S31-S43.
@@ -263,7 +263,9 @@ scape<-function(tree, scape.size=10, g.center=1, g.range=1, g.repulse=1, wd.all=
     ########### OUTPUT
     rownames(Y) <- paste(index[,1], index[,2], sep=".")
     colnames(Y) <- tree$tip.label
-    cc <- comparative.comm(tree, Y)
+    x.y <- data.frame(row=index[,1], column=index[,2])
+    rownames(x.y) <- rownames(Y)
+    cc <- comparative.comm(tree, Y, env=x.y)
     return(list(cc=cc, Y=Y, X.joint=X., X1=X1, X2=X2, sppXs=spp.Xs, 
                 V.phylo=Vinit, V.phylo.rho = V, V.center = V.a, V.range = V.w, V.repulse = Vcomp, 
                 bspp1 = bspp1, bspp2 = bspp2, u = mx, wd=wd.all))

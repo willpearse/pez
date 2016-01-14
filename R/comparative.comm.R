@@ -451,7 +451,7 @@ as.data.frame.comparative.comm <- function(x, row.names=NULL, optional=FALSE, ab
     expand <- function(data, env, n.spp, n.sites){
         if(!is.null(data)){
             mat <- sapply(data, function(x) model.matrix(~x-1))
-            if(any(sapply(mat, function(x) is.character(x)|is.factor(x))))
+            if(is.list(mat))
                 mat <- do.call(cbind, mat)
             y <- 1
             for(i in seq(ncol(data))){

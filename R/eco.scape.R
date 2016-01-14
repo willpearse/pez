@@ -71,6 +71,12 @@
 #' @param rho Grafen branch adjustment of phylogenetic tree see
 #' \code{\link[ape:corGrafen]{corGrafen}}
 #' @return
+#' \item{cc}{\code{\link{comparative.comm}} object with
+#' presence/absence results of simulations. The site names are the
+#' row.columns of the cells in the original grid cells that made up
+#' the data, and these co-ordinates are also given in the \code{env}
+#' slot of the object along with the environmental gradient
+#' information.}
 #' \item{Y}{presence/absence matrix}
 #' \item{Yab}{abundance matrix}
 #' \item{index}{spatial coordinates for X and Y (stacked columns)}
@@ -264,7 +270,7 @@ eco.scape <- function(tree, scape.size=10, g.center=1, wd.all=0.2*(scape.size+1)
 
     ########### OUTPUT
     rownames(Yab) <- paste(index[,1], index[,2], sep=".")
-    env <- data.frame(env.gradient=env[index])
+    env <- data.frame(env.gradient=env[index], row=index[,1], column=index[,2])
     rownames(env) <- rownames(Yab)
     cc <- comparative.comm(tree, Yab, env=env)
     return(list(cc=cc, Y=Y, Yab=Yab, gradient1 = mx, gradient2 = mx2, X.joint = X., X1 = X1, X2 = X2, nichewd = wd.all, K = K, environ = env, sppXs = spp.Xs, V.phylo = Vinit, V.phylo.rho = V, V.center = V.a, bsp1 = bspp1, bspp2 = bspp2))

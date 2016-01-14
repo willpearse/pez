@@ -1,8 +1,10 @@
-citHeader("At the time of writing, pez is in press in Bioinformatics:")
 citEntry(entry="Article",
          title = "pez: Phylogenetics for the Environmental Sciences",
          author = personList(as.person("W.D. Pearse"), as.person("M.W. Cadotte"), as.person("J. Cavender-Bares"), as.person("A.R. Ives"), as.person("C.M. Tucker"), as.person("S.C. Walker"),as.person("M.R. Helmus")),
          journal = "Bioinformatics",
          year="2015",
+         pages="2888--2890",
+         volume="31",
+         number="17",
          doi = "10.1093/bioinformatics/btv277",
-         textVersion = "W.D. Pearse, M.W. Cadotte, J. Cavender-Bares, A.R. Ives, C.M. Tucker, S.C. Walker, and M.R. Helmus. 2015. pez: Phylogenetics for the Environmental Sciences. Bioinformatics DOI: 10.1093/bioinformatics/btv277.")
+         textVersion = "W.D. Pearse, M.W. Cadotte, J. Cavender-Bares, A.R. Ives, C.M. Tucker, S.C. Walker, and M.R. Helmus. 2015. pez: Phylogenetics for the Environmental Sciences. Bioinformatics 31 (17): 2888-2890. DOI: 10.1093/bioinformatics/btv277.")

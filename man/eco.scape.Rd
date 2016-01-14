@@ -50,6 +50,12 @@ Details.}
 \code{\link[ape:corGrafen]{corGrafen}}}
 }
 \value{
+\item{cc}{\code{\link{comparative.comm}} object with
+presence/absence results of simulations. The site names are the
+row.columns of the cells in the original grid cells that made up
+the data, and these co-ordinates are also given in the \code{env}
+slot of the object along with the environmental gradient
+information.}
 \item{Y}{presence/absence matrix}
 \item{Yab}{abundance matrix}
 \item{index}{spatial coordinates for X and Y (stacked columns)}

@@ -56,43 +56,30 @@ increase to get more variation in range sizes across gradients}
 considered present at a site}
 }
 \value{
-\code{cc} \code{\link{comparative.comm}} object with
-presence/absence results of simulations. The site names are the
-row.columns of the cells in the original grid cells that made up
-the data
-
-\code{X.joint} full probabilities of species at sites, used
-to construct cc
-
-\code{X1} probabilities of species along gradient 1
-
-\code{X2} probabilities of species along gradient 2
-
-\code{sppXs} full probabilities of each species as an array
-arranged in a \code{scape.size}-by-\code{scape.size} matrix
-
-\code{V.phylo} initial phylogenetic covariance matrix from
-tree
-
-\code{V.phylo.rho} phylogenetic covariance matrix from tree
-scaled by Grafen if rho is provided
-
-\code{V.center} scaled by \code{g.center} phylo covariance
-matrix used in the simulations
-
-\code{V.range} scaled by \code{g.range} phylo covariance
-matrix used in the simulations
-
-\code{V.repulse} scaled by \code{g.repulse} phylo
-covariance matrix used in the simulations
-
-\code{bspp1} species optima for gradient 1
-
-\code{bspp2} species optima for gradient 2
-
-\code{u} the env gradients values for the two gradients
-
-\code{wd} the denominator for species ranges
+\item{cc}{\code{\link{comparative.comm}} object with presence/absence
+results of simulations. The site names are the row.columns of the
+cells in the original grid cells that made up the data, and these
+co-ordinates are also given in the \code{env} slot of the object.}
+\item{X.joint}{full probabilities of species at sites, used
+to construct \code{cc}}
+\item{X1}{probabilities of species along gradient 1}
+\item{X2}{probabilities of species along gradient 2}
+\item{sppXs}{full probabilities of each species as an array
+arranged in a \code{scape.size}-by-\code{scape.size} matrix}
+\item{V.phylo}{initial phylogenetic covariance matrix from
+tree}
+\item{V.phylo.rho}{phylogenetic covariance matrix from tree
+scaled by Grafen if rho is provided}
+\item{V.center}{scaled by \code{g.center} phylo covariance
+matrix used in the simulations}
+\item{V.range}{scaled by \code{g.range} phylo covariance
+matrix used in the simulations}
+\item{V.repulse}{scaled by \code{g.repulse} phylo
+covariance matrix used in the simulations}
+\item{bspp1}{species optima for gradient 1}
+\item{bspp2}{species optima for gradient 2}
+\item{u}{the env gradients values for the two gradients}
+\item{wd}{the denominator for species ranges}
 }
 \description{
 \code{scape} simulates communities that are phylogenetically structured
