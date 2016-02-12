@@ -34,8 +34,9 @@ test_that("Eaed", expect_that(.eaed(data), is_equivalent_to(c(1, 0.9789576790278
 set.seed(123); test_that("Delta", expect_that(.delta(data), equals(c(NA, 1e-06, 1e-06, 1e-06, NA, 3))))
 set.seed(123); test_that("Kappa", expect_that(.kappa(data), equals(c(NA, 3, 3, 3, NA, 1.65281212634147))))
 set.seed(123); test_that("Lambda", expect_that(.lambda(data), is_equivalent_to(c(NA, 1, 1, 1, NA, 1e-06))))
-test_that("Scheiner", expect_that(round(.scheiner(data),2), equals(c(8,8,8,8,8,8))))
-
+test_that("Scheiner q=0", expect_that(.scheiner(data,0), is_equivalent_to(c(8,8,8,8,8,8))))
+test_that("Scheiner q=1", expect_that(.scheiner(data,1), is_equivalent_to(c(8, 8, 8, 8, 8, 7.97184190215649))))
+test_that("Scheiner q=2 abundance", expect_that(.scheiner(data,2,TRUE), is_equivalent_to(c(8, 7.2, 7.2, 7.2, 8, 6.5225256442268))))
 
 #Dispersion
 test_that("SESmpd", expect_that(.ses.mpd(data)[,2], equals(c(4.85714285714286, 6, 7.14285714285714, 8.28571428571429, 8.85714285714286, 8.42857142857143))))

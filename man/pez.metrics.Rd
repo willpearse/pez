@@ -79,7 +79,7 @@
 
 .pae(x, na.rm = TRUE, ...)
 
-.scheiner(x, q = 1e-04, abundance.weighted = FALSE, ...)
+.scheiner(x, q = 0, abundance.weighted = FALSE, ...)
 
 .pse(x, ...)
 
@@ -180,6 +180,13 @@ richness or total abundance (depending on
 \code{abundance.weighted}). I am almost certain that I got the idea
 for this from somewhere, but I can't find the reference: if you
 published on this before 2012, please get in touch with me.
+
+\code{.scheiner} has a different formula for the case where
+\code{q} is equal to 1 (check the code if interested). The nature
+of its definition means that values very close to, but not exactly
+equal to, 1 may be extremely large or extremely small. This is a
+feature, not a bug, and an inherent aspect of its definition. Check
+the formula in the code for more information!
 }
 \note{
 Many (but not all) of these functions are fairly trivial

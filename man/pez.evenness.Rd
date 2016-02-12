@@ -6,7 +6,7 @@
 and abundance}
 \usage{
 pez.evenness(data, sqrt.phy = FALSE, traitgram = NULL, traitgram.p = 2,
-  ext.dist = NULL, quick = TRUE, q = 1e-04)
+  ext.dist = NULL, quick = TRUE, q = 1)
 }
 \arguments{
 \item{data}{\code{\link{comparative.comm}} object}
@@ -40,7 +40,7 @@ distance matrices in different metric calculations.}
 (\eqn{$\lambda$}{lambda}, \eqn{$\delta$}{delta},
 \eqn{$\kappa$}{kappa}).}
 
-\item{q}{value for \emph{q} in \code{scheiner} (default 0.0001)}
+\item{q}{value for \emph{q} in \code{scheiner} (default 1)}
 }
 \value{
 \code{phy.structure} list object of metric values. Use

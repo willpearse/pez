@@ -19,6 +19,13 @@
 #' for this from somewhere, but I can't find the reference: if you
 #' published on this before 2012, please get in touch with me.
 #'
+#' \code{.scheiner} has a different formula for the case where
+#' \code{q} is equal to 1 (check the code if interested). The nature
+#' of its definition means that values very close to, but not exactly
+#' equal to, 1 may be extremely large or extremely small. This is a
+#' feature, not a bug, and an inherent aspect of its definition. Check
+#' the formula in the code for more information!
+#'
 #' @note Many (but not all) of these functions are fairly trivial
 #' wrappers around functions in other packages. In the citations for
 #' each metric, * indicates a function that's essentially written in
@@ -591,25 +598,27 @@
 #' @references \code{scheiner} Scheiner, S.M. (20120). A metric of
 #' biodiversity that integrates abundance, phylogeny, and function.
 #' Oikos, 121, 1191-1202.
+#' @importFrom picante evol.distinct
 #' @export
-.scheiner <- function(x, q=0.0001, abundance.weighted = FALSE, ...){
+.scheiner <- function(x, q=0, abundance.weighted=FALSE, ...){
     #Assertions and argument handling
     if(!inherits(x, "comparative.comm")) stop("'x' must be a comparative community ecology object")
     
-    #Setup
-    ed <- evol.distinct(x$phy, "fair.proportion")$w
+    #Internal wrapper for per-site calculation
+    ..scheiner <- function(site, q){
+        ed <- evol.distinct(x[,site>0]$phy, "fair.proportion")$w
+        site <- site[site > 0]
+        if(q==0)
+            return(length(site))
+        if(q==1)
+            return(exp(-sum((site*ed)/sum(site*ed)*log(site*ed/sum(site*ed)))))
+        return(sum(((site*ed)/sum(site*ed))^q)^(1/(1-q)))
+    }
+    
+    #Do the work and return
     if(!abundance.weighted)
         x$comm[x$comm > 0] <- 1
-    
-    #Calculate scheiner; beware dividing by zero inadvertantly
-    output <- numeric(nrow(x$comm))
-    for(i in seq(nrow(x$comm))){
-        if(q==1)
-            output[i] <- exp(-1*sum(((x$comm[i,]*ed[i])/(sum(x$comm[i,])*ed[i])) * log((x$comm[i,]*ed[i])/(sum(x$comm[i,])*ed[i]))))
-        else
-            output[i] <- sum(((x$comm[i,]*ed[i])/(sum(x$comm[i,])*ed[i]))^q)^(1/(1-q))
-    }
-    return(output)
+    return(apply(x$comm, 1, ..scheiner, q))
 }
 
 #' @importFrom picante pse

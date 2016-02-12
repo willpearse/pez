@@ -47,7 +47,7 @@
 #' \code{fd.dist} and the Pagel transformations
 #' (\eqn{$\lambda$}{lambda}, \eqn{$\delta$}{delta},
 #' \eqn{$\kappa$}{kappa}).
-#' @param q value for \emph{q} in \code{scheiner} (default 0.0001)
+#' @param q value for \emph{q} in \code{scheiner} (default 1)
 #' @note As mentioned above, \code{dist.fd} is calculated using a
 #' phylogenetic distance matrix if no trait data are available, or if
 #' you specify \code{sqrt.phy}. It is not calculated by default
@@ -125,7 +125,7 @@
 #' @importFrom stats coef cophenetic hclust as.dist
 #' @importFrom utils capture.output
 #' @export
-pez.evenness <- function(data, sqrt.phy=FALSE, traitgram=NULL, traitgram.p=2, ext.dist=NULL, quick=TRUE, q=0.0001)
+pez.evenness <- function(data, sqrt.phy=FALSE, traitgram=NULL, traitgram.p=2, ext.dist=NULL, quick=TRUE, q=1)
 {
   #Assertions and argument handling
   if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
