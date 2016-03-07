@@ -142,8 +142,8 @@ created. The use of \texttt{rep} might seem a bit weird, so print it
 out and check it by eye if you're confused.
 
 <<tidy=TRUE>>=
-site <- factor(rep(1:nsite, each=nspp))
-species <- factor(rep(1:nspp, nsite))
+site <- factor(rep(1:nsite, nspp))
+species <- factor(rep(1:nspp, each=nsite))
 env <- rep(env, nspp)
 @
 

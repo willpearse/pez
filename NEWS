@@ -1,3 +1,9 @@
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+* pez-pglmm-overview - minor (but very important!) correction to site
+  and species factor creation (hat-tip to Andrew Tanentzap)
+
+
 2016-01-15	Version 1.1-1
 
 * eco.scape.R & scape.R - changed return type, stopped crashing bug on
