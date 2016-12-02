@@ -483,5 +483,6 @@ as.data.frame.comparative.comm <- function(x, row.names=NULL, optional=FALSE, ab
             output[,1][output[,1] > 1] <- 1
         }
     names(output)[ncol(output)] <- "site"
+    output$species <- factor(rep(colnames(x$comm),nrow(x$comm)))
     return(as.data.frame(output))
 }
