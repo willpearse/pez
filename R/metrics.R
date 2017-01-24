@@ -182,6 +182,49 @@
     mpd(x$comm, as.matrix(dist), abundance.weighted=abundance.weighted)
 }
 
+#' @rdname pez.metrics
+#' @name pez.metrics
+#' @export
+.vpd <- function(x, dist=NULL, abundance.weighted=FALSE, ...){
+    warning("This won't work for abundance weighted (yet) - Will, look up the weighting package")
+    if(!inherits(x, "comparative.comm"))
+        stop("'x' must be a comparative.comm object")
+    if(is.null(dist))
+        dist <- cophenetic(x$phy)
+    if(!abundance.weighted)
+        x$comm[x$comm>0] <- 1
+    
+    output <- numeric(nrow(x$comm))
+    for(i in seq_len(nrow(x$comm))){
+        comm.dist <- dist[x$comm[i,] > 0, x$comm[i,] > 0]
+        output[i] <- var(comm.dist[lower.tri(comm.dist)])
+    }
+    names(output) <- rownames(x$comm)
+    return(output)
+}
+
+#' @rdname pez.metrics
+#' @name pez.metrics
+#' @export
+.vntd <- function(x, dist=NULL, abundance.weighted=FALSE, ...){
+    warning("This won't work for abundance weighted (yet) - Will, look up the weighting package")
+    if(!inherits(x, "comparative.comm"))
+        stop("'x' must be a comparative.comm object")
+    if(is.null(dist))
+        dist <- cophenetic(x$phy)
+    if(!abundance.weighted)
+        x$comm[x$comm>0] <- 1
+
+    output <- numeric(nrow(x$comm))
+    for(i in seq_len(nrow(x$comm))){
+        comm.dist <- dist[x$comm[i,] > 0, x$comm[i,] > 0]
+        diag(comm.dist) <- NA
+        output[i] <- var(apply(comm.dist, 1, min, na.rm=TRUE))
+    }
+    names(output) <- rownames(x$comm)
+    return(output)
+}
+
 #' @references \code{PD} Faith D.P. (1992). Conservation evaluation
 #' and phylogenetic diversity. Biological Conservation, 61, 1-10.
 #' @importFrom picante pd
@@ -888,6 +931,30 @@
     if(is.null(dist))
         dist <- cophenetic(x$phy)
     return(ses.mntd(x$comm, dis=as.matrix(dist), null.model=null.model, abundance.weighted=abundance.weighted, runs=permute))
+}
+
+#' @rdname pez.metrics
+#' @name pez.metrics
+#' @importFrom picante ses.mntd
+#' @export
+.ses.vpd <- function(x, dist=NULL, null.model="taxa.labels", abundance.weighted=FALSE, permute=1000, ...){
+    if(!inherits(x, "comparative.comm"))
+        stop("'x' must be a comparative.comm object")
+    if(is.null(dist))
+        dist <- cophenetic(x$phy)
+    return(generic.null(x, list(.vpd), null.model=null.model, permute=permute, abundance.weighted=abundance.weighted, ...))
+}
+
+#' @rdname pez.metrics
+#' @name pez.metrics
+#' @importFrom picante ses.mntd
+#' @export
+.ses.vntd <- function(x, dist=NULL, null.model="taxa.labels", abundance.weighted=FALSE, permute=1000, ...){
+    if(!inherits(x, "comparative.comm"))
+        stop("'x' must be a comparative.comm object")
+    if(is.null(dist))
+        dist <- cophenetic(x$phy)
+    return(generic.null(x, list(.vntd), null.model=null.model, permute=permute, abundance.weighted=abundance.weighted, ...))
 }
 
 #' @references \code{innd,mipd} Ness J.H., Rollinson E.J. & Whitney

@@ -159,7 +159,7 @@ pez.shape <- function(data, sqrt.phy=FALSE, traitgram=NULL, traitgram.p=2, ext.d
       dist <- cophenetic(data$phy)
   
   #Filter metrics according to suitability and calculate
-  functions <- setNames(c(.pd, .psv, .psr, .mpd, .mntd, .mipd, .innd, .colless, .taxon, .eigen.sum, .eed, .hed, .dist.fd, .scheiner), c("pd", "psv", "psr", "mpd", "mntd", "mipd", "innd", "colless", "taxon", "eigen.sum", "eed", "hed", "dist.fd", "scheiner"))
+  functions <- setNames(c(.pd, .psv, .psr, .mpd, .mntd, .vpd, .vntd, .mipd, .innd, .colless, .taxon, .eigen.sum, .eed, .hed, .dist.fd, .scheiner), c("pd", "psv", "psr", "mpd", "mntd", "vpd", "vngtd", "mipd", "innd", "colless", "taxon", "eigen.sum", "eed", "hed", "dist.fd", "scheiner"))
   if(quick == TRUE)
       functions <- functions[names(functions) != "dist.fd"]
   if(sqrt.phy == TRUE)

@@ -125,7 +125,7 @@ pez.dispersion <- function(data, null.model=c("taxa.labels", "richness", "freque
       dist <- cophenetic(data$phy)
 
   #Filter metrics according to suitability and calculate
-  functions <- setNames(c(.ses.mpd, .ses.mntd, .ses.mipd, .ses.innd, .d), c("ses.mpd", "ses.mntd", "ses.mipd", "ses.innd", "d"))
+  functions <- setNames(c(.ses.mpd, .ses.mntd, .ses.vpd, .ses.vntd, .ses.mipd, .ses.innd, .d), c("ses.mpd", "ses.mntd", "ses.vpd", "ses.vntd", "ses.mipd", "ses.innd", "d"))
   if(sqrt.phy == TRUE)
       functions <- functions[names(functions) != "d"]
   if(traitgram == TRUE)

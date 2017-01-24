@@ -167,7 +167,7 @@ pez.evenness <- function(data, sqrt.phy=FALSE, traitgram=NULL, traitgram.p=2, ex
   #data <- data[,colSums(data$comm)>0]
   
   #Filter metrics according to suitability and calculate
-  functions <- setNames(c(.rao, .phylo.entropy, .pae, .iac, .haed, .eaed, .lambda, .delta, .kappa, .mpd, .mntd, .mipd, .innd, .taxon, .pse, .dist.fd, .scheiner), c("rao", "entropy", "pae", "iac", "haed", "eaed", "lambda", "delta", "kappa", "mpd", "mntd", "mipd", "innd", "taxon", "pse", "dist.fd", "scheiner"))
+  functions <- setNames(c(.rao, .phylo.entropy, .pae, .iac, .haed, .eaed, .lambda, .delta, .kappa, .mpd, .mntd, .vpd, .mntd, .mipd, .innd, .taxon, .pse, .dist.fd, .scheiner), c("rao", "entropy", "pae", "iac", "haed", "eaed", "lambda", "delta", "kappa", "mpd", "mntd", "vpd", "vntd", "mipd", "innd", "taxon", "pse", "dist.fd", "scheiner"))
   if(quick == TRUE)
       functions <- functions[!names(functions) %in% c("dist.fd","lambda","delta","kappa")]
   if(sqrt.phy == TRUE)
