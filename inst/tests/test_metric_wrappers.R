@@ -45,6 +45,11 @@ test_that("Dissimilarity",{
     expect_that(names(pez.dissimilarity(data,ext.dist=as.dist(cophenetic(data$phy)),permute=10)), equals("comdist"))            
 })
 
+#Endemisim
+test_that("Endemism",{
+    expect_that(pez.endemism(data), is_equivalent_to(data.frame(PE=.pe(data),BED=.bed(data))))
+})
+
 #Generic wrappers
 test_that("generic.metrics", {
     expect_that(generic.metrics(data, c(.mpd, .pse, .rao)), equals(cbind(.mpd(data), .pse(data), .rao(data))))
