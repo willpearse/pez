@@ -2,9 +2,9 @@
 % Please edit documentation in R/utility.R
 \name{eco.xxx.regression.list}
 \alias{eco.xxx.regression.list}
-\alias{plot.eco.xxx.regression.list}
-\alias{print.eco.xxx.regression.list}
 \alias{summary.eco.xxx.regression.list}
+\alias{print.eco.xxx.regression.list}
+\alias{plot.eco.xxx.regression.list}
 \title{List of eco.xxx.regressions}
 \usage{
 \method{summary}{eco.xxx.regression.list}(object, ...)
@@ -23,4 +23,3 @@
 \description{
 List of eco.xxx.regressions
 }
-

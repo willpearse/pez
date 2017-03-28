@@ -99,9 +99,6 @@ data(laja)
 data <- comparative.comm(invert.tree, river.sites, invert.traits)
 (output<-pez.shape(data))
 }
-\author{
-M.R. Helmus, Will Pearse
-}
 \references{
 Pearse W.D., Purvis A., Cavender-Bares J. & Helmus
 M.R. (2014). Metrics and Models of Community Phylogenetics. In:
@@ -151,4 +148,6 @@ Oikos, 121, 1191-1202.
 \code{\link{pez.evenness}} \code{\link{pez.dispersion}}
 \code{\link{pez.dissimilarity}}
 }
-
+\author{
+M.R. Helmus, Will Pearse
+}

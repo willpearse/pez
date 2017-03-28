@@ -34,9 +34,6 @@ data(laja)
 data <- comparative.comm(invert.tree, river.sites, invert.traits)
 phy.signal(data, "lambda")
 }
-\author{
-Will Pearse, Jeannine Cavender-Bares
-}
 \references{
 Blomberg S.P., Garland T. & Ives A.R. Testing for phylogenetic signal in comparative data: behavioral traits are more labile. Evolution 57(4): 717--745.
 
@@ -47,4 +44,6 @@ Mark Pagel (1999) Inferring the historical patterns of biological evolution. Nat
 \seealso{
 fitContinuous fitDiscrete pgls phylosignal
 }
-
+\author{
+Will Pearse, Jeannine Cavender-Bares
+}

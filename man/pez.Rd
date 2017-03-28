@@ -2,8 +2,9 @@
 % Please edit documentation in R/pez-package.R
 \docType{package}
 \name{pez}
-\alias{package-pez}
 \alias{pez}
+\alias{package-pez}
+\alias{pez-package}
 \alias{pez-package}
 \title{Phylogenetics for the Environmental Sciences}
 \description{
@@ -31,4 +32,3 @@ Pearse W.D., Purvis A., Cavender-Bares J. & Helmus M.R. (2014). Metrics and Mode
 
 Cavender-Bares J., Ackerly D.D., Baum D.A. & Bazzaz F.A. (2004) Phylogenetic overdispersion in Floridian oak communities. The Americant Naturalist 163(6): 823--843.
 }
-

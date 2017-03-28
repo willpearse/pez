@@ -24,4 +24,3 @@ phylogeny, as \code{\link{drop.tip}}) will.
 \seealso{
 \code{\link[ape:drop.tip]{drop.tip}} \code{\link[ape:extract.clade]{extract.clade}}
 }
-

@@ -2,9 +2,9 @@
 % Please edit documentation in R/fingerprint.regression.R
 \name{fingerprint.regression}
 \alias{fingerprint.regression}
-\alias{plot.fingerprint.regression}
 \alias{print.fingerprint.regression}
 \alias{summary.fingerprint.regression}
+\alias{plot.fingerprint.regression}
 \title{Regress trait evolution against trait ecology (following
 Cavender-Bares et al. 2004)}
 \usage{
@@ -99,9 +99,6 @@ data <- comparative.comm(invert.tree, river.sites, invert.traits, river.env)
 fingerprint.regression(data, eco.permute=10)
 plot(fingerprint.regression(data, permute=10, method="lm"))
 }
-\author{
-Will Pearse and Jeannine Cavender-Bares
-}
 \references{
 Cavender-Bares J., Ackerly D.D., Baum D.A. & Bazzaz F.A. (2004) Phylogenetic overdispersion in Floridian oak communities. The Americant Naturalist 163(6): 823--843.
 
@@ -112,4 +109,6 @@ Pagel M. Inferring the historical patterns of biological evolution. Nature 401(6
 \seealso{
 \code{\link{eco.xxx.regression}} \code{\link{phy.signal}}
 }
-
+\author{
+Will Pearse and Jeannine Cavender-Bares
+}

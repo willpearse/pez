@@ -70,10 +70,9 @@ x.increment=settings$x.increment/4, abundance=TRUE, dot.cex=abund.sqrt)
 plot(data, sites=c("AT", "BP"), site.col=rainbow(2), fraction=1.2,
 x.increment=settings$x.increment/4, abundance=TRUE, dot.cex=function(x) sqrt(x))
 }
-\author{
-Will Pearse, Matt Helmus
-}
 \seealso{
 \code{\link{comparative.comm}} \code{\link{traitgram.cc}}
 }
-
+\author{
+Will Pearse, Matt Helmus
+}

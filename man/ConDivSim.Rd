@@ -54,10 +54,9 @@ sims <- ConDivSim(data)
 #...without traits...
 sims.phy <- ConDivSim(data, type="phy")
 }
-\author{
-Steve Walker, wrappers by Will Pearse
-}
 \seealso{
 \code{\link{sim.phy}} \code{\link{scape}}
 }
-
+\author{
+Steve Walker, wrappers by Will Pearse
+}

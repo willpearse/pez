@@ -45,10 +45,9 @@ Simulates a set of communties based on the supplied attribute (trait) where larg
  trait.asm(laja$fish.pref)
 }
 }
-\author{
-M.R. Helmus
-}
 \references{
 Helmus M., Mercado-Silva N. & Vander Zanden M.J. (2013). Subsidies to predators, apparent competition and the phylogenetic structure of prey communities. Oecologia, 173, 997-1007.
 }
-
+\author{
+M.R. Helmus
+}

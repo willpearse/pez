@@ -74,10 +74,9 @@ assemblage.phylogenies(data)
 #Do some manual manipulation of your objects (NOTE: $data for traits)
 data$data$new.trait <- sample(letters, nrow(data$comm), replace=TRUE)
 }
-\author{
-Will Pearse
-}
 \seealso{
 \code{\link{plot.comparative.comm}} \code{\link{cc.manip}} \code{link[caper:comparative.data]{comparative.data}}
 }
-
+\author{
+Will Pearse
+}

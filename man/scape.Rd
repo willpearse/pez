@@ -133,9 +133,6 @@ main = "Gradient 2",col=rainbow(dim(kk$X2)[2]),lty=1)
 plot(x=seq_along(sites(kk$cc)),y = rowSums(comm(kk$cc)), main = "SR",type = "l")
 cor(kk$X1)
 }
-\author{
-M.R. Helmus, cosmetic changes by Will Pearse
-}
 \references{
 Helmus M.R. & Ives A.R. (2012). Phylogenetic diversity
 area curves. Ecology, 93, S31-S43.
@@ -144,4 +141,6 @@ area curves. Ecology, 93, S31-S43.
 \code{\link{eco.scape}} \code{\link{sim.phy}}
 \code{\link{sim.meta}}
 }
-
+\author{
+M.R. Helmus, cosmetic changes by Will Pearse
+}

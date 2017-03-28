@@ -31,7 +31,8 @@ Imports:
     apTreeshape (>= 1.4-5),
     FD (>= 1.0-12),
     Matrix (>= 1.1-4),
-    methods (>= 3.1.0)
+    methods (>= 3.1.0),
+    animation (>= 2.4-0)
 Depends:
     ape (>= 3.1-4)
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1

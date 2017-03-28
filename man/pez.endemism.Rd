@@ -32,9 +32,6 @@ data(laja)
 data <- comparative.comm(invert.tree, river.sites, invert.traits)
 (output<-pez.endemism(data))
 }
-\author{
-Will Pearse, Dan Rosauer
-}
 \references{
 \code{BED} Cadotte, M. W., & Jonathan Davies,
     T. (2010). Rarest of the rare: advances in combining
@@ -53,4 +50,6 @@ Will Pearse, Dan Rosauer
     \code{\link{pez.dispersion}} \code{\link{pez.dissimilarity}}
     \code{\link{pez.tucker}}
 }
-
+\author{
+Will Pearse, Dan Rosauer
+}

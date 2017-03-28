@@ -81,12 +81,11 @@ interactions.
 of the biogeography, but requires you to supply a phylogeny. You
 pays your money, you makes your choice.
 }
+\seealso{
+\code{\link{sim.phy}} \code{\link{scape}}
+}
 \author{
 Will Pearse
 
 Will Pearse
 }
-\seealso{
-\code{\link{sim.phy}} \code{\link{scape}}
-}
-

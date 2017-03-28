@@ -161,10 +161,9 @@ hist(colSums(abund_mat),ylab="Number of species",xlab="Number of individuals",
     main="Species Abundance Relationship",col="lightgrey")
 mtext("Env random, phy.signal=0.2, 32 species", outer=TRUE, side=3, cex=1.25)
 }
-\author{
-Matt Helmus, Caroline Tucker, cosmetic edits by Will Pearse
-}
 \seealso{
 \code{\link{scape}} \code{\link{sim.phy}} \code{\link{sim.meta}}
 }
-
+\author{
+Matt Helmus, Caroline Tucker, cosmetic edits by Will Pearse
+}

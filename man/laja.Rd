@@ -2,9 +2,9 @@
 % Please edit documentation in R/laja.R
 \docType{data}
 \name{laja}
+\alias{laja}
 \alias{invert.traits}
 \alias{invert.tree}
-\alias{laja}
 \alias{river.env}
 \alias{river.sites}
 \title{Macroinvertebrate samples from the Rio Laja of Mexico}
@@ -24,14 +24,13 @@ include mean body length and fish feeding preference as in Helmus
 data(laja)
 data <- comparative.comm(invert.tree, river.sites, invert.traits, river.env)
 }
-\author{
-M.R. Helmus
-}
 \references{
 Helmus M., Mercado-Silva N. & Vander Zanden
 M.J. (2013). Subsidies to predators, apparent competition and the
 phylogenetic structure of prey communities. Oecologia, 173,
 997-1007.
 }
+\author{
+M.R. Helmus
+}
 \keyword{datasets}
-
