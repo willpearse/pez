@@ -1,5 +1,7 @@
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
+* assemblage.phylogenies - bug in species dropping (affecting IAC and
+  PAE); hat-tip to Carlos Alberto Arnillas
 * pez-pglmm-overview - minor (but very important!) correction to site
   and species factor creation (hat-tip to Andrew Tanentzap)
 

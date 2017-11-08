@@ -258,10 +258,10 @@ print.comparative.comm <- function(x, ...){
     if(is.null(spp)) stop("Null indices not permitted on comparative community data objects")
     if(is.numeric(spp) | is.logical(spp))
         spp.to.keep <- colnames(x$comm)[spp] else spp.to.keep <- intersect(species(x),spp)
-    comm <- x$comm[, spp.to.keep]
+    comm <- x$comm[, spp.to.keep, drop=FALSE]
     phy <- drop_tip(x$phy, setdiff(x$phy$tip.label, spp.to.keep))
     if(!is.null(x$data))
-      traits <- x$data[spp.to.keep, ] else traits <- NULL
+      traits <- x$data[spp.to.keep, , drop=FALSE] else traits <- NULL
     new.x <- comparative.comm(phy, comm, traits, x$env, warn=warn)
   } else new.x <- x
   
@@ -270,9 +270,9 @@ print.comparative.comm <- function(x, ...){
     if(is.null(sites)) stop("Null indices not permitted on comparative community data objects")
     if(is.numeric(sites) | is.logical(sites))
         sites.to.keep <- rownames(x$comm)[sites] else sites.to.keep <- intersect(sites(x),sites)
-    comm <- new.x$comm[sites.to.keep, ]
+    comm <- new.x$comm[sites.to.keep, , drop=FALSE]
     if(!is.null(x$env))
-      env <- new.x$env[sites.to.keep, ] else env <- new.x$env
+      env <- new.x$env[sites.to.keep, ,drop=FALSE] else env <- new.x$env
     new.x <- comparative.comm(x$phy, comm, new.x$data, env, warn=FALSE)
   }
   
@@ -432,7 +432,7 @@ assemblage.phylogenies <- function(data){
     if(!inherits(data, "comparative.comm"))  stop("'data' must be a comparative community ecology object")
     subtrees <- vector("list", nrow(data$comm))
     for(i in seq(nrow(data$comm)))
-        subtrees[[i]] <- drop_tip(data$phy, rownames(data$comm)[data$comm[i,]!=0])
+        subtrees[[i]] <- drop_tip(data$phy, species(data)[data$comm[i,]==0])
     return(subtrees)
 }
 
