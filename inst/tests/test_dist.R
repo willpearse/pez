@@ -8,12 +8,12 @@ test_that("PA comm dist", {
                            ifelse(phylocom$sample, 1, 0),
                            phylocom$traits, warn=FALSE)
     distByPez  <- comm.dist(cc)
-    expect_that(distByPez[69] , equals(1))
-    expect_that(distByPez[256], equals(0.5))
-    expect_that(distByPez[178], equals(1/3))
+    expect_equal(distByPez[69] , 1)
+    expect_equal(distByPez[256], 0.5)
+    expect_equal(distByPez[178], 1/3)
     
     distByHand <- 1-as.dist(crossprod(cc$comm)/(dim(cc$comm)[1] - crossprod(1-cc$comm)))
-    expect_that(distByPez, is_equivalent_to(distByHand))
+    expect_equivalent(distByPez, distByHand)
 })
 
 ## TODO:  non-PA dist matrix / overlap warning
@@ -40,6 +40,6 @@ test_that("func phylo dist", {
     }
     PDist[] <- PDist/max(PDist)
     FDist[] <- FDist/max(FDist)
-    expect_that(funct.phylo.dist(cc, 1, 2), is_equivalent_to(PDist))
-    expect_that(funct.phylo.dist(cc, 0, 2), is_equivalent_to(FDist))
+    expect_equivalent(funct.phylo.dist(cc, 1, 2), PDist)
+    expect_equivalent(funct.phylo.dist(cc, 0, 2), FDist)
 })
