@@ -103,9 +103,9 @@ comparative.comm <- function(phy, comm, traits=NULL, env=NULL, warn=TRUE, force.
   #Subset data and keep record
   # - make sure to re-order factor levels where necessary
   comm.sp.lost <- setdiff(colnames(comm), species.to.keep)
-  comm <- comm[, colnames(comm) %in% species.to.keep]
+  comm <- comm[, colnames(comm) %in% species.to.keep, drop=FALSE]
   comm.sites.lost <- setdiff(rownames(comm), sites.to.keep)
-  comm <- comm[rownames(comm) %in% sites.to.keep, ]
+  comm <- comm[rownames(comm) %in% sites.to.keep, , drop=FALSE]
   if(any(dim(comm)==0))
     stop("ERROR: community data has no sites in common with rest of data")
   phy.sp.lost <- setdiff(phy$tip.label, species.to.keep)
