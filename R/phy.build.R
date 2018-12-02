@@ -30,8 +30,8 @@ congeneric.merge <- function(tree, species, split="_", ...){
     before <- sum(species %in% tree$tip.label)
     for(i in seq_along(species)){
         if(!is.null(species[i]) & !species[i] %in% tree$tip.label){
-            genus <- strsplit(species[i], split, fixed=TRUE)[[1]][1]
-            matches <- unique(grep(genus, tree$tip.label, value=TRUE))
+            genus <- paste0("^",strsplit(species[i], split, fixed=TRUE)[[1]][1],"$")
+            matches <- unique(grep(genus, tree$tip.label, value=TRUE, fixed=TRUE))
             if(length(matches) > 0){
                 tree <- drop.tip(tree, matches[-1])
                 tip.length <- .find.unique.branch.length(tree, matches[1])

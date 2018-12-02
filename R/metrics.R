@@ -839,7 +839,11 @@
     #Checking
     if(! inherits(x, "comparative.comm"))  stop("'x' must be a comparative community ecology object")
     if (!is.numeric(permute)) (stop("'", permute, "' is not numeric."))
+    # Set everything to be binary
     x$comm[x$comm > 1] <- 1
+    # Add node labels (problem with caper code)
+    if(is.null(x$phy$node.label))
+        x$phy$node.label <- apply(expand.grid(letters,letters,letters), 1, paste, collapse="")[seq_len(tree$Nnode)]
     # check tree branch lengths
     el    <- x$phy$edge.length
     elTip <- x$phy$edge[,2] <= length(x$phy$tip.label)
