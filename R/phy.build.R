@@ -1,5 +1,4 @@
-#' Build a novel phylogeny from existing data (based on
-#' phyloGenerator)
+#' Build a novel phylogeny from existing data
 #' 
 #' @param tree \code{\link[ape:phylo]{phylo}} phylogeny to have those
 #' species inserted into it
@@ -14,6 +13,12 @@
 #' binomials, split by the \code{split} argument. This code was
 #' originally shipped with phyloGenerator - this is the \code{merge}
 #' method in that program.
+#' @note Thank you to Josep Padulles Cubino, who found that the genus
+#'     name splitting in a previous version of this function could
+#'     cause incorrect placement in oddly named cases. As with all
+#'     phylogenetic construction tools, the output from
+#'     \code{congeneric.merge} should be checked for accuracy before
+#'     use.
 #' @return \code{\link[ape:phylo]{phylo}} phylogeny
 #' @author Will Pearse
 #' @importFrom ape drop.tip
@@ -95,3 +100,91 @@ bind.replace <- function(backbone, donor, replacing.tip.label, donor.length=NA){
     tip.length <- tree$edge.length[which.edge]
     return(tip.length)	
 }
+
+#' \code{congeneric.impute} sequentially add species to a phylogeny to
+#' form an _imputed_ bifurcating tree. Makes use of a result from
+#' Steel & Mooers (2010) that gives the expected branch-length under a
+#' Yule model whether the rate of diversification has been
+#' estimated. The intention of this is to approximate the method by
+#' which phylogenetic structure is sampled from the prior in BEAST;
+#' i.e., to approximate the standard Kuhn et al. (2011) method for
+#' imputing a phylogeny. When using \code{congeneric.impute} you
+#' should (1) repeat your analyses across many (if in doubt,
+#' thousands) of separate runs (see Kuhn et al. 2011) and (2) check
+#' for yourself that your trees are unbiased for your purpose - I make
+#' no guarantee this is appropriate, and in many cases I think it
+#' would not be. See also 'notes' below.
+#' 
+#' @note Caveats for \text{congeneric.impute}: something I noticed is
+#'     that BEAST randomly picks an edge to break when adding species
+#'     (starting from a null tree), and this is the behaviour I have
+#'     (attempted to) replicate here. It is not clear to me that this
+#'     is unbiased, since a clade undergoing rapid diversification
+#'     will have many edges but these will be short (and so cannot
+#'     have an edge inserted into them following the method below). My
+#'     understanding is this is a known problem, and I simply cannot
+#'     think of a better way of doing this that doesn't incorporate
+#'     what I consider to be worse pathology. Thus this method, even
+#'     if it works (which I can't guarantee), it should tend to break
+#'     long branches.
+#' @param max.iter Sometimes the random draw for the new branch length
+#'     to be added will be too large to allow it to be added to the
+#'     tree. In such cases, \text{congeneric.imput} will randomly draw
+#'     another branch length, and it will repeat this process
+#'     \code{max.iter} times. See 'notes' for more on this.
+#' @references Steel, M., & Mooers, A. (2010). The expected length of
+#'     pendant and interior edges of a Yule tree. Applied Mathematics
+#'     Letters, 23(11), 1315-1319.
+#' @references Kuhn, T. S., Mooers, A. Ø., & Thomas, G. H. (2011). A
+#'     simple polytomy resolver for dated phylogenies. Methods in
+#'     Ecology and Evolution, 2(5), 427-436.
+#' @importFrom ape node.depth.edgelength bind.tree is.ultrametric getMRCA 
+#' @importFrom phytools getDescendants
+#' @rdname phy.build
+#' @name phy.build
+#' @examples
+#' tree <- read.tree(text="((a_a:1,b_b:1):1, c_c:2):1;")
+#' tree <- congeneric.impute(tree, c("a_nother", "a_gain", "b_sharp"))
+congeneric.impute <- function(tree, species, split="_", max.iter=1000, ...){
+    tree$missing.species <- character(0)
+    if(!is.ultrametric(tree))
+        stop("Cannot safely bind into a non-ultrametric tree")
+    div.rate <- (length(tree$tip.label)-2) / sum(tree$edge.length)
+    
+    for(i in seq_along(species)){
+        heights <- node.depth.edgelength(tree)
+        heights <- max(heights) - heights
+        if(!is.null(species[i]) & !species[i] %in% tree$tip.label){
+            genus <- strsplit(species[i], split, fixed=TRUE)[[1]][1]
+            matches <- unique(grep(genus, tree$tip.label))
+            if(length(matches) > 0){
+                if(length(matches) > 1){
+                node <- getMRCA(tree, matches)
+                edges <- getDescendants(tree, node)
+                orig.edge <- sample(edges, 1)
+                } else {
+                    # Only one member of clade in tree - can't get MRCA of a species
+                    edges <- orig.edge <- matches
+                }
+                failed <- TRUE
+                for(j in seq_len(max.iter)){
+                    rnd.br <- rexp(1, div.rate)
+                    old.br <- heights[orig.edge]
+                    if(rnd.br > tree$edge.length[which(tree$edge[,2]==orig.edge)])
+                        next
+                    to.bind <- list(edge=matrix(2:1, 1, 2), tip.label=species[i], edge.length=old.br+rnd.br, Nnode=1)
+                    class(to.bind) <- "phylo"
+                    tree <- bind.tree(tree, to.bind, where=orig.edge, position=rnd.br)
+                    failed <- FALSE
+                    break
+                }
+                if(failed)
+                    tree$missing.species <- append(tree$missing.species, species[i])
+            } else {
+                tree$missing.species <- append(tree$missing.species, species[i])
+            }
+        }
+    }
+    return(tree)
+}
+

@@ -4,12 +4,15 @@
 \alias{phy.build}
 \alias{congeneric.merge}
 \alias{bind.replace}
-\title{Build a novel phylogeny from existing data (based on
-phyloGenerator)}
+\alias{phy.build}
+\alias{congeneric.impute}
+\title{Build a novel phylogeny from existing data}
 \usage{
 congeneric.merge(tree, species, split = "_", ...)
 
 bind.replace(backbone, donor, replacing.tip.label, donor.length = NA)
+
+congeneric.impute(tree, species, split = "_", max.iter = 1000, ...)
 }
 \arguments{
 \item{tree}{\code{\link[ape:phylo]{phylo}} phylogeny to have those
@@ -36,6 +39,12 @@ that's being replaced by the donor phylogeny}
 the backbone phylogeny. If NA (default), then the bladj algorithm
 is followed (or, in plain English, it's put half-way along the
 branch)}
+
+\item{max.iter}{Sometimes the random draw for the new branch length
+to be added will be too large to allow it to be added to the
+tree. In such cases, \text{congeneric.imput} will randomly draw
+another branch length, and it will repeat this process
+\code{max.iter} times. See 'notes' for more on this.}
 }
 \value{
 \code{\link[ape:phylo]{phylo}} phylogeny
@@ -43,8 +52,21 @@ branch)}
 phylogeny (\code{\link[ape:phylo]{phylo}})
 }
 \description{
-Build a novel phylogeny from existing data (based on
-phyloGenerator)
+Build a novel phylogeny from existing data
+
+\code{congeneric.impute} sequentially add species to a phylogeny to
+form an _imputed_ bifurcating tree. Makes use of a result from
+Steel & Mooers (2010) that gives the expected branch-length under a
+Yule model whether the rate of diversification has been
+estimated. The intention of this is to approximate the method by
+which phylogenetic structure is sampled from the prior in BEAST;
+i.e., to approximate the standard Kuhn et al. (2011) method for
+imputing a phylogeny. When using \code{congeneric.impute} you
+should (1) repeat your analyses across many (if in doubt,
+thousands) of separate runs (see Kuhn et al. 2011) and (2) check
+for yourself that your trees are unbiased for your purpose - I make
+no guarantee this is appropriate, and in many cases I think it
+would not be. See also 'notes' below.
 }
 \details{
 \code{congeneric.merge} Binds missing species into a
@@ -61,12 +83,43 @@ with phyloGenerator (Pearse & Purvis 2013). This is really an
 internal function for \code{congeneric.merge}, but hopefully it's
 of some use to you!
 }
+\note{
+Thank you to Josep Padulles Cubino, who found that the genus
+    name splitting in a previous version of this function could
+    cause incorrect placement in oddly named cases. As with all
+    phylogenetic construction tools, the output from
+    \code{congeneric.merge} should be checked for accuracy before
+    use.
+
+Caveats for \text{congeneric.impute}: something I noticed is
+    that BEAST randomly picks an edge to break when adding species
+    (starting from a null tree), and this is the behaviour I have
+    (attempted to) replicate here. It is not clear to me that this
+    is unbiased, since a clade undergoing rapid diversification
+    will have many edges but these will be short (and so cannot
+    have an edge inserted into them following the method below). My
+    understanding is this is a known problem, and I simply cannot
+    think of a better way of doing this that doesn't incorporate
+    what I consider to be worse pathology. Thus this method, even
+    if it works (which I can't guarantee), it should tend to break
+    long branches.
+}
 \examples{
 tree <- read.tree(text="((a_a:1,b_b:1):1, c_c:2):1;")
 tree <- congeneric.merge(tree, c("a_nother", "a_gain", "b_sharp"))
+tree <- read.tree(text="((a_a:1,b_b:1):1, c_c:2):1;")
+tree <- congeneric.impute(tree, c("a_nother", "a_gain", "b_sharp"))
 }
 \references{
 Pearse W.D. & Purvis A. phyloGenerator: an automated phylogeny generation tool for ecologists. Methods in Ecology and Evolution 4(7): 692--698.
+
+Steel, M., & Mooers, A. (2010). The expected length of
+    pendant and interior edges of a Yule tree. Applied Mathematics
+    Letters, 23(11), 1315-1319.
+
+Kuhn, T. S., Mooers, A. Ø., & Thomas, G. H. (2011). A
+    simple polytomy resolver for dated phylogenies. Methods in
+    Ecology and Evolution, 2(5), 427-436.
 }
 \author{
 Will Pearse
