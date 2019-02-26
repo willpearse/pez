@@ -4,10 +4,10 @@
 \alias{eco.scape}
 \title{eco.space scape simulation with a macro-ecological focus}
 \usage{
-eco.scape(tree, scape.size = 10, g.center = 1, wd.all = 0.2 * (scape.size
-  + 1)^2, signal.center = TRUE, center.scale = 1, site.stoch.scale = 0,
-  sd.center = 1, sd.range = 1, K = 100, extinction = FALSE,
-  rho = NULL)
+eco.scape(tree, scape.size = 10, g.center = 1, wd.all = 0.2 *
+  (scape.size + 1)^2, signal.center = TRUE, center.scale = 1,
+  site.stoch.scale = 0, sd.center = 1, sd.range = 1, K = 100,
+  extinction = FALSE, rho = NULL)
 }
 \arguments{
 \item{tree}{\code{\link[ape:phylo]{phylo}} object; must have branch

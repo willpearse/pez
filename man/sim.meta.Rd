@@ -6,11 +6,12 @@
 \alias{sim.meta.phy.comm}
 \title{Simulate a meta-community (and its phylogeny)}
 \usage{
-sim.meta.comm(size = 10, n.spp = 8, timesteps = 10, p.migrate = 0.05,
-  env.lam = 10, abund.lam = 5, stoch.lam = 1)
+sim.meta.comm(size = 10, n.spp = 8, timesteps = 10,
+  p.migrate = 0.05, env.lam = 10, abund.lam = 5, stoch.lam = 1)
 
-sim.meta.phy.comm(size = 10, n.spp = 8, timesteps = 10, p.migrate = 0.3,
-  env.lam = 10, abund.lam = 5, stoch.lam = 1, p.speciate = 0.05)
+sim.meta.phy.comm(size = 10, n.spp = 8, timesteps = 10,
+  p.migrate = 0.3, env.lam = 10, abund.lam = 5, stoch.lam = 1,
+  p.speciate = 0.05)
 }
 \arguments{
 \item{size}{the length and width of the meta-community in grid
@@ -67,8 +68,6 @@ multiple times). I use a Poisson for everything because I don't
 want half-species (these are individuals), and keeping everything
 in Poisson makes it easier to compare the relative rates of
 everything.
-
-\code{sim.meta.phy.comm} simulate a (sort of) meta-community
 }
 \details{
 \code{sim.meta.phy.comm} As above, but with a simulation of

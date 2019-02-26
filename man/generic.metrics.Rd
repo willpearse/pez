@@ -3,22 +3,19 @@
 \name{generic.metrics}
 \alias{generic.metrics}
 \alias{generic.null}
-\alias{generic.metrics}
 \alias{.ses}
-\alias{generic.metrics}
 \alias{.metric.null}
-\alias{generic.metrics}
 \title{Calculate any metric(s) (and compare with null distributions)}
 \usage{
 generic.null(data, metrics, null.model = c("taxa.labels", "richness",
-  "frequency", "sample.pool", "phylogeny.pool", "independentswap", "trialswap",
-  "trait.asm"), permute = 1000, comp.fun = .ses, ...)
+  "frequency", "sample.pool", "phylogeny.pool", "independentswap",
+  "trialswap", "trait.asm"), permute = 1000, comp.fun = .ses, ...)
 
 .ses(observed, null)
 
 .metric.null(data, metrics, null.model = c("taxa.labels", "richness",
-  "frequency", "sample.pool", "phylogeny.pool", "independentswap", "trialswap",
-  "trait.asm"), permute = 1000, trait = -1, ...)
+  "frequency", "sample.pool", "phylogeny.pool", "independentswap",
+  "trialswap", "trait.asm"), permute = 1000, trait = -1, ...)
 
 generic.metrics(data, metrics, ...)
 }
@@ -75,13 +72,6 @@ would be significant.
 }
 \description{
 Allow the calculation of any metric within \code{pez}.
-
-\code{.ses} Calculate Standard Effect Sizes of metrics
-
-\code{.metric.null} Produce null randomisations and compute metrics
-across them
-
-\code{generic.metrics} Calculate arbitrary metrics across data
 }
 \details{
 \code{generic.null} Calculate metrics and compare with null

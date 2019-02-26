@@ -4,7 +4,6 @@
 \alias{phy.build}
 \alias{congeneric.merge}
 \alias{bind.replace}
-\alias{phy.build}
 \alias{congeneric.impute}
 \title{Build a novel phylogeny from existing data}
 \usage{
@@ -42,7 +41,7 @@ branch)}
 
 \item{max.iter}{Sometimes the random draw for the new branch length
 to be added will be too large to allow it to be added to the
-tree. In such cases, \text{congeneric.imput} will randomly draw
+tree. In such cases, \code{congeneric.imput} will randomly draw
 another branch length, and it will repeat this process
 \code{max.iter} times. See 'notes' for more on this.}
 }
@@ -91,7 +90,7 @@ Thank you to Josep Padulles Cubino, who found that the genus
     \code{congeneric.merge} should be checked for accuracy before
     use.
 
-Caveats for \text{congeneric.impute}: something I noticed is
+Caveats for \code{congeneric.impute}: something I noticed is
     that BEAST randomly picks an edge to break when adding species
     (starting from a null tree), and this is the behaviour I have
     (attempted to) replicate here. It is not clear to me that this
@@ -117,7 +116,7 @@ Steel, M., & Mooers, A. (2010). The expected length of
     pendant and interior edges of a Yule tree. Applied Mathematics
     Letters, 23(11), 1315-1319.
 
-Kuhn, T. S., Mooers, A. Ø., & Thomas, G. H. (2011). A
+Kuhn, T. S., Mooers, A. O., & Thomas, G. H. (2011). A
     simple polytomy resolver for dated phylogenies. Methods in
     Ecology and Evolution, 2(5), 427-436.
 }

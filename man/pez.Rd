@@ -5,7 +5,6 @@
 \alias{pez}
 \alias{package-pez}
 \alias{pez-package}
-\alias{pez-package}
 \title{Phylogenetics for the Environmental Sciences}
 \description{
 Analysis and manipulation of eco-phylogenetic datasets containing

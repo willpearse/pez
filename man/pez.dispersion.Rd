@@ -5,10 +5,11 @@
 \title{Calculate (phylogenetic) dispersion: examine assemblages in the
 context of a source pools}
 \usage{
-pez.dispersion(data, null.model = c("taxa.labels", "richness", "frequency",
-  "sample.pool", "phylogeny.pool", "independentswap", "trialswap"),
-  abundance = FALSE, sqrt.phy = FALSE, traitgram = NULL,
-  traitgram.p = 2, ext.dist = NULL, permute = 1000, ...)
+pez.dispersion(data, null.model = c("taxa.labels", "richness",
+  "frequency", "sample.pool", "phylogeny.pool", "independentswap",
+  "trialswap"), abundance = FALSE, sqrt.phy = FALSE,
+  traitgram = NULL, traitgram.p = 2, ext.dist = NULL,
+  permute = 1000, ...)
 }
 \arguments{
 \item{data}{\code{\link{comparative.comm}} object}

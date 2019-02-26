@@ -3,24 +3,22 @@
 \name{pez.tucker}
 \alias{pez.tucker}
 \alias{pez.richness}
-\alias{pez.tucker}
 \alias{pez.divergence}
-\alias{pez.tucker}
 \alias{pez.regularity}
 \title{Calculate Tucker et al. metrics: (phylogenetic) richness,
 regularity, and divergence}
 \usage{
 pez.richness(data, abundance.weighted = FALSE, sqrt.phy = FALSE,
-  traitgram = NULL, traitgram.p = 2, ext.dist = NULL, which.eigen = 1,
-  q = 1e-04)
+  traitgram = NULL, traitgram.p = 2, ext.dist = NULL,
+  which.eigen = 1, q = 1e-04)
 
 pez.divergence(data, abundance.weighted = FALSE, sqrt.phy = FALSE,
-  traitgram = NULL, traitgram.p = 2, ext.dist = NULL, which.eigen = 1,
-  q = 1e-04)
+  traitgram = NULL, traitgram.p = 2, ext.dist = NULL,
+  which.eigen = 1, q = 1e-04)
 
 pez.regularity(data, abundance.weighted = FALSE, sqrt.phy = FALSE,
-  traitgram = NULL, traitgram.p = 2, ext.dist = NULL, which.eigen = 1,
-  q = 1e-04)
+  traitgram = NULL, traitgram.p = 2, ext.dist = NULL,
+  which.eigen = 1, q = 1e-04)
 }
 \arguments{
 \item{data}{\code{\link{comparative.comm}} object}

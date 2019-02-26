@@ -7,8 +7,8 @@ one-another}
 \usage{
 pez.dissimilarity(data, metric = c("all", "unifrac", "pcd", "phylosor",
   "comdist"), abundance.weighted = FALSE, permute = 1000,
-  sqrt.phy = FALSE, traitgram = NULL, traitgram.p = 2, ext.dist = NULL,
-  ...)
+  sqrt.phy = FALSE, traitgram = NULL, traitgram.p = 2,
+  ext.dist = NULL, ...)
 }
 \arguments{
 \item{data}{\code{comparative.comm} object}

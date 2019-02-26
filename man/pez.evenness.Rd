@@ -5,8 +5,8 @@
 \title{Calculate (phylogenetic) evenness: examine assemblage composition
 and abundance}
 \usage{
-pez.evenness(data, sqrt.phy = FALSE, traitgram = NULL, traitgram.p = 2,
-  ext.dist = NULL, quick = TRUE, q = 1)
+pez.evenness(data, sqrt.phy = FALSE, traitgram = NULL,
+  traitgram.p = 2, ext.dist = NULL, quick = TRUE, q = 1)
 }
 \arguments{
 \item{data}{\code{\link{comparative.comm}} object}

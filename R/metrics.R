@@ -620,6 +620,7 @@
     subtrees <- assemblage.phylogenies(x)
     PD <- pd(x$comm, x$phy)
     tmp <- setNames(rep(0, ncol(x$comm)), colnames(x$comm))
+    
     TL <- lapply(subtrees, function(tree) {
         #Get terminal edge length
         res <- x$phy$edge.length[x$phy$edge[,2] <= length(x$phy$tip.label)]
@@ -628,8 +629,7 @@
     })
     TL <- do.call("cbind", TL)
     numer <- PD$PD + colSums(TL * (t(x$comm) - 1))
-    denom <- PD$PD + (rowSums(x$comm, na.rm = na.rm) / rowSums(x$comm,
-                                                               na.rm=na.rm) - 1) * colSums(TL)
+    denom <- PD$PD + (apply(x$comm, 1, mean) - 1) * colSums(TL)
     res <- numer/denom
     names(res) <- rownames(x$comm)
     return(res)

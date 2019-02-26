@@ -4,11 +4,12 @@
 \alias{scape}
 \title{Simulate phylogenetic community structure across a landscape}
 \usage{
-scape(tree, scape.size = 10, g.center = 1, g.range = 1, g.repulse = 1,
-  wd.all = 150, signal.center = TRUE, signal.range = TRUE,
-  same.range = TRUE, repulse = TRUE, center.scale = 1, range.scale = 1,
-  repulse.scale = 1, site.stoch.scale = 0.5, sd.center = 1,
-  sd.range = 1, rho = NULL, th = 8)
+scape(tree, scape.size = 10, g.center = 1, g.range = 1,
+  g.repulse = 1, wd.all = 150, signal.center = TRUE,
+  signal.range = TRUE, same.range = TRUE, repulse = TRUE,
+  center.scale = 1, range.scale = 1, repulse.scale = 1,
+  site.stoch.scale = 0.5, sd.center = 1, sd.range = 1, rho = NULL,
+  th = 8)
 }
 \arguments{
 \item{tree}{\code{\link{phylo}} object}

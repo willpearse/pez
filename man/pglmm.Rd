@@ -12,10 +12,10 @@
 \alias{communityPGLMM.predicted.values}
 \title{Phylogenetic Generalised Linear Mixed Model for Community Data}
 \usage{
-communityPGLMM(formula, data = list(), family = "gaussian", sp = NULL,
-  site = NULL, random.effects = list(), REML = TRUE, s2.init = NULL,
-  B.init = NULL, reltol = 10^-6, maxit = 500, tol.pql = 10^-6,
-  maxit.pql = 200, verbose = FALSE)
+communityPGLMM(formula, data = list(), family = "gaussian",
+  sp = NULL, site = NULL, random.effects = list(), REML = TRUE,
+  s2.init = NULL, B.init = NULL, reltol = 10^-6, maxit = 500,
+  tol.pql = 10^-6, maxit.pql = 200, verbose = FALSE)
 
 communityPGLMM.gaussian(formula, data = list(), family = "gaussian",
   sp = NULL, site = NULL, random.effects = list(), REML = TRUE,
@@ -29,14 +29,15 @@ communityPGLMM.binary(formula, data = list(), family = "binomial",
 
 communityPGLMM.binary.LRT(x, re.number = 0, ...)
 
-communityPGLMM.matrix.structure(formula, data = list(), family = "binomial",
-  sp = NULL, site = NULL, random.effects = list(), ss = 1)
+communityPGLMM.matrix.structure(formula, data = list(),
+  family = "binomial", sp = NULL, site = NULL,
+  random.effects = list(), ss = 1)
 
-\method{summary}{communityPGLMM}(object, digits = max(3, getOption("digits") -
+\method{summary}{communityPGLMM}(object, digits = max(3,
+  getOption("digits") - 3), ...)
+
+\method{plot}{communityPGLMM}(x, digits = max(3, getOption("digits") -
   3), ...)
-
-\method{plot}{communityPGLMM}(x, digits = max(3, getOption("digits") - 3),
-  ...)
 
 communityPGLMM.predicted.values(x, show.plot = TRUE, ...)
 }
@@ -182,21 +183,6 @@ matrices. \code{communityPGLMM} can analyze models in Ives and
 Helmus (2011). It can also analyze bipartite phylogenetic data,
 such as that analyzed in Rafferty and Ives (2011), by giving sites
 phylogenetic correlations.
-
-\code{communityPGLMM.binary} calculates the statistical
-significance of the random effects in the generalized linear mixed
-model from the marginal profile likelihood.
-
-\code{communityPGLMM.binary.LRT} tests statistical significance of
-the phylogenetic random effect on species slopes using a likelihood
-ratio test
-
-\code{communityPGLMM.matrix.structure} produces the entire
-covariance matrix structure (V) when you specify random effects.
-
-\code{communityPGLMM.predicted.values} calculates the predicted
-values of Y; for the generalized linear mixed model (family =
-"binomial"), these values are in the logit-1 transformed space.
 }
 \details{
 The vignette 'pez-pglmm-overview' gives a gentle

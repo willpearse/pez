@@ -9,17 +9,18 @@
 Cavender-Bares et al. 2004)}
 \usage{
 fingerprint.regression(data, eco.rnd = c("taxa.labels", "richness",
-  "frequency", "sample.pool", "phylogeny.pool", "independentswap", "trialswap"),
-  eco.method = c("quantile", "lm", "mantel"), eco.permute = 1000,
-  evo.method = c("lambda", "delta", "kappa", "blom.k"), eco.swap = 1000,
-  abundance = TRUE, ...)
+  "frequency", "sample.pool", "phylogeny.pool", "independentswap",
+  "trialswap"), eco.method = c("quantile", "lm", "mantel"),
+  eco.permute = 1000, evo.method = c("lambda", "delta", "kappa",
+  "blom.k"), eco.swap = 1000, abundance = TRUE, ...)
 
 \method{print}{fingerprint.regression}(x, ...)
 
 \method{summary}{fingerprint.regression}(object, ...)
 
 \method{plot}{fingerprint.regression}(x, eco = c("slope", "corrected"),
-  xlab = "Community Trait Similarity", ylab = "Phylogenetic inertia", ...)
+  xlab = "Community Trait Similarity", ylab = "Phylogenetic inertia",
+  ...)
 }
 \arguments{
 \item{data}{\code{\link{comparative.comm}} for analysis}

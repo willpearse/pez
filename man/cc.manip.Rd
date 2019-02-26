@@ -112,8 +112,6 @@ can also manipulate your \code{\link{comparative.comm}} object's
 \code{phy}, \code{data}, \code{env}, and \code{comm} slots directly
 if you wish, but altering the object directly yourself runs the
 risk of things getting unsynchronised.
-
-Manipulate internals of \code{comparative.comm} object
 }
 \note{
 As described in \code{\link{comparative.comm}}, each
