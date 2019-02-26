@@ -28,8 +28,6 @@
 #' @param side.tree whether to plot a standard phylogeny to the right
 #'     of the plot to aid with interpretation (default: TRUE). You
 #'     almost certainly want this option
-#' @param digits passed to \code{\link{round}} function to round out
-#'     the
 #' @param width width of animation
 #' @param height height of animation
 #' @details Probably best to just plot it out and see what happens, to
@@ -48,14 +46,17 @@
 #' @importFrom caper clade.matrix
 #' @importFrom ape branching.times
 #' @importFrom animation saveGIF
+#' @importFrom stats prcomp rexp
+#' @importFrom graphics layout rect
+#' @importFrom grDevices colorRampPalette
 #' @export
 fibre.plot <- function(tree, gif, focal, frames=60, colours=colorRampPalette(c("blue","black","red")), f.colours=colorRampPalette(c("darkgreen","lightgreen")), pca=NULL, clade.mat=NULL, delay=0.2, side.tree=TRUE, width=600, height=600){
     # Internal function to wrap fibre positions around the plotting matrix
     .snake <- function(x){
         rev.x <- x[,ncol(x):1]
         dim <- dim(x)
-        x <- unname(unmatrix(x, byrow=TRUE))
-        rev.x <- unname(unmatrix(rev.x, byrow=TRUE))
+        x <- unname(matrix(x, byrow=TRUE))
+        rev.x <- unname(matrix(rev.x, byrow=TRUE))
         return(matrix(ifelse(rep(c(FALSE,TRUE),each=dim[2],length.out=length(x)), x, rev.x), dim[1], byrow=TRUE))
     }
     

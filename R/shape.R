@@ -108,6 +108,7 @@
 #' @references \code{scheiner} Scheiner, S.M. (20120). A metric of
 #' biodiversity that integrates abundance, phylogeny, and function.
 #' Oikos, 121, 1191-1202.
+#' @importFrom ape is.binary.tree
 #' @examples
 #' data(laja)
 #' data <- comparative.comm(invert.tree, river.sites, invert.traits)

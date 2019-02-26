@@ -70,7 +70,6 @@ congeneric.merge <- function(tree, species, split="_", ...){
 #' @author Will Pearse
 #' @importFrom ape bind.tree
 #' @rdname phy.build
-#' @export
 bind.replace <- function(backbone, donor, replacing.tip.label, donor.length=NA){	
     bind.point <- which(backbone$tip.label == replacing.tip.label)
     backbone <- bind.tree(backbone, donor, where=bind.point)
@@ -142,6 +141,7 @@ bind.replace <- function(backbone, donor, replacing.tip.label, donor.length=NA){
 #' @importFrom phytools getDescendants
 #' @rdname phy.build
 #' @name phy.build
+#' @export
 #' @examples
 #' tree <- read.tree(text="((a_a:1,b_b:1):1, c_c:2):1;")
 #' tree <- congeneric.impute(tree, c("a_nother", "a_gain", "b_sharp"))

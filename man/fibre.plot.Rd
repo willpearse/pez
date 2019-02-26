@@ -52,9 +52,6 @@ almost certainly want this option}
 \item{width}{width of animation}
 
 \item{height}{height of animation}
-
-\item{digits}{passed to \code{\link{round}} function to round out
-the}
 }
 \value{
 The data that were plotted last, the PCA and clade.matrix
