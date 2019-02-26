@@ -2,6 +2,11 @@
 
 language: c
 
+addons:
+  apt:
+    packages:
+      libmagick++-dev
+
 before_install:
   - curl -OL http://raw.github.com/craigcitro/r-travis/master/scripts/travis-tool.sh
   - chmod 755 ./travis-tool.sh
