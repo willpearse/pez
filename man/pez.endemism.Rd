@@ -48,7 +48,6 @@ data <- comparative.comm(invert.tree, river.sites, invert.traits)
 \seealso{
 \code{\link{pez.shape}} \code{\link{pez.evenness}}
     \code{\link{pez.dispersion}} \code{\link{pez.dissimilarity}}
-    \code{\link{pez.tucker}}
 }
 \author{
 Will Pearse, Dan Rosauer
