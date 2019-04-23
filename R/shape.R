@@ -108,7 +108,7 @@
 #' @references \code{scheiner} Scheiner, S.M. (20120). A metric of
 #' biodiversity that integrates abundance, phylogeny, and function.
 #' Oikos, 121, 1191-1202.
-#' @importFrom ape is.binary.tree
+#' @importFrom ape is.binary.phylo
 #' @examples
 #' data(laja)
 #' data <- comparative.comm(invert.tree, river.sites, invert.traits)
@@ -162,7 +162,7 @@ pez.shape <- function(data, sqrt.phy=FALSE, traitgram=NULL, traitgram.p=2, ext.d
       functions <- functions[!names(functions) %in% c("psv", "psr", "pd", "colless", "gamma", "eed", "hed", "scheiner")]
   if(ext.dist == TRUE)
       functions <- functions[!names(functions) %in% c("pd", "psv", "psr", "colless", "gamma", "eed", "hed", "scheiner")]
-  if(!is.binary.tree(data$phy) & "colless" %in% names(functions))
+  if(!is.binary.phylo(data$phy) & "colless" %in% names(functions))
       warning("Cannot compute Colless' index with non-binary tree")
   output <- lapply(functions, function(x) try(x(data, dist=dist, abundance.weighted=FALSE, which.eigen=which.eigen), silent=TRUE))
   

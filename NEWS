@@ -1,10 +1,12 @@
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+2019-02-26	Version 1.2-0
 
 * assemblage.phylogenies - bug in species dropping (affecting IAC and
   PAE); hat-tip to Carlos Alberto Arnillas
 * pez-pglmm-overview - minor (but very important!) correction to site
   and species factor creation (hat-tip to Andrew Tanentzap)
-
+* removed .Random.seed object in laja data
+* added congeneric.impute; fixed regular expression issues in
+  congeneric.merge - hat-tip to Josep Padulles Cubino
 
 2016-01-15	Version 1.1-1
 
