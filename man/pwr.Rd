@@ -16,6 +16,9 @@ pwr.fit(formula, phy4d, which.tips, bw, wfun, verbose = FALSE)
 
 \item{phy4d}{\code{phylobase} format object to be used for fitting}
 
+\item{which.tips}{vector of integers indicating position of tips on
+the tree to be used, defaults to all species on the tree}
+
 \item{bw}{Bandwidth for model fit}
 
 \item{wfun}{Weighting function to be used; myust be one of
@@ -24,6 +27,21 @@ pwr.fit(formula, phy4d, which.tips, bw, wfun, verbose = FALSE)
 
 \item{verbose}{Whether to be verbose during model fitting (default
 \code{FALSE})}
+
+\item{formula}{Model formula to be fit}
+
+\item{phy4d}{\code{phylobase} format object to be used for fitting}
+
+\item{holdout}{vector of integers indicating position of tips on
+the tree to be held out during model fitting}
+
+\item{coef}{coefficients to extract from the model; must be one of
+\code{formula}, \code{slope}, or \code{all}}
+
+\item{model}{Model type to be fit; must be either \code{pwr}, or
+\code{pgls}}
+
+\item{phy}{A phylo4 or phylo4d object}
 }
 \value{
 Phylogenetically weighted model object; use \code{pwr.coef}
@@ -31,8 +49,15 @@ Phylogenetically weighted model object; use \code{pwr.coef}
     \code{pwr.phylobubbles} for plotting.
 }
 \description{
-A brief overview of what this code does.  formula, phy4d,
-which.tips, bw, wfun, verbose=FALSE
+\code{pwr.cv} performs model cross validation on the holdout set
+\code{holdout}, K-fold cross validation can be specified using
+\code{fold}. \code{pwr.treePlot} plots the phylogeny and allows for
+plotting of PWR model coefficients at the tips of the tree. PWR
+model coefficients to be pllotted must be appended to the phylo4d
+object. \code{pwr.phylobubbles} plots either circles or squares
+corresponding to the magnitude of each cell of a phylo4d object,
+and allows the plotting of PWR moel coefficients.  Model
+coefficients to be plotted must be appended to the phylo4d object
 }
 \note{
 Some information about this

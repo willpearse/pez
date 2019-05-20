@@ -1,8 +1,15 @@
 #' Phylogenetically weighted regression: a method for modeling
 #' non-stationarity on evolutionary trees
 #'
-#' A brief overview of what this code does.  formula, phy4d,
-#' which.tips, bw, wfun, verbose=FALSE
+#' \code{pwr.cv} performs model cross validation on the holdout set
+#' \code{holdout}, K-fold cross validation can be specified using
+#' \code{fold}. \code{pwr.treePlot} plots the phylogeny and allows for
+#' plotting of PWR model coefficients at the tips of the tree. PWR
+#' model coefficients to be pllotted must be appended to the phylo4d
+#' object. \code{pwr.phylobubbles} plots either circles or squares
+#' corresponding to the magnitude of each cell of a phylo4d object,
+#' and allows the plotting of PWR moel coefficients.  Model
+#' coefficients to be plotted must be appended to the phylo4d object
 #' @param formula Model formula to be fit
 #' @param phy4d \code{phylobase} format object to be used for fitting
 #' @param bw Bandwidth for model fit
@@ -11,6 +18,17 @@
 #'     \code{Gaus}
 #' @param verbose Whether to be verbose during model fitting (default
 #'     \code{FALSE})
+#' @param formula Model formula to be fit
+#' @param phy4d \code{phylobase} format object to be used for fitting
+#' @param holdout vector of integers indicating position of tips on
+#'     the tree to be held out during model fitting
+#' @param coef coefficients to extract from the model; must be one of
+#'     \code{formula}, \code{slope}, or \code{all}
+#' @param model Model type to be fit; must be either \code{pwr}, or
+#'     \code{pgls}
+#' @param which.tips vector of integers indicating position of tips on
+#'     the tree to be used, defaults to all species on the tree
+#' @param phy A phylo4 or phylo4d object
 #' @note Some information about this
 #' @return Phylogenetically weighted model object; use \code{pwr.coef}
 #'     to extract coefficients, and \code{pwr.tp} and
@@ -66,11 +84,12 @@
 #' @importFrom ape read.tree
 #' @importFrom nlme gls corMatrix
 #' @importFrom phylobase phylo4d
+#' @importMethodsFrom phylobase phylo4d
 #' @importFrom subplex subplex
+#' @importFrom grid grid.newpage
 #' @rdname pwr
 #' @name pwr
-#' @aliases pwr.fit pwr.coef pwr.treePlot pwr.phylobubbles
-
+#' @aliases pwr pwr.fit pwr.coef pwr.treePlot pwr.phylobubbles
 #######################################
 # Fitting functions ###################
 #######################################
@@ -506,20 +525,4 @@ pwr.phylobubbles <- function (type=type, place.tip.label="right",
         upper <- max(x, na.rm=na.rm)
     }
     (x - lower) / (upper - lower)
-}
-# simple function to randomly partition indices 1:n into k equal sized
-# groups (folds)
-.fold <- function(n, k) {
-    samp <- sample(n)
-    len <- unname(table(cut(seq.int(n), k)))
-    end <- cumsum(len)
-    mapply(
-        function(start, end, samp) {
-            samp[start:end]
-        },
-        start = c(1, head(end, -1)+1),
-        end = cumsum(len),
-        MoreArgs = list(samp=sample(n)),
-        SIMPLIFY = FALSE, USE.NAMES = FALSE
-    )
 }

@@ -32,7 +32,11 @@ Imports:
     Matrix (>= 1.1-4),
     methods (>= 3.1.0),
     animation (>= 2.4-0),
-    phytools (>= 0.6-60)
+    phytools (>= 0.6-60),
+    phylobase (>= 0.8.6),
+    nlme (>= 3.1-139),
+    subplex (>= 1.5-4),
+    grid (>= 3.6.0)
 Depends:
     ape (>= 3.1-4)
 RoxygenNote: 6.1.1
