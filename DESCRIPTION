@@ -1,7 +1,7 @@
 Package: pez
 Type: Package
 Title: Phylogenetics for the Environmental Sciences
-Version: 1.2-0
+Version: 1.3-0
 Author: William D. Pearse, Marc W. Cadotte, Jeannine Cavender-Bares,
     Anthony R. Ives, Caroline Tucker, Steve C. Walker, Matthew R. Helmus
 Maintainer: William D. Pearse <will.pearse@gmail.com>
@@ -40,3 +40,4 @@ Imports:
 Depends:
     ape (>= 3.1-4)
 RoxygenNote: 6.1.1
+Encoding: UTF-8

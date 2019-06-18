@@ -11,6 +11,7 @@
 #' and allows the plotting of PWR moel coefficients.  Model
 #' coefficients to be plotted must be appended to the phylo4d object
 #' @param formula Model formula to be fit
+#' @param x output from
 #' @param phy4d \code{phylobase} format object to be used for fitting
 #' @param bw Bandwidth for model fit
 #' @param wfun Weighting function to be used; myust be one of
@@ -18,8 +19,6 @@
 #'     \code{Gaus}
 #' @param verbose Whether to be verbose during model fitting (default
 #'     \code{FALSE})
-#' @param formula Model formula to be fit
-#' @param phy4d \code{phylobase} format object to be used for fitting
 #' @param holdout vector of integers indicating position of tips on
 #'     the tree to be held out during model fitting
 #' @param coef coefficients to extract from the model; must be one of
@@ -28,9 +27,14 @@
 #'     \code{pgls}
 #' @param which.tips vector of integers indicating position of tips on
 #'     the tree to be used, defaults to all species on the tree
-#' @param phy A phylo4 or phylo4d object
+#' @param object \code{pwr} object to have its coefficients extracted
+#' @param method Numerical optimization algorithm to be used to
+#'     estimate confidence intervals; should be one of subplex,
+#'     optimize, or L-BFGS-B.
+#' @param ... Optional argument passed on to internal \code{phylobase}
+#'     plotting functions
 #' @note Some information about this
-#' @return Phylogenetically weighted model object; use \code{pwr.coef}
+#' @return Phylogenetically weighted model object; use \code{coef.pwr}
 #'     to extract coefficients, and \code{pwr.tp} and
 #'     \code{pwr.phylobubbles} for plotting.
 #' @author Jim Regetz, T. Jonathan Davies, Elizabeth M. Wolkovich,
@@ -53,6 +57,7 @@
 #' ##########################################
 #' # Make up some data
 #' # - Note the deep bifurcation in the slope term
+#' if(FALSE){
 #' tree <- read.tree(text=
 #'     "(((A:1,B:1):1,(C:1,D:1):1):1,((E:1,F:1):1,(G:1,H:1):1):1);")
 #' dat <- data.frame(
@@ -68,11 +73,10 @@
 #'     pos=3, cex=0.8)
 #'
 #' # Phylogenetically weighted-regression with various weighting functions
-#' pwr.b <- pwr.coef(pwr.fit(y ~ x, combined.data, wfun="brownian"))
-#' pwr.m <- pwr.coef(pwr.fit(y ~ x, combined.data, wfun="martins"))
-#' pwr.g <- pwr.coef(pwr.fit(y ~ x, combined.data, wfun="gaussian"))
-#' pwr.G <- pwr.coef(pwr.fit(y ~ x, combined.data, wfun="Gauss"))
-#' #...note use of 'pwr.coef' to get estimates from the models
+#' pwr.b <- coef(pwr(y ~ x, combined.data, wfun="brownian"))
+#' pwr.m <- coef(pwr(y ~ x, combined.data, wfun="martins"))
+#' pwr.g <- coef(pwr(y ~ x, combined.data, wfun="gaussian"))
+#' pwr.G <- coef(pwr(y ~ x, combined.data, wfun="Gauss"))
 #' 
 #' # Run a PGLS
 #' pgls <- gls(y ~ x, data=dat, correlation=corBrownian(phy=tree))
@@ -81,20 +85,24 @@
 #' pwr.treePlot(addData(c.data, data.frame(gest=coef(pgls)[2], glb=confint(pgls)[2,1],
 #'    gub=confint(pgls)[2,2], pwr.m))[,c("est", "lb", "ub", "gest", "glb",
 #'    "gub")], show.tip.label=TRUE, lower=-1., upper=1.5, pex=2, aex=3.5)
-#' @importFrom ape read.tree
-#' @importFrom nlme gls corMatrix
-#' @importFrom phylobase phylo4d
+#' }
+#' @importFrom ape read.tree 
+#' @importFrom nlme gls corMatrix Initialize
+#' @importFrom phylobase phylo4d nTips tipData edges nEdges hasEdgeLength edgeLength<- isRooted plotOneTree tipLabels phyloXXYY tdata
 #' @importMethodsFrom phylobase phylo4d
 #' @importFrom subplex subplex
-#' @importFrom grid grid.newpage
+#' @importFrom grid grid.newpage grid.newpage upViewport plotViewport pushViewport grid.draw grid.text gpar viewport unit grid.layout convertWidth stringWidth convertUnit grid.segments grid.points unit.c grob
+#' @importFrom stats nlm confint fitted dnorm predict
+#' @importFrom ape corBrownian corMartins
+#' @importFrom utils txtProgressBar setTxtProgressBar
 #' @rdname pwr
 #' @name pwr
-#' @aliases pwr pwr.fit pwr.coef pwr.treePlot pwr.phylobubbles
+#' @aliases pwr coef.pwr plot.pwr
 #######################################
 # Fitting functions ###################
 #######################################
 #' @export
-pwr.fit <- function(formula, phy4d, which.tips, bw, wfun, verbose=FALSE) {
+pwr <- function(formula, phy4d, which.tips, bw, wfun, verbose=FALSE) {
     if (missing(which.tips)) {
         which.tips <- seq.int(nTips(phy4d))
     }
@@ -114,33 +122,35 @@ pwr.fit <- function(formula, phy4d, which.tips, bw, wfun, verbose=FALSE) {
     })
     if (verbose) close(pb)
     attr(ans, "weights") <- wts
-    class(ans) <- "phy.wt.reg"
+    class(ans) <- "pwr"
     return(ans)
 }
 #' @export
-pwr.coef <- function(pwrres) {
-    if(!inherits(pwrres, "phy.wt.reg"))
-        stop("Error, ", pwrres, " is not a phylogenetically weighted regression")
-    est <- sapply(seq_along(pwrres), function(i) {
-        if (nrow(pwrres[[i]])==2) {
-            pwrres[[i]][2,1]
+#' @rdname pwr
+#' @method coef pwr
+coef.pwr <- function(object, ...) {
+    if(!inherits(object, "phy.wt.reg"))
+        stop("Error, ", object, " is not a phylogenetically weighted regression")
+    est <- sapply(seq_along(object), function(i) {
+        if (nrow(object[[i]])==2) {
+            object[[i]][2,1]
         } else NA
     })
-    lb <- sapply(seq_along(pwrres), function(i) {
-        if (nrow(pwrres[[i]])==2) {
-            pwrres[[i]][2,1] - 1.96*pwrres[[i]][2,2]
+    lb <- sapply(seq_along(object), function(i) {
+        if (nrow(object[[i]])==2) {
+            object[[i]][2,1] - 1.96*object[[i]][2,2]
         } else NA
     })
-    ub <- sapply(seq_along(pwrres), function(i) {
-        if (nrow(pwrres[[i]])==2) {
-            pwrres[[i]][2,1] + 1.96*pwrres[[i]][2,2]
+    ub <- sapply(seq_along(object), function(i) {
+        if (nrow(object[[i]])==2) {
+            object[[i]][2,1] + 1.96*object[[i]][2,2]
         } else NA
     })
     data.frame(est, lb, ub)
 }
 #' @export
-# Cross-validation
-pwr.cv <-  function(formula, phy4d, holdout, coef=c("formula","slope","all"), model=c("pwr","pgls")) {
+#' @rdname pwr
+pwr.cv <-  function(formula, phy4d, holdout, coef=c("formula","slope","all"), model=c("pwr","pgls"), wfun, method) {
     coef <- match.arg(coef)
     model <- match.arg(model)
 
@@ -148,11 +158,11 @@ pwr.cv <-  function(formula, phy4d, holdout, coef=c("formula","slope","all"), mo
         # extract training set from phy4d
         phy.train <- phy4d[setdiff(seq(nTips(phy4d)), holdout)]
         if (missing(bwidth)) {
-            bwidth <- get.opt.bw(formula, phy.train, wfun=wfun, method=method)
+            bwidth <- .get.opt.bw(formula, phy.train, wfun=wfun, method=method)
         }
         # get weights vectors for *all* species, but only keep rows
         # corresponding to training set
-        wts.train <- getWts(phy4d, bwidth, wfun)[-holdout,]
+        wts.train <- .getWts(phy4d, bwidth, wfun)[-holdout,]
         # extract training data from phy4d
         dat.train <- tipData(phy.train)
         # loop over each point and do a weighted least squares regression
@@ -209,48 +219,42 @@ pwr.cv <-  function(formula, phy4d, holdout, coef=c("formula","slope","all"), mo
 # Plotting functions ##################
 #######################################
 #' @export
-#' @importFrom grid grid.newpage
-# modified version of phylobase:::treePlot
-pwr.treePlot <- function (phy, show.tip.label=TRUE, show.node.label=FALSE,
-    tip.order=NULL, tip.plot.fun="bubbles", plot.at.tip=TRUE,
-    edge.color="black", node.color="black", tip.color="black",
-    edge.width=1, newpage=TRUE, margins=c(1.1, 1.1, 1.1, 1.1), ...) {
-    if (!inherits(phy, "phylo4"))
+#' @rdname pwr
+#' @method plot pwr
+plot.pwr <- function (x, ...) {
+    if (!inherits(x, "phylo4"))
         stop("treePlot requires a phylo4 or phylo4d object")
-    if (!isRooted(phy))
+    if (!isRooted(x))
         stop("treePlot function requires a rooted tree.")
-    if (newpage)
-        grid.newpage()
-    type <- "phylogram"
-    Nedges <- nEdges(phy)
-    Ntips <- nTips(phy)
+    grid.newpage()
+    Nedges <- nEdges(x)
+    Ntips <- nTips(x)
+    tip.order <- NULL
     if (!is.null(tip.order) && length(tip.order) > 1) {
         if (length(tip.order) != Ntips) {
-            stop("tip.order must be the same length as nTips(phy)")
+            stop("tip.order must be the same length as nTips(x)")
         }
         if (is.numeric(tip.order)) {
             tip.order <- tip.order
         } else {
             if (is.character(tip.order)) {
-                tip.order <- as.numeric(names(tipLabels(phy))[
-                    match(tip.order, tipLabels(phy))])
+                tip.order <- as.numeric(names(tipLabels(x))[
+                    match(tip.order, tipLabels(x))])
             }
         }
         tip.order <- rev(tip.order)
     }
-    if (!hasEdgeLength(phy) || type == "cladogram") {
-        edgeLength(phy) <- rep(1, Nedges)
+    if (!hasEdgeLength(x)) {
+        edgeLength(x) <- rep(1, Nedges)
     }
-    xxyy <- phyloXXYY(phy, tip.order)
-    pushViewport(plotViewport(margins=margins))
-    pwr.phylobubbles(type=type, show.node.label=show.node.label,
-        rot=0, edge.color=edge.color, node.color=node.color,
-        tip.color=tip.color, edge.width=edge.width,
-        show.tip.label=show.tip.label, newpage=TRUE, ..., XXYY=xxyy)
+    pushViewport(plotViewport(margins=c(1.1, 1.1, 1.1, 1.1)))
+    .pwr.phylobubbles(type="phylogram", show.node.label=FALSE,
+        rot=0, edge.color="black", node.color="black",
+        tip.color="black", edge.width=1,
+        show.tip.label=TRUE, newpage=TRUE, XXYY=phyloXXYY(x, tip.order), ...)
     upViewport()
 }
-#' @export
-pwr.phylobubbles <- function (type=type, place.tip.label="right",
+.pwr.phylobubbles <- function (type=type, place.tip.label="right",
     show.node.label=show.node.label, show.tip.label=show.tip.label,
     edge.color=edge.color, node.color=node.color, tip.color=tip.color,
     edge.width=edge.width, newpage=TRUE, cex=1, pex=1, aex=1, ..., XXYY,
@@ -378,7 +382,7 @@ pwr.phylobubbles <- function (type=type, place.tip.label="right",
     upViewport(3)
     pushViewport(viewport(layout.pos.row=2, layout.pos.col=1,
         name="bubblelegend"))
-    yyy <- phylobase:::.bubLegendGrob(tipdata, tipdataS)
+    yyy <- grob(tipdata, tipdataS, cl = "bubLegend")
     grid.draw(yyy)
     upViewport()
     pushViewport(viewport(layout.pos.row=1, layout.pos.col=1,
@@ -418,12 +422,12 @@ pwr.phylobubbles <- function (type=type, place.tip.label="right",
     tree <- suppressWarnings(as(phy4d, "phylo"))
     dat <- data.frame(tipData(phy4d), wts=wts)
     # do straight pwr
-    pwr.fit <- lm(formula, data=dat, weights=wts)
+    pwr <- lm(formula, data=dat, weights=wts)
     if (verbose) {
         cat("\nPWR confidence intervals:\n")
-        print(confint(pwr.fit))
+        print(confint(pwr))
     }
-    return(coef(summary(pwr.fit)))
+    return(coef(summary(pwr)))
 }
 # optimal bandwidth finder
 .get.opt.bw <- function(formula, phy4d, wfun, interval, method="subplex",
@@ -453,35 +457,35 @@ pwr.phylobubbles <- function (type=type, place.tip.label="right",
     }
     if (verbose) message("-- Running ", method, " --")
     if (method=="subplex") {
-        optfn <- function(logbwidth) {
+        optfn.subplex <- function(logbwidth) {
             sum(.pwr.wfn(formula, phy4d, wfun, exp(logbwidth), TRUE)$resid^2)
         }
-        runtime <- system.time(res <- subplex(-1, optfn))
+        runtime <- system.time(res <- subplex(-1, optfn.subplex))
         if (res$convergence!=0) {
            warning(paste("bandwidth optimization problem (code ",
                res$convergence, ")", sep=""))
         }
         opt.bw <- exp(res$par)
     } else if (method=="optimize") {
-        optfn <- function(bwidth) {
+        optfn.optimize <- function(bwidth) {
             sum(.pwr.wfn(formula, phy4d, wfun, bwidth, TRUE)$resid^2)
         }
-        runtime <- system.time(res <- optimize(optfn, interval=interval))
+        runtime <- system.time(res <- optimize(optfn.optimize, interval=interval))
         opt.bw <- res$minimum
     } else if (method=="L-BFGS-B") {
-        optfn <- function(bwidth) {
+        optfn.lbgfsb <- function(bwidth) {
             sum(.pwr.wfn(formula, phy4d, wfun, bwidth, TRUE)$resid^2)
             #vals <- .pwr.wfn(formula, phy4d, wfun, bwidth, TRUE)
             #if (any(is.na(vals$coef[, "x"]))) Inf else sum(vals$resid^2)
         }
-        runtime <- system.time(res <- optim(1, optfn, lower=0,
+        runtime <- system.time(res <- optim(1, optfn.lbgfsb, lower=0,
             method="L-BFGS-B"))
         opt.bw <- res$par
     } else if (method=="nlm") {
-        optfn <- function(bwidth) {
+        optfn.nlm <- function(bwidth) {
             sum(.pwr.wfn(formula, phy4d, wfun, bwidth, TRUE)$resid^2)
         }
-        runtime <- system.time(res <- nlm(optfn, 0))
+        runtime <- system.time(res <- nlm(optfn.nlm, 0))
         opt.bw <- res$minimum
     } else {
         stop("invalid optimization algorithm")

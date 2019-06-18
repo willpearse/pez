@@ -2,14 +2,20 @@
 % Please edit documentation in R/pwr.R
 \name{pwr}
 \alias{pwr}
-\alias{pwr.fit}
-\alias{pwr.coef}
-\alias{pwr.treePlot}
-\alias{pwr.phylobubbles}
+\alias{coef.pwr}
+\alias{plot.pwr}
+\alias{pwr.cv}
 \title{Phylogenetically weighted regression: a method for modeling
 non-stationarity on evolutionary trees}
 \usage{
-pwr.fit(formula, phy4d, which.tips, bw, wfun, verbose = FALSE)
+pwr(formula, phy4d, which.tips, bw, wfun, verbose = FALSE)
+
+\method{coef}{pwr}(object, ...)
+
+pwr.cv(formula, phy4d, holdout, coef = c("formula", "slope", "all"),
+  model = c("pwr", "pgls"), wfun, method)
+
+\method{plot}{pwr}(x, ...)
 }
 \arguments{
 \item{formula}{Model formula to be fit}
@@ -28,9 +34,10 @@ the tree to be used, defaults to all species on the tree}
 \item{verbose}{Whether to be verbose during model fitting (default
 \code{FALSE})}
 
-\item{formula}{Model formula to be fit}
+\item{object}{\code{pwr} object to have its coefficients extracted}
 
-\item{phy4d}{\code{phylobase} format object to be used for fitting}
+\item{...}{Optional argument passed on to internal \code{phylobase}
+plotting functions}
 
 \item{holdout}{vector of integers indicating position of tips on
 the tree to be held out during model fitting}
@@ -41,10 +48,13 @@ the tree to be held out during model fitting}
 \item{model}{Model type to be fit; must be either \code{pwr}, or
 \code{pgls}}
 
-\item{phy}{A phylo4 or phylo4d object}
+\item{method}{for estimating weighting; should be one of subplex,
+optimize, L-BFGS-B,}
+
+\item{x}{output from}
 }
 \value{
-Phylogenetically weighted model object; use \code{pwr.coef}
+Phylogenetically weighted model object; use \code{coef.pwr}
     to extract coefficients, and \code{pwr.tp} and
     \code{pwr.phylobubbles} for plotting.
 }
@@ -71,6 +81,7 @@ Some information about this
 ##########################################
 # Make up some data
 # - Note the deep bifurcation in the slope term
+if(FALSE){
 tree <- read.tree(text=
     "(((A:1,B:1):1,(C:1,D:1):1):1,((E:1,F:1):1,(G:1,H:1):1):1);")
 dat <- data.frame(
@@ -86,11 +97,10 @@ text(tipData(c.data)$x, tipData(c.data)$y, labels=rownames(tipData(c.data)),
     pos=3, cex=0.8)
 
 # Phylogenetically weighted-regression with various weighting functions
-pwr.b <- pwr.coef(pwr.fit(y ~ x, combined.data, wfun="brownian"))
-pwr.m <- pwr.coef(pwr.fit(y ~ x, combined.data, wfun="martins"))
-pwr.g <- pwr.coef(pwr.fit(y ~ x, combined.data, wfun="gaussian"))
-pwr.G <- pwr.coef(pwr.fit(y ~ x, combined.data, wfun="Gauss"))
-#...note use of 'pwr.coef' to get estimates from the models
+pwr.b <- coef(pwr(y ~ x, combined.data, wfun="brownian"))
+pwr.m <- coef(pwr(y ~ x, combined.data, wfun="martins"))
+pwr.g <- coef(pwr(y ~ x, combined.data, wfun="gaussian"))
+pwr.G <- coef(pwr(y ~ x, combined.data, wfun="Gauss"))
 
 # Run a PGLS
 pgls <- gls(y ~ x, data=dat, correlation=corBrownian(phy=tree))
@@ -99,6 +109,7 @@ pgls <- gls(y ~ x, data=dat, correlation=corBrownian(phy=tree))
 pwr.treePlot(addData(c.data, data.frame(gest=coef(pgls)[2], glb=confint(pgls)[2,1],
    gub=confint(pgls)[2,2], pwr.m))[,c("est", "lb", "ub", "gest", "glb",
    "gub")], show.tip.label=TRUE, lower=-1., upper=1.5, pex=2, aex=3.5)
+}
 }
 \references{
 Davies, T. J., Regetz, J., Wolkovich, E. M., & McGill,
